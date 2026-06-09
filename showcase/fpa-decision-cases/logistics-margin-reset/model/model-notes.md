@@ -41,4 +41,4 @@ Use this case to show FP&A judgment:
 - next action
 - model control
 
-The goal is to signal CFO-ready decision support, not just dashboard building.
+The goal is to signal executive-ready decision support, not just dashboard building.

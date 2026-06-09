@@ -123,7 +123,7 @@ textarea {
 }
 
 .desktop-nav {
-  gap: 26px;
+  gap: clamp(14px, 1.8vw, 22px);
   color: inherit;
   font-size: 0.95rem;
   font-weight: 600;
@@ -396,6 +396,55 @@ textarea {
 .impact-section,
 .skills-section {
   background: var(--surface-strong);
+}
+
+.snapshot-section {
+  padding: clamp(34px, 6vw, 58px) 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.snapshot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) repeat(3, minmax(0, 0.85fr));
+  gap: 14px;
+}
+
+.snapshot-card {
+  min-height: 166px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+}
+
+.snapshot-card.main {
+  background:
+    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(255, 255, 255, 0)),
+    var(--surface);
+}
+
+.snapshot-card h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.6vw, 2.2rem);
+  line-height: 1.12;
+}
+
+.snapshot-card span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--teal-strong);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.snapshot-card p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.62;
 }
 
 .section-heading {
@@ -880,6 +929,43 @@ textarea {
   font-weight: 600;
 }
 
+.sql-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.sql-proof article {
+  min-height: 246px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.sql-proof h3 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+}
+
+.sql-proof pre {
+  overflow-x: auto;
+  margin: 0;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: #12201c;
+  color: #dff5ed;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.sql-proof code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
 .contact-section {
   color: var(--hero-text);
   background: #143936;
@@ -1247,6 +1333,7 @@ code {
   }
 
   .hero-facts,
+  .snapshot-grid,
   .metric-grid,
   .case-grid,
   .decision-case-grid,
@@ -1261,6 +1348,7 @@ code {
   .process-flow,
   .artifact-grid,
   .skills-grid,
+  .sql-proof,
   .two-column,
   .contact-layout {
     grid-template-columns: 1fr;
