@@ -461,6 +461,107 @@ textarea {
   line-height: 1.55;
 }
 
+.bi-products-section {
+  background: var(--surface);
+}
+
+.bi-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.bi-product-card {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+}
+
+.bi-product-media {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--surface-strong);
+  border-bottom: 1px solid var(--line);
+}
+
+.bi-product-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+  transition: transform 180ms ease;
+}
+
+.bi-product-media:hover img {
+  transform: scale(1.025);
+}
+
+.bi-product-body {
+  display: grid;
+  align-content: start;
+  padding: 26px;
+}
+
+.bi-product-body h3 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  line-height: 1.18;
+}
+
+.bi-product-body p:not(.case-label) {
+  margin: 13px 0 0;
+  color: var(--muted);
+  line-height: 1.68;
+}
+
+.product-proof {
+  display: grid;
+  gap: 9px;
+  margin: 18px 0 0;
+  padding: 0 0 0 18px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.product-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.portfolio-note {
+  max-width: 860px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
 .process-section {
   background: var(--surface-strong);
 }
@@ -743,6 +844,7 @@ textarea {
   .hero-facts,
   .metric-grid,
   .case-grid,
+  .bi-product-grid,
   .process-layout,
   .process-flow,
   .artifact-grid,
@@ -821,6 +923,7 @@ textarea {
   }
 
   .case-card,
+  .bi-product-body,
   .metric-card,
   .skill-group {
     padding: 20px;
