@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Model walkthrough for a synthetic driver-based FP&A forecast sample with assumptions, scenarios, EBITDA bridge, cash forecast, and QA checks."
+    />
+    <title>Model Logic | Logistics Margin Reset</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../styles.css" />
+  </head>
+  <body class="detail-page">
+    <header class="site-header is-scrolled" data-header>
+      <a class="brand" href="../../../index.html#top" aria-label="Go to homepage">
+        <span class="brand-mark">TA</span>
+        <span>Truong Dinh Anh Tu</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="../../../index.html#decision-cases">Decision Cases</a>
+        <a href="../../../index.html#bi-products">BI Products</a>
+        <a href="../../../index.html#contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+          <i data-lucide="sun-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="detail-hero">
+        <p class="breadcrumb"><a href="./">Logistics Margin Reset</a> / Model Logic</p>
+        <p class="eyebrow">Driver-based forecast model</p>
+        <h1>Assumptions to P&L, cash, bridge, and QA checks.</h1>
+        <p>
+          This generated workbook is built to show how an FP&A analyst can link shipment volume, pricing, cost/job,
+          headcount, DSO, and collection assumptions into a decision-ready forecast pack.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="model/generated-fpa-model.xlsx">
+            <i data-lucide="download"></i>
+            Download Excel model
+          </a>
+          <a class="button secondary detail-secondary" href="model/model-notes.md">
+            <i data-lucide="file-text"></i>
+            View model notes
+          </a>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="model-map">
+          <div><span>1</span><h2>Assumptions</h2><p>Scenario controls for shipment volume, rate, cost, FTE, opex, DSO, collection push, and MAPE.</p></div>
+          <div><span>2</span><h2>Scenario Output</h2><p>Revenue, gross profit, EBITDA, EBITDA margin, DSO, and ending cash across Base, Upside, and Downside.</p></div>
+          <div><span>3</span><h2>EBITDA Bridge</h2><p>Budget-to-actual drivers split into volume, pricing, mix, cost/job, opex, and one-off timing.</p></div>
+          <div><span>4</span><h2>Cash Forecast</h2><p>13-week cash roll-forward with collections, supplier payments, payroll, tax/capex, and debt service.</p></div>
+          <div><span>5</span><h2>QA Checks</h2><p>Formula-driven checks for P&L tie-out, bridge tie-out, cash roll-forward, scenario completeness, and public-safe labels.</p></div>
+        </div>
+      </section>
+
+      <section class="detail-section split-detail">
+        <div>
+          <p class="section-kicker">Scenario outputs</p>
+          <h2>Base case links operating drivers to CFO metrics.</h2>
+          <p>
+            The workbook is intentionally compact. It demonstrates logic and auditability rather than pretending to be a
+            full enterprise FP&A system.
+          </p>
+        </div>
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Scenario</th>
+                <th>Revenue</th>
+                <th>EBITDA</th>
+                <th>DSO</th>
+                <th>Ending cash</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Base</td><td>$273.4M</td><td>$34.7M</td><td>54</td><td>$21.9M</td></tr>
+              <tr><td>Upside</td><td>$322.7M</td><td>$61.4M</td><td>48</td><td>$30.9M</td></tr>
+              <tr><td>Downside</td><td>$238.4M</td><td>$7.2M</td><td>61</td><td>$12.3M</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Editing guide</p>
+            <h2>How this folder is organized.</h2>
+          </div>
+        </div>
+        <div class="qa-grid">
+          <article>
+            <h3>Case page</h3>
+            <p>Edit <code>index.html</code> for the CFO narrative, KPIs, and decision framing.</p>
+          </article>
+          <article>
+            <h3>Model page</h3>
+            <p>Edit <code>model.html</code> for model architecture, metrics, and workbook explanation.</p>
+          </article>
+          <article>
+            <h3>Workbook</h3>
+            <p>Replace <code>model/generated-fpa-model.xlsx</code> when a stronger sample model is built.</p>
+          </article>
+          <article>
+            <h3>Notes</h3>
+            <p>Use <code>model/model-notes.md</code> to keep assumptions, privacy notes, and update history.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="../../../script.js"></script>
+  </body>
+</html>

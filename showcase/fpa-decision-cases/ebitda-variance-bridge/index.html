@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Synthetic EBITDA variance bridge case for FP&A portfolio, linking budget-to-actual drivers to actions and owners."
+    />
+    <title>EBITDA Variance Bridge | FP&A Decision Case</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../styles.css" />
+  </head>
+  <body class="detail-page">
+    <header class="site-header is-scrolled" data-header>
+      <a class="brand" href="../../../index.html#top" aria-label="Go to homepage">
+        <span class="brand-mark">TA</span>
+        <span>Truong Dinh Anh Tu</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="../">Decision Cases</a>
+        <a href="../../../index.html#bi-products">BI Products</a>
+        <a href="../../../index.html#contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+          <i data-lucide="sun-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="detail-hero">
+        <p class="breadcrumb"><a href="../">Decision Cases</a> / EBITDA Variance Bridge</p>
+        <p class="eyebrow">Variance analysis deep dive</p>
+        <h1>Budget-to-actual EBITDA bridge with owner actions.</h1>
+        <p>
+          This synthetic case shows how I would move monthly performance review from explaining numbers to assigning
+          controllable actions, forecast updates, and margin recovery owners.
+        </p>
+      </section>
+
+      <section class="detail-section">
+        <div class="bridge-visual" aria-label="Budget to actual EBITDA bridge">
+          <div class="bridge-step positive"><span>$37.6M</span><p>Budget EBITDA</p></div>
+          <div class="bridge-step negative"><span>-$2.9M</span><p>Volume</p></div>
+          <div class="bridge-step negative"><span>-$2.1M</span><p>Pricing</p></div>
+          <div class="bridge-step negative"><span>-$1.4M</span><p>Mix</p></div>
+          <div class="bridge-step negative"><span>-$2.5M</span><p>Carrier/Fuel</p></div>
+          <div class="bridge-step negative"><span>-$0.7M</span><p>Opex</p></div>
+          <div class="bridge-step positive"><span>+$1.6M</span><p>Timing</p></div>
+          <div class="bridge-step result"><span>$29.6M</span><p>Actual EBITDA</p></div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Driver</th>
+                <th>Variance</th>
+                <th>Root cause</th>
+                <th>Owner</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Volume</td>
+                <td>-$2.9M</td>
+                <td>Lower freight-forwarding shipment count</td>
+                <td>Branch directors</td>
+                <td>Challenge recovery pipeline and branch forecast.</td>
+              </tr>
+              <tr>
+                <td>Pricing</td>
+                <td>-$2.1M</td>
+                <td>Spot-account discounting pressure</td>
+                <td>Sales heads</td>
+                <td>Review low-margin customer groups before next forecast lock.</td>
+              </tr>
+              <tr>
+                <td>Service mix</td>
+                <td>-$1.4M</td>
+                <td>Lower mix of customs and warehousing</td>
+                <td>Commercial finance</td>
+                <td>Push service bundles with better gross margin profile.</td>
+              </tr>
+              <tr>
+                <td>Cost/job</td>
+                <td>-$2.5M</td>
+                <td>Carrier and fuel costs moved faster than yield</td>
+                <td>Procurement / ops</td>
+                <td>Refresh cost escalation assumptions and surcharge policy.</td>
+              </tr>
+              <tr>
+                <td>Opex productivity</td>
+                <td>-$0.7M</td>
+                <td>Jobs per FTE below threshold</td>
+                <td>Finance business partner</td>
+                <td>Phase hiring and rebalance workload between teams.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="../../../script.js"></script>
+  </body>
+</html>

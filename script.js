@@ -4,6 +4,7 @@ const menuToggle = document.querySelector("[data-menu-toggle]");
 const mobileNav = document.querySelector("[data-mobile-nav]");
 const themeToggle = document.querySelector("[data-theme-toggle]");
 const copyButtons = document.querySelectorAll("[data-copy]");
+const forceSolidHeader = document.body.classList.contains("detail-page");
 
 const savedTheme = localStorage.getItem("portfolio-theme");
 if (savedTheme) {
@@ -11,7 +12,7 @@ if (savedTheme) {
 }
 
 function updateHeaderState() {
-  header.classList.toggle("is-scrolled", window.scrollY > 24);
+  header.classList.toggle("is-scrolled", forceSolidHeader || window.scrollY > 24);
 }
 
 function closeMenu() {
