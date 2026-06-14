@@ -747,6 +747,12 @@ textarea {
   background: var(--surface-strong);
 }
 
+.python-lab-section {
+  background:
+    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(201, 129, 40, 0.06)),
+    var(--surface-strong);
+}
+
 .process-pill {
   display: inline-flex;
   align-items: center;
@@ -759,6 +765,195 @@ textarea {
   font-size: 0.86rem;
   font-weight: 800;
   white-space: nowrap;
+}
+
+.python-lab-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.python-lab-main,
+.python-code-card,
+.lab-proof-item,
+.python-capability-grid article,
+.python-case-card,
+.privacy-grid article,
+.python-review-strip div {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+}
+
+.python-lab-main {
+  display: grid;
+  align-content: space-between;
+  gap: 24px;
+  min-height: 440px;
+  padding: clamp(26px, 4vw, 42px);
+  background:
+    linear-gradient(135deg, rgba(13, 123, 123, 0.12), rgba(201, 129, 40, 0.08) 54%, rgba(75, 127, 82, 0.08)),
+    var(--surface);
+}
+
+.python-lab-main h3 {
+  max-width: 780px;
+  margin: 0;
+  font-size: clamp(1.65rem, 3.4vw, 2.65rem);
+  line-height: 1.08;
+}
+
+.python-lab-main > p {
+  max-width: 820px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.python-lab-actions,
+.case-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.python-code-card,
+.python-command-card {
+  overflow: hidden;
+  background: #101b19;
+  color: #edf8f4;
+}
+
+:root[data-theme="dark"] .python-code-card,
+:root[data-theme="dark"] .python-command-card {
+  background: #0b1110;
+}
+
+.code-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(237, 248, 244, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.code-window-bar span {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #e06f5b;
+}
+
+.code-window-bar span:nth-child(2) {
+  background: #e0a252;
+}
+
+.code-window-bar span:nth-child(3) {
+  background: #5bbd87;
+}
+
+.code-window-bar strong {
+  margin-left: 6px;
+  color: rgba(237, 248, 244, 0.72);
+  font-size: 0.82rem;
+}
+
+.python-code-card pre,
+.python-command-card pre {
+  margin: 0;
+  padding: 22px;
+  overflow-x: auto;
+  font-size: 0.92rem;
+  line-height: 1.72;
+}
+
+.python-code-card code,
+.python-command-card code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.python-code-card p,
+.python-command-card p {
+  margin: 0;
+  padding: 0 22px 22px;
+  color: rgba(237, 248, 244, 0.72);
+  line-height: 1.58;
+}
+
+.lab-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.lab-proof-item {
+  min-height: 164px;
+  padding: 22px;
+  background: var(--surface);
+}
+
+.lab-proof-item span {
+  display: block;
+  color: var(--teal);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.lab-proof-item p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.56;
+}
+
+.python-capability-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.python-capability-grid article {
+  min-height: 220px;
+  padding: 24px;
+  background: var(--surface);
+}
+
+.python-capability-grid svg,
+.privacy-grid svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 18px;
+  color: var(--teal-strong);
+  stroke-width: 2;
+}
+
+.python-capability-grid h3,
+.privacy-grid h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.python-capability-grid p,
+.privacy-grid p {
+  margin: 11px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.python-case-grid {
+  margin-top: 18px;
+}
+
+.case-link-row .text-link {
+  margin-top: 18px;
 }
 
 .process-layout {
@@ -981,6 +1176,126 @@ textarea {
   margin: 10px 0 0;
   color: var(--muted);
   line-height: 1.62;
+}
+
+.python-detail-hero {
+  padding-bottom: clamp(26px, 5vw, 44px);
+}
+
+.python-review-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.python-review-strip div {
+  min-height: 172px;
+  padding: 20px;
+  background: var(--surface);
+}
+
+.python-review-strip span {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 16px;
+  place-items: center;
+  border-radius: var(--radius);
+  background: var(--teal);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.python-review-strip strong {
+  display: block;
+}
+
+.python-review-strip p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.python-case-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 18px;
+}
+
+.python-case-card {
+  display: grid;
+  align-content: start;
+  min-height: 100%;
+  padding: clamp(24px, 3.6vw, 34px);
+  background: var(--surface);
+}
+
+.python-case-card.primary-case {
+  background:
+    linear-gradient(180deg, rgba(13, 123, 123, 0.1), rgba(255, 255, 255, 0)),
+    var(--surface);
+}
+
+.python-case-card h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.8vw, 2.25rem);
+  line-height: 1.1;
+}
+
+.python-case-card p:not(.case-label) {
+  margin: 14px 0 0;
+  color: var(--muted);
+  line-height: 1.68;
+}
+
+.python-evidence-list {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0 0 0 18px;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.python-evidence-list strong {
+  color: var(--ink);
+}
+
+.privacy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.privacy-grid article {
+  min-height: 190px;
+  padding: 24px;
+  background: var(--surface);
+}
+
+.python-story-layout,
+.workflow-and-command {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.python-story-layout .memo-card {
+  min-height: 100%;
+}
+
+.accent-memo {
+  background:
+    linear-gradient(180deg, rgba(201, 129, 40, 0.08), rgba(13, 123, 123, 0.04)),
+    var(--surface);
+}
+
+.python-command-card {
+  min-height: 100%;
 }
 
 .experience-section {
@@ -1445,6 +1760,14 @@ code {
   .qa-grid,
   .process-layout,
   .process-flow,
+  .python-lab-layout,
+  .lab-proof-grid,
+  .python-capability-grid,
+  .python-review-strip,
+  .python-case-showcase,
+  .privacy-grid,
+  .python-story-layout,
+  .workflow-and-command,
   .automation-systems,
   .code-link-grid,
   .artifact-grid,
@@ -1555,10 +1878,36 @@ code {
 
   .case-card,
   .automation-card,
+  .python-lab-main,
+  .python-case-card,
+  .python-capability-grid article,
+  .privacy-grid article,
+  .lab-proof-item,
   .bi-product-body,
   .metric-card,
   .skill-group {
     padding: 20px;
+  }
+
+  .python-lab-main {
+    min-height: auto;
+  }
+
+  .python-code-card pre,
+  .python-command-card pre {
+    padding: 18px;
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .python-code-card p,
+  .python-command-card p {
+    padding: 0 18px 18px;
+  }
+
+  .python-lab-actions,
+  .case-link-row {
+    flex-direction: column;
   }
 
   .site-footer {

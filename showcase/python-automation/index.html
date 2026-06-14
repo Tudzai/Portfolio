@@ -36,81 +36,174 @@
     </header>
 
     <main class="page-shell">
-      <section class="detail-hero">
+      <section class="detail-hero python-detail-hero">
         <p class="breadcrumb"><a href="../../index.html">Home</a> / Python Automation</p>
-        <p class="eyebrow">Public-safe Python work samples</p>
-        <h1>Clean-room automation samples that show the workflow without exposing company data.</h1>
+        <p class="eyebrow">Python Automation Hub</p>
+        <h1>Runnable FP&amp;A automation samples built to prove Python workflow ability.</h1>
         <p>
-          These samples rebuild the logic of my FP&amp;A automation work using synthetic files, generic labels, and
-          lightweight CSV inputs. They show the pipeline structure, validation checks, and finance outputs without
-          publishing raw company workbooks or confidential operating data.
+          This hub shows how I use Python for recurring finance work: reading source files, validating data contracts,
+          calculating KPIs, writing outputs, and preparing stakeholder handoffs. Everything here uses synthetic files
+          and generic labels, so the logic is visible while company data stays private.
         </p>
-        <div class="hero-actions">
-          <a class="button primary" href="monthly-reporting-pipeline/">
-            <i data-lucide="file-spreadsheet"></i>
-            Monthly report pipeline
-          </a>
-          <a class="button secondary detail-secondary" href="quick-kpi-file-distribution/">
-            <i data-lucide="folder-output"></i>
-            Quick KPI file split
-          </a>
+        <div class="detail-hero-grid">
+          <div class="metric-tile"><span>7</span><p>Python scripts</p></div>
+          <div class="metric-tile"><span>2</span><p>finance automation cases</p></div>
+          <div class="metric-tile"><span>6</span><p>synthetic sample inputs</p></div>
+          <div class="metric-tile"><span>0</span><p>company records exposed</p></div>
+        </div>
+        <div class="python-review-strip" aria-label="Recommended review order">
+          <div>
+            <span>01</span>
+            <strong>Start with case page</strong>
+            <p>Understand the business problem and workflow.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>Open README</strong>
+            <p>See inputs, outputs, run steps, and QA checks.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Inspect scripts</strong>
+            <p>Review pandas transformations and validation logic.</p>
+          </div>
+          <div>
+            <span>04</span>
+            <strong>Check sample data</strong>
+            <p>Confirm no confidential data is included.</p>
+          </div>
         </div>
       </section>
 
       <section class="detail-section">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">What is public</p>
-            <h2>Source code, process notes, and synthetic inputs.</h2>
+            <p class="section-kicker">Pick a workflow</p>
+            <h2>Two public cases mapped to real FP&amp;A automation problems.</h2>
           </div>
-          <span class="process-pill">No raw company files</span>
+          <span class="process-pill">Source code + README + sample data</span>
         </div>
-        <div class="decision-case-grid">
-          <article class="decision-card">
+        <div class="python-case-showcase">
+          <article class="python-case-card primary-case">
             <div class="case-icon"><i data-lucide="database-zap"></i></div>
-            <p class="case-label">Case 01</p>
+            <p class="case-label">Case 01 &middot; Monthly reporting</p>
             <h2>Monthly Reporting Pipeline</h2>
             <p>
-              Merge monthly exports, map dimensions, create KPI summaries, compare actuals to plan, and draft an
-              FP&amp;A brief from synthetic logistics finance data.
+              Shows a full reporting flow: ingest monthly files, standardize fields, map service/office dimensions,
+              summarize revenue and gross profit, compare actuals to plan, and generate an FP&amp;A brief.
             </p>
-            <dl class="mini-metrics">
-              <div><dt>Core files</dt><dd>4 Python scripts</dd></div>
-              <div><dt>Inputs</dt><dd>Synthetic CSV</dd></div>
-              <div><dt>Output</dt><dd>Summary + brief</dd></div>
-            </dl>
-            <a class="text-link" href="monthly-reporting-pipeline/">Open case</a>
+            <ul class="python-evidence-list">
+              <li><strong>Code:</strong> 4 scripts for config, merge, ratio pack, and brief generation</li>
+              <li><strong>Output:</strong> summary CSV, actual-vs-plan pack, markdown insight brief</li>
+              <li><strong>Skill signal:</strong> pandas ETL, validation, aggregation, business rules</li>
+            </ul>
+            <div class="product-actions">
+              <a class="button primary" href="monthly-reporting-pipeline/">
+                <i data-lucide="external-link"></i>
+                Open case
+              </a>
+              <a class="button quiet" href="monthly-reporting-pipeline/README.md">
+                <i data-lucide="book-open"></i>
+                README
+              </a>
+            </div>
           </article>
 
-          <article class="decision-card">
+          <article class="python-case-card">
             <div class="case-icon"><i data-lucide="send-to-back"></i></div>
-            <p class="case-label">Case 02</p>
+            <p class="case-label">Case 02 &middot; KPI distribution</p>
             <h2>Quick KPI File Distribution</h2>
             <p>
-              Refresh actuals into a controlled master table, validate current-period KPIs, and split stakeholder-ready
-              files by service group and office.
+              Shows the quick-check workflow: refresh actuals into a master table, validate KPI achievement, flag watch
+              items, and split stakeholder-ready files by rule.
             </p>
-            <dl class="mini-metrics">
-              <div><dt>Core files</dt><dd>3 Python scripts</dd></div>
-              <div><dt>Controls</dt><dd>Validation log</dd></div>
-              <div><dt>Output</dt><dd>Stakeholder files</dd></div>
-            </dl>
-            <a class="text-link" href="quick-kpi-file-distribution/">Open case</a>
+            <ul class="python-evidence-list">
+              <li><strong>Code:</strong> 3 scripts for refresh, split, and orchestration</li>
+              <li><strong>Output:</strong> refreshed master file and owner-specific CSV extracts</li>
+              <li><strong>Skill signal:</strong> data joins, exceptions, file automation, handoff logic</li>
+            </ul>
+            <div class="product-actions">
+              <a class="button primary" href="quick-kpi-file-distribution/">
+                <i data-lucide="external-link"></i>
+                Open case
+              </a>
+              <a class="button quiet" href="quick-kpi-file-distribution/README.md">
+                <i data-lucide="book-open"></i>
+                README
+              </a>
+            </div>
           </article>
+        </div>
+      </section>
 
-          <article class="decision-card">
-            <div class="case-icon"><i data-lucide="shield-check"></i></div>
-            <p class="case-label">Privacy rule</p>
-            <h2>Sanitized by design</h2>
-            <p>
-              The code uses fictional departments, offices, service groups, and customer labels. There are no company
-              paths, production workbooks, identifiable stakeholder labels, or actual financial values.
-            </p>
-            <dl class="mini-metrics">
-              <div><dt>Raw files</dt><dd>Excluded</dd></div>
-              <div><dt>Company paths</dt><dd>Excluded</dd></div>
-              <div><dt>Sample data</dt><dd>Synthetic</dd></div>
-            </dl>
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">What this proves</p>
+            <h2>Python capability shown through finance work, not generic toy scripts.</h2>
+          </div>
+        </div>
+        <div class="python-capability-grid">
+          <article>
+            <i data-lucide="braces"></i>
+            <h3>Readable scripting</h3>
+            <p>Small, named scripts with clear entry points, reusable config, and business-language variables.</p>
+          </article>
+          <article>
+            <i data-lucide="table-properties"></i>
+            <h3>Data contract control</h3>
+            <p>Required-column checks, duplicate-key checks, unmapped-value checks, and explicit output naming.</p>
+          </article>
+          <article>
+            <i data-lucide="chart-no-axes-combined"></i>
+            <h3>FP&amp;A outputs</h3>
+            <p>KPI packs, actual-vs-target comparisons, watch items, and management brief outputs.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Direct code index</p>
+            <h2>Open the actual scripts from one place.</h2>
+          </div>
+          <span class="process-pill">7 Python files</span>
+        </div>
+        <div class="code-link-grid">
+          <a class="code-link" href="monthly-reporting-pipeline/src/config.py"><i data-lucide="settings-2"></i><span>config.py</span><small>Monthly pipeline settings and mappings</small></a>
+          <a class="code-link" href="monthly-reporting-pipeline/src/merge_monthly_reports.py"><i data-lucide="merge"></i><span>merge_monthly_reports.py</span><small>Read, validate, clean, and aggregate</small></a>
+          <a class="code-link" href="monthly-reporting-pipeline/src/build_ratio_pack.py"><i data-lucide="target"></i><span>build_ratio_pack.py</span><small>Actual-vs-plan KPI calculations</small></a>
+          <a class="code-link" href="monthly-reporting-pipeline/src/generate_insight_brief.py"><i data-lucide="file-text"></i><span>generate_insight_brief.py</span><small>Markdown management narrative</small></a>
+          <a class="code-link" href="quick-kpi-file-distribution/src/refresh_actuals.py"><i data-lucide="refresh-cw"></i><span>refresh_actuals.py</span><small>Update master KPI actuals</small></a>
+          <a class="code-link" href="quick-kpi-file-distribution/src/split_stakeholder_files.py"><i data-lucide="folder-output"></i><span>split_stakeholder_files.py</span><small>Create stakeholder-specific files</small></a>
+          <a class="code-link" href="quick-kpi-file-distribution/src/run_pipeline.py"><i data-lucide="play"></i><span>run_pipeline.py</span><small>Run refresh and split together</small></a>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Privacy boundary</p>
+            <h2>Public enough to inspect, private enough to protect old company data.</h2>
+          </div>
+          <span class="process-pill">Clean-room portfolio sample</span>
+        </div>
+        <div class="privacy-grid">
+          <article>
+            <i data-lucide="shield-check"></i>
+            <h3>What is included</h3>
+            <p>Generic workflow names, synthetic CSVs, public-safe scripts, and process README files.</p>
+          </article>
+          <article>
+            <i data-lucide="lock-keyhole"></i>
+            <h3>What is excluded</h3>
+            <p>Production workbooks, company folder paths, client names, internal stakeholder names, and real values.</p>
+          </article>
+          <article>
+            <i data-lucide="scan-search"></i>
+            <h3>How to read it</h3>
+            <p>Judge the workflow structure, validation mindset, and finance logic rather than the fictional figures.</p>
           </article>
         </div>
       </section>

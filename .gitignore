@@ -6,6 +6,7 @@ Project 7/
 *.pbit
 assets/Truong-Dinh-Anh-Tu-CV-2026-*.docx
 assets/Truong-Dinh-Anh-Tu-CV-2026-*.pdf
+assets/_review_render/
 showcase/python-automation/**/output/
 __pycache__/
 *.pyc

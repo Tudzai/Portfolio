@@ -62,11 +62,11 @@
         </picture>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-          <p class="eyebrow">Commercial FP&A &middot; Power BI &middot; Logistics Finance</p>
+          <p class="eyebrow">Commercial FP&amp;A &middot; Power BI &middot; Python Automation</p>
           <h1 id="hero-title">FP&A portfolio for logistics finance, BI, and commercial decision support.</h1>
           <p class="hero-copy">
             I connect revenue, EBITDA, cash, and forecast drivers through management reporting, Power BI, and finance
-            automation for high-volume logistics operations.
+            automation with Python for high-volume logistics operations.
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#decision-cases">
@@ -89,7 +89,7 @@
             </div>
             <div>
               <dt>Signal</dt>
-              <dd>FP&A, Power BI, automation, SQL certified</dd>
+              <dd>FP&amp;A, Power BI, Python automation, SQL certified</dd>
             </div>
           </dl>
         </div>
@@ -116,7 +116,7 @@
             </div>
             <div>
               <dt>Proof</dt>
-              <dd>Real FP&A work, public-safe decision cases, Power BI products, reporting automation, model QA</dd>
+              <dd>Real FP&A work, public-safe decision cases, Power BI products, Python reporting automation, model QA</dd>
             </div>
             <div>
               <dt>Credential</dt>
@@ -454,125 +454,130 @@
           </div>
         </div>
       </section>
-      <section class="section process-section" id="automation" aria-labelledby="process-title">
+      <section class="section process-section python-lab-section" id="automation" aria-labelledby="process-title">
         <div class="section-inner">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Automation builds</p>
-              <h2 id="process-title">Monthly reporting and quick KPI distribution workflows.</h2>
+              <p class="section-kicker">Python Automation</p>
+              <h2 id="process-title">Finance workflows I turned into reusable Python pipelines.</h2>
             </div>
-            <span class="process-pill">Python + Excel + Power BI</span>
+            <span class="process-pill">pandas + Excel/CSV + QA logs</span>
           </div>
-          <div class="process-layout">
-            <article class="process-main">
-              <p class="case-label">End-to-end finance automation</p>
-              <h3>From raw monthly files to management-ready insight reports.</h3>
+          <div class="python-lab-layout">
+            <article class="python-lab-main">
+              <div>
+                <p class="case-label">Code-backed FP&amp;A automation</p>
+                <h3>Not just "I know Python": public scripts, synthetic inputs, process notes, and runnable samples.</h3>
+              </div>
               <p>
-                Built a repeatable workflow that consolidates monthly Excel inputs, enriches the data with area,
-                customer, service, and salesman mappings, calculates actual-vs-target ratios, and generates a written
-                management report for monthly review.
+                I use Python to remove copy-paste from recurring finance work: monthly report refresh, KPI checks,
+                actual-vs-target calculations, validation logs, and stakeholder-specific file outputs. The public
+                cases below rebuild the same workflow logic with synthetic data so the code can be reviewed safely.
               </p>
-              <div class="process-flow" aria-label="Reporting pipeline flow">
-                <div class="flow-step">
-                  <span>01</span>
-                  <strong>Raw data</strong>
-                  <p>Monthly source files from finance and operating teams.</p>
-                </div>
-                <div class="flow-step">
-                  <span>02</span>
-                  <strong>Merge</strong>
-                  <p>Cumulative 2026 workbook with standardized columns.</p>
-                </div>
-                <div class="flow-step">
-                  <span>03</span>
-                  <strong>Summary</strong>
-                  <p>Mapped area, service, shipment, volume, and salesman fields.</p>
-                </div>
-                <div class="flow-step">
-                  <span>04</span>
-                  <strong>Analysis</strong>
-                  <p>Actual, target, last-month, last-year, customer, and area views.</p>
-                </div>
-                <div class="flow-step">
-                  <span>05</span>
-                  <strong>Insight</strong>
-                  <p>Automated Word narrative and formatted analysis pack.</p>
-                </div>
+              <div class="python-lab-actions">
+                <a class="button primary" href="showcase/python-automation/">
+                  <i data-lucide="code-2"></i>
+                  View Python automation hub
+                </a>
+                <a class="button quiet" href="showcase/python-automation/monthly-reporting-pipeline/">
+                  <i data-lucide="file-spreadsheet"></i>
+                  Monthly reporting case
+                </a>
               </div>
             </article>
-            <aside class="process-proof" aria-label="Pipeline proof points">
-              <div class="proof-metric">
-                <span>5</span>
-                <p>phases covering merge, summary, ratio, customer area, and insight reporting</p>
+            <aside class="python-code-card" aria-label="Python command preview">
+              <div class="code-window-bar">
+                <span></span>
+                <span></span>
+                <span></span>
+                <strong>automation_run.ps1</strong>
               </div>
-              <div class="proof-metric">
-                <span>4</span>
-                <p>quick-check steps from master refresh to stakeholder file distribution</p>
-              </div>
-              <div class="proof-metric">
-                <span>7</span>
-                <p>Python scripts covering merge, summary, ratio, customer, and report phases</p>
-              </div>
-              <div class="proof-metric">
-                <span>0</span>
-                <p>raw company records, customer names, or financial values exposed in public samples</p>
-              </div>
+              <pre><code>python src/merge_monthly_reports.py
+python src/build_ratio_pack.py
+python src/generate_insight_brief.py
+
+Output:
+  monthly_summary.csv
+  ratio_pack.csv
+  monthly_insight_brief.md</code></pre>
+              <p>Each sample includes README notes, source code, and clean sample data for review.</p>
             </aside>
           </div>
-          <div class="automation-systems" aria-label="Automation case summaries">
+          <div class="lab-proof-grid" aria-label="Python evidence summary">
+            <div class="lab-proof-item">
+              <span>7</span>
+              <p>Python scripts across merge, refresh, validation, split, and insight brief steps</p>
+            </div>
+            <div class="lab-proof-item">
+              <span>2</span>
+              <p>public case studies mapped to real FP&amp;A workflows</p>
+            </div>
+            <div class="lab-proof-item">
+              <span>6</span>
+              <p>synthetic input files so recruiters can inspect the data contract</p>
+            </div>
+            <div class="lab-proof-item">
+              <span>0</span>
+              <p>company records, production paths, customer names, or confidential values exposed</p>
+            </div>
+          </div>
+          <div class="python-capability-grid" aria-label="Python capability evidence">
+            <article>
+              <i data-lucide="database-zap"></i>
+              <h3>Data pipeline thinking</h3>
+              <p>
+                Read multiple monthly files, validate required columns, standardize fields, map dimensions, and produce
+                clean analysis tables.
+              </p>
+            </article>
+            <article>
+              <i data-lucide="target"></i>
+              <h3>Finance logic in code</h3>
+              <p>
+                Calculate actual vs target, margin, volume, KPI achievement, watch items, and management-ready
+                exceptions.
+              </p>
+            </article>
+            <article>
+              <i data-lucide="folder-output"></i>
+              <h3>Stakeholder handoff</h3>
+              <p>
+                Split owner-specific files from a controlled master table and write run notes that make review faster.
+              </p>
+            </article>
+          </div>
+          <div class="automation-systems python-case-grid" aria-label="Python automation case summaries">
             <article class="automation-card">
               <div class="case-icon"><i data-lucide="file-spreadsheet"></i></div>
-              <p class="case-label">Monthly report automation</p>
-              <h3>Close pack refresh from raw exports to FP&amp;A analysis.</h3>
+              <p class="case-label">Case 01 &middot; Monthly reporting</p>
+              <h3>Raw exports to FP&amp;A review pack.</h3>
               <p>
-                Consolidates monthly source workbooks, applies area and service mapping, classifies shipments,
-                calculates actual-vs-plan views, and prepares analysis-ready Excel and Word outputs.
+                Consolidates monthly source files, maps finance dimensions, summarizes revenue and gross profit, builds
+                actual-vs-plan views, and drafts an insight brief.
               </p>
-              <ul>
-                <li>Designed as a phased workflow so each output can be checked before the next step</li>
-                <li>Uses Python data processing with Excel formatting preserved for finance review</li>
-                <li>Turns routine refresh work into a repeatable close process</li>
-              </ul>
-              <a class="text-link" href="showcase/python-automation/monthly-reporting-pipeline/">View sanitized code case</a>
+              <div class="case-link-row">
+                <a class="text-link" href="showcase/python-automation/monthly-reporting-pipeline/">Open case page</a>
+                <a class="text-link" href="showcase/python-automation/monthly-reporting-pipeline/README.md">Read workflow</a>
+              </div>
             </article>
             <article class="automation-card accent">
               <div class="case-icon"><i data-lucide="send-to-back"></i></div>
-              <p class="case-label">Quick KPI and file split</p>
-              <h3>Fast actual refresh and stakeholder-specific workbook distribution.</h3>
+              <p class="case-label">Case 02 &middot; KPI distribution</p>
+              <h3>Master KPI refresh to owner-ready files.</h3>
               <p>
-                Updates actuals into a controlled master workbook, checks service and office-level KPI views, then
-                splits clean files for department leaders and satellite-office owners.
+                Refreshes actuals, checks KPI achievement, flags watch items, and splits clean stakeholder files by
+                service group and office rules.
               </p>
-              <ul>
-                <li>Reads the latest period from the master data source and updates only the relevant Actual fields</li>
-                <li>Preserves formulas, merged cells, month headers, styles, and workbook layout</li>
-                <li>Supports Power BI-ready query logic and themes for quick visual checks</li>
-              </ul>
-              <a class="text-link" href="showcase/python-automation/quick-kpi-file-distribution/">View sanitized code case</a>
+              <div class="case-link-row">
+                <a class="text-link" href="showcase/python-automation/quick-kpi-file-distribution/">Open case page</a>
+                <a class="text-link" href="showcase/python-automation/quick-kpi-file-distribution/README.md">Read workflow</a>
+              </div>
             </article>
           </div>
-          <div class="artifact-grid" aria-label="Pipeline outputs">
-            <div class="artifact-item">
-              <i data-lucide="database"></i>
-              <h3>Summary source</h3>
-              <p>Clean analysis-ready dataset with mapped finance and commercial dimensions.</p>
-            </div>
-            <div class="artifact-item">
-              <i data-lucide="target"></i>
-              <h3>Ratio and KPI checks</h3>
-              <p>Actual vs target, last month, last year, and quick KPI comparisons for review.</p>
-            </div>
-            <div class="artifact-item">
-              <i data-lucide="folder-output"></i>
-              <h3>Stakeholder files</h3>
-              <p>Department and office workbooks split from a controlled master file.</p>
-            </div>
-            <div class="artifact-item">
-              <i data-lucide="file-text"></i>
-              <h3>Insight and BI support</h3>
-              <p>Word report drafts plus Power BI-ready assets for fast management review.</p>
-            </div>
-          </div>
+          <p class="portfolio-note">
+            The public files are intentionally synthetic. They prove the Python approach, workflow design, and QA habit
+            without publishing production workbooks or confidential company information.
+          </p>
         </div>
       </section>
 

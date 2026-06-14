@@ -35,20 +35,53 @@
     </header>
 
     <main class="page-shell">
-      <section class="detail-hero">
+      <section class="detail-hero python-detail-hero">
         <p class="breadcrumb"><a href="../">Python Automation</a> / Quick KPI File Distribution</p>
         <p class="eyebrow">Clean-room Python case</p>
-        <h1>Quick KPI refresh and stakeholder-specific file distribution.</h1>
+        <h1>Python workflow for quick KPI refresh and stakeholder-specific file output.</h1>
         <p>
           A public-safe rebuild of the fast-check workflow: refresh latest actuals into a controlled master table,
-          validate KPI status, and split clean stakeholder files by service group and office. All labels and values are
-          synthetic.
+          validate KPI status, flag watch items, and split clean stakeholder files by service group and office. All
+          labels and values are synthetic.
         </p>
         <div class="detail-hero-grid">
           <div class="metric-tile"><span>3</span><p>Python files</p></div>
           <div class="metric-tile"><span>4</span><p>Refresh steps</p></div>
           <div class="metric-tile"><span>CSV</span><p>Public-safe sample data</p></div>
           <div class="metric-tile"><span>0</span><p>Raw company files</p></div>
+        </div>
+        <div class="hero-actions">
+          <a class="button primary" href="README.md">
+            <i data-lucide="book-open"></i>
+            Read workflow README
+          </a>
+          <a class="button quiet" href="src/run_pipeline.py">
+            <i data-lucide="play"></i>
+            Inspect run script
+          </a>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="python-story-layout">
+          <article class="memo-card">
+            <p class="case-label">Business problem</p>
+            <h3>Stakeholder KPI files are slow when actuals, totals, and owner slices are updated manually.</h3>
+            <p>
+              The manual workflow creates risk: stale actuals, inconsistent department filters, and late files for
+              department heads or satellite-office owners. This sample shows the Python pattern I use to refresh once,
+              validate centrally, then split clean outputs.
+            </p>
+          </article>
+          <article class="memo-card accent-memo">
+            <p class="case-label">What the code demonstrates</p>
+            <ul class="action-list">
+              <li><strong>Refresh:</strong> updates only the relevant actual fields for the latest month.</li>
+              <li><strong>Control:</strong> checks duplicate keys, missing actuals, and missing owner rules.</li>
+              <li><strong>Review:</strong> calculates KPI achievement and watch-item flags.</li>
+              <li><strong>Distribution:</strong> writes separate files by stakeholder rules.</li>
+            </ul>
+          </article>
         </div>
       </section>
 
@@ -60,12 +93,29 @@
           </div>
           <a class="text-link" href="README.md">Read process README</a>
         </div>
-        <div class="process-flow code-flow" aria-label="Quick KPI distribution flow">
-          <div class="flow-step"><span>01</span><strong>Load</strong><p>Read master template and latest actuals.</p></div>
-          <div class="flow-step"><span>02</span><strong>Refresh</strong><p>Update actual values by month and KPI key.</p></div>
-          <div class="flow-step"><span>03</span><strong>Validate</strong><p>Compare actual to target and flag watch items.</p></div>
-          <div class="flow-step"><span>04</span><strong>Split</strong><p>Create stakeholder files for review owners.</p></div>
-          <div class="flow-step"><span>05</span><strong>Log</strong><p>Write run notes for handoff and QA.</p></div>
+        <div class="workflow-and-command">
+          <div class="process-flow code-flow" aria-label="Quick KPI distribution flow">
+            <div class="flow-step"><span>01</span><strong>Load</strong><p>Read master template and latest actuals.</p></div>
+            <div class="flow-step"><span>02</span><strong>Refresh</strong><p>Update actual values by month and KPI key.</p></div>
+            <div class="flow-step"><span>03</span><strong>Validate</strong><p>Compare actual to target and flag watch items.</p></div>
+            <div class="flow-step"><span>04</span><strong>Split</strong><p>Create stakeholder files for review owners.</p></div>
+            <div class="flow-step"><span>05</span><strong>Log</strong><p>Write run notes for handoff and QA.</p></div>
+          </div>
+          <aside class="python-command-card" aria-label="Command line run path">
+            <div class="code-window-bar">
+              <span></span>
+              <span></span>
+              <span></span>
+              <strong>run order</strong>
+            </div>
+            <pre><code>python src/run_pipeline.py
+
+Output:
+  refreshed_master.csv
+  stakeholder_sales.csv
+  stakeholder_office_hub.csv</code></pre>
+            <p>One orchestrator script calls refresh and split steps so the full handoff can be repeated.</p>
+          </aside>
         </div>
       </section>
 
@@ -81,6 +131,37 @@
           <a class="code-link" href="src/refresh_actuals.py"><i data-lucide="refresh-cw"></i><span>refresh_actuals.py</span><small>Update master KPI actuals</small></a>
           <a class="code-link" href="src/split_stakeholder_files.py"><i data-lucide="folder-output"></i><span>split_stakeholder_files.py</span><small>Split files by stakeholder rules</small></a>
           <a class="code-link" href="src/run_pipeline.py"><i data-lucide="play"></i><span>run_pipeline.py</span><small>Orchestrate refresh and split</small></a>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Generated outputs</p>
+            <h2>What the workflow produces for quick owner review.</h2>
+          </div>
+        </div>
+        <div class="artifact-grid">
+          <div class="artifact-item">
+            <i data-lucide="table-2"></i>
+            <h3>refreshed_master.csv</h3>
+            <p>One controlled table with updated actuals, achievement rate, and watch flags.</p>
+          </div>
+          <div class="artifact-item">
+            <i data-lucide="folder-output"></i>
+            <h3>stakeholder files</h3>
+            <p>Separate clean outputs for service, department, or office owners based on rules.</p>
+          </div>
+          <div class="artifact-item">
+            <i data-lucide="circle-alert"></i>
+            <h3>watch items</h3>
+            <p>Rows below threshold are flagged so reviewers see what needs attention first.</p>
+          </div>
+          <div class="artifact-item">
+            <i data-lucide="shield-check"></i>
+            <h3>QA checks</h3>
+            <p>Stops duplicate KPI keys and missing stakeholder rules before output files are sent.</p>
+          </div>
         </div>
       </section>
 
