@@ -426,47 +426,58 @@ textarea {
   line-height: 1.68;
 }
 
-.snapshot-list {
+.portfolio-route {
   display: grid;
-  gap: 0;
+  gap: 10px;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
-.snapshot-list div {
+.portfolio-route a {
   display: grid;
-  grid-template-columns: 132px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 44px minmax(0, 0.72fr) minmax(0, 1.28fr);
+  gap: 16px;
+  align-items: center;
+  min-height: 74px;
   padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
 
-.snapshot-list div:first-child {
+.portfolio-route li:first-child a {
   padding-top: 0;
 }
 
-.snapshot-list div:last-child {
+.portfolio-route li:last-child a {
   padding-bottom: 0;
   border-bottom: 0;
 }
 
-.snapshot-list dt,
-.snapshot-list dd {
-  margin: 0;
-}
-
-.snapshot-list dt {
+.portfolio-route span {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
   color: var(--teal-strong);
   font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
-.snapshot-list dd {
+.portfolio-route strong {
   color: var(--ink);
+  font-size: 1rem;
+}
+
+.portfolio-route p {
+  margin: 0;
+  color: var(--muted);
   line-height: 1.55;
-  font-weight: 650;
+}
+
+.portfolio-route a:hover strong {
+  color: var(--teal-strong);
 }
 
 .section-heading {
@@ -1416,14 +1427,16 @@ textarea {
 
 .contact-actions {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .contact-link {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 12px;
-  min-height: 54px;
+  min-height: 58px;
   width: 100%;
   padding: 14px 16px;
   border: 1px solid rgba(247, 251, 248, 0.2);
@@ -1856,9 +1869,22 @@ code {
     padding: 22px 0;
   }
 
-  .snapshot-list div {
+  .portfolio-route a {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 4px 12px;
+    align-items: start;
+  }
+
+  .portfolio-route span {
+    grid-row: 1 / span 2;
+  }
+
+  .portfolio-route p {
+    grid-column: 2;
+  }
+
+  .contact-actions {
     grid-template-columns: 1fr;
-    gap: 6px;
   }
 
   .section-inner {
