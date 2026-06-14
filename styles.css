@@ -819,6 +819,14 @@ textarea {
   gap: 10px;
 }
 
+.python-extension-layout {
+  margin-top: 18px;
+}
+
+.python-extension-layout .python-lab-main {
+  min-height: 360px;
+}
+
 .python-code-card,
 .python-command-card {
   overflow: hidden;
