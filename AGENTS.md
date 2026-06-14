@@ -4,7 +4,7 @@ Tai lieu nay ghi lai cac agent da duoc dung de nang cap portfolio FP&A, muc tieu
 
 ## Muc Tieu Chung
 
-Toi uu portfolio de tang xac suat pass cac role FP&A, Regional Finance Analyst, Finance BI Analyst, hoac Commercial Finance tai thi truong Singapore.
+Toi uu portfolio de tang xac suat pass cac role FP&A, Regional Finance Analyst, Finance BI Analyst, hoac Commercial Finance tai Vietnam, regional MNC, va thi truong quoc te.
 
 Thong diep chien luoc:
 
@@ -19,7 +19,7 @@ Thong diep chien luoc:
 | Senior Developer | Kien truc repo/static site | Folder the nao de de sua va khong publish nham data? | Folder structure, naming convention, privacy checklist |
 | Manager | Quan ly scope va roadmap | Lam gi truoc de impact cao nhat? | Phasing, impact vs effort, story order |
 | CFO Reviewer | Danh gia duoi goc Finance Director/CFO | CFO muon thay bang chung gi ngoai dashboard dep? | Executive memo, variance bridge, cash story, QA/governance |
-| Senior FP&A | Chuyen mon FP&A | Case nao sat JD FP&A Singapore nhat? | CFO brief, EBITDA bridge, forecast model, working capital case |
+| Senior FP&A | Chuyen mon FP&A | Case nao sat JD FP&A, regional finance, va MNC finance nhat? | Executive brief, EBITDA bridge, forecast model, working capital case |
 | Senior Data Analyst | Data/model governance | Data synthetic nen co schema, metrics, QA checks nao? | Generated data logic, model checks, public-safe data policy |
 | Product Manager | Quan ly nhieu project portfolio | Lam sao de them/sua nhieu case sau nay ma khong roi? | Case folder template, roadmap, content governance |
 | AI Director | Dieu phoi cuoc thi y tuong | Y tuong nao thang neu cham da chieu? | Scoring matrix, final scope, what not to do |
@@ -30,7 +30,7 @@ Ham cham diem cua agent council:
 
 | Tieu chi | Trong so | Y nghia |
 |---|---:|---|
-| Recruiter impact | 30% | Co giup recruiter Singapore thay nang luc FP&A nhanh hon khong? |
+| Recruiter impact | 30% | Co giup recruiter Vietnam, regional MNC, va international thay nang luc FP&A nhanh hon khong? |
 | CFO credibility | 25% | Co the hien finance judgment, decision support, cash/P&L ownership khong? |
 | Portfolio clarity | 15% | Co de scan, de hieu, de nho khong? |
 | Implementation speed | 10% | Co trien khai duoc nhanh tren static GitHub Pages khong? |
@@ -48,14 +48,14 @@ CFO Performance Pack / Executive FP&A Decision Cases
 Ly do thang:
 
 - Power BI dep chua du de noi bat.
-- FP&A Singapore can thay budgeting, forecasting, variance analysis, business partnering, stakeholder action, Power BI/SQL/Python, working capital/cash, va forecast accuracy.
+- FP&A va regional finance roles can thay budgeting, forecasting, variance analysis, business partnering, stakeholder action, Power BI/SQL/Python, working capital/cash, va forecast accuracy.
 - Bo case nay chung minh duoc ca finance judgment lan data execution.
 
 Da trien khai:
 
 | Hang muc | Muc tieu tuyen dung | Folder |
 |---|---|---|
-| Logistics Margin Reset | CFO memo, P&L action, cash priority, QA evidence | `showcase/fpa-decision-cases/logistics-margin-reset/` |
+| Logistics Margin Reset | Executive memo, P&L action, cash priority, QA evidence | `showcase/fpa-decision-cases/logistics-margin-reset/` |
 | EBITDA Variance Bridge | Core FP&A skill: variance -> driver -> owner -> action | `showcase/fpa-decision-cases/ebitda-variance-bridge/` |
 | Working Capital Cash Runway | Khac biet hoa profile logistics FP&A bang cash discipline | `showcase/fpa-decision-cases/working-capital-cash-runway/` |
 | Generated Excel Model | Cho thay audit trail va model logic dang sau case | `showcase/fpa-decision-cases/logistics-margin-reset/model/generated-fpa-model.xlsx` |
@@ -266,7 +266,7 @@ Neu muon nang portfolio tiep, goi cac agent theo thu tu:
    - Cham card layout, CTA, mobile scan.
 
 3. Senior FP&A:
-   - Cham sat JD Singapore chua.
+   - Cham sat JD FP&A, regional finance, va MNC finance chua.
 
 4. Senior Developer:
    - Kiem folder, privacy, links, deploy.
@@ -279,8 +279,8 @@ Neu muon nang portfolio tiep, goi cac agent theo thu tu:
 Current winning positioning:
 
 ```text
-Commercial FP&A analyst building CFO-ready reporting, driver-based forecasts,
-Power BI decision products, and finance automation for multi-entity logistics operations.
+Vietnam-based Commercial FP&A analyst building management-ready reporting, driver-based forecasts,
+Power BI decision products, and finance automation for multi-entity logistics operations; willing to relocate for the right regional finance opportunity.
 ```
 
 Best evidence currently on site:

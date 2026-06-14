@@ -31,7 +31,7 @@ showcase/fpa-decision-cases/
 
 Each case should answer:
 
-- What decision does the CFO or business leader need to make?
+- What decision does the finance or business leader need to make?
 - What changed in the numbers?
 - Why did it change?
 - What is the financial impact?

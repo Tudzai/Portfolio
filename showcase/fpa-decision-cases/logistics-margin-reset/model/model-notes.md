@@ -4,7 +4,7 @@ This folder contains a public-safe, synthetic FP&A work sample for portfolio use
 
 ## Files
 
-- `../index.html`: CFO decision narrative, KPIs, EBITDA bridge, cash panel, and QA evidence.
+- `../index.html`: executive decision narrative, KPIs, EBITDA bridge, cash panel, and QA evidence.
 - `../model.html`: model walkthrough and workbook explanation.
 - `generated-fpa-model.xlsx`: compact generated Excel model with assumptions, scenario output, EBITDA bridge, 13-week cash forecast, and QA checks.
 
