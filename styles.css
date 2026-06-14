@@ -770,6 +770,7 @@ textarea {
 
 .process-main,
 .process-proof,
+.automation-card,
 .artifact-item {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -862,6 +863,50 @@ textarea {
   margin: 10px 0 0;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.automation-systems {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.automation-card {
+  min-height: 330px;
+  padding: 24px;
+}
+
+.automation-card.accent {
+  background:
+    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(13, 123, 123, 0)),
+    var(--surface);
+}
+
+.automation-card .case-icon {
+  margin-bottom: 18px;
+}
+
+.automation-card h3 {
+  max-width: 620px;
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.22;
+}
+
+.automation-card p:not(.case-label) {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.68;
+}
+
+.automation-card ul {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.55;
 }
 
 .artifact-grid {
@@ -1357,6 +1402,7 @@ code {
   .qa-grid,
   .process-layout,
   .process-flow,
+  .automation-systems,
   .artifact-grid,
   .skills-grid,
   .two-column,
@@ -1453,12 +1499,18 @@ code {
     display: block;
   }
 
+  .process-pill {
+    width: 100%;
+    white-space: normal;
+  }
+
   .timeline-item {
     grid-template-columns: 1fr;
     gap: 8px;
   }
 
   .case-card,
+  .automation-card,
   .bi-product-body,
   .metric-card,
   .skill-group {
