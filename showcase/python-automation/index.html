@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Public-safe Python automation case studies for FP&A monthly reporting and quick KPI file distribution using synthetic logistics finance data."
+    />
+    <title>Python Automation Case Studies | Truong Dinh Anh Tu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body class="detail-page">
+    <header class="site-header is-scrolled" data-header>
+      <a class="brand" href="../../index.html#top" aria-label="Go to homepage">
+        <span class="brand-mark">TA</span>
+        <span>Truong Dinh Anh Tu</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="../../index.html#decision-cases">Decision Cases</a>
+        <a href="../../index.html#bi-products">BI Products</a>
+        <a href="../../index.html#automation">Automation</a>
+        <a href="../../index.html#contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+          <i data-lucide="sun-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="detail-hero">
+        <p class="breadcrumb"><a href="../../index.html">Home</a> / Python Automation</p>
+        <p class="eyebrow">Public-safe Python work samples</p>
+        <h1>Clean-room automation samples that show the workflow without exposing company data.</h1>
+        <p>
+          These samples rebuild the logic of my FP&amp;A automation work using synthetic files, generic labels, and
+          lightweight CSV inputs. They show the pipeline structure, validation checks, and finance outputs without
+          publishing raw company workbooks or confidential operating data.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="monthly-reporting-pipeline/">
+            <i data-lucide="file-spreadsheet"></i>
+            Monthly report pipeline
+          </a>
+          <a class="button secondary detail-secondary" href="quick-kpi-file-distribution/">
+            <i data-lucide="folder-output"></i>
+            Quick KPI file split
+          </a>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">What is public</p>
+            <h2>Source code, process notes, and synthetic inputs.</h2>
+          </div>
+          <span class="process-pill">No raw company files</span>
+        </div>
+        <div class="decision-case-grid">
+          <article class="decision-card">
+            <div class="case-icon"><i data-lucide="database-zap"></i></div>
+            <p class="case-label">Case 01</p>
+            <h2>Monthly Reporting Pipeline</h2>
+            <p>
+              Merge monthly exports, map dimensions, create KPI summaries, compare actuals to plan, and draft an
+              FP&amp;A brief from synthetic logistics finance data.
+            </p>
+            <dl class="mini-metrics">
+              <div><dt>Core files</dt><dd>4 Python scripts</dd></div>
+              <div><dt>Inputs</dt><dd>Synthetic CSV</dd></div>
+              <div><dt>Output</dt><dd>Summary + brief</dd></div>
+            </dl>
+            <a class="text-link" href="monthly-reporting-pipeline/">Open case</a>
+          </article>
+
+          <article class="decision-card">
+            <div class="case-icon"><i data-lucide="send-to-back"></i></div>
+            <p class="case-label">Case 02</p>
+            <h2>Quick KPI File Distribution</h2>
+            <p>
+              Refresh actuals into a controlled master table, validate current-period KPIs, and split stakeholder-ready
+              files by service group and office.
+            </p>
+            <dl class="mini-metrics">
+              <div><dt>Core files</dt><dd>3 Python scripts</dd></div>
+              <div><dt>Controls</dt><dd>Validation log</dd></div>
+              <div><dt>Output</dt><dd>Stakeholder files</dd></div>
+            </dl>
+            <a class="text-link" href="quick-kpi-file-distribution/">Open case</a>
+          </article>
+
+          <article class="decision-card">
+            <div class="case-icon"><i data-lucide="shield-check"></i></div>
+            <p class="case-label">Privacy rule</p>
+            <h2>Sanitized by design</h2>
+            <p>
+              The code uses fictional departments, offices, service groups, and customer labels. There are no company
+              paths, production workbooks, identifiable stakeholder labels, or actual financial values.
+            </p>
+            <dl class="mini-metrics">
+              <div><dt>Raw files</dt><dd>Excluded</dd></div>
+              <div><dt>Company paths</dt><dd>Excluded</dd></div>
+              <div><dt>Sample data</dt><dd>Synthetic</dd></div>
+            </dl>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="../../script.js"></script>
+  </body>
+</html>

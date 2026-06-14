@@ -1,0 +1,9 @@
+period,region,service_family,target_gross_profit
+2026-01,South,Air Freight,27000
+2026-01,South,Ocean Freight,46000
+2026-01,North,Ocean Freight,37000
+2026-01,Satellite,Logistics,22000
+2026-02,South,Air Freight,30000
+2026-02,Central,Air Freight,19000
+2026-02,South,Ocean Freight,47000
+2026-02,Satellite,Logistics,24000

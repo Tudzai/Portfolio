@@ -909,6 +909,49 @@ textarea {
   line-height: 1.55;
 }
 
+.code-link-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.code-link {
+  display: grid;
+  min-height: 172px;
+  align-content: start;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+}
+
+.code-link svg {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 18px;
+  color: var(--teal-strong);
+}
+
+.code-link span {
+  color: var(--ink);
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.code-link small {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.code-link:hover {
+  border-color: var(--teal);
+  transform: translateY(-1px);
+}
+
 .artifact-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1403,6 +1446,7 @@ code {
   .process-layout,
   .process-flow,
   .automation-systems,
+  .code-link-grid,
   .artifact-grid,
   .skills-grid,
   .two-column,

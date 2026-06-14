@@ -1,0 +1,5 @@
+period,job_id,service_line,office,customer_group,revenue,gross_profit,volume
+2026-01,JAN-001,Air Export,South Office,Customer Group A,125000,26000,18
+2026-01,JAN-002,Ocean Export,South Office,Customer Group B,210000,42000,34
+2026-01,JAN-003,Ocean Import,North Office,Customer Group C,180000,35000,28
+2026-01,JAN-004,Contract Logistics,Satellite Office,Customer Group D,95000,21000,12

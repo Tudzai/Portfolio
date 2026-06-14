@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Public-safe Python sample for refreshing KPI actuals and splitting stakeholder-ready files from a controlled master table."
+    />
+    <title>Quick KPI Distribution Python Sample | Truong Dinh Anh Tu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../styles.css" />
+  </head>
+  <body class="detail-page">
+    <header class="site-header is-scrolled" data-header>
+      <a class="brand" href="../../../index.html#top" aria-label="Go to homepage">
+        <span class="brand-mark">TA</span>
+        <span>Truong Dinh Anh Tu</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="../../../index.html#automation">Automation</a>
+        <a href="../">Python Samples</a>
+        <a href="../../../index.html#contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+          <i data-lucide="sun-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="detail-hero">
+        <p class="breadcrumb"><a href="../">Python Automation</a> / Quick KPI File Distribution</p>
+        <p class="eyebrow">Clean-room Python case</p>
+        <h1>Quick KPI refresh and stakeholder-specific file distribution.</h1>
+        <p>
+          A public-safe rebuild of the fast-check workflow: refresh latest actuals into a controlled master table,
+          validate KPI status, and split clean stakeholder files by service group and office. All labels and values are
+          synthetic.
+        </p>
+        <div class="detail-hero-grid">
+          <div class="metric-tile"><span>3</span><p>Python files</p></div>
+          <div class="metric-tile"><span>4</span><p>Refresh steps</p></div>
+          <div class="metric-tile"><span>CSV</span><p>Public-safe sample data</p></div>
+          <div class="metric-tile"><span>0</span><p>Raw company files</p></div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Workflow</p>
+            <h2>From master KPI table to owner-ready outputs.</h2>
+          </div>
+          <a class="text-link" href="README.md">Read process README</a>
+        </div>
+        <div class="process-flow code-flow" aria-label="Quick KPI distribution flow">
+          <div class="flow-step"><span>01</span><strong>Load</strong><p>Read master template and latest actuals.</p></div>
+          <div class="flow-step"><span>02</span><strong>Refresh</strong><p>Update actual values by month and KPI key.</p></div>
+          <div class="flow-step"><span>03</span><strong>Validate</strong><p>Compare actual to target and flag watch items.</p></div>
+          <div class="flow-step"><span>04</span><strong>Split</strong><p>Create stakeholder files for review owners.</p></div>
+          <div class="flow-step"><span>05</span><strong>Log</strong><p>Write run notes for handoff and QA.</p></div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Python files</p>
+            <h2>Small scripts that show the actual refresh logic.</h2>
+          </div>
+          <span class="process-pill">Synthetic data only</span>
+        </div>
+        <div class="code-link-grid">
+          <a class="code-link" href="src/refresh_actuals.py"><i data-lucide="refresh-cw"></i><span>refresh_actuals.py</span><small>Update master KPI actuals</small></a>
+          <a class="code-link" href="src/split_stakeholder_files.py"><i data-lucide="folder-output"></i><span>split_stakeholder_files.py</span><small>Split files by stakeholder rules</small></a>
+          <a class="code-link" href="src/run_pipeline.py"><i data-lucide="play"></i><span>run_pipeline.py</span><small>Orchestrate refresh and split</small></a>
+        </div>
+      </section>
+
+      <section class="detail-section split-detail">
+        <div>
+          <p class="section-kicker">Validation</p>
+          <h2>Built for fast review without manual copy-paste.</h2>
+          <p>
+            The sample validates duplicate KPI keys, missing actuals, missing stakeholder rules, and watch items where
+            achievement falls below the review threshold.
+          </p>
+        </div>
+        <div class="memo-card">
+          <p class="case-label">Sample inputs</p>
+          <ul class="action-list">
+            <li><a href="sample_data/master_kpi_template.csv">master_kpi_template.csv</a></li>
+            <li><a href="sample_data/latest_actuals.csv">latest_actuals.csv</a></li>
+            <li><a href="sample_data/stakeholder_rules.csv">stakeholder_rules.csv</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="../../../script.js"></script>
+  </body>
+</html>

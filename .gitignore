@@ -4,3 +4,8 @@ Project 6/
 Project 7/
 *.pbix
 *.pbit
+assets/Truong-Dinh-Anh-Tu-CV-2026-*.docx
+assets/Truong-Dinh-Anh-Tu-CV-2026-*.pdf
+showcase/python-automation/**/output/
+__pycache__/
+*.pyc
