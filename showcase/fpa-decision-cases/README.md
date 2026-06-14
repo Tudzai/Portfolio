@@ -10,8 +10,9 @@ The homepage and `index.html` should lead with real operating decision support a
 - Customer credit-limit / AR control review
 
 Do not publish company workbooks, screenshots, raw interview notes, customer names, salesperson names, internal
-comments, or actual financial values. If a technical proof artifact is needed, link to synthetic/public-safe samples
-instead of source files.
+comments, or source-level financial values. High-level public-safe target deltas can be used when they are explicitly
+approved for the portfolio. If a technical proof artifact is needed, link to synthetic/public-safe samples instead of
+source files.
 
 ## Structure
 
