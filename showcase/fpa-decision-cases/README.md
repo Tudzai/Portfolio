@@ -1,22 +1,26 @@
 # FP&A Decision Cases
 
-This folder contains public portfolio work samples for executive FP&A storytelling.
+This folder contains public-safe executive FP&A decision-support summaries.
+
+The homepage and `index.html` should lead with real operating decision support at a sanitized level:
+
+- HCM operating diagnosis and action plan
+- Quarterly sales performance review
+- Customer margin and resource-load review
+- Customer credit-limit / AR control review
+
+Do not publish company workbooks, screenshots, raw interview notes, customer names, salesperson names, internal
+comments, or actual financial values. If a technical proof artifact is needed, link to synthetic/public-safe samples
+instead of source files.
 
 ## Structure
 
 ```text
 showcase/fpa-decision-cases/
   index.html
-  logistics-margin-reset/
-    index.html
-    model.html
-    model/
-      generated-fpa-model.xlsx
-      model-notes.md
-  ebitda-variance-bridge/
-    index.html
-  working-capital-cash-runway/
-    index.html
+  logistics-margin-reset/              # legacy synthetic case, not linked from homepage
+  ebitda-variance-bridge/              # legacy synthetic case, not linked from homepage
+  working-capital-cash-runway/         # legacy synthetic case, not linked from homepage
 ```
 
 ## How To Add A New Case
@@ -24,7 +28,7 @@ showcase/fpa-decision-cases/
 1. Create a lowercase kebab-case folder under `showcase/fpa-decision-cases/`.
 2. Copy one existing `index.html`.
 3. Update the decision question, KPIs, narrative, and privacy note.
-4. Add model files inside a `model/` subfolder only if they are public-safe.
+4. Add model files inside a `model/` subfolder only if they are synthetic or public-safe.
 5. Add the new card to `showcase/fpa-decision-cases/index.html` and the homepage section in `index.html`.
 
 ## Content Rules
