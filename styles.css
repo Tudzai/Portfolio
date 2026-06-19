@@ -633,9 +633,52 @@ main > section {
   line-height: 1.55;
 }
 
+.application-pack {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.application-pack div {
+  min-height: 146px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+}
+
+.application-pack span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--amber);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.application-pack strong {
+  display: block;
+  line-height: 1.35;
+}
+
+.application-pack p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
 .skill-stack {
   display: grid;
   gap: 14px;
+}
+
+.keyword-skill-group {
+  background:
+    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(255, 255, 255, 0)),
+    var(--surface);
 }
 
 .decision-cases-section {
@@ -1886,6 +1929,7 @@ code {
   .snapshot-panel,
   .ability-grid,
   .proof-path-grid,
+  .application-pack,
   .experience-skills-layout,
   .metric-grid,
   .case-grid,
