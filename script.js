@@ -18,8 +18,8 @@ function updateHeaderState() {
 
 function closeMenu() {
   document.body.classList.remove("menu-open");
-  header.classList.remove("menu-visible");
-  mobileNav.classList.remove("is-open");
+  header?.classList.remove("menu-visible");
+  mobileNav?.classList.remove("is-open");
   menuToggle?.setAttribute("aria-label", "Open menu");
 }
 
