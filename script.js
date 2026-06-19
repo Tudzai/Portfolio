@@ -4,6 +4,7 @@ const menuToggle = document.querySelector("[data-menu-toggle]");
 const mobileNav = document.querySelector("[data-mobile-nav]");
 const themeToggle = document.querySelector("[data-theme-toggle]");
 const copyButtons = document.querySelectorAll("[data-copy]");
+const internalLinks = document.querySelectorAll('a[href^="#"]');
 const forceSolidHeader = document.body.classList.contains("detail-page");
 
 const savedTheme = localStorage.getItem("portfolio-theme");
@@ -22,6 +23,19 @@ function closeMenu() {
   menuToggle?.setAttribute("aria-label", "Open menu");
 }
 
+function scrollToTarget(target) {
+  const headerOffset = header?.offsetHeight || 0;
+  const top = target.getBoundingClientRect().top + window.scrollY - headerOffset - 8;
+  window.scrollTo({ top: Math.max(top, 0), behavior: "auto" });
+}
+
+function scrollToHash(hash) {
+  const target = hash && hash.length > 1 ? document.querySelector(hash) : null;
+  if (!target) return false;
+  scrollToTarget(target);
+  return true;
+}
+
 window.addEventListener("scroll", updateHeaderState, { passive: true });
 updateHeaderState();
 
@@ -32,9 +46,26 @@ menuToggle?.addEventListener("click", () => {
   menuToggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
 });
 
-mobileNav?.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", closeMenu);
+internalLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const hash = link.getAttribute("href");
+    if (!scrollToHash(hash)) return;
+
+    event.preventDefault();
+    closeMenu();
+    history.pushState(null, "", hash);
+    scrollToHash(hash);
+  });
 });
+
+window.addEventListener("hashchange", () => {
+  closeMenu();
+  scrollToHash(window.location.hash);
+});
+
+if (window.location.hash) {
+  window.setTimeout(() => scrollToHash(window.location.hash), 0);
+}
 
 themeToggle?.addEventListener("click", () => {
   const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
