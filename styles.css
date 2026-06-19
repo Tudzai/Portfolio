@@ -1,33 +1,33 @@
 :root {
   color-scheme: light;
-  --bg: #f6f7f4;
+  --bg: #f7f9fc;
   --surface: #ffffff;
-  --surface-strong: #eef3ef;
-  --ink: #17201d;
-  --muted: #5f6d68;
-  --line: #d9dfda;
-  --teal: #0d7b7b;
-  --teal-strong: #095f62;
-  --amber: #c98128;
-  --green: #4b7f52;
-  --hero-text: #f7fbf8;
-  --shadow: 0 20px 60px rgba(23, 32, 29, 0.14);
+  --surface-strong: #eef5ff;
+  --ink: #101827;
+  --muted: #5b687a;
+  --line: #dbe4ef;
+  --teal: #1479ff;
+  --teal-strong: #075ccf;
+  --amber: #c88922;
+  --green: #0f9f8f;
+  --hero-text: #f8fbff;
+  --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
   --radius: 8px;
   --max-width: 1160px;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #111715;
-  --surface: #19221f;
-  --surface-strong: #202d29;
-  --ink: #eff6f2;
-  --muted: #aab8b2;
-  --line: #31423c;
-  --teal: #51b8b1;
-  --teal-strong: #89d4cf;
-  --amber: #e0a252;
-  --green: #8fbd87;
+  --bg: #0b1220;
+  --surface: #111b2d;
+  --surface-strong: #172338;
+  --ink: #f3f7fb;
+  --muted: #aec0d1;
+  --line: #29364c;
+  --teal: #6ab8ff;
+  --teal-strong: #a3d6ff;
+  --amber: #f3b65f;
+  --green: #5dd7c7;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
 
@@ -42,11 +42,19 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    linear-gradient(180deg, #f7f9fc 0%, #fbfcff 36%, #f3f7fb 100%),
+    var(--bg);
   color: var(--ink);
   font-family: "Inter", Arial, sans-serif;
   letter-spacing: 0;
   overflow-x: hidden;
+}
+
+:root[data-theme="dark"] body {
+  background:
+    linear-gradient(180deg, #0b1220 0%, #0f1828 40%, #0b1220 100%),
+    var(--bg);
 }
 
 body.menu-open {
@@ -117,7 +125,7 @@ textarea {
   height: 38px;
   place-items: center;
   border-radius: var(--radius);
-  background: var(--teal);
+  background: linear-gradient(135deg, var(--teal), var(--green));
   color: #ffffff;
   font-size: 0.85rem;
 }
@@ -210,6 +218,19 @@ textarea {
   color: var(--hero-text);
 }
 
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 90px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(20, 121, 255, 0.82), rgba(15, 159, 143, 0.72), rgba(200, 137, 34, 0.72), transparent);
+  opacity: 0.8;
+  pointer-events: none;
+  transform: skewY(-1.4deg);
+}
+
 .hero-media,
 .hero-overlay {
   position: absolute;
@@ -224,8 +245,8 @@ textarea {
 
 .hero-overlay {
   background:
-    linear-gradient(90deg, rgba(7, 11, 10, 0.92) 0%, rgba(7, 11, 10, 0.74) 34%, rgba(7, 11, 10, 0.28) 68%, rgba(7, 11, 10, 0.5) 100%),
-    linear-gradient(180deg, rgba(7, 11, 10, 0.45), rgba(7, 11, 10, 0.24) 58%, rgba(7, 11, 10, 0.86));
+    linear-gradient(90deg, rgba(6, 18, 35, 0.94) 0%, rgba(8, 24, 45, 0.76) 36%, rgba(8, 24, 45, 0.28) 68%, rgba(6, 18, 35, 0.54) 100%),
+    linear-gradient(180deg, rgba(6, 18, 35, 0.35), rgba(6, 18, 35, 0.2) 58%, rgba(6, 18, 35, 0.88));
 }
 
 .hero-content {
@@ -263,6 +284,27 @@ textarea {
   line-height: 1.6;
 }
 
+.brand-thesis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 760px;
+  margin-top: 20px;
+}
+
+.brand-thesis span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(248, 251, 255, 0.24);
+  border-radius: var(--radius);
+  background: rgba(248, 251, 255, 0.08);
+  color: rgba(248, 251, 255, 0.9);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -284,7 +326,7 @@ textarea {
 }
 
 .button.primary {
-  background: var(--teal);
+  background: linear-gradient(135deg, var(--teal), #0f9f8f);
   color: #ffffff;
 }
 
@@ -338,7 +380,7 @@ textarea {
 .hero-facts div {
   min-height: 78px;
   padding: 14px 16px;
-  background: rgba(13, 24, 21, 0.68);
+  background: rgba(6, 18, 35, 0.7);
 }
 
 .hero-facts dt {
@@ -477,6 +519,110 @@ main > section {
   font-weight: 650;
 }
 
+.brand-section {
+  background: var(--surface);
+  position: relative;
+}
+
+.brand-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(20, 121, 255, 0.44), rgba(200, 137, 34, 0.4), transparent);
+}
+
+.brand-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(30px, 5.5vw, 76px);
+  align-items: start;
+}
+
+.brand-story p:not(.section-kicker) {
+  max-width: 660px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.brand-principles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.brand-principles article {
+  min-height: 216px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(20, 121, 255, 0.06), rgba(15, 159, 143, 0.03)),
+    var(--surface);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+}
+
+.brand-principles svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 18px;
+  color: var(--teal-strong);
+  stroke-width: 2;
+}
+
+.brand-principles h3 {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.32;
+}
+
+.brand-principles p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.momentum-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--line);
+}
+
+.momentum-strip span {
+  position: relative;
+  display: grid;
+  min-height: 58px;
+  place-items: center;
+  padding: 12px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.momentum-strip span::after {
+  content: "";
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  z-index: 1;
+  width: 13px;
+  height: 2px;
+  background: var(--amber);
+  transform: translateY(-50%);
+}
+
+.momentum-strip span:last-child::after {
+  display: none;
+}
+
 .section-heading {
   display: flex;
   align-items: end;
@@ -497,7 +643,7 @@ main > section {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
-  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
 }
 
 .metric-card {
@@ -547,7 +693,7 @@ main > section {
   margin-bottom: 18px;
   place-items: center;
   border-radius: var(--radius);
-  background: rgba(13, 123, 123, 0.14);
+  background: rgba(20, 121, 255, 0.12);
   color: var(--teal-strong);
 }
 
@@ -594,9 +740,9 @@ main > section {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background:
-    linear-gradient(180deg, rgba(13, 123, 123, 0.06), rgba(201, 129, 40, 0.04)),
+    linear-gradient(180deg, rgba(20, 121, 255, 0.06), rgba(200, 137, 34, 0.04)),
     var(--surface);
-  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
 }
 
 .review-route span {
@@ -643,7 +789,7 @@ main > section {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
-  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
 }
 
 .ability-card svg {
@@ -668,9 +814,28 @@ main > section {
   line-height: 1.65;
 }
 
+.ability-card.accent-card {
+  grid-column: 1 / -1;
+  grid-template-columns: 48px minmax(0, 0.42fr) minmax(0, 0.58fr);
+  gap: 18px;
+  align-items: center;
+  min-height: auto;
+  background:
+    linear-gradient(135deg, rgba(20, 121, 255, 0.1), rgba(15, 159, 143, 0.06) 55%, rgba(200, 137, 34, 0.08)),
+    var(--surface);
+}
+
+.ability-card.accent-card svg {
+  margin: 0;
+}
+
+.ability-card.accent-card p {
+  margin: 0;
+}
+
 .proof-path-card {
   background:
-    linear-gradient(180deg, rgba(13, 123, 123, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, rgba(20, 121, 255, 0.06), rgba(255, 255, 255, 0)),
     var(--surface);
 }
 
@@ -727,7 +892,13 @@ main > section {
 
 .keyword-skill-group {
   background:
-    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, rgba(20, 121, 255, 0.08), rgba(255, 255, 255, 0)),
+    var(--surface);
+}
+
+.operating-style-group {
+  background:
+    linear-gradient(180deg, rgba(15, 159, 143, 0.08), rgba(255, 255, 255, 0)),
     var(--surface);
 }
 
@@ -780,12 +951,12 @@ main > section {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
-  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
 }
 
 .decision-card.featured {
   background:
-    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, rgba(20, 121, 255, 0.08), rgba(255, 255, 255, 0)),
     var(--surface);
 }
 
@@ -963,7 +1134,7 @@ main > section {
 
 .python-lab-section {
   background:
-    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(201, 129, 40, 0.06)),
+    linear-gradient(180deg, rgba(20, 121, 255, 0.08), rgba(200, 137, 34, 0.06)),
     var(--surface-strong);
 }
 
@@ -1007,7 +1178,7 @@ main > section {
   min-height: 440px;
   padding: clamp(26px, 4vw, 42px);
   background:
-    linear-gradient(135deg, rgba(13, 123, 123, 0.12), rgba(201, 129, 40, 0.08) 54%, rgba(75, 127, 82, 0.08)),
+    linear-gradient(135deg, rgba(20, 121, 255, 0.12), rgba(200, 137, 34, 0.08) 54%, rgba(15, 159, 143, 0.08)),
     var(--surface);
 }
 
@@ -1296,7 +1467,7 @@ main > section {
 
 .automation-card.accent {
   background:
-    linear-gradient(180deg, rgba(13, 123, 123, 0.08), rgba(13, 123, 123, 0)),
+    linear-gradient(180deg, rgba(20, 121, 255, 0.08), rgba(20, 121, 255, 0)),
     var(--surface);
 }
 
@@ -1457,7 +1628,7 @@ main > section {
 
 .python-case-card.primary-case {
   background:
-    linear-gradient(180deg, rgba(13, 123, 123, 0.1), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, rgba(20, 121, 255, 0.1), rgba(255, 255, 255, 0)),
     var(--surface);
 }
 
@@ -1512,7 +1683,7 @@ main > section {
 
 .accent-memo {
   background:
-    linear-gradient(180deg, rgba(201, 129, 40, 0.08), rgba(13, 123, 123, 0.04)),
+    linear-gradient(180deg, rgba(200, 137, 34, 0.08), rgba(20, 121, 255, 0.04)),
     var(--surface);
 }
 
@@ -1582,6 +1753,40 @@ main > section {
   font-weight: 600;
 }
 
+.global-readiness-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.global-readiness-strip div {
+  min-height: 136px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(20, 121, 255, 0.06), rgba(15, 159, 143, 0.04)),
+    var(--surface);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+}
+
+.global-readiness-strip span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--amber);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.global-readiness-strip strong {
+  display: block;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
 .credential-strip {
   display: flex;
   align-items: center;
@@ -1613,7 +1818,8 @@ main > section {
 
 .contact-section {
   color: var(--hero-text);
-  background: #143936;
+  background:
+    linear-gradient(135deg, #0b1d36 0%, #102f53 58%, #123f48 100%);
 }
 
 .contact-section .section-kicker {
@@ -1868,7 +2074,7 @@ main > section {
 }
 
 .bridge-step.result {
-  background: rgba(13, 123, 123, 0.12);
+  background: rgba(20, 121, 255, 0.12);
 }
 
 .cash-panel {
@@ -1988,7 +2194,7 @@ main > section {
 }
 
 .cash-ladder .result {
-  background: rgba(13, 123, 123, 0.12);
+  background: rgba(20, 121, 255, 0.12);
 }
 
 code {
@@ -2017,12 +2223,16 @@ code {
 
   .hero-facts,
   .snapshot-panel,
+  .brand-layout,
+  .brand-principles,
+  .momentum-strip,
   .ability-grid,
   .proof-path-grid,
   .application-pack,
   .review-route,
   .decision-readout-strip,
   .experience-skills-layout,
+  .global-readiness-strip,
   .metric-grid,
   .case-grid,
   .decision-case-grid,
@@ -2068,6 +2278,24 @@ code {
   .model-map > div,
   .qa-grid article {
     min-height: auto;
+  }
+
+  .ability-card.accent-card {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .ability-card.accent-card svg {
+    margin-bottom: 18px;
+  }
+
+  .ability-card.accent-card p {
+    margin-top: 12px;
+  }
+
+  .momentum-strip span::after {
+    display: none;
   }
 }
 
@@ -2166,6 +2394,7 @@ code {
 
   .case-card,
   .ability-card,
+  .brand-principles article,
   .proof-path-card,
   .automation-card,
   .python-lab-main,
@@ -2175,7 +2404,8 @@ code {
   .lab-proof-item,
   .bi-product-body,
   .metric-card,
-  .skill-group {
+  .skill-group,
+  .global-readiness-strip div {
     padding: 20px;
   }
 
