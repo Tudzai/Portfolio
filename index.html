@@ -14,8 +14,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=fp-interactions-20260620" />
-    <link rel="stylesheet" href="styles.css?v=fp-interactions-20260620" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=fp-redesign-20260620d" />
+    <link rel="stylesheet" href="styles.css?v=fp-redesign-20260620d" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -65,29 +65,95 @@
         </picture>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-          <p class="eyebrow">Modern FP&amp;A Portfolio</p>
-          <h1 id="hero-title">Building reliable financial insights with energy, precision, and curiosity.</h1>
-          <p class="hero-copy">
-            I am a commercial FP&amp;A analyst on a senior-FP&amp;A trajectory, combining finance fundamentals,
-            Power BI, SQL, Python, and AI-assisted workflow thinking to help leaders make trusted decisions.
-          </p>
-          <div class="brand-thesis" aria-label="Personal brand statement">
-            <span>Trust builds the brand.</span>
-            <span>Insight builds the decision.</span>
-          </div>
-          <div class="hero-actions">
-            <a class="button primary" href="#proof">
-              <i data-lucide="route"></i>
-              Review in 5 minutes
-            </a>
-            <a class="button secondary" href="cv.html">
-              <i data-lucide="file-text"></i>
-              View CV
-            </a>
-            <a class="button secondary" href="mailto:truongtu293@gmail.com">
-              <i data-lucide="mail"></i>
-              Contact
-            </a>
+          <div class="hero-grid">
+            <div class="hero-body">
+              <p class="eyebrow">Modern FP&amp;A Portfolio</p>
+              <h1 id="hero-title">FP&amp;A that turns business questions into trusted decisions.</h1>
+              <p class="hero-copy">
+                I combine finance fundamentals, Power BI, SQL, Python, and AI-assisted workflow thinking to build
+                budget, forecast, variance, and cash insights leaders can actually use.
+              </p>
+              <div class="brand-thesis" aria-label="Personal brand statement">
+                <span>Trust builds the brand.</span>
+                <span>Insight builds the decision.</span>
+              </div>
+              <div class="hero-actions">
+                <a class="button primary" href="#proof">
+                  <i data-lucide="route"></i>
+                  Review in 5 minutes
+                </a>
+                <a class="button secondary" href="cv.html">
+                  <i data-lucide="file-text"></i>
+                  View CV
+                </a>
+                <a class="button secondary" href="mailto:truongtu293@gmail.com">
+                  <i data-lucide="mail"></i>
+                  Contact
+                </a>
+              </div>
+            </div>
+
+            <aside class="hero-command-card" data-command-center aria-label="Interactive FP&amp;A decision cockpit">
+              <div class="command-card-header">
+                <span>Decision cockpit</span>
+                <strong>What I help finance teams clarify</strong>
+              </div>
+              <div class="command-tabs" role="list" aria-label="Decision focus areas">
+                <button
+                  class="command-tab is-active"
+                  type="button"
+                  data-title="Budget control"
+                  data-kpi="Plan vs actual"
+                  data-copy="Translate annual targets into branch, department, and customer-level guardrails so leaders know where the gap is forming."
+                  aria-pressed="true"
+                >
+                  Budget
+                </button>
+                <button
+                  class="command-tab"
+                  type="button"
+                  data-title="Driver forecast"
+                  data-kpi="Base / Bull / Bear"
+                  data-copy="Connect revenue, margin, headcount, direct cost, and cash assumptions into scenarios that make trade-offs visible."
+                  aria-pressed="false"
+                >
+                  Forecast
+                </button>
+                <button
+                  class="command-tab"
+                  type="button"
+                  data-title="Cash focus"
+                  data-kpi="DSO / AR risk"
+                  data-copy="Turn overdue AR, credit exposure, and collection timing into working-capital actions that non-finance teams can follow."
+                  aria-pressed="false"
+                >
+                  Cash
+                </button>
+                <button
+                  class="command-tab"
+                  type="button"
+                  data-title="Automation loop"
+                  data-kpi="Less manual close"
+                  data-copy="Use Power BI, Python, SQL, and AI-assisted checks to make recurring reporting faster, cleaner, and easier to review."
+                  aria-pressed="false"
+                >
+                  Automate
+                </button>
+              </div>
+              <div class="command-readout" aria-live="polite">
+                <span data-command-kpi>Plan vs actual</span>
+                <h2 data-command-title>Budget control</h2>
+                <p data-command-copy>
+                  Translate annual targets into branch, department, and customer-level guardrails so leaders know where
+                  the gap is forming.
+                </p>
+              </div>
+              <div class="command-metrics" aria-label="Portfolio proof points">
+                <div><span>3-year</span><p>operating data review</p></div>
+                <div><span>6.4%</span><p>forecast MAPE sample</p></div>
+                <div><span>Power BI</span><p>DAX + model QA</p></div>
+              </div>
+            </aside>
           </div>
           <dl class="hero-facts" aria-label="Profile highlights">
             <div>
@@ -837,6 +903,6 @@ python src/run_pipeline.py</code></pre>
     </footer>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="script.js?v=fp-interactions-20260620"></script>
+    <script src="script.js?v=fp-redesign-20260620d"></script>
   </body>
 </html>

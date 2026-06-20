@@ -6,6 +6,7 @@ const themeToggle = document.querySelector("[data-theme-toggle]");
 const copyButtons = document.querySelectorAll("[data-copy]");
 const internalLinks = document.querySelectorAll('a[href^="#"]');
 const momentumFlow = document.querySelector("[data-momentum-flow]");
+const commandCenter = document.querySelector("[data-command-center]");
 const forceSolidHeader = document.body.classList.contains("detail-page");
 
 const savedTheme = localStorage.getItem("portfolio-theme");
@@ -123,8 +124,34 @@ if (momentumFlow) {
   });
 }
 
+if (commandCenter) {
+  const tabs = commandCenter.querySelectorAll(".command-tab");
+  const title = commandCenter.querySelector("[data-command-title]");
+  const kpi = commandCenter.querySelector("[data-command-kpi]");
+  const copy = commandCenter.querySelector("[data-command-copy]");
+
+  function activateCommandTab(activeTab) {
+    tabs.forEach((tab) => {
+      const isActive = tab === activeTab;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-pressed", String(isActive));
+    });
+
+    title.textContent = activeTab.dataset.title || "";
+    kpi.textContent = activeTab.dataset.kpi || "";
+    copy.textContent = activeTab.dataset.copy || "";
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activateCommandTab(tab));
+    tab.addEventListener("mouseenter", () => activateCommandTab(tab));
+    tab.addEventListener("focus", () => activateCommandTab(tab));
+  });
+}
+
 const revealItems = document.querySelectorAll(
   [
+    ".hero-command-card",
     ".brand-principles article",
     ".ability-card",
     ".proof-path-card",
