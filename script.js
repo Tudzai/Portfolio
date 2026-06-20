@@ -21,6 +21,7 @@ const welcomeCloseTriggers = document.querySelectorAll("[data-welcome-close]");
 const hero = document.querySelector(".hero");
 const forceSolidHeader = document.body.classList.contains("detail-page");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const welcomePendingClass = "welcome-pending";
 
 const savedTheme = localStorage.getItem("portfolio-theme");
 if (savedTheme) {
@@ -71,9 +72,16 @@ function writeSessionFlag(key, value) {
 if (welcomeGate) {
   const welcomeSeenKey = "portfolio-welcome-seen";
   const forceWelcomeGate = new URLSearchParams(window.location.search).get("welcome") === "1";
+  const shouldShowWelcome =
+    !forceSolidHeader && !window.location.hash && (forceWelcomeGate || readSessionFlag(welcomeSeenKey) !== "true");
+
+  function revealPortfolio() {
+    document.body.classList.remove(welcomePendingClass);
+  }
 
   function closeWelcomeGate() {
     if (welcomeGate.hidden) return;
+    revealPortfolio();
     welcomeGate.classList.remove("is-open");
     welcomeGate.classList.add("is-leaving");
     document.body.classList.remove("welcome-active");
@@ -106,9 +114,13 @@ if (welcomeGate) {
     }
   });
 
-  if (!forceSolidHeader && !window.location.hash && (forceWelcomeGate || readSessionFlag(welcomeSeenKey) !== "true")) {
-    window.setTimeout(showWelcomeGate, 260);
+  if (shouldShowWelcome) {
+    showWelcomeGate();
+  } else {
+    revealPortfolio();
   }
+} else {
+  document.body.classList.remove(welcomePendingClass);
 }
 
 window.addEventListener("scroll", updateHeaderState, { passive: true });
