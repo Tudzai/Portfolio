@@ -473,9 +473,9 @@ textarea {
 
 .hero {
   position: relative;
-  min-height: 76vh;
+  min-height: clamp(680px, 82vh, 900px);
   display: grid;
-  align-items: end;
+  align-items: center;
   overflow: hidden;
   color: var(--hero-text);
 }
@@ -634,7 +634,7 @@ textarea {
   z-index: 4;
   width: min(var(--max-width), calc(100% - 40px));
   margin: 0 auto;
-  padding: 104px 0 24px;
+  padding: 92px 0 34px;
   will-change: transform;
 }
 
@@ -642,7 +642,7 @@ textarea {
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.58fr);
   gap: clamp(28px, 5vw, 72px);
-  align-items: end;
+  align-items: center;
 }
 
 .hero-body {
@@ -696,6 +696,54 @@ textarea {
   color: rgba(248, 251, 255, 0.9);
   font-size: 0.92rem;
   font-weight: 800;
+}
+
+.tdat-signal {
+  position: relative;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin-top: 14px;
+  padding: 9px 11px;
+  overflow: hidden;
+  border: 1px solid rgba(248, 251, 255, 0.2);
+  border-radius: var(--radius);
+  background: rgba(6, 18, 35, 0.36);
+  color: rgba(248, 251, 255, 0.88);
+  font-size: 0.82rem;
+  font-weight: 850;
+  line-height: 1.25;
+  backdrop-filter: blur(12px);
+}
+
+.tdat-signal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(93, 215, 199, 0.16), transparent);
+  transform: translateX(-110%);
+}
+
+.tdat-signal span,
+.tdat-signal strong,
+.tdat-signal i {
+  position: relative;
+}
+
+.tdat-signal span {
+  color: #f4bd66;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tdat-signal i {
+  width: 42px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal), var(--green), var(--amber));
 }
 
 .hero-command-card {
@@ -2991,6 +3039,17 @@ code {
   }
 }
 
+@keyframes tdatSweep {
+  0%,
+  18% {
+    transform: translateX(-110%);
+  }
+  56%,
+  100% {
+    transform: translateX(110%);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .shape-a {
     animation: floatPanelA 13s ease-in-out infinite;
@@ -3010,6 +3069,10 @@ code {
 
   .hero-scroll-indicator {
     animation: scrollCueBounce 2.1s ease-in-out infinite;
+  }
+
+  .tdat-signal::before {
+    animation: tdatSweep 5.4s ease-in-out infinite;
   }
 
   [data-reveal] {
@@ -3075,11 +3138,11 @@ code {
   }
 
   .hero {
-    min-height: clamp(780px, 74vh, 940px);
+    min-height: clamp(700px, 76vh, 900px);
   }
 
   .hero-content {
-    padding-top: 118px;
+    padding-top: 92px;
     padding-bottom: 34px;
   }
 
@@ -3156,7 +3219,7 @@ code {
   }
 
   .hero {
-    min-height: clamp(820px, 70vh, 980px);
+    min-height: clamp(740px, 68vh, 940px);
   }
 
   .hero-grid {
@@ -3461,6 +3524,19 @@ code {
   .hero h1 {
     font-size: clamp(2rem, 9vw, 2.55rem);
     line-height: 1.06;
+  }
+
+  .tdat-signal {
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    text-align: center;
+  }
+
+  .tdat-signal i {
+    flex: 1 1 42px;
+    max-width: 64px;
   }
 
   .eyebrow {

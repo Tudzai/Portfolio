@@ -1,3 +1,12 @@
+const officialPortfolioUrl = "https://tudzai.github.io/Portfolio/";
+
+if (
+  window.location.hostname === "tudzai.github.io" &&
+  window.location.pathname.startsWith("/Portfolio/https://tudzai.github.io/Portfolio")
+) {
+  window.location.replace(`${officialPortfolioUrl}${window.location.search}${window.location.hash}`);
+}
+
 const root = document.documentElement;
 const header = document.querySelector("[data-header]");
 const menuToggle = document.querySelector("[data-menu-toggle]");
@@ -151,6 +160,7 @@ const heroEntranceElements = hero
         "h1",
         ".hero-copy",
         ".brand-thesis span",
+        ".tdat-signal",
         ".hero-actions .button",
         ".hero-command-card",
         ".hero-facts div",
@@ -176,6 +186,7 @@ if (hero && window.gsap && !prefersReducedMotion) {
     .to(".hero h1", { opacity: 1, y: 0, duration: 0.8 }, "-=0.25")
     .to(".hero-copy", { opacity: 1, y: 0, duration: 0.58 }, "-=0.48")
     .to(".brand-thesis span", { opacity: 1, y: 0, duration: 0.42, stagger: 0.06 }, "-=0.34")
+    .to(".tdat-signal", { opacity: 1, y: 0, duration: 0.42 }, "-=0.28")
     .to(".hero-actions .button", { opacity: 1, y: 0, duration: 0.42, stagger: 0.08 }, "-=0.28")
     .to(".hero-command-card", { opacity: 1, y: 0, duration: 0.62 }, "-=0.52")
     .to(".hero-facts div", { opacity: 1, y: 0, duration: 0.42, stagger: 0.08 }, "-=0.3")
@@ -187,13 +198,11 @@ if (hero && window.gsap && !prefersReducedMotion) {
       const x = (event.clientX / window.innerWidth - 0.5) * 2;
       const y = (event.clientY / window.innerHeight - 0.5) * 2;
 
-      window.gsap.to(".hero-shapes-back", { x: x * 42, y: y * 20, duration: 0.8, overwrite: true });
-      window.gsap.to(".hero-shapes-mid", { x: x * 20, y: y * 10, duration: 0.8, overwrite: true });
       window.gsap.to(".hero-content", { x: x * 5, y: y * 3, duration: 0.8, overwrite: true });
     });
 
     hero.addEventListener("mouseleave", () => {
-      window.gsap.to([".hero-shapes-back", ".hero-shapes-mid", ".hero-content"], {
+      window.gsap.to(".hero-content", {
         x: 0,
         y: 0,
         duration: 0.8,
@@ -359,8 +368,6 @@ if (revealItems.length) {
     window.gsap.set(revealItems, {
       opacity: 0,
       y: 55,
-      rotateX: 10,
-      transformPerspective: 900,
     });
 
     window.ScrollTrigger.batch(revealItems, {
@@ -370,7 +377,6 @@ if (revealItems.length) {
         window.gsap.to(batch, {
           opacity: 1,
           y: 0,
-          rotateX: 0,
           duration: 0.72,
           stagger: 0.08,
           ease: "power2.out",
