@@ -5,6 +5,7 @@ const mobileNav = document.querySelector("[data-mobile-nav]");
 const themeToggle = document.querySelector("[data-theme-toggle]");
 const copyButtons = document.querySelectorAll("[data-copy]");
 const internalLinks = document.querySelectorAll('a[href^="#"]');
+const momentumFlow = document.querySelector("[data-momentum-flow]");
 const forceSolidHeader = document.body.classList.contains("detail-page");
 
 const savedTheme = localStorage.getItem("portfolio-theme");
@@ -96,5 +97,73 @@ copyButtons.forEach((button) => {
     }
   });
 });
+
+if (momentumFlow) {
+  const steps = momentumFlow.querySelectorAll(".momentum-step");
+  const title = momentumFlow.querySelector("[data-momentum-title]");
+  const metric = momentumFlow.querySelector("[data-momentum-metric]");
+  const copy = momentumFlow.querySelector("[data-momentum-copy]");
+
+  function activateMomentumStep(activeStep) {
+    steps.forEach((step) => {
+      const isActive = step === activeStep;
+      step.classList.toggle("is-active", isActive);
+      step.setAttribute("aria-pressed", String(isActive));
+    });
+
+    title.textContent = activeStep.dataset.title || "";
+    metric.textContent = activeStep.dataset.metric || "";
+    copy.textContent = activeStep.dataset.copy || "";
+  }
+
+  steps.forEach((step) => {
+    step.addEventListener("click", () => activateMomentumStep(step));
+    step.addEventListener("mouseenter", () => activateMomentumStep(step));
+    step.addEventListener("focus", () => activateMomentumStep(step));
+  });
+}
+
+const revealItems = document.querySelectorAll(
+  [
+    ".brand-principles article",
+    ".ability-card",
+    ".proof-path-card",
+    ".decision-card",
+    ".bi-product-card",
+    ".process-main",
+    ".process-proof",
+    ".python-lab-main",
+    ".python-code-card",
+    ".timeline",
+    ".skill-group",
+    ".global-readiness-strip div",
+  ].join(", ")
+);
+
+if (revealItems.length) {
+  if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-revealed");
+          window.setTimeout(() => {
+            entry.target.style.transitionDelay = "";
+          }, 700);
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    revealItems.forEach((item, index) => {
+      item.dataset.reveal = "";
+      item.style.transitionDelay = `${Math.min(index % 6, 5) * 45}ms`;
+      revealObserver.observe(item);
+    });
+  } else {
+    revealItems.forEach((item) => item.classList.add("is-revealed"));
+  }
+}
 
 window.lucide?.createIcons();

@@ -14,13 +14,15 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=fp-interactions-20260620" />
+    <link rel="stylesheet" href="styles.css?v=fp-interactions-20260620" />
   </head>
   <body>
     <header class="site-header" data-header>
       <a class="brand" href="#top" aria-label="Go to top">
-        <span class="brand-mark">TA</span>
+        <span class="brand-mark" aria-hidden="true">
+          <i data-lucide="chart-no-axes-combined"></i>
+        </span>
         <span>Truong Dinh Anh Tu</span>
       </a>
 
@@ -173,13 +175,82 @@
             </article>
           </div>
         </div>
-        <div class="section-inner momentum-strip" aria-label="Momentum path">
-          <span>Question</span>
-          <span>Model</span>
-          <span>Explain</span>
-          <span>Align</span>
-          <span>Automate</span>
-          <span>Improve</span>
+        <div class="section-inner momentum-flow" data-momentum-flow aria-label="Interactive FP&amp;A operating loop">
+          <div class="momentum-track" role="list" aria-label="FP&amp;A operating loop steps">
+            <button
+              class="momentum-step is-active"
+              type="button"
+              data-title="Question"
+              data-copy="Start with the management decision: target gap, margin risk, cash pressure, or workflow friction."
+              data-metric="Decision first"
+              aria-pressed="true"
+            >
+              <span>01</span>
+              Question
+            </button>
+            <button
+              class="momentum-step"
+              type="button"
+              data-title="Model"
+              data-copy="Translate the question into drivers across budget, forecast, customer mix, margin, headcount, and cash."
+              data-metric="Driver logic"
+              aria-pressed="false"
+            >
+              <span>02</span>
+              Model
+            </button>
+            <button
+              class="momentum-step"
+              type="button"
+              data-title="Explain"
+              data-copy="Turn variance into a plain-language story: what moved, why it moved, who owns it, and what changes next."
+              data-metric="Variance story"
+              aria-pressed="false"
+            >
+              <span>03</span>
+              Explain
+            </button>
+            <button
+              class="momentum-step"
+              type="button"
+              data-title="Align"
+              data-copy="Use finance, sales, operations, and leadership input to make the recommendation usable, not just analytical."
+              data-metric="People-first"
+              aria-pressed="false"
+            >
+              <span>04</span>
+              Align
+            </button>
+            <button
+              class="momentum-step"
+              type="button"
+              data-title="Automate"
+              data-copy="Automate repeatable reporting steps with Power BI, Python, SQL, and AI-assisted checks where control improves."
+              data-metric="Repeatable flow"
+              aria-pressed="false"
+            >
+              <span>05</span>
+              Automate
+            </button>
+            <button
+              class="momentum-step"
+              type="button"
+              data-title="Improve"
+              data-copy="Close the loop with QA, lessons learned, and cleaner next-cycle reporting so the process compounds."
+              data-metric="Better next cycle"
+              aria-pressed="false"
+            >
+              <span>06</span>
+              Improve
+            </button>
+          </div>
+          <article class="momentum-detail" aria-live="polite">
+            <span data-momentum-metric>Decision first</span>
+            <h3 data-momentum-title>Question</h3>
+            <p data-momentum-copy>
+              Start with the management decision: target gap, margin risk, cash pressure, or workflow friction.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -766,6 +837,6 @@ python src/run_pipeline.py</code></pre>
     </footer>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=fp-interactions-20260620"></script>
   </body>
 </html>
