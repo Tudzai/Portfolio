@@ -2,20 +2,16 @@
   <defs>
     <linearGradient id="bg" x1="8" y1="58" x2="56" y2="6" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0b1220"/>
-      <stop offset="0.68" stop-color="#123f48"/>
-      <stop offset="1" stop-color="#1479ff"/>
+      <stop offset="1" stop-color="#123f48"/>
     </linearGradient>
-    <linearGradient id="pulse" x1="10" y1="50" x2="54" y2="43" gradientUnits="userSpaceOnUse">
+    <linearGradient id="accent" x1="12" y1="50" x2="52" y2="43" gradientUnits="userSpaceOnUse">
       <stop stop-color="#6ab8ff"/>
-      <stop offset="0.55" stop-color="#0f9f8f"/>
-      <stop offset="1" stop-color="#f3b65f"/>
+      <stop offset="1" stop-color="#5dd7c7"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="14" fill="url(#bg)"/>
-  <rect x="5.5" y="5.5" width="53" height="53" rx="11" fill="none" stroke="#eaf6ff" stroke-opacity="0.16" stroke-width="2"/>
-  <path d="M10 49L21.8 16H29.3L41 49H32.9L30.8 42.8H20.3L18.2 49H10Z" fill="#ffffff"/>
-  <path d="M22.5 36.2H28.7L25.6 26.8L22.5 36.2Z" fill="#123f48"/>
-  <path d="M37 16H55V23.3H49.9V49H42.1V23.3H37V16Z" fill="#f8fbff"/>
-  <path d="M12 51C22.5 47 35 49 52 40" fill="none" stroke="url(#pulse)" stroke-width="3.4" stroke-linecap="round"/>
-  <circle cx="52" cy="40" r="3.6" fill="#f3b65f"/>
+  <rect x="5.5" y="5.5" width="53" height="53" rx="11" fill="none" stroke="#f8fbff" stroke-opacity="0.16" stroke-width="2"/>
+  <text x="8" y="43" fill="#f8fbff" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900">AT</text>
+  <path d="M12 50C22 46 35 48 52 41" fill="none" stroke="url(#accent)" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="52" cy="41" r="3.2" fill="#f3b65f"/>
 </svg>

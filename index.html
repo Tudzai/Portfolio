@@ -14,8 +14,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-clean-mark-20260620" />
-    <link rel="stylesheet" href="styles.css?v=welcome-pulse-20260620" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-minimal-mark-20260620" />
+    <link rel="stylesheet" href="styles.css?v=minimal-welcome-20260620" />
   </head>
   <body>
     <div
@@ -28,33 +28,27 @@
       hidden
     >
       <div class="welcome-card">
-        <div class="welcome-card-glow" aria-hidden="true"></div>
-        <div class="welcome-badge">
-          <span>AT</span>
-          <strong>FP&amp;A pulse check</strong>
+        <div class="welcome-visual" aria-hidden="true">
+          <span class="welcome-mark">AT</span>
+          <svg class="welcome-line" viewBox="0 0 160 78" role="img">
+            <path d="M8 58C30 49 48 56 70 38C92 20 113 31 152 12" />
+            <circle cx="152" cy="12" r="5" />
+          </svg>
         </div>
-        <h2 id="welcome-title">Hi, I'm Tu.</h2>
+        <p class="welcome-kicker">Modern FP&amp;A Portfolio</p>
+        <h2 id="welcome-title">Hi, I'm Trương Đình Anh Tú.</h2>
         <p id="welcome-copy">
-          Quick scan before you enter: I turn budget, forecast, cash, and workflow questions into cleaner decisions.
+          FP&amp;A Analyst building trusted financial insight with energy, precision, and curiosity.
         </p>
-        <div class="welcome-pulse" data-welcome-pulse aria-label="Interactive finance pulse">
-          <div class="welcome-pulse-steps" role="list">
-            <button class="is-active" type="button" data-pulse-step="budget" aria-pressed="true">Budget</button>
-            <button type="button" data-pulse-step="forecast" aria-pressed="false">Forecast</button>
-            <button type="button" data-pulse-step="cash" aria-pressed="false">Cash</button>
-            <button type="button" data-pulse-step="improve" aria-pressed="false">Improve</button>
-          </div>
-          <p data-pulse-copy>Budget check: targets, owners, and variance guardrails are lined up.</p>
-          <div class="welcome-pulse-meter" aria-hidden="true"><span data-pulse-meter></span></div>
-        </div>
+        <p class="welcome-signoff">Nice to meet you.</p>
         <div class="welcome-actions">
           <button class="button primary" type="button" data-welcome-close>
             <i data-lucide="sparkles"></i>
             Enter portfolio
           </button>
-          <a class="button quiet welcome-proof-link" href="#proof" data-welcome-close>
-            <i data-lucide="route"></i>
-            Review proof
+          <a class="button quiet welcome-proof-link" href="cv.html" data-welcome-close>
+            <i data-lucide="file-text"></i>
+            View CV
           </a>
         </div>
       </div>
@@ -1025,6 +1019,6 @@ python src/run_pipeline.py</code></pre>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=welcome-pulse-20260620"></script>
+    <script src="script.js?v=minimal-welcome-20260620"></script>
   </body>
 </html>

@@ -9,19 +9,9 @@ const commandCenter = document.querySelector("[data-command-center]");
 const fitLens = document.querySelector("[data-fit-lens]");
 const welcomeGate = document.querySelector("[data-welcome-gate]");
 const welcomeCloseTriggers = document.querySelectorAll("[data-welcome-close]");
-const welcomePulseButtons = document.querySelectorAll("[data-pulse-step]");
-const welcomePulseCopy = document.querySelector("[data-pulse-copy]");
-const welcomePulseMeter = document.querySelector("[data-pulse-meter]");
 const hero = document.querySelector(".hero");
 const forceSolidHeader = document.body.classList.contains("detail-page");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const pulseMessages = {
-  budget: "Budget check: targets, owners, and variance guardrails are lined up.",
-  forecast: "Forecast check: drivers, base/bull/bear logic, and decision trade-offs are visible.",
-  cash: "Cash check: DSO, AR risk, and collection timing are translated into action.",
-  improve: "Improve check: repeatable reporting steps are cleaner, faster, and easier to review.",
-};
-const pulseOrder = Object.keys(pulseMessages);
 
 const savedTheme = localStorage.getItem("portfolio-theme");
 if (savedTheme) {
@@ -69,32 +59,9 @@ function writeSessionFlag(key, value) {
   return true;
 }
 
-function activateWelcomePulse(stepName) {
-  const nextStep = pulseMessages[stepName] ? stepName : pulseOrder[0];
-  const activeIndex = Math.max(pulseOrder.indexOf(nextStep), 0);
-
-  welcomePulseButtons.forEach((button) => {
-    const isActive = button.dataset.pulseStep === nextStep;
-    button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-pressed", String(isActive));
-  });
-
-  if (welcomePulseCopy) {
-    welcomePulseCopy.textContent = pulseMessages[nextStep];
-  }
-
-  if (welcomePulseMeter) {
-    welcomePulseMeter.style.width = `${((activeIndex + 1) / pulseOrder.length) * 100}%`;
-  }
-}
-
 if (welcomeGate) {
   const welcomeSeenKey = "portfolio-welcome-seen";
   const forceWelcomeGate = new URLSearchParams(window.location.search).get("welcome") === "1";
-  let welcomePulseIndex = 0;
-  let welcomeWasTouched = false;
-  let welcomePulseInterval = null;
-  let welcomeAutoCloseTimer = null;
 
   function closeWelcomeGate() {
     if (welcomeGate.hidden) return;
@@ -102,8 +69,6 @@ if (welcomeGate) {
     welcomeGate.classList.add("is-leaving");
     document.body.classList.remove("welcome-active");
     writeSessionFlag(welcomeSeenKey, "true");
-    window.clearInterval(welcomePulseInterval);
-    window.clearTimeout(welcomeAutoCloseTimer);
 
     window.setTimeout(() => {
       welcomeGate.hidden = true;
@@ -114,36 +79,13 @@ if (welcomeGate) {
   function showWelcomeGate() {
     welcomeGate.hidden = false;
     document.body.classList.add("welcome-active");
-    activateWelcomePulse(pulseOrder[0]);
     const openGate = () => {
       welcomeGate.classList.add("is-open");
       welcomeCloseTriggers[0]?.focus({ preventScroll: true });
     };
     window.requestAnimationFrame(openGate);
     window.setTimeout(openGate, 32);
-
-    if (!prefersReducedMotion) {
-      welcomePulseInterval = window.setInterval(() => {
-        if (welcomeWasTouched) return;
-        welcomePulseIndex = (welcomePulseIndex + 1) % pulseOrder.length;
-        activateWelcomePulse(pulseOrder[welcomePulseIndex]);
-      }, 1180);
-
-      if (!forceWelcomeGate) {
-        welcomeAutoCloseTimer = window.setTimeout(() => {
-          if (!welcomeWasTouched) closeWelcomeGate();
-        }, 7600);
-      }
-    }
   }
-
-  welcomePulseButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      welcomeWasTouched = true;
-      welcomePulseIndex = Math.max(pulseOrder.indexOf(button.dataset.pulseStep), 0);
-      activateWelcomePulse(button.dataset.pulseStep);
-    });
-  });
 
   welcomeCloseTriggers.forEach((trigger) => {
     trigger.addEventListener("click", closeWelcomeGate);
