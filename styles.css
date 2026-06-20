@@ -435,8 +435,11 @@ textarea {
   grid-column: 2;
   grid-row: 1 / span 2;
   display: grid;
+  grid-template-rows: auto auto;
+  gap: 16px;
+  align-content: center;
+  justify-items: center;
   min-height: 290px;
-  place-items: center;
   will-change: opacity, transform;
 }
 
@@ -526,9 +529,7 @@ textarea {
 }
 
 .welcome-signal {
-  position: absolute;
-  left: 50%;
-  bottom: 8%;
+  position: relative;
   z-index: 2;
   width: 156px;
   height: 46px;
@@ -539,7 +540,7 @@ textarea {
     linear-gradient(180deg, rgba(248, 251, 255, 0.07), rgba(248, 251, 255, 0.018)),
     rgba(8, 21, 37, 0.34);
   opacity: 0.74;
-  transform: translateX(-50%);
+  transform: none;
   backdrop-filter: blur(7px);
 }
 
@@ -3541,7 +3542,7 @@ code {
 @keyframes welcomeButtonReveal {
   0% {
     opacity: 0;
-    transform: translate3d(0, 12px, 0) scale(0.985);
+    transform: translate3d(0, 7px, 0) scale(0.992);
   }
   100% {
     opacity: 1;
@@ -3574,22 +3575,22 @@ code {
 @keyframes welcomeSignalLift {
   0% {
     opacity: 0;
-    transform: translate3d(-50%, 8px, 0) scale(0.96);
+    transform: translate3d(0, 8px, 0) scale(0.96);
   }
   100% {
     opacity: 1;
-    transform: translate3d(-50%, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 @keyframes welcomeSignalLiftSoft {
   0% {
     opacity: 0;
-    transform: translate3d(-50%, 8px, 0) scale(0.96);
+    transform: translate3d(0, 8px, 0) scale(0.96);
   }
   100% {
     opacity: 0.66;
-    transform: translate3d(-50%, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -3791,7 +3792,7 @@ code {
 
   .welcome-actions .button {
     opacity: 0;
-    transform: translate3d(0, 12px, 0) scale(0.985);
+    transform: translate3d(0, 7px, 0) scale(0.992);
     will-change: opacity, transform;
   }
 
@@ -3812,15 +3813,15 @@ code {
   }
 
   .welcome-gate.is-open .welcome-actions .button {
-    animation: welcomeButtonReveal 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: welcomeButtonReveal 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .welcome-gate.is-open .welcome-actions .button:first-child {
-    animation-delay: 1580ms;
+    animation-delay: 1180ms;
   }
 
   .welcome-gate.is-open .welcome-actions .button:nth-child(2) {
-    animation-delay: 1720ms;
+    animation-delay: 1250ms;
   }
 
   .welcome-gate.is-open .welcome-visual {
@@ -3829,7 +3830,7 @@ code {
 
   .welcome-signal {
     opacity: 0;
-    transform: translate3d(-50%, 8px, 0) scale(0.96);
+    transform: translate3d(0, 8px, 0) scale(0.96);
   }
 
   .welcome-gate.is-open .welcome-signal {
@@ -4341,16 +4342,35 @@ code {
   .welcome-actions {
     grid-column: 1 / -1;
     grid-row: 2;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
     width: 100%;
-    gap: 8px;
+    gap: 10px;
     margin-top: 0;
+  }
+
+  .welcome-actions .button {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    min-height: 50px;
+    padding: 12px 10px;
+    gap: 7px;
+    font-size: clamp(0.86rem, 3.6vw, 1rem);
+    white-space: nowrap;
+  }
+
+  .welcome-actions .button svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
   }
 
   .welcome-visual {
     grid-column: 2;
     grid-row: 1;
     min-height: 238px;
+    gap: 14px;
   }
 
   .welcome-orbit {
@@ -4358,9 +4378,9 @@ code {
   }
 
   .welcome-mark {
-    width: 70px;
-    height: 70px;
-    font-size: 1.68rem;
+    width: min(54px, 13.8vw);
+    height: min(54px, 13.8vw);
+    font-size: min(1.28rem, 5.2vw);
     box-shadow:
       0 18px 42px rgba(0, 0, 0, 0.24),
       0 0 0 1px rgba(248, 251, 255, 0.1),
@@ -4368,7 +4388,6 @@ code {
   }
 
   .welcome-signal {
-    bottom: 6%;
     width: min(106px, 28vw);
     height: 32px;
     padding: 4px 5px;
@@ -4638,6 +4657,20 @@ code {
   }
 }
 
+@media (max-width: 340px) {
+  .welcome-actions .button {
+    padding-right: 7px;
+    padding-left: 7px;
+    gap: 5px;
+    font-size: 0.8rem;
+  }
+
+  .welcome-actions .button svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .welcome-gate.is-open::before,
   .welcome-gate.is-open::after,
@@ -4661,7 +4694,7 @@ code {
   }
 
   .welcome-signal {
-    transform: translateX(-50%);
+    transform: none;
   }
 
   .forecast-runner {
