@@ -119,6 +119,10 @@ textarea {
   transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.welcome-gate:focus {
+  outline: 0;
+}
+
 .welcome-gate::before,
 .welcome-gate::after {
   content: "";
@@ -3534,6 +3538,17 @@ code {
   }
 }
 
+@keyframes welcomeButtonReveal {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @keyframes welcomeMarkReveal {
   0% {
     opacity: 0;
@@ -3764,10 +3779,20 @@ code {
   .welcome-kicker,
   .welcome-card h2,
   .welcome-role,
-  #welcome-copy,
-  .welcome-actions {
+  #welcome-copy {
     opacity: 0;
     transform: translate3d(0, 8px, 0);
+  }
+
+  .welcome-actions {
+    opacity: 1;
+    transform: none;
+  }
+
+  .welcome-actions .button {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+    will-change: opacity, transform;
   }
 
   .welcome-gate.is-open .welcome-kicker {
@@ -3786,8 +3811,16 @@ code {
     animation: welcomeFineReveal 680ms cubic-bezier(0.16, 1, 0.3, 1) 920ms both;
   }
 
-  .welcome-gate.is-open .welcome-actions {
-    animation: welcomeFineReveal 680ms cubic-bezier(0.16, 1, 0.3, 1) 1580ms both;
+  .welcome-gate.is-open .welcome-actions .button {
+    animation: welcomeButtonReveal 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .welcome-gate.is-open .welcome-actions .button:first-child {
+    animation-delay: 1580ms;
+  }
+
+  .welcome-gate.is-open .welcome-actions .button:nth-child(2) {
+    animation-delay: 1720ms;
   }
 
   .welcome-gate.is-open .welcome-visual {
@@ -4325,9 +4358,9 @@ code {
   }
 
   .welcome-mark {
-    width: 78px;
-    height: 78px;
-    font-size: 1.9rem;
+    width: 70px;
+    height: 70px;
+    font-size: 1.68rem;
     box-shadow:
       0 18px 42px rgba(0, 0, 0, 0.24),
       0 0 0 1px rgba(248, 251, 255, 0.1),

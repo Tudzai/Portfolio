@@ -98,7 +98,7 @@ if (welcomeGate) {
     document.body.classList.add("welcome-active");
     const openGate = () => {
       welcomeGate.classList.add("is-open");
-      welcomeCloseTriggers[0]?.focus({ preventScroll: true });
+      welcomeGate.focus({ preventScroll: true });
     };
     window.requestAnimationFrame(openGate);
     window.setTimeout(openGate, 32);
