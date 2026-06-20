@@ -116,7 +116,7 @@ textarea {
   color: var(--hero-text);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 320ms ease;
+  transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .welcome-gate[hidden] {
@@ -148,8 +148,9 @@ textarea {
     rgba(7, 17, 31, 0.76);
   box-shadow: 0 34px 100px rgba(0, 0, 0, 0.38);
   backdrop-filter: blur(20px);
-  transform: translateY(18px) scale(0.98);
-  transition: transform 360ms ease;
+  transform: translate3d(0, 18px, 0) scale(0.98);
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .welcome-gate.is-open .welcome-card {
@@ -159,6 +160,7 @@ textarea {
 .welcome-intro {
   position: relative;
   min-width: 0;
+  will-change: opacity, transform;
 }
 
 .welcome-kicker {
@@ -366,12 +368,14 @@ textarea {
   display: grid;
   min-height: 290px;
   place-items: center;
+  will-change: opacity, transform;
 }
 
 .welcome-orbit {
   position: relative;
   width: min(280px, 62vw);
   aspect-ratio: 1;
+  transform: translateZ(0);
 }
 
 .orbit-ring,
@@ -444,6 +448,7 @@ textarea {
   line-height: 1;
   box-shadow: 0 22px 52px rgba(0, 0, 0, 0.24);
   transform: translate(-50%, -50%);
+  will-change: transform;
 }
 
 .welcome-signal {
@@ -470,11 +475,23 @@ textarea {
 }
 
 .forecast-grid,
+.forecast-area,
+.forecast-muted,
+.forecast-line {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.forecast-grid,
 .forecast-muted,
 .forecast-line {
   fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+}
+
+.forecast-area {
+  fill: url("#welcome-forecast-fill");
+  opacity: 0.82;
+  stroke: none;
 }
 
 .forecast-grid {
@@ -490,14 +507,27 @@ textarea {
 .forecast-line {
   stroke: #8de1d6;
   stroke-width: 4;
-  stroke-dasharray: 170;
+  stroke-dasharray: 1;
   stroke-dashoffset: 0;
   filter: drop-shadow(0 0 10px rgba(93, 215, 199, 0.32));
+  will-change: opacity, stroke-dashoffset, filter;
 }
 
-.forecast-dot {
+.forecast-dot,
+.forecast-runner {
   stroke: rgba(8, 21, 37, 0.84);
   stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+.forecast-runner {
+  fill: #f8fbff;
+  opacity: 0;
+  stroke: #f4bd66;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 9px rgba(244, 189, 102, 0.54));
 }
 
 .dot-one,
@@ -3350,19 +3380,118 @@ code {
   }
 }
 
-@keyframes welcomeForecastFlow {
+@keyframes welcomeLayerIn {
   0% {
-    stroke-dashoffset: 170;
-    opacity: 0.42;
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    filter: blur(4px);
   }
-  42%,
-  72% {
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+@keyframes welcomeVisualIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(12px, 8px, 0) scale(0.97);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes welcomeSignalLift {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, 8px, 0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+@keyframes welcomeForecastDraw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0.16;
+  }
+  100% {
     stroke-dashoffset: 0;
     opacity: 1;
   }
+}
+
+@keyframes welcomeForecastBreathe {
+  0%,
   100% {
-    stroke-dashoffset: -170;
-    opacity: 0.62;
+    opacity: 0.88;
+    filter: drop-shadow(0 0 8px rgba(93, 215, 199, 0.28));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 13px rgba(93, 215, 199, 0.42));
+  }
+}
+
+@keyframes welcomeForecastAreaIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 0.82;
+    transform: translateY(0);
+  }
+}
+
+@keyframes welcomeForecastDotIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.62);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes welcomeForecastDotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes welcomeForecastRunner {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.82);
+  }
+  12% {
+    opacity: 0.95;
+  }
+  34% {
+    transform: translate3d(48px, -8px, 0) scale(1);
+  }
+  68% {
+    transform: translate3d(96px, -19px, 0) scale(1);
+  }
+  88% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(128px, -29px, 0) scale(0.9);
   }
 }
 
@@ -3412,15 +3541,74 @@ code {
   }
 
   .orbit-ring {
-    animation: welcomeOrbitSpin 22s linear infinite;
+    animation: welcomeOrbitSpin 26s linear infinite;
   }
 
   .welcome-mark {
-    animation: welcomeMarkFloat 5.8s ease-in-out infinite;
+    animation: welcomeMarkFloat 6.4s ease-in-out infinite;
   }
 
-  .forecast-line {
-    animation: welcomeForecastFlow 4.8s ease-in-out infinite;
+  .welcome-intro {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  .welcome-visual {
+    opacity: 0;
+    transform: translate3d(12px, 8px, 0) scale(0.97);
+  }
+
+  .welcome-gate.is-open .welcome-intro {
+    animation: welcomeLayerIn 520ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+  }
+
+  .welcome-gate.is-open .welcome-visual {
+    animation: welcomeVisualIn 580ms cubic-bezier(0.16, 1, 0.3, 1) 150ms both;
+  }
+
+  .welcome-signal {
+    opacity: 0;
+    transform: translate3d(-50%, 8px, 0) scale(0.96);
+  }
+
+  .welcome-gate.is-open .welcome-signal {
+    animation: welcomeSignalLift 520ms cubic-bezier(0.16, 1, 0.3, 1) 310ms both;
+  }
+
+  .welcome-gate.is-open .forecast-area {
+    animation: welcomeForecastAreaIn 560ms cubic-bezier(0.16, 1, 0.3, 1) 480ms both;
+  }
+
+  .welcome-gate.is-open .forecast-line {
+    animation:
+      welcomeForecastDraw 820ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both,
+      welcomeForecastBreathe 4.2s ease-in-out 1.35s infinite;
+  }
+
+  .welcome-gate.is-open .forecast-dot {
+    animation:
+      welcomeForecastDotIn 320ms cubic-bezier(0.16, 1, 0.3, 1) both,
+      welcomeForecastDotPulse 3.8s ease-in-out 1.4s infinite;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-one {
+    animation-delay: 640ms, 1.4s;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-two {
+    animation-delay: 740ms, 1.55s;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-three {
+    animation-delay: 840ms, 1.7s;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-four {
+    animation-delay: 940ms, 1.85s;
+  }
+
+  .welcome-gate.is-open .forecast-runner {
+    animation: welcomeForecastRunner 5.2s cubic-bezier(0.45, 0, 0.2, 1) 1.1s infinite;
   }
 
   .section-heading::after {
@@ -3815,6 +4003,7 @@ code {
     max-height: calc(100dvh - 32px);
     overflow-y: auto;
     padding: 20px;
+    transition-duration: 320ms;
   }
 
   .welcome-kicker {
@@ -3875,11 +4064,11 @@ code {
   }
 
   .welcome-visual {
-    min-height: 158px;
+    min-height: 164px;
   }
 
   .welcome-orbit {
-    width: 156px;
+    width: 164px;
   }
 
   .welcome-mark {
@@ -3890,9 +4079,78 @@ code {
 
   .welcome-signal {
     bottom: 8%;
-    width: 112px;
-    height: 40px;
+    width: 124px;
+    height: 42px;
     padding: 5px 6px;
+  }
+
+  .forecast-grid {
+    stroke-width: 0.85;
+  }
+
+  .forecast-muted {
+    stroke-width: 6;
+  }
+
+  .forecast-line {
+    stroke-width: 3.2;
+    filter: drop-shadow(0 0 7px rgba(93, 215, 199, 0.28));
+  }
+
+  .forecast-dot {
+    stroke-width: 1.7;
+  }
+
+  .forecast-runner {
+    display: none;
+  }
+
+  .welcome-gate.is-open .welcome-intro {
+    animation-duration: 460ms;
+    animation-delay: 60ms;
+  }
+
+  .welcome-gate.is-open .welcome-visual {
+    animation-duration: 500ms;
+    animation-delay: 110ms;
+  }
+
+  .welcome-gate.is-open .welcome-signal {
+    animation-duration: 460ms;
+    animation-delay: 230ms;
+  }
+
+  .welcome-gate.is-open .forecast-area {
+    animation-duration: 480ms;
+    animation-delay: 340ms;
+  }
+
+  .welcome-gate.is-open .forecast-line {
+    animation:
+      welcomeForecastDraw 680ms cubic-bezier(0.16, 1, 0.3, 1) 360ms both,
+      welcomeForecastBreathe 5.2s ease-in-out 1.15s infinite;
+  }
+
+  .welcome-gate.is-open .forecast-dot {
+    animation:
+      welcomeForecastDotIn 280ms cubic-bezier(0.16, 1, 0.3, 1) both,
+      welcomeForecastDotPulse 4.8s ease-in-out 1.25s infinite;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-one {
+    animation-delay: 480ms, 1.25s;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-two {
+    animation-delay: 560ms, 1.42s;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-three {
+    animation-delay: 640ms, 1.59s;
+  }
+
+  .welcome-gate.is-open .forecast-dot.dot-four {
+    animation-delay: 720ms, 1.76s;
   }
 
   .site-header {
@@ -4068,5 +4326,28 @@ code {
   .site-footer {
     flex-direction: column;
     padding: 24px 16px;
+  }
+}
+
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  .welcome-gate.is-open .welcome-intro,
+  .welcome-gate.is-open .welcome-visual,
+  .welcome-gate.is-open .welcome-signal,
+  .welcome-gate.is-open .forecast-area,
+  .welcome-gate.is-open .forecast-line,
+  .welcome-gate.is-open .forecast-dot,
+  .welcome-gate.is-open .forecast-runner {
+    animation: none;
+  }
+
+  .welcome-intro,
+  .welcome-visual,
+  .welcome-signal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .welcome-signal {
+    transform: translateX(-50%);
   }
 }
