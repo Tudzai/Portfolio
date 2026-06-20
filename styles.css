@@ -666,17 +666,35 @@ textarea {
 }
 
 .forecast-guide-shadows line {
-  stroke: url("#welcome-pillar-shadow");
-  stroke-width: 5.2;
+  stroke-width: 5.8;
   filter: url("#welcome-pillar-depth");
-  opacity: 0.68;
+  opacity: 0.86;
 }
 
 .forecast-guides line {
-  stroke: rgba(190, 218, 222, 0.22);
-  stroke-width: 0.8;
-  opacity: 0.62;
+  stroke-width: 1.05;
+  opacity: 0.58;
   vector-effect: non-scaling-stroke;
+}
+
+.forecast-guide-shadows .pillar-one,
+.forecast-guides .pillar-one {
+  stroke: url("#welcome-pillar-blue");
+}
+
+.forecast-guide-shadows .pillar-two,
+.forecast-guides .pillar-two {
+  stroke: url("#welcome-pillar-teal");
+}
+
+.forecast-guide-shadows .pillar-three,
+.forecast-guides .pillar-three {
+  stroke: url("#welcome-pillar-sky");
+}
+
+.forecast-guide-shadows .pillar-four,
+.forecast-guides .pillar-four {
+  stroke: url("#welcome-pillar-gold");
 }
 
 .forecast-area {
@@ -4629,13 +4647,13 @@ code {
   }
 
   .forecast-guide-shadows line {
-    stroke-width: 4.4;
-    opacity: 0.58;
+    stroke-width: 4.9;
+    opacity: 0.78;
   }
 
   .forecast-guides line {
-    stroke-width: 0.75;
-    opacity: 0.5;
+    stroke-width: 0.9;
+    opacity: 0.52;
   }
 
   .forecast-muted {
