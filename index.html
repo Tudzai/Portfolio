@@ -22,7 +22,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-minimal-mark-20260620" />
-    <link rel="stylesheet" href="styles.css?v=welcome-motion-clean-20260620" />
+    <link rel="stylesheet" href="styles.css?v=welcome-forecast-line-20260620" />
   </head>
   <body>
     <div
@@ -60,10 +60,21 @@
             <span class="orbit-dot dot-c"></span>
             <div class="welcome-mark">AT</div>
             <div class="welcome-signal">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+              <svg viewBox="0 0 150 54" focusable="false" aria-hidden="true">
+                <path class="forecast-grid" d="M10 42 H140 M10 28 H140 M10 14 H140" />
+                <path
+                  class="forecast-muted"
+                  d="M12 39 C34 38 44 30 60 31 C82 32 90 18 108 20 C124 21 129 12 140 10"
+                />
+                <path
+                  class="forecast-line"
+                  d="M12 39 C34 38 44 30 60 31 C82 32 90 18 108 20 C124 21 129 12 140 10"
+                />
+                <circle class="forecast-dot dot-one" cx="12" cy="39" r="4" />
+                <circle class="forecast-dot dot-two" cx="60" cy="31" r="4" />
+                <circle class="forecast-dot dot-three" cx="108" cy="20" r="4" />
+                <circle class="forecast-dot dot-four" cx="140" cy="10" r="5" />
+              </svg>
             </div>
           </div>
         </aside>
@@ -1037,6 +1048,6 @@ python src/run_pipeline.py</code></pre>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=welcome-motion-clean-20260620"></script>
+    <script src="script.js?v=welcome-forecast-line-20260620"></script>
   </body>
 </html>
