@@ -1397,8 +1397,10 @@ textarea {
   box-shadow:
     0 16px 34px rgba(31, 85, 217, 0.28),
     0 0 0 1px rgba(248, 251, 255, 0.08),
+    0 0 0 0 rgba(143, 189, 255, 0),
     inset 0 1px 0 rgba(248, 251, 255, 0.2);
   text-shadow: 0 1px 8px rgba(7, 17, 31, 0.28);
+  will-change: transform, box-shadow;
 }
 
 .welcome-actions .button.primary::before,
@@ -1409,12 +1411,17 @@ textarea {
 }
 
 .welcome-actions .button.primary::before {
-  inset: 0;
+  inset: -1px;
   z-index: 0;
   border-radius: inherit;
   background:
-    linear-gradient(90deg, rgba(248, 251, 255, 0.14), transparent 28%, transparent 72%, rgba(141, 225, 214, 0.16));
-  opacity: 0.66;
+    linear-gradient(110deg, transparent 0 24%, rgba(248, 251, 255, 0.22) 38%, rgba(103, 228, 214, 0.16) 48%, transparent 64% 100%),
+    linear-gradient(90deg, rgba(248, 251, 255, 0.12), transparent 28%, transparent 72%, rgba(141, 225, 214, 0.16));
+  background-size: 240% 100%, 100% 100%;
+  opacity: 0.72;
+  transform: translateX(-22%);
+  animation: welcomeCtaSweep 3.8s cubic-bezier(0.22, 1, 0.36, 1) 1.8s infinite;
+  will-change: transform, opacity;
 }
 
 .welcome-actions .button.primary::after {
@@ -1424,8 +1431,12 @@ textarea {
   z-index: 1;
   height: 2px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(248, 251, 255, 0.18), rgba(141, 225, 214, 0.86), rgba(244, 189, 102, 0.58));
-  opacity: 0.82;
+  background: linear-gradient(90deg, rgba(248, 251, 255, 0.2), rgba(143, 189, 255, 0.9), rgba(103, 228, 214, 0.95), rgba(255, 199, 111, 0.72), rgba(248, 251, 255, 0.22));
+  background-size: 220% 100%;
+  opacity: 0.9;
+  transform-origin: left center;
+  animation: welcomeCtaRail 2.6s ease-in-out 1.9s infinite;
+  will-change: background-position, opacity, transform;
 }
 
 .welcome-actions .button.primary > * {
@@ -1435,7 +1446,9 @@ textarea {
 
 .welcome-actions .button.primary svg {
   filter: drop-shadow(0 0 8px rgba(248, 251, 255, 0.12));
-  transition: transform 180ms ease;
+  transition: transform 180ms ease, filter 180ms ease;
+  animation: welcomeCtaArrowNudge 2.4s cubic-bezier(0.37, 0, 0.63, 1) 2.2s infinite;
+  will-change: transform;
 }
 
 .welcome-actions .button.primary:hover {
@@ -1445,12 +1458,22 @@ textarea {
   box-shadow:
     0 18px 40px rgba(31, 85, 217, 0.34),
     0 0 24px rgba(106, 184, 255, 0.16),
+    0 0 0 3px rgba(143, 189, 255, 0.13),
     inset 0 1px 0 rgba(248, 251, 255, 0.24);
   transform: translateY(-1px);
 }
 
 .welcome-actions .button.primary:hover svg {
-  transform: translateX(2px);
+  filter: drop-shadow(0 0 10px rgba(248, 251, 255, 0.2));
+  animation: welcomeCtaArrowHover 560ms cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+.welcome-actions .button.primary:active {
+  transform: translateY(0) scale(0.988);
+  box-shadow:
+    0 10px 22px rgba(31, 85, 217, 0.22),
+    0 0 0 2px rgba(143, 189, 255, 0.1),
+    inset 0 1px 0 rgba(248, 251, 255, 0.18);
 }
 
 .button.secondary {
@@ -3745,6 +3768,59 @@ code {
   }
 }
 
+@keyframes welcomeCtaSweep {
+  0%,
+  34% {
+    opacity: 0;
+    transform: translateX(-42%);
+  }
+  52% {
+    opacity: 0.9;
+  }
+  76%,
+  100% {
+    opacity: 0;
+    transform: translateX(34%);
+  }
+}
+
+@keyframes welcomeCtaRail {
+  0%,
+  100% {
+    background-position: 0% 50%;
+    opacity: 0.72;
+    transform: scaleX(0.92);
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes welcomeCtaArrowNudge {
+  0%,
+  70%,
+  100% {
+    transform: translateX(0);
+  }
+  82% {
+    transform: translateX(3px);
+  }
+  92% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes welcomeCtaArrowHover {
+  0% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(6px);
+  }
+}
+
 @keyframes welcomeMarkReveal {
   0% {
     opacity: 0;
@@ -4934,7 +5010,10 @@ code {
   .welcome-gate.is-open .forecast-area,
   .welcome-gate.is-open .forecast-line,
   .welcome-gate.is-open .forecast-dot,
-  .welcome-gate.is-open .forecast-runner {
+  .welcome-gate.is-open .forecast-runner,
+  .welcome-actions .button.primary::before,
+  .welcome-actions .button.primary::after,
+  .welcome-actions .button.primary svg {
     animation: none;
   }
 
@@ -4946,6 +5025,21 @@ code {
   }
 
   .welcome-signal {
+    transform: none;
+  }
+
+  .welcome-actions .button.primary::before {
+    opacity: 0.36;
+    transform: none;
+  }
+
+  .welcome-actions .button.primary::after {
+    background-position: 50% 50%;
+    opacity: 0.78;
+    transform: none;
+  }
+
+  .welcome-actions .button.primary svg {
     transform: none;
   }
 
