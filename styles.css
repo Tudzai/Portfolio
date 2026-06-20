@@ -585,35 +585,34 @@ textarea {
 .welcome-signal {
   position: relative;
   z-index: 2;
-  width: 184px;
-  height: 52px;
-  margin-top: -12px;
-  padding: 7px 9px;
-  border: 1px solid rgba(248, 251, 255, 0.12);
-  border-radius: 999px;
+  width: 176px;
+  height: 72px;
+  margin-top: -8px;
+  padding: 8px 9px;
+  border: 1px solid rgba(141, 225, 214, 0.14);
+  border-radius: 12px;
   background:
-    radial-gradient(circle at 84% 18%, rgba(244, 189, 102, 0.16), transparent 32%),
-    radial-gradient(circle at 18% 82%, rgba(106, 184, 255, 0.14), transparent 42%),
-    linear-gradient(180deg, rgba(248, 251, 255, 0.075), rgba(248, 251, 255, 0.018)),
-    rgba(8, 21, 37, 0.3);
-  opacity: 0.82;
+    radial-gradient(circle at 82% 18%, rgba(244, 189, 102, 0.1), transparent 30%),
+    radial-gradient(circle at 18% 76%, rgba(106, 184, 255, 0.12), transparent 42%),
+    linear-gradient(180deg, rgba(248, 251, 255, 0.07), rgba(248, 251, 255, 0.02)),
+    rgba(7, 17, 31, 0.46);
+  opacity: 0.88;
   transform: none;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(9px);
   box-shadow:
-    0 16px 30px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(248, 251, 255, 0.11),
-    inset 0 -16px 28px rgba(7, 17, 31, 0.16),
-    0 0 28px rgba(93, 215, 199, 0.06);
+    0 18px 34px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(248, 251, 255, 0.1),
+    inset 0 -16px 30px rgba(7, 17, 31, 0.18);
   overflow: hidden;
 }
 
 .welcome-signal::before {
   content: "";
   position: absolute;
-  inset: 0 12%;
+  inset: 0 14px auto 14px;
   top: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(141, 225, 214, 0.32), rgba(244, 189, 102, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(141, 225, 214, 0.36), rgba(244, 189, 102, 0.22), transparent);
 }
 
 .welcome-signal svg {
@@ -643,28 +642,28 @@ textarea {
 
 .forecast-area {
   fill: url("#welcome-forecast-fill");
-  opacity: 0.5;
+  opacity: 0.64;
   stroke: none;
 }
 
 .forecast-grid {
-  stroke: rgba(248, 251, 255, 0.08);
+  stroke: rgba(248, 251, 255, 0.075);
   stroke-width: 1;
 }
 
 .forecast-bars {
-  stroke: rgba(248, 251, 255, 0.14);
-  stroke-width: 2.1;
+  stroke: rgba(141, 225, 214, 0.11);
+  stroke-width: 2;
 }
 
 .forecast-muted {
-  stroke: rgba(248, 251, 255, 0.14);
-  stroke-width: 7.2;
+  stroke: rgba(248, 251, 255, 0.13);
+  stroke-width: 7;
 }
 
 .forecast-line {
-  stroke: rgba(141, 225, 214, 0.86);
-  stroke-width: 3.65;
+  stroke: url("#welcome-forecast-line");
+  stroke-width: 3.8;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   filter: drop-shadow(0 0 7px rgba(93, 215, 199, 0.24));
@@ -1338,15 +1337,15 @@ textarea {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 1px solid rgba(248, 251, 255, 0.46);
+  border: 1px solid rgba(157, 184, 255, 0.66);
   background:
-    radial-gradient(circle at 18% 18%, rgba(248, 251, 255, 0.24), transparent 28%),
-    linear-gradient(135deg, #2d7df5 0%, #178bd8 42%, #0ca293 100%) padding-box;
+    linear-gradient(180deg, rgba(248, 251, 255, 0.16), transparent 42%) padding-box,
+    linear-gradient(180deg, #2d6df6 0%, #1f55d9 56%, #173d9e 100%) padding-box;
   box-shadow:
-    0 14px 32px rgba(20, 121, 255, 0.2),
-    0 0 0 1px rgba(141, 225, 214, 0.08),
+    0 16px 34px rgba(31, 85, 217, 0.28),
+    0 0 0 1px rgba(248, 251, 255, 0.08),
     inset 0 1px 0 rgba(248, 251, 255, 0.2);
-  text-shadow: 0 1px 10px rgba(7, 17, 31, 0.28);
+  text-shadow: 0 1px 8px rgba(7, 17, 31, 0.28);
 }
 
 .welcome-actions .button.primary::before,
@@ -1361,26 +1360,19 @@ textarea {
   z-index: 0;
   border-radius: inherit;
   background:
-    radial-gradient(circle at 20% 20%, rgba(248, 251, 255, 0.2), transparent 30%),
-    radial-gradient(circle at 82% 72%, rgba(244, 189, 102, 0.12), transparent 38%);
-  opacity: 0.72;
+    linear-gradient(90deg, rgba(248, 251, 255, 0.14), transparent 28%, transparent 72%, rgba(141, 225, 214, 0.16));
+  opacity: 0.66;
 }
 
 .welcome-actions .button.primary::after {
-  inset: 0;
+  left: 14px;
+  right: 14px;
+  bottom: 7px;
   z-index: 1;
-  padding: 2px;
-  border-radius: inherit;
-  background: conic-gradient(from 90deg, transparent 0 14%, rgba(248, 251, 255, 0.82), rgba(93, 215, 199, 0.88), rgba(244, 189, 102, 0.74), transparent 66% 100%);
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(248, 251, 255, 0.18), rgba(141, 225, 214, 0.86), rgba(244, 189, 102, 0.58));
   opacity: 0.82;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
 }
 
 .welcome-actions .button.primary > * {
@@ -1389,18 +1381,23 @@ textarea {
 }
 
 .welcome-actions .button.primary svg {
-  filter: drop-shadow(0 0 8px rgba(248, 251, 255, 0.2));
+  filter: drop-shadow(0 0 8px rgba(248, 251, 255, 0.12));
+  transition: transform 180ms ease;
 }
 
 .welcome-actions .button.primary:hover {
   background:
-    radial-gradient(circle at 18% 18%, rgba(248, 251, 255, 0.28), transparent 28%),
-    linear-gradient(135deg, #3386ff 0%, #1997e2 42%, #10aa9a 100%) padding-box;
+    linear-gradient(180deg, rgba(248, 251, 255, 0.18), transparent 42%) padding-box,
+    linear-gradient(180deg, #3677ff 0%, #255ee7 56%, #1946b4 100%) padding-box;
   box-shadow:
-    0 16px 38px rgba(20, 121, 255, 0.28),
-    0 0 30px rgba(93, 215, 199, 0.18),
+    0 18px 40px rgba(31, 85, 217, 0.34),
+    0 0 24px rgba(106, 184, 255, 0.16),
     inset 0 1px 0 rgba(248, 251, 255, 0.24);
   transform: translateY(-1px);
+}
+
+.welcome-actions .button.primary:hover svg {
+  transform: translateX(2px);
 }
 
 .button.secondary {
@@ -3843,39 +3840,6 @@ code {
   }
 }
 
-@keyframes welcomeCtaBorderSpin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes welcomeCtaAura {
-  0%,
-  100% {
-    opacity: 0.62;
-  }
-  50% {
-    opacity: 0.9;
-  }
-}
-
-@keyframes welcomeCtaPulse {
-  0%,
-  100% {
-    box-shadow:
-      0 14px 32px rgba(20, 121, 255, 0.22),
-      0 0 0 1px rgba(141, 225, 214, 0.08);
-  }
-  50% {
-    box-shadow:
-      0 18px 42px rgba(20, 121, 255, 0.3),
-      0 0 24px rgba(93, 215, 199, 0.18);
-  }
-}
-
 @keyframes sectionSignalShift {
   0%,
   100% {
@@ -3915,18 +3879,6 @@ code {
 
   .hero-scroll-indicator {
     animation: scrollCueBounce 2.1s ease-in-out infinite;
-  }
-
-  .welcome-actions .button.primary {
-    animation: welcomeCtaPulse 4.4s ease-in-out 1.7s infinite;
-  }
-
-  .welcome-actions .button.primary::before {
-    animation: welcomeCtaAura 4.8s ease-in-out 1.4s infinite;
-  }
-
-  .welcome-actions .button.primary::after {
-    animation: welcomeCtaBorderSpin 5.6s linear 1.35s infinite;
   }
 
   .welcome-gate.is-open::before {
@@ -4018,9 +3970,7 @@ code {
   }
 
   .welcome-gate.is-open .welcome-actions .button.primary {
-    animation:
-      welcomeButtonReveal 440ms cubic-bezier(0.22, 1, 0.36, 1) 1080ms both,
-      welcomeCtaPulse 4.4s ease-in-out 1.7s infinite;
+    animation: welcomeButtonReveal 440ms cubic-bezier(0.22, 1, 0.36, 1) 1080ms both;
   }
 
   .welcome-gate.is-open .welcome-visual {
@@ -4614,17 +4564,18 @@ code {
   }
 
   .welcome-signal {
-    width: min(116px, 30vw);
-    height: 34px;
-    margin-top: -4px;
-    padding: 4px 6px;
-    opacity: 0.62;
-    border-color: rgba(248, 251, 255, 0.08);
+    width: min(126px, 32vw);
+    height: 52px;
+    margin-top: -5px;
+    padding: 5px 6px;
+    opacity: 0.76;
+    border-color: rgba(141, 225, 214, 0.12);
+    border-radius: 10px;
     background:
-      radial-gradient(circle at 82% 18%, rgba(244, 189, 102, 0.08), transparent 34%),
-      radial-gradient(circle at 18% 82%, rgba(106, 184, 255, 0.08), transparent 42%),
-      linear-gradient(180deg, rgba(248, 251, 255, 0.05), rgba(248, 251, 255, 0.014)),
-      rgba(8, 21, 37, 0.24);
+      radial-gradient(circle at 82% 18%, rgba(244, 189, 102, 0.08), transparent 30%),
+      radial-gradient(circle at 18% 76%, rgba(106, 184, 255, 0.1), transparent 42%),
+      linear-gradient(180deg, rgba(248, 251, 255, 0.06), rgba(248, 251, 255, 0.018)),
+      rgba(7, 17, 31, 0.42);
     backdrop-filter: blur(5px);
   }
 
@@ -4633,16 +4584,16 @@ code {
   }
 
   .forecast-bars {
-    stroke-width: 1.45;
+    stroke-width: 1.55;
   }
 
   .forecast-muted {
-    stroke-width: 5;
+    stroke-width: 5.4;
   }
 
   .forecast-line {
-    stroke-width: 2.8;
-    filter: drop-shadow(0 0 4px rgba(93, 215, 199, 0.16));
+    stroke-width: 3;
+    filter: drop-shadow(0 0 4px rgba(93, 215, 199, 0.18));
   }
 
   .forecast-dot {

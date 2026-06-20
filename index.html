@@ -22,7 +22,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-orbit-harmony-20260620" />
-    <link rel="stylesheet" href="styles.css?v=welcome-runner-cta-20260620" />
+    <link rel="stylesheet" href="styles.css?v=welcome-forecast-card-20260620" />
     <noscript>
       <style>
         body.welcome-pending .site-header,
@@ -77,48 +77,53 @@
             </div>
           </div>
           <div class="welcome-signal">
-            <svg viewBox="0 0 160 44" focusable="false" aria-hidden="true">
+            <svg viewBox="0 0 176 72" focusable="false" aria-hidden="true">
               <defs>
                 <linearGradient id="welcome-forecast-fill" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#8de1d6" stop-opacity="0.32" />
-                  <stop offset="66%" stop-color="#6ab8ff" stop-opacity="0.1" />
-                  <stop offset="100%" stop-color="#f4bd66" stop-opacity="0.03" />
+                  <stop offset="0%" stop-color="#8de1d6" stop-opacity="0.38" />
+                  <stop offset="58%" stop-color="#6ab8ff" stop-opacity="0.13" />
+                  <stop offset="100%" stop-color="#07111f" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient id="welcome-forecast-line" x1="18" x2="156" y1="50" y2="15" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#7fb2ff" />
+                  <stop offset="0.58" stop-color="#8de1d6" />
+                  <stop offset="1" stop-color="#f4bd66" />
                 </linearGradient>
               </defs>
-              <path class="forecast-grid" d="M12 36 H148 M12 25 H148 M12 14 H148" />
-              <path class="forecast-bars" d="M28 36V32 M61 36V28 M94 36V24 M126 36V18 M145 36V10" />
+              <path class="forecast-grid" d="M18 56 H156 M18 43 H156 M18 30 H156 M18 17 H156" />
+              <path class="forecast-bars" d="M34 56V48 M65 56V43 M96 56V36 M127 56V28 M150 56V18" />
               <path
                 class="forecast-area"
-                d="M12 34 C33 32 45 30 61 28 C82 26 94 22 111 18 C128 14 139 10 148 8 L148 39 H12 Z"
+                d="M18 50 C39 48 50 45 65 42 C85 38 96 34 112 29 C130 23 144 18 156 13 L156 60 H18 Z"
               />
               <path
                 class="forecast-muted"
-                d="M12 34 C33 32 45 30 61 28 C82 26 94 22 111 18 C128 14 139 10 148 8"
+                d="M18 50 C39 48 50 45 65 42 C85 38 96 34 112 29 C130 23 144 18 156 13"
               />
               <path
                 class="forecast-line"
-                d="M12 34 C33 32 45 30 61 28 C82 26 94 22 111 18 C128 14 139 10 148 8"
+                d="M18 50 C39 48 50 45 65 42 C85 38 96 34 112 29 C130 23 144 18 156 13"
                 pathLength="1"
               />
               <circle class="forecast-runner" cx="0" cy="0" r="3.4">
                 <animateMotion
-                  dur="4.8s"
+                  dur="4.6s"
                   begin="2.25s"
                   repeatCount="indefinite"
-                  path="M12 34 C33 32 45 30 61 28 C82 26 94 22 111 18 C128 14 139 10 148 8"
+                  path="M18 50 C39 48 50 45 65 42 C85 38 96 34 112 29 C130 23 144 18 156 13"
                 />
               </circle>
-              <circle class="forecast-dot dot-one" cx="12" cy="34" r="3.5" />
-              <circle class="forecast-dot dot-two" cx="61" cy="28" r="3.5" />
-              <circle class="forecast-dot dot-three" cx="111" cy="18" r="3.5" />
-              <circle class="forecast-dot dot-four" cx="148" cy="8" r="4.6" />
+              <circle class="forecast-dot dot-one" cx="18" cy="50" r="3.6" />
+              <circle class="forecast-dot dot-two" cx="65" cy="42" r="3.6" />
+              <circle class="forecast-dot dot-three" cx="112" cy="29" r="3.6" />
+              <circle class="forecast-dot dot-four" cx="156" cy="13" r="4.8" />
             </svg>
           </div>
         </aside>
         <div class="welcome-actions">
           <button class="button primary" type="button" data-welcome-close>
-            <i data-lucide="sparkles"></i>
             Enter portfolio
+            <i data-lucide="arrow-right"></i>
           </button>
           <a class="button quiet welcome-proof-link" href="cv.html" data-welcome-close>
             <i data-lucide="file-text"></i>
