@@ -3,7 +3,6 @@ const header = document.querySelector("[data-header]");
 const menuToggle = document.querySelector("[data-menu-toggle]");
 const mobileNav = document.querySelector("[data-mobile-nav]");
 const themeToggle = document.querySelector("[data-theme-toggle]");
-const copyButtons = document.querySelectorAll("[data-copy]");
 const internalLinks = document.querySelectorAll('a[href^="#"]');
 const momentumFlow = document.querySelector("[data-momentum-flow]");
 const commandCenter = document.querySelector("[data-command-center]");
@@ -79,25 +78,6 @@ themeToggle?.addEventListener("click", () => {
     root.dataset.theme = "dark";
     localStorage.setItem("portfolio-theme", "dark");
   }
-});
-
-copyButtons.forEach((button) => {
-  const defaultLabel = button.textContent.trim();
-
-  button.addEventListener("click", async () => {
-    const value = button.dataset.copy;
-    try {
-      await navigator.clipboard.writeText(value);
-      button.innerHTML = '<i data-lucide="check"></i> Email copied';
-      window.lucide?.createIcons();
-      window.setTimeout(() => {
-        button.innerHTML = '<i data-lucide="copy"></i> ' + defaultLabel;
-        window.lucide?.createIcons();
-      }, 1800);
-    } catch {
-      window.location.href = `mailto:${value}`;
-    }
-  });
 });
 
 if (momentumFlow) {
