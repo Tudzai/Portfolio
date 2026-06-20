@@ -535,6 +535,20 @@ textarea {
   box-shadow: inset 0 0 22px rgba(93, 215, 199, 0.08);
 }
 
+.welcome-mark::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 1;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 120deg, transparent 0 18%, rgba(141, 225, 214, 0.28), transparent 34% 62%, rgba(244, 189, 102, 0.2), transparent 78% 100%);
+  opacity: 0.44;
+  -webkit-mask: radial-gradient(circle, transparent 57%, #000 58%, #000 62%, transparent 63%);
+  mask: radial-gradient(circle, transparent 57%, #000 58%, #000 62%, transparent 63%);
+  will-change: transform, opacity;
+}
+
 .welcome-mark-initials {
   position: relative;
   z-index: 2;
@@ -627,6 +641,7 @@ textarea {
 .forecast-grid,
 .forecast-area,
 .forecast-band,
+.forecast-guides,
 .forecast-muted,
 .forecast-line {
   stroke-linecap: round;
@@ -634,6 +649,7 @@ textarea {
 }
 
 .forecast-grid,
+.forecast-guides,
 .forecast-muted,
 .forecast-line {
   fill: none;
@@ -645,14 +661,15 @@ textarea {
   stroke-width: 1;
 }
 
-.forecast-columns rect {
-  fill: url("#welcome-column-fill");
-}
-
 .forecast-band {
   fill: url("#welcome-forecast-band");
   opacity: 0.82;
   stroke: none;
+}
+
+.forecast-guides {
+  stroke: rgba(248, 251, 255, 0.13);
+  stroke-width: 1.4;
 }
 
 .forecast-area {
@@ -3669,16 +3686,6 @@ code {
   }
 }
 
-@keyframes welcomeMarkFloat {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) translateY(0);
-  }
-  50% {
-    transform: translate(-50%, -50%) translateY(-5px);
-  }
-}
-
 @keyframes welcomeLayerIn {
   0% {
     opacity: 0;
@@ -3720,6 +3727,20 @@ code {
   100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes welcomeMarkRingSpin {
+  0% {
+    opacity: 0.34;
+    transform: rotate(0deg);
+  }
+  50% {
+    opacity: 0.58;
+  }
+  100% {
+    opacity: 0.34;
+    transform: rotate(360deg);
   }
 }
 
@@ -3917,9 +3938,11 @@ code {
 
   .welcome-mark {
     opacity: 0;
-    animation:
-      welcomeMarkReveal 560ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both,
-      welcomeMarkFloat 6.4s ease-in-out 1.24s infinite;
+    animation: welcomeMarkReveal 560ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both;
+  }
+
+  .welcome-gate.is-open .welcome-mark::after {
+    animation: welcomeMarkRingSpin 7.6s linear 1.18s infinite;
   }
 
   .welcome-intro {
@@ -4601,8 +4624,9 @@ code {
     opacity: 0.68;
   }
 
-  .forecast-columns rect {
-    opacity: 0.74;
+  .forecast-guides {
+    stroke-width: 1.15;
+    opacity: 0.82;
   }
 
   .forecast-muted {
@@ -4876,6 +4900,7 @@ code {
   .welcome-gate.is-open::after,
   .welcome-gate.is-open .welcome-card::before,
   .welcome-gate.is-open .welcome-card::after,
+  .welcome-gate.is-open .welcome-mark::after,
   .welcome-gate.is-open .welcome-intro,
   .welcome-gate.is-open .welcome-visual,
   .welcome-gate.is-open .welcome-signal,
