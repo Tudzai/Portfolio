@@ -7,6 +7,7 @@ const copyButtons = document.querySelectorAll("[data-copy]");
 const internalLinks = document.querySelectorAll('a[href^="#"]');
 const momentumFlow = document.querySelector("[data-momentum-flow]");
 const commandCenter = document.querySelector("[data-command-center]");
+const fitLens = document.querySelector("[data-fit-lens]");
 const forceSolidHeader = document.body.classList.contains("detail-page");
 
 const savedTheme = localStorage.getItem("portfolio-theme");
@@ -149,9 +150,39 @@ if (commandCenter) {
   });
 }
 
+if (fitLens) {
+  const tabs = fitLens.querySelectorAll(".fit-lens-tab");
+  const title = fitLens.querySelector("[data-fit-title]");
+  const tag = fitLens.querySelector("[data-fit-tag]");
+  const copy = fitLens.querySelector("[data-fit-copy]");
+  const link = fitLens.querySelector("[data-fit-link]");
+
+  function activateFitLens(activeTab) {
+    tabs.forEach((tab) => {
+      const isActive = tab === activeTab;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-pressed", String(isActive));
+    });
+
+    title.textContent = activeTab.dataset.title || "";
+    tag.textContent = activeTab.dataset.tag || "";
+    copy.textContent = activeTab.dataset.copy || "";
+    link.textContent = activeTab.dataset.linkLabel || "Review details";
+    link.setAttribute("href", activeTab.dataset.link || "#proof");
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activateFitLens(tab));
+    tab.addEventListener("mouseenter", () => activateFitLens(tab));
+    tab.addEventListener("focus", () => activateFitLens(tab));
+  });
+}
+
 const revealItems = document.querySelectorAll(
   [
     ".hero-command-card",
+    ".fit-lens-readout",
+    ".snapshot-list div",
     ".brand-principles article",
     ".ability-card",
     ".proof-path-card",

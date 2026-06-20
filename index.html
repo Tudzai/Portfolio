@@ -14,8 +14,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=fp-redesign-20260620d" />
-    <link rel="stylesheet" href="styles.css?v=fp-redesign-20260620d" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=designer-skills-20260620" />
+    <link rel="stylesheet" href="styles.css?v=designer-skills-20260620" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -183,24 +183,77 @@
               technical delivery that makes the team faster.
             </p>
           </div>
-          <dl class="snapshot-list">
-            <div>
-              <dt>Best fit</dt>
-              <dd>Commercial FP&amp;A, Regional Finance Analyst, Finance BI Analyst, Finance Business Partner</dd>
+          <div class="snapshot-tools" data-fit-lens>
+            <div class="fit-lens-tabs" role="list" aria-label="Recruiter scan lens">
+              <button
+                class="fit-lens-tab is-active"
+                type="button"
+                data-title="Strong match for modern FP&amp;A"
+                data-tag="Commercial FP&amp;A / Finance BI"
+                data-copy="Best fit: commercial FP&amp;A, regional finance, finance BI, and business-partner roles that need budget ownership, reporting discipline, and better workflow."
+                data-link="#proof"
+                data-link-label="Start review path"
+                aria-pressed="true"
+              >
+                Role
+              </button>
+              <button
+                class="fit-lens-tab"
+                type="button"
+                data-title="Proof is organized for a 5-minute scan"
+                data-tag="Cases + BI + automation"
+                data-copy="The proof path moves from CV to real decision cases, then to Power BI products and Python automation so hiring teams can verify judgment, tools, and output quality."
+                data-link="#decision-cases"
+                data-link-label="See decision cases"
+                aria-pressed="false"
+              >
+                Proof
+              </button>
+              <button
+                class="fit-lens-tab"
+                type="button"
+                data-title="Toolkit connects finance and workflow"
+                data-tag="Budgeting / Power BI / SQL / Python"
+                data-copy="The core stack is budgeting, forecasting, variance analysis, management reporting, Power BI, DAX, SQL, Python, and AI-assisted review loops."
+                data-link="#skills"
+                data-link-label="Review skills"
+                aria-pressed="false"
+              >
+                Toolkit
+              </button>
+              <button
+                class="fit-lens-tab"
+                type="button"
+                data-title="Ready for cross-functional and regional work"
+                data-tag="Vietnam + regional MNC fit"
+                data-copy="Based in Ho Chi Minh City, open to Vietnam-based, regional MNC, and international finance roles where communication, documentation, and trust matter."
+                data-link="#work"
+                data-link-label="Check readiness"
+                aria-pressed="false"
+              >
+                Global
+              </button>
             </div>
-            <div>
-              <dt>Domain</dt>
-              <dd>Multi-entity logistics finance, budgeting, monthly reporting, consolidation, cash and AR control</dd>
-            </div>
-            <div>
-              <dt>Evidence</dt>
-              <dd>CV, 5-minute review path, sanitized decision cases, Power BI products, Python automation samples</dd>
-            </div>
-            <div>
-              <dt>Credential</dt>
-              <dd>Bachelor of Finance, GPA 3.9 / 4.0, HackerRank SQL Certificate, Power BI / DAX portfolio</dd>
-            </div>
-          </dl>
+            <article class="fit-lens-readout" aria-live="polite">
+              <span data-fit-tag>Commercial FP&amp;A / Finance BI</span>
+              <h3 data-fit-title>Strong match for modern FP&amp;A</h3>
+              <p data-fit-copy>
+                Best fit: commercial FP&amp;A, regional finance, finance BI, and business-partner roles that need budget
+                ownership, reporting discipline, and better workflow.
+              </p>
+              <a class="text-link" href="#proof" data-fit-link>Start review path</a>
+            </article>
+            <dl class="snapshot-list">
+              <div>
+                <dt>Domain</dt>
+                <dd>Multi-entity logistics finance, budgeting, monthly reporting, consolidation, cash and AR control</dd>
+              </div>
+              <div>
+                <dt>Credential</dt>
+                <dd>Bachelor of Finance, GPA 3.9 / 4.0, HackerRank SQL Certificate, Power BI / DAX portfolio</dd>
+              </div>
+            </dl>
+          </div>
         </div>
       </section>
 
@@ -903,6 +956,6 @@ python src/run_pipeline.py</code></pre>
     </footer>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="script.js?v=fp-redesign-20260620d"></script>
+    <script src="script.js?v=designer-skills-20260620"></script>
   </body>
 </html>
