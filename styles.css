@@ -585,24 +585,25 @@ textarea {
 .welcome-signal {
   position: relative;
   z-index: 2;
-  width: 174px;
-  height: 48px;
-  margin-top: -10px;
-  padding: 6px 8px;
-  border: 1px solid rgba(248, 251, 255, 0.09);
+  width: 184px;
+  height: 52px;
+  margin-top: -12px;
+  padding: 7px 9px;
+  border: 1px solid rgba(248, 251, 255, 0.12);
   border-radius: 999px;
   background:
-    radial-gradient(circle at 82% 18%, rgba(244, 189, 102, 0.1), transparent 34%),
-    radial-gradient(circle at 18% 82%, rgba(106, 184, 255, 0.1), transparent 42%),
-    linear-gradient(180deg, rgba(248, 251, 255, 0.055), rgba(248, 251, 255, 0.014)),
-    rgba(8, 21, 37, 0.24);
-  opacity: 0.7;
+    radial-gradient(circle at 84% 18%, rgba(244, 189, 102, 0.16), transparent 32%),
+    radial-gradient(circle at 18% 82%, rgba(106, 184, 255, 0.14), transparent 42%),
+    linear-gradient(180deg, rgba(248, 251, 255, 0.075), rgba(248, 251, 255, 0.018)),
+    rgba(8, 21, 37, 0.3);
+  opacity: 0.82;
   transform: none;
   backdrop-filter: blur(8px);
   box-shadow:
-    0 14px 28px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(248, 251, 255, 0.08),
-    inset 0 -14px 24px rgba(7, 17, 31, 0.12);
+    0 16px 30px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(248, 251, 255, 0.11),
+    inset 0 -16px 28px rgba(7, 17, 31, 0.16),
+    0 0 28px rgba(93, 215, 199, 0.06);
   overflow: hidden;
 }
 
@@ -642,31 +643,31 @@ textarea {
 
 .forecast-area {
   fill: url("#welcome-forecast-fill");
-  opacity: 0.42;
+  opacity: 0.5;
   stroke: none;
 }
 
 .forecast-grid {
-  stroke: rgba(248, 251, 255, 0.065);
+  stroke: rgba(248, 251, 255, 0.08);
   stroke-width: 1;
 }
 
 .forecast-bars {
-  stroke: rgba(248, 251, 255, 0.11);
-  stroke-width: 1.8;
+  stroke: rgba(248, 251, 255, 0.14);
+  stroke-width: 2.1;
 }
 
 .forecast-muted {
-  stroke: rgba(248, 251, 255, 0.12);
-  stroke-width: 6.6;
+  stroke: rgba(248, 251, 255, 0.14);
+  stroke-width: 7.2;
 }
 
 .forecast-line {
   stroke: rgba(141, 225, 214, 0.86);
-  stroke-width: 3.4;
+  stroke-width: 3.65;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
-  filter: drop-shadow(0 0 6px rgba(93, 215, 199, 0.2));
+  filter: drop-shadow(0 0 7px rgba(93, 215, 199, 0.24));
   will-change: opacity, stroke-dashoffset, filter;
 }
 
@@ -680,7 +681,16 @@ textarea {
 }
 
 .forecast-runner {
-  display: none;
+  fill: #f8fbff;
+  opacity: 0;
+  stroke: #f4bd66;
+  stroke-width: 1.9;
+  filter:
+    drop-shadow(0 0 5px rgba(244, 189, 102, 0.52))
+    drop-shadow(0 0 10px rgba(141, 225, 214, 0.18));
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: opacity;
 }
 
 .dot-one,
@@ -1328,13 +1338,14 @@ textarea {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 1px solid rgba(248, 251, 255, 0.42);
+  border: 1px solid rgba(248, 251, 255, 0.46);
   background:
-    linear-gradient(135deg, #2079ff 0%, #1790d5 48%, #0aa394 100%) padding-box,
-    conic-gradient(from 90deg, rgba(248, 251, 255, 0.7), rgba(106, 184, 255, 0.86), rgba(93, 215, 199, 0.92), rgba(244, 189, 102, 0.76), rgba(248, 251, 255, 0.7)) border-box;
+    radial-gradient(circle at 18% 18%, rgba(248, 251, 255, 0.24), transparent 28%),
+    linear-gradient(135deg, #2d7df5 0%, #178bd8 42%, #0ca293 100%) padding-box;
   box-shadow:
-    0 14px 32px rgba(20, 121, 255, 0.22),
-    0 0 0 1px rgba(141, 225, 214, 0.08);
+    0 14px 32px rgba(20, 121, 255, 0.2),
+    0 0 0 1px rgba(141, 225, 214, 0.08),
+    inset 0 1px 0 rgba(248, 251, 255, 0.2);
   text-shadow: 0 1px 10px rgba(7, 17, 31, 0.28);
 }
 
@@ -1346,23 +1357,22 @@ textarea {
 }
 
 .welcome-actions .button.primary::before {
-  inset: 1px;
-  z-index: -1;
-  border-radius: calc(var(--radius) - 2px);
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
   background:
-    linear-gradient(100deg, transparent 0 28%, rgba(248, 251, 255, 0.28) 42%, transparent 58%),
-    linear-gradient(135deg, #2079ff 0%, #1790d5 48%, #0aa394 100%);
-  background-size: 220% 100%, auto;
-  background-position: -140% 0, 0 0;
+    radial-gradient(circle at 20% 20%, rgba(248, 251, 255, 0.2), transparent 30%),
+    radial-gradient(circle at 82% 72%, rgba(244, 189, 102, 0.12), transparent 38%);
+  opacity: 0.72;
 }
 
 .welcome-actions .button.primary::after {
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   padding: 2px;
   border-radius: inherit;
-  background: conic-gradient(from 90deg, transparent, rgba(248, 251, 255, 0.9), rgba(93, 215, 199, 0.95), rgba(244, 189, 102, 0.82), transparent 78%);
-  opacity: 0.72;
+  background: conic-gradient(from 90deg, transparent 0 14%, rgba(248, 251, 255, 0.82), rgba(93, 215, 199, 0.88), rgba(244, 189, 102, 0.74), transparent 66% 100%);
+  opacity: 0.82;
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -1373,17 +1383,23 @@ textarea {
   mask-composite: exclude;
 }
 
+.welcome-actions .button.primary > * {
+  position: relative;
+  z-index: 2;
+}
+
 .welcome-actions .button.primary svg {
   filter: drop-shadow(0 0 8px rgba(248, 251, 255, 0.2));
 }
 
 .welcome-actions .button.primary:hover {
   background:
-    linear-gradient(135deg, #2b84ff 0%, #199de1 46%, #10aa9a 100%) padding-box,
-    conic-gradient(from 90deg, rgba(248, 251, 255, 0.86), rgba(106, 184, 255, 0.94), rgba(93, 215, 199, 1), rgba(244, 189, 102, 0.9), rgba(248, 251, 255, 0.86)) border-box;
+    radial-gradient(circle at 18% 18%, rgba(248, 251, 255, 0.28), transparent 28%),
+    linear-gradient(135deg, #3386ff 0%, #1997e2 42%, #10aa9a 100%) padding-box;
   box-shadow:
-    0 16px 38px rgba(20, 121, 255, 0.3),
-    0 0 28px rgba(93, 215, 199, 0.16);
+    0 16px 38px rgba(20, 121, 255, 0.28),
+    0 0 30px rgba(93, 215, 199, 0.18),
+    inset 0 1px 0 rgba(248, 251, 255, 0.24);
   transform: translateY(-1px);
 }
 
@@ -3811,26 +3827,19 @@ code {
   }
 }
 
-@keyframes welcomeForecastRunner {
+@keyframes welcomeForecastRunnerGlow {
   0% {
     opacity: 0;
-    transform: translate3d(0, 0, 0) scale(0.82);
   }
-  12% {
-    opacity: 0.95;
-  }
-  34% {
-    transform: translate3d(48px, -8px, 0) scale(1);
-  }
-  68% {
-    transform: translate3d(96px, -19px, 0) scale(1);
-  }
+  10%,
   88% {
-    opacity: 0.95;
+    opacity: 1;
+  }
+  46% {
+    opacity: 0.72;
   }
   100% {
     opacity: 0;
-    transform: translate3d(128px, -29px, 0) scale(0.9);
   }
 }
 
@@ -3843,14 +3852,13 @@ code {
   }
 }
 
-@keyframes welcomeCtaSweep {
+@keyframes welcomeCtaAura {
   0%,
-  42% {
-    background-position: -140% 0, 0 0;
-  }
-  72%,
   100% {
-    background-position: 160% 0, 0 0;
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 0.9;
   }
 }
 
@@ -3910,15 +3918,15 @@ code {
   }
 
   .welcome-actions .button.primary {
-    animation: welcomeCtaPulse 3.8s ease-in-out 1.7s infinite;
+    animation: welcomeCtaPulse 4.4s ease-in-out 1.7s infinite;
   }
 
   .welcome-actions .button.primary::before {
-    animation: welcomeCtaSweep 4.2s ease-in-out 1.45s infinite;
+    animation: welcomeCtaAura 4.8s ease-in-out 1.4s infinite;
   }
 
   .welcome-actions .button.primary::after {
-    animation: welcomeCtaBorderSpin 3.8s linear 1.35s infinite;
+    animation: welcomeCtaBorderSpin 5.6s linear 1.35s infinite;
   }
 
   .welcome-gate.is-open::before {
@@ -4058,6 +4066,10 @@ code {
 
   .welcome-gate.is-open .forecast-dot.dot-four {
     animation-delay: 1660ms, 2.95s;
+  }
+
+  .welcome-gate.is-open .forecast-runner {
+    animation: welcomeForecastRunnerGlow 4.8s linear 2.25s infinite;
   }
 
   .section-heading::after {
@@ -4652,7 +4664,11 @@ code {
   }
 
   .forecast-runner {
-    display: none;
+    display: inline;
+    stroke-width: 1.45;
+    filter:
+      drop-shadow(0 0 4px rgba(244, 189, 102, 0.42))
+      drop-shadow(0 0 7px rgba(141, 225, 214, 0.12));
   }
 
   .welcome-gate.is-open .welcome-visual {
