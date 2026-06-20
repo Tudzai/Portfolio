@@ -661,19 +661,19 @@ textarea {
 
 .forecast-band {
   fill: url("#welcome-forecast-band");
-  opacity: 0.74;
+  opacity: 0.9;
   stroke: none;
 }
 
 .forecast-guide-shadows line {
   stroke-width: 5.8;
   filter: url("#welcome-pillar-depth");
-  opacity: 0.86;
+  opacity: 1;
 }
 
 .forecast-guides line {
-  stroke-width: 1.05;
-  opacity: 0.58;
+  stroke-width: 1.15;
+  opacity: 0.78;
   vector-effect: non-scaling-stroke;
 }
 
@@ -699,7 +699,7 @@ textarea {
 
 .forecast-area {
   fill: url("#welcome-forecast-fill");
-  opacity: 0.46;
+  opacity: 0.54;
   stroke: none;
 }
 
@@ -710,17 +710,17 @@ textarea {
 }
 
 .forecast-muted {
-  stroke: rgba(248, 251, 255, 0.095);
-  stroke-width: 5;
+  stroke: transparent;
+  stroke-width: 0;
 }
 
 .forecast-line {
   stroke: url("#welcome-forecast-line");
-  stroke-width: 2.65;
+  stroke-width: 2.95;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
-  filter: drop-shadow(0 0 5px rgba(93, 215, 199, 0.22));
-  will-change: opacity, stroke-dashoffset, filter;
+  filter: none;
+  will-change: opacity, stroke-dashoffset;
 }
 
 .forecast-dot,
@@ -747,15 +747,15 @@ textarea {
 
 .dot-one,
 .dot-three {
-  fill: #6ab8ff;
+  fill: #8fbdff;
 }
 
 .dot-two {
-  fill: #5dd7c7;
+  fill: #67e4d6;
 }
 
 .dot-four {
-  fill: #f4bd66;
+  fill: #ffc76f;
 }
 
 .snapshot-section,
@@ -3817,24 +3817,24 @@ code {
 @keyframes welcomeForecastBreathe {
   0%,
   100% {
-    opacity: 0.82;
-    filter: drop-shadow(0 0 6px rgba(93, 215, 199, 0.2));
+    opacity: 0.88;
+    filter: none;
   }
   50% {
-    opacity: 0.96;
-    filter: drop-shadow(0 0 9px rgba(93, 215, 199, 0.3));
+    opacity: 1;
+    filter: none;
   }
 }
 
 @keyframes welcomeForecastBreatheSoft {
   0%,
   100% {
-    opacity: 0.66;
-    filter: drop-shadow(0 0 4px rgba(93, 215, 199, 0.18));
+    opacity: 0.78;
+    filter: none;
   }
   50% {
-    opacity: 0.8;
-    filter: drop-shadow(0 0 6px rgba(93, 215, 199, 0.22));
+    opacity: 0.94;
+    filter: none;
   }
 }
 
@@ -4643,26 +4643,26 @@ code {
   }
 
   .forecast-band {
-    opacity: 0.62;
+    opacity: 0.82;
   }
 
   .forecast-guide-shadows line {
     stroke-width: 4.9;
-    opacity: 0.78;
+    opacity: 0.92;
   }
 
   .forecast-guides line {
-    stroke-width: 0.9;
-    opacity: 0.52;
+    stroke-width: 1;
+    opacity: 0.7;
   }
 
   .forecast-muted {
-    stroke-width: 4.1;
+    stroke-width: 0;
   }
 
   .forecast-line {
-    stroke-width: 2.2;
-    filter: drop-shadow(0 0 4px rgba(93, 215, 199, 0.18));
+    stroke-width: 2.45;
+    filter: none;
   }
 
   .forecast-dot {
@@ -4672,15 +4672,15 @@ code {
 
   .dot-one,
   .dot-three {
-    fill: rgba(106, 184, 255, 0.72);
+    fill: rgba(143, 189, 255, 0.96);
   }
 
   .dot-two {
-    fill: rgba(93, 215, 199, 0.68);
+    fill: rgba(103, 228, 214, 0.94);
   }
 
   .dot-four {
-    fill: rgba(244, 189, 102, 0.72);
+    fill: rgba(255, 199, 111, 0.96);
   }
 
   .forecast-runner {
