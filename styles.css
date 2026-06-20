@@ -118,10 +118,12 @@ textarea {
 .welcome-card {
   position: relative;
   display: grid;
-  justify-items: start;
-  width: min(660px, calc(100vw - 32px));
+  grid-template-columns: minmax(0, 1.15fr) minmax(250px, 0.85fr);
+  gap: clamp(24px, 4vw, 44px);
+  align-items: center;
+  width: min(920px, calc(100vw - 32px));
   overflow: hidden;
-  padding: clamp(28px, 5vw, 46px);
+  padding: clamp(28px, 4.6vw, 48px);
   border: 1px solid rgba(248, 251, 255, 0.18);
   border-radius: var(--radius);
   background:
@@ -137,57 +139,15 @@ textarea {
   transform: translateY(0) scale(1);
 }
 
-.welcome-visual {
+.welcome-intro {
   position: relative;
-  width: min(220px, 100%);
-  min-height: 104px;
-  margin-bottom: 26px;
-}
-
-.welcome-mark {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  width: 82px;
-  height: 82px;
-  place-items: center;
-  border: 1px solid rgba(248, 251, 255, 0.2);
-  border-radius: 18px;
-  background: linear-gradient(135deg, #0b1220, #123f48);
-  box-shadow: 0 24px 70px rgba(20, 121, 255, 0.18), inset 0 1px 0 rgba(248, 251, 255, 0.14);
-  color: #f8fbff;
-  font-size: 1.9rem;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.welcome-line {
-  position: absolute;
-  left: 58px;
-  top: 10px;
-  width: 160px;
-  height: 78px;
-  overflow: visible;
-}
-
-.welcome-line path {
-  fill: none;
-  stroke: #5dd7c7;
-  stroke-linecap: round;
-  stroke-width: 4;
-  filter: drop-shadow(0 10px 18px rgba(93, 215, 199, 0.24));
-}
-
-.welcome-line circle {
-  fill: #f3b65f;
-  stroke: #f8fbff;
-  stroke-width: 2;
+  min-width: 0;
 }
 
 .welcome-kicker {
   position: relative;
   margin: 0 0 14px;
-  color: #f3b65f;
+  color: #f4bd66;
   font-size: 0.78rem;
   font-weight: 850;
   letter-spacing: 0.12em;
@@ -197,26 +157,120 @@ textarea {
 
 .welcome-card h2 {
   position: relative;
-  max-width: 560px;
+  max-width: 620px;
   margin: 0;
   color: #ffffff;
-  font-size: clamp(2.25rem, 7vw, 4.55rem);
-  line-height: 1;
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  line-height: 1.02;
+}
+
+.welcome-role {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  max-width: 620px;
+  margin: 20px 0 0;
+}
+
+.welcome-role span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #f8fbff, #dff4ff);
+  color: #102040;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.welcome-role strong {
+  color: rgba(248, 251, 255, 0.72);
+  font-size: 0.9rem;
+  font-weight: 800;
 }
 
 .welcome-card p {
   position: relative;
-  max-width: 530px;
+  max-width: 620px;
   margin: 18px 0 0;
   color: rgba(248, 251, 255, 0.8);
   font-size: 1.04rem;
   line-height: 1.62;
 }
 
-.welcome-card .welcome-signoff {
-  margin-top: 12px;
-  color: rgba(248, 251, 255, 0.94);
-  font-size: 1rem;
+.welcome-card p strong {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.welcome-signal {
+  position: relative;
+  overflow: hidden;
+  align-self: stretch;
+  min-height: 292px;
+  padding: 24px;
+  border: 1px solid rgba(248, 251, 255, 0.16);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(150deg, rgba(20, 121, 255, 0.2), rgba(93, 215, 199, 0.08) 62%, rgba(243, 182, 95, 0.1)),
+    rgba(248, 251, 255, 0.06);
+}
+
+.welcome-signal::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--green), var(--amber));
+}
+
+.welcome-signal span {
+  display: block;
+  color: #f4bd66;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.welcome-signal strong {
+  display: block;
+  margin-top: 22px;
+  color: #ffffff;
+  font-size: clamp(3.1rem, 6vw, 5.2rem);
+  font-weight: 900;
+  line-height: 0.86;
+}
+
+.welcome-signal p {
+  max-width: 280px;
+  margin-top: 18px;
+  color: rgba(248, 251, 255, 0.8);
+  font-size: 0.96rem;
+  line-height: 1.52;
+}
+
+.welcome-signal-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.welcome-signal-list em {
+  display: inline-flex;
+  min-height: 31px;
+  align-items: center;
+  padding: 6px 9px;
+  border: 1px solid rgba(248, 251, 255, 0.18);
+  border-radius: var(--radius);
+  background: rgba(248, 251, 255, 0.08);
+  color: rgba(248, 251, 255, 0.78);
+  font-size: 0.78rem;
+  font-style: normal;
   font-weight: 800;
 }
 
@@ -224,8 +278,9 @@ textarea {
   position: relative;
   display: flex;
   flex-wrap: wrap;
+  grid-column: 1 / -1;
   gap: 10px;
-  margin-top: 28px;
+  margin-top: 2px;
 }
 
 .welcome-proof-link {
@@ -2891,38 +2946,7 @@ code {
   }
 }
 
-@keyframes welcomeLineDraw {
-  from {
-    stroke-dashoffset: 220;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes welcomeMarkGlow {
-  0%, 100% {
-    box-shadow: 0 24px 70px rgba(20, 121, 255, 0.18), inset 0 1px 0 rgba(248, 251, 255, 0.14);
-  }
-  50% {
-    box-shadow: 0 30px 86px rgba(93, 215, 199, 0.26), inset 0 1px 0 rgba(248, 251, 255, 0.16);
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  .welcome-line path {
-    stroke-dasharray: 220;
-    stroke-dashoffset: 220;
-  }
-
-  .welcome-gate.is-open .welcome-line path {
-    animation: welcomeLineDraw 620ms 180ms ease-out forwards;
-  }
-
-  .welcome-gate.is-open .welcome-mark {
-    animation: welcomeMarkGlow 3.8s ease-in-out infinite;
-  }
-
   .shape-a {
     animation: floatPanelA 13s ease-in-out infinite;
   }
@@ -3299,27 +3323,11 @@ code {
   }
 
   .welcome-card {
+    grid-template-columns: 1fr;
+    gap: 14px;
     width: min(calc(100vw - 32px), 358px);
-    padding: 24px;
-  }
-
-  .welcome-visual {
-    min-height: 88px;
-    margin-bottom: 20px;
-  }
-
-  .welcome-mark {
-    width: 70px;
-    height: 70px;
-    border-radius: 15px;
-    font-size: 1.65rem;
-  }
-
-  .welcome-line {
-    left: 48px;
-    top: 8px;
-    width: 124px;
-    height: 62px;
+    max-height: calc(100dvh - 32px);
+    padding: 20px;
   }
 
   .welcome-kicker {
@@ -3328,11 +3336,58 @@ code {
   }
 
   .welcome-card h2 {
-    font-size: clamp(2.15rem, 13.5vw, 3.25rem);
+    font-size: clamp(1.9rem, 10.5vw, 2.5rem);
+    line-height: 1.04;
   }
 
   .welcome-card p {
-    font-size: 0.98rem;
+    margin-top: 12px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .welcome-role {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .welcome-role span {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 0.88rem;
+  }
+
+  .welcome-role strong {
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .welcome-signal {
+    min-height: auto;
+    padding: 14px;
+  }
+
+  .welcome-signal strong {
+    margin-top: 10px;
+    font-size: 2.7rem;
+  }
+
+  .welcome-signal p {
+    max-width: none;
+    margin-top: 8px;
+    font-size: 0.88rem;
+    line-height: 1.42;
+  }
+
+  .welcome-signal-list {
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .welcome-signal-list em {
+    min-height: 28px;
+    padding: 5px 8px;
+    font-size: 0.72rem;
   }
 
   .welcome-actions {

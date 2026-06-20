@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-minimal-mark-20260620" />
-    <link rel="stylesheet" href="styles.css?v=minimal-welcome-20260620" />
+    <link rel="stylesheet" href="styles.css?v=connection-welcome-20260620" />
   </head>
   <body>
     <div
@@ -28,19 +28,29 @@
       hidden
     >
       <div class="welcome-card">
-        <div class="welcome-visual" aria-hidden="true">
-          <span class="welcome-mark">AT</span>
-          <svg class="welcome-line" viewBox="0 0 160 78" role="img">
-            <path d="M8 58C30 49 48 56 70 38C92 20 113 31 152 12" />
-            <circle cx="152" cy="12" r="5" />
-          </svg>
+        <div class="welcome-intro">
+          <p class="welcome-kicker">Welcome</p>
+          <h2 id="welcome-title">Hi, I'm Truong Dinh Anh Tu.</h2>
+          <p class="welcome-role">
+            <span>FP&amp;A Analyst</span>
+            <strong>Finance BI / Forecasting / Automation</strong>
+          </p>
+          <p id="welcome-copy">
+            <strong>Nice to meet you.</strong> I built this portfolio for a fast, clear review of how I turn financial
+            insight into trusted business decisions.
+          </p>
         </div>
-        <p class="welcome-kicker">Modern FP&amp;A Portfolio</p>
-        <h2 id="welcome-title">Hi, I'm Trương Đình Anh Tú.</h2>
-        <p id="welcome-copy">
-          FP&amp;A Analyst building trusted financial insight with energy, precision, and curiosity.
-        </p>
-        <p class="welcome-signoff">Nice to meet you.</p>
+        <aside class="welcome-signal" aria-label="FP&amp;A connection snapshot">
+          <span>Currently focused on</span>
+          <strong>FP&amp;A</strong>
+          <p>Budget, forecast, cash, and workflow clarity for teams that need decisions they can trust.</p>
+          <div class="welcome-signal-list" aria-hidden="true">
+            <em>Budget</em>
+            <em>Forecast</em>
+            <em>Cash</em>
+            <em>Automation</em>
+          </div>
+        </aside>
         <div class="welcome-actions">
           <button class="button primary" type="button" data-welcome-close>
             <i data-lucide="sparkles"></i>
