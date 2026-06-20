@@ -7,9 +7,21 @@ const internalLinks = document.querySelectorAll('a[href^="#"]');
 const momentumFlow = document.querySelector("[data-momentum-flow]");
 const commandCenter = document.querySelector("[data-command-center]");
 const fitLens = document.querySelector("[data-fit-lens]");
+const welcomeGate = document.querySelector("[data-welcome-gate]");
+const welcomeCloseTriggers = document.querySelectorAll("[data-welcome-close]");
+const welcomePulseButtons = document.querySelectorAll("[data-pulse-step]");
+const welcomePulseCopy = document.querySelector("[data-pulse-copy]");
+const welcomePulseMeter = document.querySelector("[data-pulse-meter]");
 const hero = document.querySelector(".hero");
 const forceSolidHeader = document.body.classList.contains("detail-page");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pulseMessages = {
+  budget: "Budget check: targets, owners, and variance guardrails are lined up.",
+  forecast: "Forecast check: drivers, base/bull/bear logic, and decision trade-offs are visible.",
+  cash: "Cash check: DSO, AR risk, and collection timing are translated into action.",
+  improve: "Improve check: repeatable reporting steps are cleaner, faster, and easier to review.",
+};
+const pulseOrder = Object.keys(pulseMessages);
 
 const savedTheme = localStorage.getItem("portfolio-theme");
 if (savedTheme) {
@@ -38,6 +50,114 @@ function scrollToHash(hash) {
   if (!target) return false;
   scrollToTarget(target);
   return true;
+}
+
+function readSessionFlag(key) {
+  try {
+    return sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeSessionFlag(key, value) {
+  try {
+    sessionStorage.setItem(key, value);
+  } catch {
+    return false;
+  }
+  return true;
+}
+
+function activateWelcomePulse(stepName) {
+  const nextStep = pulseMessages[stepName] ? stepName : pulseOrder[0];
+  const activeIndex = Math.max(pulseOrder.indexOf(nextStep), 0);
+
+  welcomePulseButtons.forEach((button) => {
+    const isActive = button.dataset.pulseStep === nextStep;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  if (welcomePulseCopy) {
+    welcomePulseCopy.textContent = pulseMessages[nextStep];
+  }
+
+  if (welcomePulseMeter) {
+    welcomePulseMeter.style.width = `${((activeIndex + 1) / pulseOrder.length) * 100}%`;
+  }
+}
+
+if (welcomeGate) {
+  const welcomeSeenKey = "portfolio-welcome-seen";
+  const forceWelcomeGate = new URLSearchParams(window.location.search).get("welcome") === "1";
+  let welcomePulseIndex = 0;
+  let welcomeWasTouched = false;
+  let welcomePulseInterval = null;
+  let welcomeAutoCloseTimer = null;
+
+  function closeWelcomeGate() {
+    if (welcomeGate.hidden) return;
+    welcomeGate.classList.remove("is-open");
+    welcomeGate.classList.add("is-leaving");
+    document.body.classList.remove("welcome-active");
+    writeSessionFlag(welcomeSeenKey, "true");
+    window.clearInterval(welcomePulseInterval);
+    window.clearTimeout(welcomeAutoCloseTimer);
+
+    window.setTimeout(() => {
+      welcomeGate.hidden = true;
+      welcomeGate.classList.remove("is-leaving");
+    }, 320);
+  }
+
+  function showWelcomeGate() {
+    welcomeGate.hidden = false;
+    document.body.classList.add("welcome-active");
+    activateWelcomePulse(pulseOrder[0]);
+    const openGate = () => {
+      welcomeGate.classList.add("is-open");
+      welcomeCloseTriggers[0]?.focus({ preventScroll: true });
+    };
+    window.requestAnimationFrame(openGate);
+    window.setTimeout(openGate, 32);
+
+    if (!prefersReducedMotion) {
+      welcomePulseInterval = window.setInterval(() => {
+        if (welcomeWasTouched) return;
+        welcomePulseIndex = (welcomePulseIndex + 1) % pulseOrder.length;
+        activateWelcomePulse(pulseOrder[welcomePulseIndex]);
+      }, 1180);
+
+      if (!forceWelcomeGate) {
+        welcomeAutoCloseTimer = window.setTimeout(() => {
+          if (!welcomeWasTouched) closeWelcomeGate();
+        }, 7600);
+      }
+    }
+  }
+
+  welcomePulseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      welcomeWasTouched = true;
+      welcomePulseIndex = Math.max(pulseOrder.indexOf(button.dataset.pulseStep), 0);
+      activateWelcomePulse(button.dataset.pulseStep);
+    });
+  });
+
+  welcomeCloseTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", closeWelcomeGate);
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !welcomeGate.hidden) {
+      closeWelcomeGate();
+    }
+  });
+
+  if (!forceSolidHeader && !window.location.hash && (forceWelcomeGate || readSessionFlag(welcomeSeenKey) !== "true")) {
+    window.setTimeout(showWelcomeGate, 260);
+  }
 }
 
 window.addEventListener("scroll", updateHeaderState, { passive: true });
@@ -184,6 +304,8 @@ if (commandCenter) {
   const title = commandCenter.querySelector("[data-command-title]");
   const kpi = commandCenter.querySelector("[data-command-kpi]");
   const copy = commandCenter.querySelector("[data-command-copy]");
+  const readout = commandCenter.querySelector(".command-readout");
+  const sparklineBars = commandCenter.querySelectorAll(".command-sparkline span");
 
   function activateCommandTab(activeTab) {
     tabs.forEach((tab) => {
@@ -195,6 +317,23 @@ if (commandCenter) {
     title.textContent = activeTab.dataset.title || "";
     kpi.textContent = activeTab.dataset.kpi || "";
     copy.textContent = activeTab.dataset.copy || "";
+
+    const barValues = (activeTab.dataset.bars || "")
+      .split(",")
+      .map((value) => Number.parseFloat(value))
+      .filter((value) => Number.isFinite(value));
+
+    sparklineBars.forEach((bar, index) => {
+      const nextHeight = barValues[index] || 50;
+      bar.style.setProperty("--bar-height", `${Math.max(18, Math.min(nextHeight, 96))}%`);
+    });
+
+    if (readout && !prefersReducedMotion) {
+      readout.classList.remove("is-pulsing");
+      void readout.offsetWidth;
+      readout.classList.add("is-pulsing");
+      window.setTimeout(() => readout.classList.remove("is-pulsing"), 520);
+    }
   }
 
   tabs.forEach((tab) => {

@@ -14,10 +14,52 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-brand-mark-20260620" />
-    <link rel="stylesheet" href="styles.css?v=landing-motion-20260620" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-clean-mark-20260620" />
+    <link rel="stylesheet" href="styles.css?v=welcome-pulse-20260620" />
   </head>
   <body>
+    <div
+      class="welcome-gate"
+      data-welcome-gate
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="welcome-title"
+      aria-describedby="welcome-copy"
+      hidden
+    >
+      <div class="welcome-card">
+        <div class="welcome-card-glow" aria-hidden="true"></div>
+        <div class="welcome-badge">
+          <span>AT</span>
+          <strong>FP&amp;A pulse check</strong>
+        </div>
+        <h2 id="welcome-title">Hi, I'm Tu.</h2>
+        <p id="welcome-copy">
+          Quick scan before you enter: I turn budget, forecast, cash, and workflow questions into cleaner decisions.
+        </p>
+        <div class="welcome-pulse" data-welcome-pulse aria-label="Interactive finance pulse">
+          <div class="welcome-pulse-steps" role="list">
+            <button class="is-active" type="button" data-pulse-step="budget" aria-pressed="true">Budget</button>
+            <button type="button" data-pulse-step="forecast" aria-pressed="false">Forecast</button>
+            <button type="button" data-pulse-step="cash" aria-pressed="false">Cash</button>
+            <button type="button" data-pulse-step="improve" aria-pressed="false">Improve</button>
+          </div>
+          <p data-pulse-copy>Budget check: targets, owners, and variance guardrails are lined up.</p>
+          <div class="welcome-pulse-meter" aria-hidden="true"><span data-pulse-meter></span></div>
+        </div>
+        <div class="welcome-actions">
+          <button class="button primary" type="button" data-welcome-close>
+            <i data-lucide="sparkles"></i>
+            Enter portfolio
+          </button>
+          <a class="button quiet welcome-proof-link" href="#proof" data-welcome-close>
+            <i data-lucide="route"></i>
+            Review proof
+          </a>
+        </div>
+      </div>
+    </div>
+
     <header class="site-header" data-header>
       <a class="brand" href="#top" aria-label="Go to top">
         <span class="brand-mark" aria-hidden="true">
@@ -113,6 +155,7 @@
                   data-title="Budget control"
                   data-kpi="Plan vs actual"
                   data-copy="Translate annual targets into branch, department, and customer-level guardrails so leaders know where the gap is forming."
+                  data-bars="42,58,76,62,86"
                   aria-pressed="true"
                 >
                   Budget
@@ -123,6 +166,7 @@
                   data-title="Driver forecast"
                   data-kpi="Base / Bull / Bear"
                   data-copy="Connect revenue, margin, headcount, direct cost, and cash assumptions into scenarios that make trade-offs visible."
+                  data-bars="34,48,68,82,72"
                   aria-pressed="false"
                 >
                   Forecast
@@ -133,6 +177,7 @@
                   data-title="Cash focus"
                   data-kpi="DSO / AR risk"
                   data-copy="Turn overdue AR, credit exposure, and collection timing into working-capital actions that non-finance teams can follow."
+                  data-bars="78,64,54,44,68"
                   aria-pressed="false"
                 >
                   Cash
@@ -143,6 +188,7 @@
                   data-title="Automation loop"
                   data-kpi="Less manual close"
                   data-copy="Use Power BI, Python, SQL, and AI-assisted checks to make recurring reporting faster, cleaner, and easier to review."
+                  data-bars="28,46,66,82,92"
                   aria-pressed="false"
                 >
                   Automate
@@ -155,6 +201,13 @@
                   Translate annual targets into branch, department, and customer-level guardrails so leaders know where
                   the gap is forming.
                 </p>
+                <div class="command-sparkline" data-command-sparkline aria-hidden="true">
+                  <span style="--bar-height: 42%"></span>
+                  <span style="--bar-height: 58%"></span>
+                  <span style="--bar-height: 76%"></span>
+                  <span style="--bar-height: 62%"></span>
+                  <span style="--bar-height: 86%"></span>
+                </div>
               </div>
               <div class="command-metrics" aria-label="Portfolio proof points">
                 <div><span>3-year</span><p>operating data review</p></div>
@@ -972,6 +1025,6 @@ python src/run_pipeline.py</code></pre>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=landing-motion-20260620"></script>
+    <script src="script.js?v=welcome-pulse-20260620"></script>
   </body>
 </html>
