@@ -510,20 +510,76 @@ textarea {
   width: 112px;
   height: 112px;
   place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(248, 251, 255, 0.13);
   border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 55% 34%, rgba(248, 251, 255, 0.11), transparent 46%),
+    radial-gradient(circle at 18% 82%, rgba(106, 184, 255, 0.16), transparent 38%),
+    linear-gradient(145deg, rgba(21, 31, 49, 0.95), rgba(7, 16, 30, 0.92) 64%, rgba(12, 30, 37, 0.9));
   box-shadow:
     0 22px 52px rgba(0, 0, 0, 0.24),
-    0 0 0 1px rgba(248, 251, 255, 0.08),
-    0 0 34px rgba(93, 215, 199, 0.13);
+    inset 0 1px 0 rgba(248, 251, 255, 0.09),
+    inset 0 -22px 44px rgba(0, 0, 0, 0.14),
+    0 0 34px rgba(93, 215, 199, 0.1);
   transform: translate(-50%, -50%);
   will-change: transform;
 }
 
-.welcome-mark-logo {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
+.welcome-mark::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(141, 225, 214, 0.16);
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: inset 0 0 22px rgba(93, 215, 199, 0.08);
+}
+
+.welcome-mark-initials {
+  position: relative;
+  z-index: 2;
+  color: #f8fbff;
+  font-size: 3.25rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1;
+  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+  transform: translateY(-4px);
+}
+
+.welcome-mark-curve {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 20%;
+  z-index: 3;
+  width: 72%;
+  height: auto;
+  overflow: visible;
+}
+
+.mark-curve-track,
+.mark-curve-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mark-curve-track {
+  stroke: rgba(248, 251, 255, 0.13);
+  stroke-width: 7.4;
+}
+
+.mark-curve-line {
+  stroke: url("#welcome-mark-line");
+  stroke-width: 4.4;
+  filter: drop-shadow(0 0 5px rgba(93, 215, 199, 0.18));
+}
+
+.mark-curve-dot {
+  fill: #e6bd72;
+  stroke: rgba(248, 251, 255, 0.3);
+  stroke-width: 1.1;
 }
 
 .welcome-signal {
@@ -1245,6 +1301,69 @@ textarea {
 
 .button.primary:hover {
   background: var(--teal-strong);
+}
+
+.welcome-actions .button.primary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(248, 251, 255, 0.42);
+  background:
+    linear-gradient(135deg, #2079ff 0%, #1790d5 48%, #0aa394 100%) padding-box,
+    conic-gradient(from 90deg, rgba(248, 251, 255, 0.7), rgba(106, 184, 255, 0.86), rgba(93, 215, 199, 0.92), rgba(244, 189, 102, 0.76), rgba(248, 251, 255, 0.7)) border-box;
+  box-shadow:
+    0 14px 32px rgba(20, 121, 255, 0.22),
+    0 0 0 1px rgba(141, 225, 214, 0.08);
+  text-shadow: 0 1px 10px rgba(7, 17, 31, 0.28);
+}
+
+.welcome-actions .button.primary::before,
+.welcome-actions .button.primary::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.welcome-actions .button.primary::before {
+  inset: 1px;
+  z-index: -1;
+  border-radius: calc(var(--radius) - 2px);
+  background:
+    linear-gradient(100deg, transparent 0 28%, rgba(248, 251, 255, 0.28) 42%, transparent 58%),
+    linear-gradient(135deg, #2079ff 0%, #1790d5 48%, #0aa394 100%);
+  background-size: 220% 100%, auto;
+  background-position: -140% 0, 0 0;
+}
+
+.welcome-actions .button.primary::after {
+  inset: 0;
+  z-index: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(from 90deg, transparent, rgba(248, 251, 255, 0.9), rgba(93, 215, 199, 0.95), rgba(244, 189, 102, 0.82), transparent 78%);
+  opacity: 0.72;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.welcome-actions .button.primary svg {
+  filter: drop-shadow(0 0 8px rgba(248, 251, 255, 0.2));
+}
+
+.welcome-actions .button.primary:hover {
+  background:
+    linear-gradient(135deg, #2b84ff 0%, #199de1 46%, #10aa9a 100%) padding-box,
+    conic-gradient(from 90deg, rgba(248, 251, 255, 0.86), rgba(106, 184, 255, 0.94), rgba(93, 215, 199, 1), rgba(244, 189, 102, 0.9), rgba(248, 251, 255, 0.86)) border-box;
+  box-shadow:
+    0 16px 38px rgba(20, 121, 255, 0.3),
+    0 0 28px rgba(93, 215, 199, 0.16);
+  transform: translateY(-1px);
 }
 
 .button.secondary {
@@ -3694,6 +3813,40 @@ code {
   }
 }
 
+@keyframes welcomeCtaBorderSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes welcomeCtaSweep {
+  0%,
+  42% {
+    background-position: -140% 0, 0 0;
+  }
+  72%,
+  100% {
+    background-position: 160% 0, 0 0;
+  }
+}
+
+@keyframes welcomeCtaPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 14px 32px rgba(20, 121, 255, 0.22),
+      0 0 0 1px rgba(141, 225, 214, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 18px 42px rgba(20, 121, 255, 0.3),
+      0 0 24px rgba(93, 215, 199, 0.18);
+  }
+}
+
 @keyframes sectionSignalShift {
   0%,
   100% {
@@ -3733,6 +3886,18 @@ code {
 
   .hero-scroll-indicator {
     animation: scrollCueBounce 2.1s ease-in-out infinite;
+  }
+
+  .welcome-actions .button.primary {
+    animation: welcomeCtaPulse 3.8s ease-in-out 1.7s infinite;
+  }
+
+  .welcome-actions .button.primary::before {
+    animation: welcomeCtaSweep 4.2s ease-in-out 1.45s infinite;
+  }
+
+  .welcome-actions .button.primary::after {
+    animation: welcomeCtaBorderSpin 3.8s linear 1.35s infinite;
   }
 
   .welcome-gate.is-open::before {
@@ -3821,6 +3986,12 @@ code {
 
   .welcome-gate.is-open .welcome-actions .button:nth-child(2) {
     animation-delay: 1250ms;
+  }
+
+  .welcome-gate.is-open .welcome-actions .button.primary {
+    animation:
+      welcomeButtonReveal 420ms cubic-bezier(0.22, 1, 0.36, 1) 1180ms both,
+      welcomeCtaPulse 3.8s ease-in-out 1.7s infinite;
   }
 
   .welcome-gate.is-open .welcome-visual {
@@ -4379,11 +4550,38 @@ code {
   .welcome-mark {
     width: min(54px, 13.8vw);
     height: min(54px, 13.8vw);
-    font-size: min(1.28rem, 5.2vw);
     box-shadow:
       0 18px 42px rgba(0, 0, 0, 0.24),
       0 0 0 1px rgba(248, 251, 255, 0.1),
       0 0 26px rgba(93, 215, 199, 0.16);
+  }
+
+  .welcome-mark::before {
+    inset: 5px;
+  }
+
+  .welcome-mark-initials {
+    font-size: min(1.52rem, 6.2vw);
+    transform: translateY(-2px);
+  }
+
+  .welcome-mark-curve {
+    left: 16%;
+    right: 16%;
+    bottom: 18%;
+    width: 68%;
+  }
+
+  .mark-curve-track {
+    stroke-width: 6.2;
+  }
+
+  .mark-curve-line {
+    stroke-width: 3.7;
+  }
+
+  .mark-curve-dot {
+    r: 4.2px;
   }
 
   .welcome-signal {
@@ -4659,15 +4857,15 @@ code {
 
 @media (max-width: 340px) {
   .welcome-actions .button {
-    padding-right: 7px;
-    padding-left: 7px;
-    gap: 5px;
-    font-size: 0.8rem;
+    padding-right: 5px;
+    padding-left: 5px;
+    gap: 2px;
+    font-size: 0.68rem;
   }
 
   .welcome-actions .button svg {
-    width: 18px;
-    height: 18px;
+    width: 13px;
+    height: 13px;
   }
 }
 
