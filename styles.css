@@ -474,31 +474,63 @@ textarea {
 
 .orbit-dot {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  z-index: 3;
+  width: 11px;
+  height: 11px;
   border: 2px solid #f8fbff;
   border-radius: 50%;
   background: #f4bd66;
   box-shadow: 0 0 28px rgba(244, 189, 102, 0.46);
+  transform: translate3d(var(--orbit-x-a, 0), var(--orbit-y-a, 0), 0) scale(var(--orbit-scale, 1));
+  transform-origin: center;
+  will-change: transform, box-shadow, opacity;
+}
+
+.orbit-dot::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: inherit;
+  background: radial-gradient(circle, currentColor 0 12%, transparent 56%);
+  opacity: 0.16;
+  transform: scale(0.86);
+  will-change: transform, opacity;
 }
 
 .dot-a {
-  top: 18%;
-  right: 22%;
+  top: 22%;
+  right: 24%;
+  color: #ffc76f;
+  background: #ffc76f;
+  box-shadow: 0 0 24px rgba(255, 199, 111, 0.4);
+  --orbit-x-a: -4px;
+  --orbit-y-a: 2px;
+  --orbit-x-b: 1px;
+  --orbit-y-b: -2px;
 }
 
 .dot-b {
-  right: 14%;
-  bottom: 27%;
+  right: 19%;
+  bottom: 31%;
   background: #5dd7c7;
+  color: #67e4d6;
   box-shadow: 0 0 28px rgba(93, 215, 199, 0.46);
+  --orbit-x-a: -2px;
+  --orbit-y-a: -3px;
+  --orbit-x-b: 3px;
+  --orbit-y-b: 1px;
 }
 
 .dot-c {
-  left: 19%;
-  bottom: 24%;
+  left: 23%;
+  bottom: 29%;
   background: #6ab8ff;
+  color: #8fbdff;
   box-shadow: 0 0 28px rgba(106, 184, 255, 0.46);
+  --orbit-x-a: 3px;
+  --orbit-y-a: -1px;
+  --orbit-x-b: -2px;
+  --orbit-y-b: 3px;
 }
 
 .welcome-mark {
@@ -661,7 +693,8 @@ textarea {
 
 .forecast-band {
   fill: url("#welcome-forecast-band");
-  opacity: 0.9;
+  display: none;
+  opacity: 0;
   stroke: none;
 }
 
@@ -699,7 +732,8 @@ textarea {
 
 .forecast-area {
   fill: url("#welcome-forecast-fill");
-  opacity: 0.54;
+  display: none;
+  opacity: 0;
   stroke: none;
 }
 
@@ -716,7 +750,7 @@ textarea {
 
 .forecast-line {
   stroke: url("#welcome-forecast-line");
-  stroke-width: 2.95;
+  stroke-width: 3.12;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   filter: none;
@@ -3846,6 +3880,30 @@ code {
   }
 }
 
+@keyframes welcomeOrbitDotDrift {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate3d(var(--orbit-x-a), var(--orbit-y-a), 0) scale(0.98);
+  }
+  46% {
+    opacity: 1;
+    transform: translate3d(var(--orbit-x-b), var(--orbit-y-b), 0) scale(1.06);
+  }
+}
+
+@keyframes welcomeOrbitDotAura {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.78);
+  }
+  50% {
+    opacity: 0.26;
+    transform: scale(1.08);
+  }
+}
+
 @keyframes welcomeVisualIn {
   0% {
     opacity: 0;
@@ -4036,6 +4094,22 @@ code {
 
   .orbit-ring {
     animation: welcomeOrbitSpin 26s linear infinite;
+  }
+
+  .welcome-gate.is-open .dot-a {
+    animation: welcomeOrbitDotDrift 5.8s ease-in-out 1.1s infinite;
+  }
+
+  .welcome-gate.is-open .dot-b {
+    animation: welcomeOrbitDotDrift 6.4s ease-in-out 1.32s infinite reverse;
+  }
+
+  .welcome-gate.is-open .dot-c {
+    animation: welcomeOrbitDotDrift 6.1s ease-in-out 1.5s infinite;
+  }
+
+  .welcome-gate.is-open .orbit-dot::before {
+    animation: welcomeOrbitDotAura 4.8s ease-in-out 1.2s infinite;
   }
 
   .welcome-mark {
@@ -5004,6 +5078,8 @@ code {
   .welcome-gate.is-open .welcome-card::before,
   .welcome-gate.is-open .welcome-card::after,
   .welcome-gate.is-open .welcome-mark::after,
+  .welcome-gate.is-open .orbit-dot,
+  .welcome-gate.is-open .orbit-dot::before,
   .welcome-gate.is-open .welcome-intro,
   .welcome-gate.is-open .welcome-visual,
   .welcome-gate.is-open .welcome-signal,
