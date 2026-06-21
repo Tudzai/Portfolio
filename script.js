@@ -290,6 +290,7 @@ if (momentumFlow) {
 
 if (commandCenter) {
   const tabs = commandCenter.querySelectorAll(".command-tab");
+  const tabGrid = commandCenter.querySelector(".command-tabs");
   const title = commandCenter.querySelector("[data-command-title]");
   const kpi = commandCenter.querySelector("[data-command-kpi]");
   const copy = commandCenter.querySelector("[data-command-copy]");
@@ -302,6 +303,12 @@ if (commandCenter) {
       tab.classList.toggle("is-active", isActive);
       tab.setAttribute("aria-pressed", String(isActive));
     });
+
+    if (tabGrid) {
+      const activeIndex = Array.from(tabs).indexOf(activeTab);
+      tabGrid.style.setProperty("--active-col", String(Math.max(0, activeIndex % 2)));
+      tabGrid.style.setProperty("--active-row", String(Math.max(0, Math.floor(activeIndex / 2))));
+    }
 
     title.textContent = activeTab.dataset.title || "";
     kpi.textContent = activeTab.dataset.kpi || "";
