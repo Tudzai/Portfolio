@@ -365,7 +365,7 @@
           <h1>20 BI projects mapped to CFO, FP&amp;A, commercial, risk, and governance decisions.</h1>
           <p class="lead">
             This hub organizes the Power BI portfolio by the business question each product answers. It keeps the
-            recruiter path clear: finance judgment first, model depth second, and public-safe proof throughout.
+            recruiter path clear: finance judgment first, model depth second, and public-safe interactive proof throughout.
           </p>
           <div class="hero-actions">
             <a class="button" href="#cfo-fpa">Start with CFO and FP&amp;A</a>
@@ -391,7 +391,7 @@
       <section class="summary-strip" aria-label="Power BI portfolio summary">
         <div><strong>20</strong><span>BI products across finance, growth, risk, and governance.</span></div>
         <div><strong>9</strong><span>CFO, FP&amp;A, treasury, margin, governance, and board products prioritized for recruiter scan.</span></div>
-        <div><strong>2</strong><span>promoted interactive previews: Project 1 and Project 20.</span></div>
+        <div><strong>20</strong><span>interactive previews with project-level GitHub source folders.</span></div>
         <div><strong>0</strong><span>raw data, PBIX, PBIT, local path, or private BI source files published here.</span></div>
       </section>
 
@@ -415,7 +415,7 @@
             <div class="proof-list"><span>53 DAX measures</span><span>13-table model</span><span>variance bridge</span></div>
             <div class="project-actions">
               <a class="button" href="monthly-fpa-performance-pack/">View preview</a>
-              <a class="button secondary" href="https://github.com/Tudzai/Portfolio/tree/master/showcase/powerbi/monthly-fpa-performance-pack" target="_blank" rel="noopener">GitHub folder</a>
+              <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2001%20-%20Monthly%20FP%26A%20Performance%20Pack" target="_blank" rel="noopener">GitHub folder</a>
             </div>
           </article>
 
@@ -427,7 +427,7 @@
             <div class="proof-list"><span>3 page tabs</span><span>scenario controls</span><span>action queue</span></div>
             <div class="project-actions">
               <a class="button" href="board-investor-cfo-pack/">View preview</a>
-              <a class="button secondary" href="https://github.com/Tudzai/Portfolio/tree/master/showcase/powerbi/board-investor-cfo-pack" target="_blank" rel="noopener">GitHub folder</a>
+              <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2020%20-%20Board%20Investor%20CFO%20Pack" target="_blank" rel="noopener">GitHub folder</a>
             </div>
           </article>
 
@@ -437,7 +437,10 @@
             <h3>Driver-Based Forecasting</h3>
             <p>Scenario model translating volume, cost, headcount, and cash assumptions into forecast decisions.</p>
             <div class="proof-list"><span>5 pages</span><span>scenario planning</span><span>forecast MAPE</span></div>
-            <div class="project-actions"><a class="button" href="driver-based-forecasting/">View preview</a></div>
+            <div class="project-actions">
+              <a class="button" href="project-preview.html?project=02">View preview</a>
+              <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2002%20-%20Driver-Based%20Forecasting" target="_blank" rel="noopener">GitHub folder</a>
+            </div>
           </article>
 
           <article class="project-card" id="regional-fpa-consolidation">
@@ -622,10 +625,67 @@
       </section>
 
       <p class="note">
-        Public-safe policy: this hub publishes only curated descriptions and existing sanitized previews. Raw extracts,
+        Public-safe policy: this hub publishes curated descriptions and interactive sanitized previews. Raw extracts,
         prepared CSVs, PBIX/PBIT files, local paths, user settings, security bindings, and private QA/build artifacts
         remain outside the GitHub Pages surface.
       </p>
     </main>
+    <script>
+      const powerBiRepoBase = "https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/";
+      const powerBiFolders = {
+        "01": "Project 01 - Monthly FP&A Performance Pack",
+        "02": "Project 02 - Driver-Based Forecasting",
+        "03": "Project 03 - Ecommerce Executive Performance",
+        "04": "Project 04 - Customer Funnel Conversion",
+        "05": "Project 05 - Retention Cohort LTV",
+        "06": "Project 06 - Marketing Campaign ROI",
+        "07": "Project 07 - Marketplace Seller Performance",
+        "08": "Project 08 - Digital Payments Profitability",
+        "09": "Project 09 - BNPL Credit Risk Provision",
+        "10": "Project 10 - AML Fraud Monitoring",
+        "11": "Project 11 - Neobank Growth Retention LTV",
+        "12": "Project 12 - WealthTech AUM Client Retention",
+        "13": "Project 13 - Regional FP&A Consolidation",
+        "14": "Project 14 - Treasury Working Capital",
+        "15": "Project 15 - SaaS CFO Metrics",
+        "16": "Project 16 - Manufacturing Cost FP&A",
+        "17": "Project 17 - Logistics Trade Lane Profitability",
+        "18": "Project 18 - ESG Carbon Finance",
+        "19": "Project 19 - Finance Data Quality BI Governance",
+        "20": "Project 20 - Board Investor CFO Pack"
+      };
+      const previewRoutes = {
+        "01": "monthly-fpa-performance-pack/",
+        "20": "board-investor-cfo-pack/"
+      };
+
+      document.querySelectorAll(".project-card").forEach((card) => {
+        const no = card.querySelector(".project-no")?.textContent.trim();
+        const folder = powerBiFolders[no];
+        if (!no || !folder) return;
+
+        const status = card.querySelector(".status");
+        if (status) status.textContent = "Interactive preview";
+
+        const actions = card.querySelector(".project-actions") || document.createElement("div");
+        actions.className = "project-actions";
+        actions.replaceChildren();
+
+        const preview = document.createElement("a");
+        preview.className = "button";
+        preview.href = previewRoutes[no] || `project-preview.html?project=${no}`;
+        preview.textContent = "View preview";
+
+        const github = document.createElement("a");
+        github.className = "button secondary";
+        github.href = powerBiRepoBase + encodeURIComponent(folder);
+        github.target = "_blank";
+        github.rel = "noopener";
+        github.textContent = "GitHub folder";
+
+        actions.append(preview, github);
+        if (!actions.parentElement) card.append(actions);
+      });
+    </script>
   </body>
 </html>

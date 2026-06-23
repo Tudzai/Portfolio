@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Power BI Project Interactive Preview | Truong Dinh Anh Tu</title>
+    <style>
+      :root {
+        --bg: #f6f7f4;
+        --surface: #ffffff;
+        --surface-strong: #eef3ef;
+        --ink: #17201d;
+        --muted: #5f6d68;
+        --line: #d9dfda;
+        --teal: #0d7b7b;
+        --amber: #c98128;
+        --green: #5f8f6f;
+        --red: #b95d4d;
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, Arial, sans-serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      .shell {
+        width: min(1240px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 30px 0 56px;
+      }
+
+      .back {
+        display: inline-flex;
+        margin-bottom: 22px;
+        color: var(--teal);
+        font-weight: 850;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(300px, 0.55fr);
+        gap: 24px;
+        align-items: end;
+        padding: clamp(24px, 5vw, 42px);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+      }
+
+      .kicker {
+        margin: 0 0 10px;
+        color: var(--amber);
+        font-size: 0.76rem;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 850px;
+        margin-bottom: 14px;
+        font-size: clamp(2.15rem, 5vw, 4.1rem);
+        line-height: 1.03;
+      }
+
+      .lead {
+        max-width: 780px;
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 1.04rem;
+        line-height: 1.7;
+      }
+
+      .controls {
+        display: grid;
+        gap: 12px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface-strong);
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      .field label {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      select {
+        min-height: 42px;
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        color: var(--ink);
+        font-weight: 750;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 14px;
+        border: 0;
+        border-radius: var(--radius);
+        background: var(--teal);
+        color: #fff;
+        cursor: pointer;
+        font-weight: 850;
+      }
+
+      .button.secondary {
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink);
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .metric,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+      }
+
+      .metric {
+        min-height: 118px;
+        padding: 18px;
+      }
+
+      .metric strong {
+        display: block;
+        color: var(--teal);
+        font-size: clamp(1.35rem, 2.4vw, 2rem);
+        line-height: 1.12;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.65fr);
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .panel {
+        min-width: 0;
+        padding: 18px;
+      }
+
+      .panel h2 {
+        margin-bottom: 6px;
+        font-size: 1.08rem;
+      }
+
+      .panel-subtitle {
+        margin-bottom: 18px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .bars {
+        display: grid;
+        gap: 14px;
+      }
+
+      .bar-row {
+        display: grid;
+        grid-template-columns: minmax(120px, 0.7fr) minmax(0, 1fr) 78px;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .bar-label {
+        color: #34413d;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      .bar-track {
+        height: 15px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e8eee9;
+      }
+
+      .bar-fill {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: var(--teal);
+      }
+
+      .bar-value {
+        color: var(--muted);
+        font-size: 0.86rem;
+        font-weight: 850;
+        text-align: right;
+      }
+
+      .driver-list,
+      .action-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .driver-row,
+      .action-item,
+      .qa-item {
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--bg);
+      }
+
+      .driver-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .driver-row strong,
+      .action-item strong,
+      .qa-item strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .driver-row span,
+      .action-item span,
+      .qa-item span {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.45;
+      }
+
+      .driver-impact {
+        color: var(--teal);
+        font-weight: 900;
+      }
+
+      .driver-impact.is-risk {
+        color: var(--red);
+      }
+
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .tab {
+        min-height: 36px;
+        padding: 8px 11px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        color: var(--muted);
+        cursor: pointer;
+        font-weight: 850;
+      }
+
+      .tab.is-active {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .qa-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .footer-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .metrics,
+        .dashboard,
+        .qa-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          width: min(calc(100% - 32px), 400px);
+          padding-top: 22px;
+        }
+
+        .hero,
+        .panel {
+          padding: 18px;
+        }
+
+        .bar-row {
+          grid-template-columns: 1fr;
+          gap: 7px;
+        }
+
+        .bar-value {
+          text-align: left;
+        }
+
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <a class="back" href="./">Back to Power BI hub</a>
+
+      <section class="hero">
+        <div>
+          <p class="kicker" id="projectLens">Power BI decision preview</p>
+          <h1 id="projectTitle">Power BI project preview</h1>
+          <p class="lead" id="projectSummary"></p>
+        </div>
+        <div class="controls" aria-label="Preview controls">
+          <div class="field">
+            <label for="projectSelect">Project</label>
+            <select id="projectSelect"></select>
+          </div>
+          <div class="field">
+            <label for="scenarioSelect">Scenario</label>
+            <select id="scenarioSelect">
+              <option value="base">Base case</option>
+              <option value="upside">Upside case</option>
+              <option value="downside">Downside case</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="periodSelect">Period</label>
+            <select id="periodSelect">
+              <option value="mtd">MTD close</option>
+              <option value="qtd">QTD review</option>
+              <option value="fy">FY forecast</option>
+            </select>
+          </div>
+          <div class="actions">
+            <a class="button" id="repoLink" href="#" target="_blank" rel="noopener">GitHub folder</a>
+            <a class="button secondary" href="./">All projects</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Project KPIs" id="metricGrid"></section>
+
+      <section class="dashboard" aria-label="Interactive project dashboard preview">
+        <article class="panel">
+          <div class="tabs" aria-label="Dashboard lens">
+            <button class="tab is-active" type="button" data-lens="executive">Executive</button>
+            <button class="tab" type="button" data-lens="drivers">Drivers</button>
+            <button class="tab" type="button" data-lens="actions">Actions</button>
+          </div>
+          <h2 id="chartTitle">Executive scorecard</h2>
+          <p class="panel-subtitle" id="chartSubtitle"></p>
+          <div class="bars" id="bars"></div>
+        </article>
+
+        <aside class="panel">
+          <h2>Owner action queue</h2>
+          <p class="panel-subtitle" id="actionSubtitle"></p>
+          <div class="action-list" id="actions"></div>
+        </aside>
+
+        <article class="panel">
+          <h2>Driver bridge</h2>
+          <p class="panel-subtitle" id="driverSubtitle"></p>
+          <div class="driver-list" id="drivers"></div>
+        </article>
+
+        <article class="panel">
+          <h2>Governance checks</h2>
+          <p class="panel-subtitle">Public-safe BI preview with synthetic measures, folder-level source link, and no raw model files.</p>
+          <div class="qa-grid">
+            <div class="qa-item"><strong>No PBIX/PBIT</strong><span>Published page links to source folder only.</span></div>
+            <div class="qa-item"><strong>No raw extracts</strong><span>Preview data is synthetic and browser-rendered.</span></div>
+            <div class="qa-item"><strong>Decision first</strong><span>Each project is framed by business action, not tool output.</span></div>
+          </div>
+        </article>
+      </section>
+
+      <div class="footer-actions">
+        <a class="button" href="./">Back to 20-project hub</a>
+        <a class="button secondary" id="repoLinkBottom" href="#" target="_blank" rel="noopener">Open GitHub folder</a>
+      </div>
+    </main>
+
+    <script>
+      const repoBase = "https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/";
+      const projects = [
+        {
+          no: "01",
+          folder: "Project 01 - Monthly FP&A Performance Pack",
+          title: "Monthly FP&A Performance Pack",
+          lens: "Management reporting",
+          summary: "Executive close pack tying Actual/Budget/Forecast to EBITDA bridge, cash visibility, drilldowns, and management action commentary.",
+          metrics: [["$36.7M", "revenue sample"], ["77.8%", "gross margin lens"], ["$14.3M", "EBITDA sample"], ["53", "DAX measures"]],
+          bars: [["Revenue", 88], ["Gross margin", 78], ["EBITDA", 72], ["Cash", 69]],
+          drivers: [["Volume and mix", "+$2.4M", false], ["Direct cost pressure", "-$0.9M", true], ["Opex discipline", "+$0.6M", false]],
+          actions: [["Sales", "Protect high-margin lanes and review low-yield customers."], ["Operations", "Explain cost variance and recover vendor leakage."], ["Finance", "Lock forecast bridge and owner commentary."]]
+        },
+        {
+          no: "02",
+          folder: "Project 02 - Driver-Based Forecasting",
+          title: "Driver-Based Forecasting",
+          lens: "Planning model",
+          summary: "Scenario model translating volume, cost, headcount, and cash assumptions into a forecast call for FP&A leaders.",
+          metrics: [["$273.4M", "base forecast revenue"], ["$21.9M", "ending cash"], ["6.4%", "forecast MAPE"], ["5", "planning pages"]],
+          bars: [["Volume", 82], ["Rate", 73], ["Headcount", 61], ["Cash cover", 69]],
+          drivers: [["Demand assumption", "+4.8%", false], ["Cost inflation", "-2.2%", true], ["Hiring phasing", "+1.1%", false]],
+          actions: [["FP&A", "Compare base, upside, and downside assumptions before forecast signoff."], ["Business owners", "Submit driver changes with quantified EBITDA impact."], ["CFO", "Approve cash guardrail for downside case."]]
+        },
+        {
+          no: "03",
+          folder: "Project 03 - Ecommerce Executive Performance",
+          title: "Ecommerce Executive Performance",
+          lens: "Ecommerce executive KPIs",
+          summary: "Executive cockpit for revenue, margin, customers, orders, refunds, and ecommerce operating levers.",
+          metrics: [["$48.2M", "GMV sample"], ["18.6%", "gross margin"], ["1.24M", "orders"], ["2.1%", "refund rate"]],
+          bars: [["GMV", 84], ["Orders", 76], ["AOV", 63], ["Refund control", 71]],
+          drivers: [["Category mix", "+$1.8M", false], ["Refund leakage", "-$0.5M", true], ["Repeat buyers", "+7.2%", false]],
+          actions: [["Commercial", "Push profitable categories with strong repeat purchase."], ["Ops", "Prioritize refund root-cause by category."], ["Finance", "Refresh margin waterfall for executive review."]]
+        },
+        {
+          no: "04",
+          folder: "Project 04 - Customer Funnel Conversion",
+          title: "Customer Funnel Conversion",
+          lens: "Conversion analytics",
+          summary: "Acquisition-to-order funnel view tracing leakage by segment, category, and channel.",
+          metrics: [["7.8M", "sessions"], ["12.4%", "cart rate"], ["4.9%", "order conversion"], ["-$0.7M", "leakage value"]],
+          bars: [["Visit", 92], ["Product view", 73], ["Cart", 54], ["Order", 38]],
+          drivers: [["Checkout friction", "-1.3 pts", true], ["Paid search quality", "+0.8 pts", false], ["Mobile speed", "-0.5 pts", true]],
+          actions: [["Product", "Fix checkout step with highest leakage."], ["Marketing", "Shift spend to channels with purchase-ready traffic."], ["Finance", "Size conversion upside by segment."]]
+        },
+        {
+          no: "05",
+          folder: "Project 05 - Retention Cohort LTV",
+          title: "Retention Cohort LTV",
+          lens: "Customer lifecycle",
+          summary: "Cohort and LTV dashboard exposing retention decay, churn signals, customer value, and win-back priorities.",
+          metrics: [["68%", "M3 retention"], ["3.4x", "LTV/CAC"], ["11.2%", "churn risk"], ["$8.6M", "retained value"]],
+          bars: [["Month 1", 86], ["Month 3", 68], ["Month 6", 55], ["Month 12", 43]],
+          drivers: [["First order quality", "+6.1 pts", false], ["Dormant cohort", "-4.4 pts", true], ["Win-back offer", "+$0.9M", false]],
+          actions: [["CRM", "Target dormant high-LTV cohorts."], ["Commercial", "Improve first-order experience for new users."], ["Finance", "Track LTV recovery versus incentive cost."]]
+        },
+        {
+          no: "06",
+          folder: "Project 06 - Marketing Campaign ROI",
+          title: "Marketing Campaign ROI",
+          lens: "Marketing finance",
+          summary: "Campaign ROI command center showing which channels to scale, pause, or fix based on spend efficiency.",
+          metrics: [["4.8x", "ROAS"], ["$18.40", "CAC"], ["31%", "budget at risk"], ["$1.2M", "redeployable spend"]],
+          bars: [["Search", 82], ["Affiliate", 74], ["Social", 45], ["Display", 32]],
+          drivers: [["Search intent", "+$0.8M", false], ["Display waste", "-$0.4M", true], ["Creative fatigue", "-12%", true]],
+          actions: [["Marketing", "Scale high-intent campaigns."], ["Finance", "Reallocate spend from low-ROAS channels."], ["Growth", "Refresh creative for fatigued segments."]]
+        },
+        {
+          no: "07",
+          folder: "Project 07 - Marketplace Seller Performance",
+          title: "Marketplace Seller Performance",
+          lens: "Marketplace operations",
+          summary: "Seller performance dashboard ranking GMV, fulfillment, cancellation, rating, stock risk, and growth actions.",
+          metrics: [["2,840", "active sellers"], ["96.1%", "fulfillment SLA"], ["3.8%", "cancel rate"], ["$3.1M", "growth pool"]],
+          bars: [["Top sellers", 86], ["Fulfillment", 80], ["Stock health", 64], ["Rating", 72]],
+          drivers: [["Top seller expansion", "+$1.4M", false], ["Cancellation risk", "-$0.3M", true], ["Stockout pressure", "-$0.6M", true]],
+          actions: [["Marketplace", "Prioritize seller enablement for high-GMV accounts."], ["Operations", "Resolve stockout and cancellation root causes."], ["Finance", "Quantify margin from seller quality actions."]]
+        },
+        {
+          no: "08",
+          folder: "Project 08 - Digital Payments Profitability",
+          title: "Digital Payments Profitability",
+          lens: "Payments profitability",
+          summary: "Payments profitability dashboard linking merchant mix, transaction drivers, margin scenarios, and fee economics.",
+          metrics: [["$92.5M", "TPV sample"], ["1.28%", "take rate"], ["38%", "gross margin"], ["$0.09", "unit profit"]],
+          bars: [["TPV", 90], ["Take rate", 63], ["Cost to serve", 58], ["Merchant mix", 70]],
+          drivers: [["Enterprise TPV", "+$2.2M", false], ["Processing cost", "-$0.7M", true], ["Fee optimization", "+$0.4M", false]],
+          actions: [["Commercial", "Review low-fee enterprise contracts."], ["Finance", "Model fee tiers by merchant segment."], ["Ops", "Track processing cost exceptions."]]
+        },
+        {
+          no: "09",
+          folder: "Project 09 - BNPL Credit Risk Provision",
+          title: "BNPL Credit Risk Provision",
+          lens: "Credit risk",
+          summary: "Credit-risk provision dashboard for loan book trend, delinquency, collections SLA, and provision pressure.",
+          metrics: [["$41.6M", "loan book"], ["6.7%", "30+ DPD"], ["2.9%", "loss rate"], ["$1.1M", "provision gap"]],
+          bars: [["Current", 82], ["1-30 DPD", 54], ["31-60 DPD", 31], ["60+ DPD", 18]],
+          drivers: [["Vintage mix", "-$0.5M", true], ["Collections lift", "+$0.3M", false], ["Merchant cohort", "-$0.2M", true]],
+          actions: [["Risk", "Tighten exposure for weak merchant cohorts."], ["Collections", "Focus accounts before 60+ DPD migration."], ["Finance", "Update provision sensitivity for CFO review."]]
+        },
+        {
+          no: "10",
+          folder: "Project 10 - AML Fraud Monitoring",
+          title: "AML Fraud Monitoring",
+          lens: "Risk operations",
+          summary: "Fraud command center surfacing suspicious patterns, case backlog, rule performance, and AML monitoring actions.",
+          metrics: [["12,480", "alerts"], ["91%", "SLA cleared"], ["3.2%", "false positives"], ["$0.8M", "exposure flagged"]],
+          bars: [["Rule hits", 74], ["Case SLA", 83], ["False positives", 58], ["Exposure", 66]],
+          drivers: [["New pattern cluster", "-$0.4M", true], ["Rule tuning", "+9 pts", false], ["Backlog aging", "-6 pts", true]],
+          actions: [["Risk Ops", "Escalate high-exposure clusters."], ["Analytics", "Tune rules with high false-positive rate."], ["Compliance", "Track SLA aging by owner."]]
+        },
+        {
+          no: "11",
+          folder: "Project 11 - Neobank Growth Retention LTV",
+          title: "Neobank Growth Retention LTV",
+          lens: "Neobank growth",
+          summary: "Growth and retention pack tying onboarding funnel, cohorts, churn, marketing ROI, and LTV to profitable growth.",
+          metrics: [["520K", "funded accounts"], ["72%", "M2 active"], ["2.7x", "LTV/CAC"], ["8.8%", "monthly churn"]],
+          bars: [["Onboarded", 88], ["Funded", 69], ["Active", 60], ["Retained", 52]],
+          drivers: [["Funding activation", "+5.4 pts", false], ["Dormant churn", "-3.1 pts", true], ["Channel quality", "+0.6x", false]],
+          actions: [["Growth", "Fund users earlier in onboarding."], ["CRM", "Reduce churn in first 60 days."], ["Finance", "Tie channel budget to LTV/CAC."]]
+        },
+        {
+          no: "12",
+          folder: "Project 12 - WealthTech AUM Client Retention",
+          title: "WealthTech AUM Client Retention",
+          lens: "Wealth analytics",
+          summary: "AUM retention dashboard combining portfolio mix, client risk, suitability, and retention actions.",
+          metrics: [["$1.8B", "AUM sample"], ["94.2%", "client retention"], ["7.6%", "outflow risk"], ["$46M", "at-risk AUM"]],
+          bars: [["AUM", 89], ["Retention", 84], ["Suitability", 72], ["Outflow risk", 39]],
+          drivers: [["Advisor coverage", "+$18M", false], ["Market drawdown", "-$11M", true], ["Suitability gap", "-$7M", true]],
+          actions: [["Advisory", "Contact high-AUM at-risk clients."], ["Risk", "Resolve suitability exceptions."], ["Finance", "Track fee revenue exposure."]]
+        },
+        {
+          no: "13",
+          folder: "Project 13 - Regional FP&A Consolidation",
+          title: "Regional FP&A Consolidation",
+          lens: "Regional MNC finance",
+          summary: "Regional consolidation command center for country/entity variance, FX translation, eliminations, and close exceptions.",
+          metrics: [["7", "entities"], ["3", "currencies"], ["99.2%", "close tie-out"], ["$2.6M", "FX variance"]],
+          bars: [["Country A", 78], ["Country B", 63], ["Country C", 70], ["Elims", 57]],
+          drivers: [["FX translation", "-$0.8M", true], ["Entity margin", "+$1.1M", false], ["Elimination timing", "-$0.3M", true]],
+          actions: [["Regional FP&A", "Lock country variance owner comments."], ["Accounting", "Clear elimination timing breaks."], ["CFO", "Review FX bridge before board pack."]]
+        },
+        {
+          no: "14",
+          folder: "Project 14 - Treasury Working Capital",
+          title: "Treasury Working Capital",
+          lens: "Treasury and cash",
+          summary: "Treasury view prioritizing AR, DSO, cash runway, FX exposure, liquidity, and collection actions.",
+          metrics: [["$24.7M", "cash sample"], ["51", "DSO"], ["$6.2M", "overdue AR"], ["14.8", "runway months"]],
+          bars: [["Cash", 77], ["AR quality", 58], ["DSO", 48], ["Collections", 68]],
+          drivers: [["Overdue AR", "-$1.6M", true], ["Supplier terms", "+$0.7M", false], ["FX exposure", "-$0.4M", true]],
+          actions: [["Treasury", "Prioritize top overdue customers."], ["Commercial", "Escalate collection promises by owner."], ["Finance", "Refresh cash runway under downside case."]]
+        },
+        {
+          no: "15",
+          folder: "Project 15 - SaaS CFO Metrics",
+          title: "SaaS CFO Metrics",
+          lens: "CFO metrics",
+          summary: "CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health.",
+          metrics: [["$18.4M", "ARR sample"], ["112%", "NRR"], ["14", "CAC payback months"], ["7.1%", "logo churn"]],
+          bars: [["ARR", 80], ["NRR", 75], ["CAC payback", 56], ["Churn", 42]],
+          drivers: [["Expansion ARR", "+$1.1M", false], ["SMB churn", "-$0.4M", true], ["Sales efficiency", "+0.2x", false]],
+          actions: [["Sales", "Prioritize expansion in healthy cohorts."], ["CS", "Target SMB churn accounts."], ["Finance", "Connect ARR bridge to board forecast."]]
+        },
+        {
+          no: "16",
+          folder: "Project 16 - Manufacturing Cost FP&A",
+          title: "Manufacturing Cost FP&A",
+          lens: "Cost FP&A",
+          summary: "Cost FP&A pack decomposing standard cost variance, yield, capacity, inventory days, and margin recovery actions.",
+          metrics: [["$7.3M", "cost variance"], ["86%", "capacity use"], ["94.1%", "yield"], ["48", "inventory days"]],
+          bars: [["Material", 66], ["Labor", 58], ["Overhead", 61], ["Yield", 76]],
+          drivers: [["Material price", "-$1.2M", true], ["Yield recovery", "+$0.5M", false], ["Idle capacity", "-$0.7M", true]],
+          actions: [["Operations", "Recover yield on underperforming lines."], ["Procurement", "Negotiate material price variance."], ["Finance", "Track margin recovery by plant."]]
+        },
+        {
+          no: "17",
+          folder: "Project 17 - Logistics Trade Lane Profitability",
+          title: "Logistics Trade Lane Profitability",
+          lens: "Commercial finance",
+          summary: "Lane-level profitability cockpit showing customers, services, and lanes needing repricing or renegotiation.",
+          metrics: [["$62.8M", "lane revenue"], ["21.6%", "gross margin"], ["37", "loss lanes"], ["$2.3M", "repricing pool"]],
+          bars: [["Air", 64], ["Ocean", 73], ["Road", 59], ["Customs", 68]],
+          drivers: [["Fuel surcharge", "-$0.6M", true], ["Lane mix", "+$0.8M", false], ["Loss customers", "-$1.1M", true]],
+          actions: [["Commercial", "Reprice loss lanes and low-yield accounts."], ["Ops", "Reduce exception cost on air lanes."], ["Finance", "Track customer margin action queue."]]
+        },
+        {
+          no: "18",
+          folder: "Project 18 - ESG Carbon Finance",
+          title: "ESG Carbon Finance",
+          lens: "ESG finance",
+          summary: "ESG finance dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and governance.",
+          metrics: [["42.5K", "tCO2e sample"], ["$1.9M", "carbon cost"], ["18%", "abatement ROI"], ["12", "supplier risks"]],
+          bars: [["Scope 1", 48], ["Scope 2", 55], ["Scope 3", 82], ["Abatement", 64]],
+          drivers: [["Supplier intensity", "-$0.8M", true], ["Energy mix", "+$0.3M", false], ["Carbon price", "-$0.5M", true]],
+          actions: [["Procurement", "Engage high-intensity suppliers."], ["Finance", "Model carbon price exposure."], ["ESG", "Prioritize abatement projects with payback."]]
+        },
+        {
+          no: "19",
+          folder: "Project 19 - Finance Data Quality BI Governance",
+          title: "Finance Data Quality BI Governance",
+          lens: "Finance governance",
+          summary: "Governance BI monitoring reconciliation breaks, data quality risk, refresh reliability, and owner action queues.",
+          metrics: [["99.6%", "refresh SLA"], ["42", "data checks"], ["8", "recon breaks"], ["3", "owner escalations"]],
+          bars: [["Refresh", 91], ["Completeness", 84], ["Reconciliation", 67], ["Ownership", 74]],
+          drivers: [["Refresh reliability", "+6 pts", false], ["Mapping gaps", "-4 pts", true], ["Owner SLA", "+3 pts", false]],
+          actions: [["Data owner", "Resolve high-risk mapping gaps."], ["Finance", "Review recon breaks before close."], ["BI", "Monitor refresh exceptions and alerts."]]
+        },
+        {
+          no: "20",
+          folder: "Project 20 - Board Investor CFO Pack",
+          title: "Board Investor CFO Pack",
+          lens: "Board reporting",
+          summary: "Board-ready CFO pack connecting performance, cash plan, runway, valuation risk, and investor-level KPIs.",
+          metrics: [["$36.7M", "latest revenue"], ["99.0x", "runway view"], ["$14.3M", "EBITDA"], ["3", "board tabs"]],
+          bars: [["Performance", 80], ["Cash plan", 74], ["Runway", 86], ["Risk", 58]],
+          drivers: [["Growth quality", "+$1.7M", false], ["Covenant headroom", "+4.2 pts", false], ["Valuation risk", "-0.6x", true]],
+          actions: [["CFO", "Frame board narrative around cash and runway."], ["CEO", "Resolve investor risk watchlist."], ["FP&A", "Refresh board pack bridge and action queue."]]
+        }
+      ];
+
+      const projectSelect = document.querySelector("#projectSelect");
+      const scenarioSelect = document.querySelector("#scenarioSelect");
+      const periodSelect = document.querySelector("#periodSelect");
+      const metricGrid = document.querySelector("#metricGrid");
+      const bars = document.querySelector("#bars");
+      const drivers = document.querySelector("#drivers");
+      const actions = document.querySelector("#actions");
+      const repoLink = document.querySelector("#repoLink");
+      const repoLinkBottom = document.querySelector("#repoLinkBottom");
+      const tabs = document.querySelectorAll(".tab");
+      let activeLens = "executive";
+
+      projects.forEach((project) => {
+        const option = document.createElement("option");
+        option.value = project.no;
+        option.textContent = `${project.no} - ${project.title}`;
+        projectSelect.append(option);
+      });
+
+      function scenarioFactor() {
+        return { base: 1, upside: 1.12, downside: 0.86 }[scenarioSelect.value] || 1;
+      }
+
+      function periodLabel() {
+        return { mtd: "month-to-date", qtd: "quarter-to-date", fy: "full-year forecast" }[periodSelect.value] || "current review";
+      }
+
+      function getSelectedProject() {
+        return projects.find((project) => project.no === projectSelect.value) || projects[0];
+      }
+
+      function render() {
+        const project = getSelectedProject();
+        const factor = scenarioFactor();
+        const repoUrl = repoBase + encodeURIComponent(project.folder);
+
+        document.title = `${project.title} | Power BI Preview`;
+        document.querySelector("#projectLens").textContent = project.lens;
+        document.querySelector("#projectTitle").textContent = `${project.no}. ${project.title}`;
+        document.querySelector("#projectSummary").textContent = project.summary;
+        repoLink.href = repoUrl;
+        repoLinkBottom.href = repoUrl;
+
+        metricGrid.replaceChildren(
+          ...project.metrics.map(([value, label]) => {
+            const card = document.createElement("article");
+            card.className = "metric";
+            const strong = document.createElement("strong");
+            strong.textContent = value;
+            const span = document.createElement("span");
+            span.textContent = label;
+            card.append(strong, span);
+            return card;
+          })
+        );
+
+        const lensCopy = {
+          executive: ["Executive scorecard", `Scenario-adjusted ${periodLabel()} view for recruiter-safe review.`],
+          drivers: ["Driver readout", `Driver pressure and upside translated into ${periodLabel()} management action.`],
+          actions: ["Action lens", `Owner-ready view showing where this BI product supports decisions.`]
+        };
+        document.querySelector("#chartTitle").textContent = lensCopy[activeLens][0];
+        document.querySelector("#chartSubtitle").textContent = lensCopy[activeLens][1];
+        document.querySelector("#actionSubtitle").textContent = `${project.lens} decision actions for the ${periodLabel()} cycle.`;
+        document.querySelector("#driverSubtitle").textContent = `Top movement drivers under the ${scenarioSelect.options[scenarioSelect.selectedIndex].text}.`;
+
+        bars.replaceChildren(
+          ...project.bars.map(([label, value]) => {
+            const adjusted = Math.max(12, Math.min(96, Math.round(value * factor)));
+            const row = document.createElement("div");
+            row.className = "bar-row";
+            const name = document.createElement("div");
+            name.className = "bar-label";
+            name.textContent = label;
+            const track = document.createElement("div");
+            track.className = "bar-track";
+            const fill = document.createElement("span");
+            fill.className = "bar-fill";
+            fill.style.width = `${adjusted}%`;
+            fill.style.background = activeLens === "actions" ? "var(--green)" : activeLens === "drivers" ? "var(--amber)" : "var(--teal)";
+            track.append(fill);
+            const score = document.createElement("div");
+            score.className = "bar-value";
+            score.textContent = `${adjusted}%`;
+            row.append(name, track, score);
+            return row;
+          })
+        );
+
+        drivers.replaceChildren(
+          ...project.drivers.map(([name, impact, risk]) => {
+            const row = document.createElement("div");
+            row.className = "driver-row";
+            const copy = document.createElement("div");
+            const strong = document.createElement("strong");
+            strong.textContent = name;
+            const span = document.createElement("span");
+            span.textContent = risk ? "Pressure to explain, recover, or control." : "Upside or control lever for the next review.";
+            copy.append(strong, span);
+            const value = document.createElement("div");
+            value.className = `driver-impact${risk ? " is-risk" : ""}`;
+            value.textContent = impact;
+            row.append(copy, value);
+            return row;
+          })
+        );
+
+        actions.replaceChildren(
+          ...project.actions.map(([owner, action]) => {
+            const item = document.createElement("div");
+            item.className = "action-item";
+            const strong = document.createElement("strong");
+            strong.textContent = owner;
+            const span = document.createElement("span");
+            span.textContent = action;
+            item.append(strong, span);
+            return item;
+          })
+        );
+
+        const nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.set("project", project.no);
+        window.history.replaceState({}, "", nextUrl);
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          activeLens = tab.dataset.lens;
+          tabs.forEach((item) => item.classList.toggle("is-active", item === tab));
+          render();
+        });
+      });
+
+      projectSelect.addEventListener("change", render);
+      scenarioSelect.addEventListener("change", render);
+      periodSelect.addEventListener("change", render);
+
+      const requested = new URLSearchParams(window.location.search).get("project") || "01";
+      projectSelect.value = projects.some((project) => project.no === requested) ? requested : "01";
+      render();
+    </script>
+  </body>
+</html>
