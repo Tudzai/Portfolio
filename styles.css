@@ -2661,6 +2661,36 @@ main > section {
   gap: 18px;
 }
 
+.bi-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.bi-summary-strip div {
+  min-height: 104px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(13, 123, 123, 0.08), rgba(201, 129, 40, 0.08));
+}
+
+.bi-summary-strip strong {
+  display: block;
+  color: var(--teal);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.1;
+}
+
+.bi-summary-strip span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .bi-product-card {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -2744,6 +2774,84 @@ main > section {
   gap: 10px;
   margin-top: auto;
   padding-top: 22px;
+}
+
+.bi-priority-panel {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.74fr) minmax(0, 1.26fr);
+  gap: 18px;
+  margin-top: 18px;
+  padding: clamp(18px, 3vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(248, 251, 255, 0.86), rgba(13, 123, 123, 0.08)),
+    var(--surface);
+}
+
+.bi-priority-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bi-priority-intro h3 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  line-height: 1.18;
+}
+
+.bi-priority-intro p:not(.case-label) {
+  margin: 13px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.bi-priority-intro .button {
+  margin-top: auto;
+}
+
+.bi-priority-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.bi-priority-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 182px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.bi-priority-card:hover {
+  border-color: rgba(13, 123, 123, 0.38);
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+.bi-priority-card span {
+  color: var(--amber);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.bi-priority-card strong {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.bi-priority-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
 }
 
 .portfolio-note {
@@ -4836,6 +4944,8 @@ code {
   .case-grid,
   .decision-case-grid,
   .bi-product-grid,
+  .bi-summary-strip,
+  .bi-priority-panel,
   .detail-hero-grid,
   .memo-layout,
   .split-detail,
@@ -4867,6 +4977,10 @@ code {
   }
 
   .fit-lens-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bi-priority-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -5293,6 +5407,16 @@ code {
 
   .command-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .bi-summary-strip,
+  .bi-priority-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bi-priority-card,
+  .bi-summary-strip div {
+    min-height: auto;
   }
 
   .momentum-step {
