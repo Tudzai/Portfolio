@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Board Investor CFO Pack Interactive Preview</title>
+    <style>
+      :root {
+        --bg: #f4f1f7;
+        --ink: #170f24;
+        --muted: #746a82;
+        --line: #ddd4e7;
+        --panel: #ffffff;
+        --panel-strong: #f8f5fb;
+        --purple: #3f2468;
+        --violet: #7045a6;
+        --teal: #0f8f8a;
+        --amber: #d99a39;
+        --red: #c65555;
+        --green: #4b9a68;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, Arial, sans-serif;
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        padding: 22px 18px;
+        background:
+          radial-gradient(circle at 20% 0%, rgba(217, 154, 57, 0.18), transparent 34%),
+          linear-gradient(180deg, #261540 0%, #150d24 100%);
+        color: #fff;
+      }
+
+      .brand {
+        display: grid;
+        gap: 8px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .brand span {
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .brand strong {
+        max-width: 160px;
+        font-size: 1.35rem;
+        line-height: 1.05;
+      }
+
+      .tabs {
+        display: grid;
+        gap: 8px;
+        margin-top: 22px;
+      }
+
+      .tab {
+        min-height: 42px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.07);
+        color: rgba(255, 255, 255, 0.78);
+        cursor: pointer;
+        text-align: left;
+        font-weight: 800;
+      }
+
+      .tab.is-active {
+        border-color: rgba(255, 255, 255, 0.44);
+        background: #fff;
+        color: var(--purple);
+      }
+
+      .side-note {
+        margin: 22px 0 0;
+        color: rgba(255, 255, 255, 0.66);
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+
+      .main {
+        padding: 22px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+
+      .kicker {
+        margin: 0 0 6px;
+        color: var(--amber);
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.6rem, 4vw, 2.6rem);
+        line-height: 1.04;
+      }
+
+      .lens {
+        margin-top: 8px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      select {
+        min-height: 38px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 750;
+      }
+
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .kpi,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 1px 0 rgba(23, 15, 36, 0.04);
+      }
+
+      .kpi {
+        min-height: 122px;
+        padding: 16px;
+      }
+
+      .kpi span {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .kpi strong {
+        display: block;
+        margin-top: 10px;
+        color: var(--purple);
+        font-size: clamp(1.35rem, 2.6vw, 2rem);
+        line-height: 1;
+      }
+
+      .kpi small {
+        display: block;
+        margin-top: 8px;
+        color: var(--green);
+        font-weight: 850;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.82fr);
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .panel {
+        min-height: 280px;
+        padding: 18px;
+      }
+
+      .panel h2 {
+        font-size: 1rem;
+        line-height: 1.2;
+      }
+
+      .panel-subtitle {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.5;
+      }
+
+      .chart {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        align-items: end;
+        gap: 10px;
+        height: 190px;
+        margin-top: 18px;
+        padding: 0 4px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .bar {
+        position: relative;
+        display: grid;
+        align-items: end;
+        height: 100%;
+      }
+
+      .bar i {
+        display: block;
+        border-radius: 6px 6px 0 0;
+        background: linear-gradient(180deg, var(--violet), var(--purple));
+      }
+
+      .bar span {
+        position: absolute;
+        bottom: -28px;
+        left: 50%;
+        color: var(--muted);
+        font-size: 0.72rem;
+        transform: translateX(-50%);
+      }
+
+      .bridge {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .bridge-row {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr) 74px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .bridge-row span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 750;
+      }
+
+      .track {
+        height: 12px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--panel-strong);
+      }
+
+      .track i {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--teal);
+      }
+
+      .track.negative i {
+        background: var(--red);
+      }
+
+      .action-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .action {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel-strong);
+      }
+
+      .action strong {
+        display: block;
+        font-size: 0.9rem;
+      }
+
+      .action span {
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .action em {
+        align-self: start;
+        padding: 5px 8px;
+        border-radius: 999px;
+        background: rgba(217, 154, 57, 0.16);
+        color: #8a5615;
+        font-size: 0.72rem;
+        font-style: normal;
+        font-weight: 900;
+      }
+
+      @media (max-width: 960px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .tabs {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .topbar,
+        .grid,
+        .kpi-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filters {
+          justify-content: stretch;
+        }
+
+        select {
+          flex: 1 1 140px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .main,
+        .sidebar {
+          padding: 16px;
+        }
+
+        .tabs {
+          grid-template-columns: 1fr;
+        }
+
+        .bridge-row {
+          grid-template-columns: 88px minmax(0, 1fr);
+        }
+
+        .bridge-row span:last-child {
+          grid-column: 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="dashboard">
+      <aside class="sidebar">
+        <div class="brand">
+          <span>Project 20</span>
+          <strong>Board Investor CFO Pack</strong>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Board pack pages">
+          <button class="tab is-active" type="button" data-view="performance">Performance</button>
+          <button class="tab" type="button" data-view="cash">Cash Plan</button>
+          <button class="tab" type="button" data-view="risk">Risk &amp; Valuation</button>
+        </div>
+        <p class="side-note">
+          Interactive public-safe preview. Numbers are synthetic portfolio samples designed to show CFO storytelling,
+          not company-confidential data.
+        </p>
+      </aside>
+
+      <section class="main">
+        <div class="topbar">
+          <div>
+            <p class="kicker">Board-ready finance control tower</p>
+            <h1 data-title>Performance</h1>
+            <p class="lens" data-lens>
+              Track revenue, gross margin, EBITDA, and cash health for the latest board cycle.
+            </p>
+          </div>
+          <div class="filters" aria-label="Preview controls">
+            <select data-scenario aria-label="Scenario">
+              <option>Base</option>
+              <option>Upside</option>
+              <option>Downside</option>
+            </select>
+            <select data-period aria-label="Period">
+              <option>May 2026</option>
+              <option>Q2 2026</option>
+              <option>FY 2026</option>
+            </select>
+            <select data-region aria-label="Region">
+              <option>Group</option>
+              <option>Vietnam</option>
+              <option>Regional</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="kpi-grid" aria-label="Key metrics" data-kpis></div>
+
+        <div class="grid">
+          <article class="panel">
+            <h2 data-chart-title>Revenue and EBITDA trajectory</h2>
+            <p class="panel-subtitle" data-chart-copy>
+              The board view keeps the main performance trend visible before drilling into cash or valuation risk.
+            </p>
+            <div class="chart" aria-label="Synthetic trend chart" data-chart></div>
+          </article>
+
+          <article class="panel">
+            <h2 data-bridge-title>Decision bridge</h2>
+            <p class="panel-subtitle" data-bridge-copy>
+              Each page translates metric movement into the levers leadership can act on.
+            </p>
+            <div class="bridge" data-bridge></div>
+          </article>
+        </div>
+
+        <article class="panel" style="margin-top: 12px; min-height: 0;">
+          <h2>Board action queue</h2>
+          <p class="panel-subtitle">Owner-ready actions are shown beside the dashboard so the pack leads to a decision.</p>
+          <div class="action-list" data-actions></div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const views = {
+        performance: {
+          title: "Performance",
+          lens: "Track revenue, gross margin, EBITDA, and cash health for the latest board cycle.",
+          chartTitle: "Revenue and EBITDA trajectory",
+          chartCopy: "Synthetic monthly trend across revenue and EBITDA, with the current board cycle highlighted.",
+          kpis: [
+            ["Revenue", "$36.7M", "+8.2% YoY"],
+            ["Gross margin", "77.8%", "+1.6 pts"],
+            ["EBITDA", "$14.3M", "+5.4% YoY"],
+            ["Cash balance", "$376.7M", "+$18.4M"]
+          ],
+          chart: [62, 68, 71, 78, 82, 88],
+          bridge: [
+            ["Volume", 78, "$3.2M"],
+            ["Price / mix", 54, "$1.8M"],
+            ["Cost discipline", 42, "$1.1M"],
+            ["One-off drag", 28, "-$0.7M", true]
+          ],
+          actions: [
+            ["Lock May board narrative", "CFO office", "Now"],
+            ["Confirm pricing assumptions", "Commercial", "This week"],
+            ["Review margin protection list", "FP&A", "Next close"]
+          ]
+        },
+        cash: {
+          title: "Cash Plan",
+          lens: "Pressure-test cash balance, runway, burn sensitivity, and collection timing.",
+          chartTitle: "Cash balance and runway guardrail",
+          chartCopy: "The cash page keeps liquidity, AR timing, and funding runway in the same management view.",
+          kpis: [
+            ["Cash balance", "$376.7M", "+$18.4M"],
+            ["Runway", "99.0x", "above guardrail"],
+            ["Net burn", "$3.8M", "-6.1% vs plan"],
+            ["DSO", "37 days", "-4 days"]
+          ],
+          chart: [72, 76, 74, 81, 87, 93],
+          bridge: [
+            ["Collections", 82, "$14.2M"],
+            ["Supplier timing", 47, "$4.8M"],
+            ["Capex hold", 32, "$2.1M"],
+            ["FX movement", 24, "-$1.2M", true]
+          ],
+          actions: [
+            ["Pull top AR aging list", "Treasury", "Today"],
+            ["Hold non-critical capex", "Operations", "This month"],
+            ["Refresh downside cash case", "FP&A", "Board pack"]
+          ]
+        },
+        risk: {
+          title: "Risk & Valuation",
+          lens: "Connect leverage, valuation sensitivity, covenant space, and investor-facing risk narrative.",
+          chartTitle: "Valuation sensitivity by scenario",
+          chartCopy: "The risk page frames valuation range, leverage, and covenant room for board discussion.",
+          kpis: [
+            ["Enterprise value", "$462M", "+$31M vs base"],
+            ["Leverage", "0.2x", "low risk"],
+            ["Covenant room", "84%", "healthy"],
+            ["Risk score", "Low", "watch FX"]
+          ],
+          chart: [54, 61, 74, 83, 69, 92],
+          bridge: [
+            ["EBITDA quality", 74, "+0.6x"],
+            ["Revenue growth", 59, "+0.4x"],
+            ["Cash surplus", 51, "+0.3x"],
+            ["FX risk", 30, "-0.2x", true]
+          ],
+          actions: [
+            ["Update valuation sensitivity", "CFO office", "Board pack"],
+            ["Document covenant headroom", "Treasury", "This week"],
+            ["Prepare investor Q&A", "Strategy", "Before review"]
+          ]
+        }
+      };
+
+      const scenarioSelect = document.querySelector("[data-scenario]");
+      const periodSelect = document.querySelector("[data-period]");
+      const regionSelect = document.querySelector("[data-region]");
+      const title = document.querySelector("[data-title]");
+      const lens = document.querySelector("[data-lens]");
+      const chartTitle = document.querySelector("[data-chart-title]");
+      const chartCopy = document.querySelector("[data-chart-copy]");
+      const kpis = document.querySelector("[data-kpis]");
+      const chart = document.querySelector("[data-chart]");
+      const bridge = document.querySelector("[data-bridge]");
+      const actions = document.querySelector("[data-actions]");
+      const tabs = document.querySelectorAll("[data-view]");
+      let activeView = "performance";
+
+      function scenarioFactor() {
+        if (scenarioSelect.value === "Upside") return 1.08;
+        if (scenarioSelect.value === "Downside") return 0.92;
+        return 1;
+      }
+
+      function formatAdjusted(value) {
+        if (!value.startsWith("$")) return value;
+        const numeric = Number(value.replace(/[$Mx]/g, ""));
+        if (!Number.isFinite(numeric)) return value;
+        return `$${(numeric * scenarioFactor()).toFixed(1)}M`;
+      }
+
+      function render() {
+        const data = views[activeView];
+        title.textContent = data.title;
+        lens.textContent = `${data.lens} Lens: ${scenarioSelect.value} / ${periodSelect.value} / ${regionSelect.value}.`;
+        chartTitle.textContent = data.chartTitle;
+        chartCopy.textContent = data.chartCopy;
+
+        kpis.innerHTML = data.kpis
+          .map(([label, value, delta]) => `<div class="kpi"><span>${label}</span><strong>${formatAdjusted(value)}</strong><small>${delta}</small></div>`)
+          .join("");
+
+        chart.innerHTML = data.chart
+          .map((height, index) => `<div class="bar"><i style="height:${Math.max(18, height * scenarioFactor())}%"></i><span>M${index + 1}</span></div>`)
+          .join("");
+
+        bridge.innerHTML = data.bridge
+          .map(([label, width, value, negative]) => `
+            <div class="bridge-row">
+              <span>${label}</span>
+              <div class="track ${negative ? "negative" : ""}"><i style="width:${Math.min(96, width * scenarioFactor())}%"></i></div>
+              <span>${value}</span>
+            </div>
+          `)
+          .join("");
+
+        actions.innerHTML = data.actions
+          .map(([name, owner, timing]) => `<div class="action"><div><strong>${name}</strong><span>${owner}</span></div><em>${timing}</em></div>`)
+          .join("");
+
+        tabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.view === activeView));
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          activeView = tab.dataset.view;
+          render();
+        });
+      });
+
+      [scenarioSelect, periodSelect, regionSelect].forEach((control) => control.addEventListener("change", render));
+      render();
+    </script>
+  </body>
+</html>
