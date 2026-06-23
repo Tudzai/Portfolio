@@ -2453,9 +2453,17 @@ main > section {
 }
 
 .proof-path-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   background:
     linear-gradient(180deg, rgba(20, 121, 255, 0.06), rgba(255, 255, 255, 0)),
     var(--surface);
+}
+
+.proof-path-card .text-link {
+  margin-top: auto;
+  padding-top: 20px;
 }
 
 .proof-list {
