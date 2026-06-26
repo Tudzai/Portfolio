@@ -38,14 +38,14 @@
       logic: "ROAS, CAC, payback threshold, and redeployable spend are read by channel to turn campaign reporting into a finance decision.",
       recommendation: "Move budget from channels below the ROAS or CAC payback hurdle into high-intent campaigns.",
       build: "Channel scorecards and action queues separate scale candidates, fix candidates, and spend-at-risk groups.",
-      qa: "Budget at risk means spend below the hurdle ROAS or CAC payback threshold; redeployable spend ties to the channel spend sample."
+      qa: "Budget at risk means spend below the hurdle ROAS or CAC payback threshold; redeployable spend ties to the channel spend dataset."
     },
     "07": {
       question: "Which sellers protect marketplace growth quality?",
       logic: "Seller GMV, fulfillment SLA, cancellations, stock risk, and rating are scored together before assigning enablement effort.",
       recommendation: "Focus seller enablement on high-GMV accounts with fulfillment or stockout constraints.",
       build: "Seller ranking, ops risk, and growth pool signals are grouped for marketplace and finance follow-up.",
-      qa: "Growth pool is estimated GMV opportunity; cancellation and fulfillment metrics reconcile to seller-level order samples."
+      qa: "Growth pool is estimated GMV opportunity; cancellation and fulfillment metrics reconcile to seller-level order records."
     },
     "08": {
       question: "Which merchant segments improve payment unit economics?",
@@ -59,7 +59,7 @@
       logic: "Loan book, DPD migration, loss rate, and collection lift feed the required provision view.",
       recommendation: "Update the provision sensitivity and tighten exposure for weak merchant cohorts before 60+ DPD migration.",
       build: "Vintage, roll-rate, collections, and provision pages are linked to risk and finance owners.",
-      qa: "Provision gap = required provision less booked provision under the ECL policy sample; DPD buckets tie to the loan-book total."
+      qa: "Provision gap = required provision less booked provision under the synthetic ECL policy; DPD buckets tie to the loan-book total."
     },
     "10": {
       question: "Which alert patterns create real exposure versus operational noise?",
@@ -108,7 +108,7 @@
       logic: "Material price, labor, overhead, yield, idle capacity, and inventory days are decomposed into plant-level action owners.",
       recommendation: "Recover yield on underperforming lines and negotiate material price variance before the next margin review.",
       build: "Cost bridge, capacity, yield, inventory, and owner action views support manufacturing FP&A routines.",
-      qa: "Cost variance = actual cost - standard cost; yield and inventory days reconcile to production and inventory samples."
+      qa: "Cost variance = actual cost - standard cost; yield and inventory days reconcile to production and inventory records."
     },
     "17": {
       question: "Which logistics lanes need repricing or operational intervention?",
@@ -168,6 +168,43 @@
         `;
       })
       .join("");
+  }
+
+  function trendPath(values) {
+    const width = 360;
+    const height = 112;
+    const left = 8;
+    const right = 8;
+    const top = 10;
+    const bottom = 16;
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+    return values
+      .map((value, index) => {
+        const x = left + (plotWidth / (values.length - 1)) * index;
+        const y = top + plotHeight - (Math.max(12, Math.min(96, value)) / 100) * plotHeight;
+        return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
+      })
+      .join(" ");
+  }
+
+  function signalTrend(project) {
+    const seed = Number(project.no) || 1;
+    const values = project.bars.map(([, value]) => value);
+    const base = values.reduce((sum, value) => sum + value, 0) / values.length;
+    const actual = Array.from({ length: 8 }, (_, index) => base + Math.sin((index + seed) / 1.55) * 8 + index * 1.4);
+    const plan = actual.map((value, index) => value + 5 - index * 0.7);
+    const forecast = actual.map((value, index) => value + 2 + Math.cos(index + seed) * 3);
+    return `
+      <svg class="signal-trend-svg" viewBox="0 0 360 112" role="img" aria-label="${escapeHtml(project.title)} Actual Plan Forecast signal trend">
+        <line x1="8" y1="96" x2="352" y2="96" class="signal-grid"></line>
+        <line x1="8" y1="53" x2="352" y2="53" class="signal-grid"></line>
+        <path d="${trendPath(actual)}" class="signal-line-actual"></path>
+        <path d="${trendPath(plan)}" class="signal-line-plan"></path>
+        <path d="${trendPath(forecast)}" class="signal-line-forecast"></path>
+      </svg>
+      <div class="signal-legend"><span class="actual">Actual</span><span class="plan">Plan</span><span class="forecast">Forecast</span></div>
+    `;
   }
 
   function driverRows(items) {
@@ -240,6 +277,7 @@
         <p class="kicker">Dashboard signal</p>
         <h2>${escapeHtml(project.lens)}</h2>
         <p class="chart-subtitle">Primary visual check for the business question behind this BI product.</p>
+        ${signalTrend(project)}
         <div class="bar-list">
           ${barRows(project.bars)}
         </div>
@@ -285,4 +323,26 @@
       local paths, user settings, security bindings, or company-confidential extracts.
     </p>
   `;
+
+  const iframe = root.querySelector("iframe");
+  function resizePreviewFrame() {
+    if (!iframe) return;
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!doc) return;
+      const height = Math.max(
+        780,
+        doc.documentElement?.scrollHeight || 0,
+        doc.body?.scrollHeight || 0,
+      );
+      iframe.style.height = `${height + 12}px`;
+    } catch {
+      // Same-origin preview should resize; keep CSS fallback if browser blocks access.
+    }
+  }
+
+  iframe?.addEventListener("load", () => {
+    resizePreviewFrame();
+    setTimeout(resizePreviewFrame, 250);
+  });
 })();

@@ -200,6 +200,14 @@
         padding: 18px;
       }
 
+      .panel.wide {
+        grid-column: span 1;
+      }
+
+      .panel.full {
+        grid-column: 1 / -1;
+      }
+
       .panel h2 {
         margin-bottom: 6px;
         font-size: 1.08rem;
@@ -209,6 +217,71 @@
         margin-bottom: 18px;
         color: var(--muted);
         line-height: 1.55;
+      }
+
+      .chart-title {
+        margin: 0 0 6px;
+        color: var(--ink);
+        font-size: 1.08rem;
+        font-weight: 850;
+      }
+
+      .chart-subtitle {
+        margin: 0 0 12px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .chart-svg {
+        display: block;
+        width: 100%;
+        min-height: 260px;
+      }
+
+      .axis {
+        fill: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .grid-line {
+        stroke: #d7ded9;
+        stroke-width: 1;
+      }
+
+      .zero-line {
+        stroke: #b7c1bb;
+        stroke-width: 1.2;
+      }
+
+      .line-orange,
+      .line-blue,
+      .line-teal,
+      .line-amber {
+        fill: none;
+        stroke-width: 3.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .line-orange {
+        stroke: #f97316;
+      }
+
+      .line-blue {
+        stroke: #2563eb;
+      }
+
+      .line-teal {
+        stroke: #2a9d8f;
+      }
+
+      .line-amber {
+        stroke: #f59e0b;
+      }
+
+      .dashed {
+        stroke-dasharray: 8 6;
       }
 
       .bars {
@@ -248,6 +321,94 @@
         font-size: 0.86rem;
         font-weight: 850;
         text-align: right;
+      }
+
+      .variance-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .variance-row {
+        display: grid;
+        grid-template-columns: minmax(110px, 0.74fr) minmax(0, 1fr) 64px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .variance-name {
+        color: #34413d;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      .variance-track {
+        height: 12px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e8eee9;
+      }
+
+      .variance-bar {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--teal);
+      }
+
+      .variance-bar.bad {
+        background: var(--red);
+      }
+
+      .variance-value {
+        color: var(--teal);
+        font-size: 0.86rem;
+        font-weight: 900;
+        text-align: right;
+      }
+
+      .variance-value.bad {
+        color: var(--red);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 680px;
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 11px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .num {
+        text-align: right;
+      }
+
+      .good {
+        color: var(--teal);
+        font-weight: 850;
+      }
+
+      .bad {
+        color: var(--red);
+        font-weight: 850;
       }
 
       .driver-list,
@@ -370,7 +531,13 @@
           gap: 7px;
         }
 
-        .bar-value {
+        .variance-row {
+          grid-template-columns: 1fr;
+          gap: 7px;
+        }
+
+        .bar-value,
+        .variance-value {
           text-align: left;
         }
 
@@ -421,27 +588,53 @@
       <section class="metrics" aria-label="Project KPIs" id="metricGrid"></section>
 
       <section class="dashboard" aria-label="Interactive project dashboard preview">
-        <article class="panel">
+        <article class="panel wide">
           <div class="tabs" role="group" aria-label="Dashboard lens">
             <button class="tab is-active" type="button" data-lens="executive" aria-pressed="true">Executive</button>
             <button class="tab" type="button" data-lens="drivers" aria-pressed="false">Drivers</button>
             <button class="tab" type="button" data-lens="actions" aria-pressed="false">Actions</button>
           </div>
-          <h2 id="chartTitle">Executive scorecard</h2>
-          <p class="panel-subtitle" id="chartSubtitle"></p>
-          <div class="bars" id="bars"></div>
+          <div class="chart-title" id="chartTitle">12M Trend: Decision signal by scenario</div>
+          <div class="chart-subtitle" id="chartSubtitle"></div>
+          <div id="trendChart"></div>
         </article>
 
         <aside class="panel">
-          <h2>Owner action queue</h2>
-          <p class="panel-subtitle" id="actionSubtitle"></p>
-          <div class="action-list" id="actions"></div>
+          <div class="chart-title" id="varianceTitle">Variance by driver</div>
+          <div class="chart-subtitle" id="varianceSubtitle">Latest month variance against the planning baseline.</div>
+          <div class="variance-list" id="bars"></div>
         </aside>
+
+        <article class="panel full">
+          <div class="chart-title">Actual vs Plan vs Forecast</div>
+          <div class="chart-subtitle">KPI table keeps each project's original metric units; indexed trend above is only for cross-project visual comparison.</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th class="num">Actual</th>
+                  <th class="num">Plan</th>
+                  <th class="num">Forecast</th>
+                  <th class="num">Var to Plan</th>
+                  <th class="num">Var to Forecast</th>
+                </tr>
+              </thead>
+              <tbody id="varianceTable"></tbody>
+            </table>
+          </div>
+        </article>
 
         <article class="panel">
           <h2>Driver bridge</h2>
           <p class="panel-subtitle" id="driverSubtitle"></p>
           <div class="driver-list" id="drivers"></div>
+        </article>
+
+        <article class="panel">
+          <h2>Owner action queue</h2>
+          <p class="panel-subtitle" id="actionSubtitle"></p>
+          <div class="action-list" id="actions"></div>
         </article>
 
         <article class="panel">
@@ -474,7 +667,7 @@
           title: "Monthly FP&A Performance Pack",
           lens: "Management reporting",
           summary: "Executive close pack tying Actual/Budget/Forecast to EBITDA bridge, cash visibility, drilldowns, and management action commentary.",
-          metrics: [["333.1M", "revenue sample"], ["28.9%", "gross margin %"], ["37.6M", "EBITDA sample"], ["53", "DAX measures"]],
+          metrics: [["$333.1M", "revenue"], ["28.9%", "gross margin %"], ["$37.6M", "EBITDA"], ["53", "DAX measures"]],
           bars: [["Revenue", 88], ["Gross margin", 78], ["EBITDA", 72], ["Cash", 69]],
           drivers: [["Volume and mix", "+$2.4M", false], ["Direct cost pressure", "-$0.9M", true], ["Opex discipline", "+$0.6M", false]],
           actions: [["Sales", "Protect high-margin lanes and review low-yield customers."], ["Operations", "Explain cost variance and recover vendor leakage."], ["Finance", "Lock forecast bridge and owner commentary."]]
@@ -496,7 +689,7 @@
           title: "Ecommerce Executive Performance",
           lens: "Ecommerce executive KPIs",
           summary: "Executive ecommerce review for revenue, margin, customers, orders, refunds, and operating levers.",
-          metrics: [["$48.2M", "GMV sample"], ["18.6%", "gross margin %"], ["1.24M", "orders"], ["2.1%", "refund rate"]],
+          metrics: [["$48.2M", "GMV"], ["18.6%", "gross margin %"], ["1.24M", "orders"], ["2.1%", "refund rate"]],
           bars: [["GMV", 84], ["Orders", 76], ["AOV", 63], ["Refund control", 71]],
           drivers: [["Category mix", "+$1.8M", false], ["Refund leakage", "-$0.5M", true], ["Repeat buyers", "+7.2%", false]],
           actions: [["Commercial", "Push profitable categories with strong repeat purchase."], ["Ops", "Prioritize refund root-cause by category."], ["Finance", "Refresh margin waterfall for executive review."]]
@@ -551,7 +744,7 @@
           title: "Digital Payments Profitability",
           lens: "Payments profitability",
           summary: "Payments profitability dashboard linking merchant mix, transaction drivers, margin scenarios, and fee economics.",
-          metrics: [["$92.5M", "TPV sample"], ["1.28%", "take rate"], ["38%", "gross margin %"], ["$0.09", "unit profit"]],
+          metrics: [["$92.5M", "TPV"], ["1.28%", "take rate"], ["38%", "gross margin %"], ["$0.09", "unit profit"]],
           bars: [["TPV", 90], ["Take rate", 63], ["Cost to serve", 58], ["Merchant mix", 70]],
           drivers: [["Enterprise TPV", "+$2.2M", false], ["Processing cost", "-$0.7M", true], ["Fee optimization", "+$0.4M", false]],
           actions: [["Commercial", "Review low-fee enterprise contracts."], ["Finance", "Model fee tiers by merchant segment."], ["Ops", "Track processing cost exceptions."]]
@@ -595,7 +788,7 @@
           title: "WealthTech AUM Client Retention",
           lens: "Wealth analytics",
           summary: "AUM retention dashboard combining portfolio mix, client risk, suitability, and retention actions.",
-          metrics: [["$1.8B", "AUM sample"], ["94.2%", "client retention"], ["7.6%", "outflow risk"], ["$46M", "at-risk AUM"]],
+          metrics: [["$1.8B", "AUM"], ["94.2%", "client retention"], ["7.6%", "outflow risk"], ["$46M", "at-risk AUM"]],
           bars: [["AUM", 89], ["Retention", 84], ["Suitability", 72], ["Outflow risk", 39]],
           drivers: [["Advisor coverage", "+$18M", false], ["Market drawdown", "-$11M", true], ["Suitability gap", "-$7M", true]],
           actions: [["Advisory", "Contact high-AUM at-risk clients."], ["Risk", "Resolve suitability exceptions."], ["Finance", "Track fee revenue exposure."]]
@@ -617,7 +810,7 @@
           title: "Treasury Working Capital",
           lens: "Treasury and cash",
           summary: "Treasury view prioritizing AR, DSO, cash runway, FX exposure, liquidity, and collection actions.",
-          metrics: [["$24.7M", "cash sample"], ["51", "DSO days"], ["$6.2M", "overdue AR"], ["14.8", "cash runway months"]],
+          metrics: [["$24.7M", "cash balance"], ["51", "DSO days"], ["$6.2M", "overdue AR"], ["14.8", "cash runway months"]],
           bars: [["Cash", 77], ["AR quality", 58], ["DSO", 48], ["Collections", 68]],
           drivers: [["Overdue AR", "-$1.6M", true], ["Supplier terms", "+$0.7M", false], ["FX exposure", "-$0.4M", true]],
           actions: [["Treasury", "Prioritize top overdue customers."], ["Commercial", "Escalate collection promises by owner."], ["Finance", "Refresh cash runway under downside case."]]
@@ -628,7 +821,7 @@
           title: "SaaS CFO Metrics",
           lens: "CFO metrics",
           summary: "CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health.",
-          metrics: [["$18.4M", "ARR sample"], ["112%", "NRR"], ["14", "CAC payback months"], ["7.1%", "logo churn"]],
+          metrics: [["$18.4M", "ARR"], ["112%", "NRR"], ["14", "CAC payback months"], ["7.1%", "logo churn"]],
           bars: [["ARR", 80], ["NRR", 75], ["CAC payback", 56], ["Churn", 42]],
           drivers: [["Expansion ARR", "+$1.1M", false], ["SMB churn", "-$0.4M", true], ["Sales efficiency", "+0.2x", false]],
           actions: [["Sales", "Prioritize expansion in healthy cohorts."], ["CS", "Target SMB churn accounts."], ["Finance", "Connect ARR bridge to board forecast."]]
@@ -661,7 +854,7 @@
           title: "ESG Carbon Finance",
           lens: "ESG finance",
           summary: "ESG finance dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and governance.",
-          metrics: [["42.5K", "tCO2e sample"], ["$1.9M", "carbon cost exposure"], ["18%", "abatement ROI"], ["12", "supplier risks"]],
+          metrics: [["42.5K", "tCO2e"], ["$1.9M", "carbon cost exposure"], ["18%", "abatement ROI"], ["12", "supplier risks"]],
           bars: [["Scope 1", 48], ["Scope 2", 55], ["Scope 3", 82], ["Abatement", 64]],
           drivers: [["Supplier intensity", "-$0.8M", true], ["Energy mix", "+$0.3M", false], ["Carbon price", "-$0.5M", true]],
           actions: [["Procurement", "Engage high-intensity suppliers."], ["Finance", "Model carbon price exposure."], ["ESG", "Prioritize abatement projects with payback."]]
@@ -695,6 +888,8 @@
       const periodSelect = document.querySelector("#periodSelect");
       const metricGrid = document.querySelector("#metricGrid");
       const bars = document.querySelector("#bars");
+      const trendChart = document.querySelector("#trendChart");
+      const varianceTable = document.querySelector("#varianceTable");
       const drivers = document.querySelector("#drivers");
       const actions = document.querySelector("#actions");
       const repoLink = document.querySelector("#repoLink");
@@ -709,8 +904,98 @@
         projectSelect.append(option);
       });
 
-      function scenarioFactor() {
-        return { base: 1, upside: 1.12, downside: 0.86 }[scenarioSelect.value] || 1;
+      function scenarioFactor(isRisk = false) {
+        const selected = scenarioSelect.value;
+        if (selected === "upside") return isRisk ? 0.9 : 1.08;
+        if (selected === "downside") return isRisk ? 1.12 : 0.92;
+        return 1;
+      }
+
+      function isRiskMetric(label) {
+        const text = String(label).toLowerCase();
+        return [
+          "risk",
+          "loss",
+          "churn",
+          "refund",
+          "leakage",
+          "cac",
+          "alerts",
+          "fx",
+          "spend below",
+          "overdue",
+          "dso",
+          "dpd",
+          "false",
+          "exposure",
+          "cancel",
+          "cost variance",
+          "provision",
+          "carbon cost",
+          "supplier risks",
+          "recon",
+          "escalation",
+          "cac payback",
+          "inventory days"
+        ].some((needle) => text.includes(needle));
+      }
+
+      function isBoundedPercent(label, parsed) {
+        if (!parsed || parsed.suffix !== "%") return false;
+        const text = String(label).toLowerCase();
+        return !text.includes("nrr");
+      }
+
+      function boundMetricValue(label, parsed, value) {
+        if (!parsed || !Number.isFinite(value)) return value;
+        if (isBoundedPercent(label, parsed)) return Math.max(0, Math.min(100, value));
+        return value;
+      }
+
+      function isStaticMetric(label) {
+        const text = String(label).toLowerCase();
+        return [
+          "dax",
+          "pages",
+          "entities",
+          "currencies",
+          "board tabs",
+          "data checks"
+        ].some((needle) => text.includes(needle));
+      }
+
+      function parseMetricValue(raw) {
+        const text = String(raw).trim();
+        const match = text.match(/^(-)?(\$)?([\d,.]+)([KMBx%])?$/i);
+        if (!match) return null;
+        return {
+          negative: Boolean(match[1]),
+          currency: Boolean(match[2]),
+          value: Number(match[3].replaceAll(",", "")) * (match[1] ? -1 : 1),
+          suffix: match[4] || "",
+          raw: text
+        };
+      }
+
+      function formatMetricValue(parsed, value) {
+        if (!parsed || !Number.isFinite(value)) return parsed?.raw || "";
+        const abs = Math.abs(value);
+        const sign = value < 0 ? "-" : "";
+        const suffix = parsed.suffix;
+        const decimals = suffix === "%" || suffix.toLowerCase() === "x" || parsed.currency || /[KMB]/i.test(suffix) ? 1 : 0;
+        const formatted = decimals ? abs.toFixed(1) : String(Math.round(abs));
+        if (parsed.currency) return `${sign}$${formatted}${suffix}`;
+        return `${sign}${formatted}${suffix}`;
+      }
+
+      function formatVariance(parsed, value) {
+        if (!parsed || !Number.isFinite(value)) return "-";
+        const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+        const abs = Math.abs(value);
+        if (parsed.suffix === "%") return `${sign}${abs.toFixed(1)} pts`;
+        if (parsed.currency) return `${sign}$${abs.toFixed(1)}${parsed.suffix}`;
+        if (parsed.suffix) return `${sign}${abs.toFixed(1)}${parsed.suffix}`;
+        return `${sign}${Math.round(abs)}`;
       }
 
       function periodLabel() {
@@ -721,9 +1006,123 @@
         return projects.find((project) => project.no === projectSelect.value) || projects[0];
       }
 
+      function buildSeries(project) {
+        const seed = Number(project.no) || 1;
+        const base = project.bars.reduce((sum, [, value]) => sum + value, 0) / project.bars.length;
+        const factor = scenarioFactor(false);
+        return Array.from({ length: 12 }, (_, index) => {
+          const seasonal = Math.sin((index + seed) / 1.85) * 5.5;
+          const ramp = (index - 5) * 1.55;
+          const plan = Math.max(28, Math.min(96, base + ramp + 6));
+          const forecast = Math.max(24, Math.min(96, base + ramp + seasonal * 0.55 + 2));
+          const actual = Math.max(20, Math.min(96, (base + ramp + seasonal) * factor));
+          const quality = Math.max(14, Math.min(88, actual * 0.38 + 18 + Math.cos(index + seed) * 2.5));
+          return { actual, plan, forecast, quality };
+        });
+      }
+
+      function pathFor(values) {
+        const width = 820;
+        const left = 56;
+        const right = 28;
+        const top = 34;
+        const bottom = 46;
+        const plotWidth = width - left - right;
+        const plotHeight = 300 - top - bottom;
+        return values
+          .map((value, index) => {
+            const x = left + (plotWidth / (values.length - 1)) * index;
+            const y = top + plotHeight - (value / 100) * plotHeight;
+            return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
+          })
+          .join(" ");
+      }
+
+      function renderTrend(project) {
+        const series = buildSeries(project);
+        const labels = ["06/25", "08/25", "10/25", "12/25", "02/26", "04/26", "05/26"];
+        const labelIndexes = [0, 2, 4, 6, 8, 10, 11];
+        const xFor = (index) => 56 + ((820 - 56 - 28) / 11) * index;
+        trendChart.innerHTML = `
+          <svg viewBox="0 0 820 300" class="chart-svg" role="img" aria-label="12 month ${project.title} trend by scenario">
+            <circle cx="56" cy="16" r="4" fill="#f97316"/><text x="65" y="20" class="axis">Actual</text>
+            <circle cx="148" cy="16" r="4" fill="#2563eb"/><text x="157" y="20" class="axis">Plan</text>
+            <circle cx="226" cy="16" r="4" fill="#2a9d8f"/><text x="235" y="20" class="axis">Forecast</text>
+            <circle cx="330" cy="16" r="4" fill="#f59e0b"/><text x="339" y="20" class="axis">Decision index</text>
+            <line x1="56" y1="254" x2="792" y2="254" class="grid-line"/><text x="46" y="258" text-anchor="end" class="axis">0</text>
+            <line x1="56" y1="144" x2="792" y2="144" class="grid-line"/><text x="46" y="148" text-anchor="end" class="axis">50</text>
+            <line x1="56" y1="34" x2="792" y2="34" class="grid-line"/><text x="46" y="38" text-anchor="end" class="axis">100</text>
+            <line x1="56" y1="254" x2="792" y2="254" class="zero-line"/>
+            <path d="${pathFor(series.map((row) => row.actual))}" class="line-orange"/>
+            <path d="${pathFor(series.map((row) => row.plan))}" class="line-blue dashed"/>
+            <path d="${pathFor(series.map((row) => row.forecast))}" class="line-teal dashed"/>
+            <path d="${pathFor(series.map((row) => row.quality))}" class="line-amber"/>
+            ${labels
+              .map((label, itemIndex) => `<text x="${xFor(labelIndexes[itemIndex]).toFixed(1)}" y="284" text-anchor="middle" class="axis">${label}</text>`)
+              .join("")}
+          </svg>
+        `;
+      }
+
+      function renderVariance(project) {
+        bars.replaceChildren(
+          ...project.drivers.map(([label, impact, risk], index) => {
+            const source = project.bars[index] || project.bars[project.bars.length - 1];
+            const factor = scenarioFactor(risk);
+            const width = Math.max(16, Math.min(100, Math.round((source[1] || 50) * factor)));
+            const row = document.createElement("div");
+            row.className = "variance-row";
+
+            const name = document.createElement("div");
+            name.className = "variance-name";
+            name.textContent = label;
+
+            const track = document.createElement("div");
+            track.className = "variance-track";
+            const fill = document.createElement("span");
+            fill.className = `variance-bar${risk ? " bad" : ""}`;
+            fill.style.width = `${width}%`;
+            track.append(fill);
+
+            const value = document.createElement("div");
+            value.className = `variance-value${risk ? " bad" : ""}`;
+            value.textContent = impact;
+            row.append(name, track, value);
+            return row;
+          })
+        );
+      }
+
+      function renderTable(project) {
+        varianceTable.replaceChildren(
+          ...project.metrics.map(([rawValue, label]) => {
+            const parsed = parseMetricValue(rawValue);
+            const isRisk = isRiskMetric(label);
+            const isStatic = isStaticMetric(label);
+            const actual = parsed ? boundMetricValue(label, parsed, parsed.value * (isStatic ? 1 : scenarioFactor(isRisk))) : null;
+            const plan = parsed && !isStatic ? boundMetricValue(label, parsed, parsed.value * (isRisk ? 0.9 : 1.06)) : null;
+            const forecast = parsed && !isStatic ? boundMetricValue(label, parsed, parsed.value * (isRisk ? 0.95 : 1.02)) : null;
+            const varPlan = parsed && !isStatic ? actual - plan : null;
+            const varForecast = parsed && !isStatic ? actual - forecast : null;
+            const riskWorseWhenPositive = parsed ? parsed.value >= 0 : true;
+            const planBad = isRisk ? (riskWorseWhenPositive ? varPlan > 0 : varPlan < 0) : varPlan < 0;
+            const forecastBad = isRisk ? (riskWorseWhenPositive ? varForecast > 0 : varForecast < 0) : varForecast < 0;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${label}</td>
+              <td class="num">${parsed ? formatMetricValue(parsed, actual) : rawValue}</td>
+              <td class="num">${parsed && !isStatic ? formatMetricValue(parsed, plan) : "-"}</td>
+              <td class="num">${parsed && !isStatic ? formatMetricValue(parsed, forecast) : "-"}</td>
+              <td class="num ${planBad ? "bad" : "good"}">${parsed && !isStatic ? formatVariance(parsed, varPlan) : "-"}</td>
+              <td class="num ${forecastBad ? "bad" : "good"}">${parsed && !isStatic ? formatVariance(parsed, varForecast) : "-"}</td>
+            `;
+            return row;
+          })
+        );
+      }
+
       function render() {
         const project = getSelectedProject();
-        const factor = scenarioFactor();
         const repoUrl = repoBase + encodeURIComponent(project.folder);
 
         document.title = `${project.title} | Power BI Preview`;
@@ -747,37 +1146,22 @@
         );
 
         const lensCopy = {
-          executive: ["Executive scorecard", `Illustrative scenario lens for ${periodLabel()} recruiter-safe review.`],
-          drivers: ["Driver readout", `Driver pressure and upside translated into ${periodLabel()} management action.`],
-          actions: ["Action lens", `Owner-ready view showing where this BI product supports decisions.`]
+          executive: ["12M Indexed Trend: Actual / Plan / Forecast", `Indexed 0-100 trend follows the Project 1 visual pattern; KPI units stay in the table below.`],
+          drivers: ["12M Indexed Trend: Driver pressure", `Driver pressure and upside translated into ${periodLabel()} management action.`],
+          actions: ["12M Indexed Trend: Owner action readiness", `Owner-ready view showing where this BI product supports decisions.`]
         };
         document.querySelector("#chartTitle").textContent = lensCopy[activeLens][0];
         document.querySelector("#chartSubtitle").textContent = lensCopy[activeLens][1];
         document.querySelector("#actionSubtitle").textContent = `${project.lens} decision actions for the ${periodLabel()} cycle.`;
         document.querySelector("#driverSubtitle").textContent = `Top movement drivers under the illustrative ${scenarioSelect.options[scenarioSelect.selectedIndex].text}.`;
+        document.querySelector("#varianceTitle").textContent =
+          activeLens === "drivers" ? "Driver variance by owner" : activeLens === "actions" ? "Action readiness by owner" : "Variance by driver";
+        document.querySelector("#varianceSubtitle").textContent =
+          activeLens === "actions" ? "Latest management-action readiness score." : "Latest month variance against the planning baseline.";
 
-        bars.replaceChildren(
-          ...project.bars.map(([label, value]) => {
-            const adjusted = Math.max(12, Math.min(96, Math.round(value * factor)));
-            const row = document.createElement("div");
-            row.className = "bar-row";
-            const name = document.createElement("div");
-            name.className = "bar-label";
-            name.textContent = label;
-            const track = document.createElement("div");
-            track.className = "bar-track";
-            const fill = document.createElement("span");
-            fill.className = "bar-fill";
-            fill.style.width = `${adjusted}%`;
-            fill.style.background = activeLens === "actions" ? "var(--green)" : activeLens === "drivers" ? "var(--amber)" : "var(--teal)";
-            track.append(fill);
-            const score = document.createElement("div");
-            score.className = "bar-value";
-            score.textContent = `${adjusted}%`;
-            row.append(name, track, score);
-            return row;
-          })
-        );
+        renderTrend(project);
+        renderVariance(project);
+        renderTable(project);
 
         drivers.replaceChildren(
           ...project.drivers.map(([name, impact, risk]) => {

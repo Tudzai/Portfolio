@@ -18,7 +18,7 @@ window.powerBiProjectDetails = [
     title: "Ecommerce Executive Performance",
     lens: "Ecommerce executive KPIs",
     summary: "Executive ecommerce review for revenue, margin, customers, orders, refunds, and operating levers.",
-    metrics: [["$48.2M", "GMV sample"], ["18.6%", "gross margin %"], ["1.24M", "orders"], ["2.1%", "refund rate"]],
+    metrics: [["$48.2M", "GMV"], ["18.6%", "gross margin %"], ["1.24M", "orders"], ["2.1%", "refund rate"]],
     bars: [["GMV", 84], ["Orders", 76], ["AOV", 63], ["Refund control", 71]],
     drivers: [["Category mix", "+$1.8M", false], ["Refund leakage", "-$0.5M", true], ["Repeat buyers", "+7.2%", false]],
     actions: [["Commercial", "Push profitable categories with strong repeat purchase."], ["Ops", "Prioritize refund root-cause by category."], ["Finance", "Refresh margin waterfall for executive review."]]
@@ -78,7 +78,7 @@ window.powerBiProjectDetails = [
     title: "Digital Payments Profitability",
     lens: "Payments profitability",
     summary: "Payments profitability dashboard linking merchant mix, transaction drivers, margin scenarios, and fee economics.",
-    metrics: [["$92.5M", "TPV sample"], ["1.28%", "take rate"], ["38%", "gross margin %"], ["$0.09", "unit profit"]],
+    metrics: [["$92.5M", "TPV"], ["1.28%", "take rate"], ["38%", "gross margin %"], ["$0.09", "unit profit"]],
     bars: [["TPV", 90], ["Take rate", 63], ["Cost to serve", 58], ["Merchant mix", 70]],
     drivers: [["Enterprise TPV", "+$2.2M", false], ["Processing cost", "-$0.7M", true], ["Fee optimization", "+$0.4M", false]],
     actions: [["Commercial", "Review low-fee enterprise contracts."], ["Finance", "Model fee tiers by merchant segment."], ["Ops", "Track processing cost exceptions."]]
@@ -126,7 +126,7 @@ window.powerBiProjectDetails = [
     title: "WealthTech AUM Client Retention",
     lens: "Wealth analytics",
     summary: "AUM retention dashboard combining portfolio mix, client risk, suitability, and retention actions.",
-    metrics: [["$1.8B", "AUM sample"], ["94.2%", "client retention"], ["7.6%", "outflow risk"], ["$46M", "at-risk AUM"]],
+    metrics: [["$1.8B", "AUM"], ["94.2%", "client retention"], ["7.6%", "outflow risk"], ["$46M", "at-risk AUM"]],
     bars: [["AUM", 89], ["Retention", 84], ["Suitability", 72], ["Outflow risk", 39]],
     drivers: [["Advisor coverage", "+$18M", false], ["Market drawdown", "-$11M", true], ["Suitability gap", "-$7M", true]],
     actions: [["Advisory", "Contact high-AUM at-risk clients."], ["Risk", "Resolve suitability exceptions."], ["Finance", "Track fee revenue exposure."]]
@@ -150,7 +150,7 @@ window.powerBiProjectDetails = [
     title: "Treasury Working Capital",
     lens: "Treasury and cash",
     summary: "Treasury view prioritizing AR, DSO, cash runway, FX exposure, liquidity, and collection actions.",
-    metrics: [["$24.7M", "cash sample"], ["51", "DSO days"], ["$6.2M", "overdue AR"], ["14.8", "cash runway months"]],
+    metrics: [["$24.7M", "cash balance"], ["51", "DSO days"], ["$6.2M", "overdue AR"], ["14.8", "cash runway months"]],
     bars: [["Cash", 77], ["AR quality", 58], ["DSO", 48], ["Collections", 68]],
     drivers: [["Overdue AR", "-$1.6M", true], ["Supplier terms", "+$0.7M", false], ["FX exposure", "-$0.4M", true]],
     actions: [["Treasury", "Prioritize top overdue customers."], ["Commercial", "Escalate collection promises by owner."], ["Finance", "Refresh cash runway under downside case."]]
@@ -162,7 +162,7 @@ window.powerBiProjectDetails = [
     title: "SaaS CFO Metrics",
     lens: "CFO metrics",
     summary: "CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health.",
-    metrics: [["$18.4M", "ARR sample"], ["112%", "NRR"], ["14", "CAC payback months"], ["7.1%", "logo churn"]],
+    metrics: [["$18.4M", "ARR"], ["112%", "NRR"], ["14", "CAC payback months"], ["7.1%", "logo churn"]],
     bars: [["ARR", 80], ["NRR", 75], ["CAC payback", 56], ["Churn", 42]],
     drivers: [["Expansion ARR", "+$1.1M", false], ["SMB churn", "-$0.4M", true], ["Sales efficiency", "+0.2x", false]],
     actions: [["Sales", "Prioritize expansion in healthy cohorts."], ["CS", "Target SMB churn accounts."], ["Finance", "Connect ARR bridge to board forecast."]]
@@ -198,7 +198,7 @@ window.powerBiProjectDetails = [
     title: "ESG Carbon Finance",
     lens: "ESG finance",
     summary: "ESG finance dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and governance.",
-    metrics: [["42.5K", "tCO2e sample"], ["$1.9M", "carbon cost exposure"], ["18%", "abatement ROI"], ["12", "supplier risks"]],
+    metrics: [["42.5K", "tCO2e"], ["$1.9M", "carbon cost exposure"], ["18%", "abatement ROI"], ["12", "supplier risks"]],
     bars: [["Scope 1", 48], ["Scope 2", 55], ["Scope 3", 82], ["Abatement", 64]],
     drivers: [["Supplier intensity", "-$0.8M", true], ["Energy mix", "+$0.3M", false], ["Carbon price", "-$0.5M", true]],
     actions: [["Procurement", "Engage high-intensity suppliers."], ["Finance", "Model carbon price exposure."], ["ESG", "Prioritize abatement projects with payback."]]

@@ -195,9 +195,31 @@
         </article>
       </section>
       <p class="note">
-        This portfolio preview uses sample or anonymized data to demonstrate FP&A reporting logic without exposing
+        This portfolio preview uses synthetic or anonymized data to demonstrate FP&A reporting logic without exposing
         company-confidential information.
       </p>
     </main>
+    <script>
+      const previewFrame = document.querySelector("iframe");
+      function resizePreviewFrame() {
+        if (!previewFrame) return;
+        try {
+          const doc = previewFrame.contentDocument || previewFrame.contentWindow?.document;
+          if (!doc) return;
+          const height = Math.max(
+            780,
+            doc.documentElement?.scrollHeight || 0,
+            doc.body?.scrollHeight || 0,
+          );
+          previewFrame.style.height = `${height + 12}px`;
+        } catch {
+          /* Keep CSS fallback if browser blocks access. */
+        }
+      }
+      previewFrame?.addEventListener("load", () => {
+        resizePreviewFrame();
+        setTimeout(resizePreviewFrame, 250);
+      });
+    </script>
   </body>
 </html>

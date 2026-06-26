@@ -169,6 +169,70 @@ h1 {
   line-height: 1.55;
 }
 
+.signal-trend-svg {
+  display: block;
+  width: 100%;
+  height: 112px;
+}
+
+.signal-grid {
+  stroke: rgba(95, 109, 104, 0.22);
+  stroke-width: 1;
+}
+
+.signal-line-actual,
+.signal-line-plan,
+.signal-line-forecast {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.signal-line-actual {
+  stroke: #f97316;
+}
+
+.signal-line-plan {
+  stroke: #2563eb;
+  stroke-dasharray: 7 5;
+}
+
+.signal-line-forecast {
+  stroke: #2a9d8f;
+  stroke-dasharray: 7 5;
+}
+
+.signal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.signal-legend span::before {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  border-radius: 999px;
+  content: "";
+}
+
+.signal-legend .actual::before {
+  background: #f97316;
+}
+
+.signal-legend .plan::before {
+  background: #2563eb;
+}
+
+.signal-legend .forecast::before {
+  background: #2a9d8f;
+}
+
 .bar-list {
   display: grid;
   gap: 12px;

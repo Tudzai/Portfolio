@@ -6,12 +6,12 @@
     <title>Board Investor CFO Pack Interactive Preview</title>
     <style>
       :root {
-        --bg: #f4f1f7;
-        --ink: #170f24;
-        --muted: #746a82;
-        --line: #ddd4e7;
+        --bg: #f6f7f4;
+        --ink: #17201d;
+        --muted: #5f6d68;
+        --line: #d9dfda;
         --panel: #ffffff;
-        --panel-strong: #f8f5fb;
+        --panel-strong: #eef3ef;
         --purple: #3f2468;
         --violet: #7045a6;
         --teal: #0f8f8a;
@@ -40,6 +40,7 @@
         display: grid;
         grid-template-columns: 220px minmax(0, 1fr);
         min-height: 100vh;
+        min-width: 0;
       }
 
       .sidebar {
@@ -104,6 +105,7 @@
 
       .main {
         padding: 22px;
+        min-width: 0;
       }
 
       .topbar {
@@ -208,6 +210,7 @@
       .panel {
         min-height: 280px;
         padding: 18px;
+        min-width: 0;
       }
 
       .panel h2 {
@@ -223,14 +226,60 @@
       }
 
       .chart {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        align-items: end;
-        gap: 10px;
-        height: 190px;
         margin-top: 18px;
         padding: 0 4px;
-        border-bottom: 1px solid var(--line);
+      }
+
+      .chart-svg {
+        display: block;
+        width: 100%;
+        min-height: 210px;
+      }
+
+      .axis {
+        fill: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .grid-line {
+        stroke: #d7ded9;
+        stroke-width: 1;
+      }
+
+      .zero-line {
+        stroke: #b7c1bb;
+        stroke-width: 1.2;
+      }
+
+      .line-orange,
+      .line-blue,
+      .line-teal,
+      .line-amber {
+        fill: none;
+        stroke-width: 3.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .line-orange {
+        stroke: #f97316;
+      }
+
+      .line-blue {
+        stroke: #2563eb;
+      }
+
+      .line-teal {
+        stroke: #2a9d8f;
+      }
+
+      .line-amber {
+        stroke: #f59e0b;
+      }
+
+      .dashed {
+        stroke-dasharray: 8 6;
       }
 
       .bar {
@@ -290,6 +339,50 @@
 
       .track.negative i {
         background: var(--red);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        margin-top: 12px;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      table {
+        width: 100%;
+        min-width: 680px;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 11px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .num {
+        text-align: right;
+      }
+
+      .good {
+        color: var(--teal);
+        font-weight: 850;
+      }
+
+      .bad {
+        color: var(--red);
+        font-weight: 850;
       }
 
       .action-list {
@@ -355,6 +448,7 @@
 
         select {
           flex: 1 1 140px;
+          min-width: 0;
         }
       }
 
@@ -391,7 +485,7 @@
           <button class="tab" type="button" data-view="risk" aria-pressed="false">Risk &amp; Valuation</button>
         </div>
         <p class="side-note">
-          Interactive public-safe preview. Numbers are synthetic portfolio samples designed to show board reporting logic,
+          Interactive public-safe preview. Numbers are synthetic portfolio values designed to show board reporting logic,
           not company-confidential data.
         </p>
       </aside>
@@ -405,18 +499,18 @@
               Track revenue, gross margin, EBITDA, and cash health for the latest board cycle.
             </p>
           </div>
-          <div class="filters" aria-label="Preview controls">
-            <select data-scenario aria-label="Illustrative scenario">
+          <div class="filters" aria-label="Trend lens controls">
+            <select data-scenario aria-label="Trend scenario lens">
               <option>Base</option>
               <option>Upside</option>
               <option>Downside</option>
             </select>
-            <select data-period aria-label="Period">
+            <select data-period aria-label="Trend period lens">
               <option>May 2026</option>
               <option>Q2 2026</option>
               <option>FY 2026</option>
             </select>
-            <select data-region aria-label="Region">
+            <select data-region aria-label="Trend region lens">
               <option>Group</option>
               <option>Vietnam</option>
               <option>Regional</option>
@@ -445,6 +539,26 @@
         </div>
 
         <article class="panel" style="margin-top: 12px; min-height: 0;">
+          <h2>Actual vs Plan vs Forecast</h2>
+          <p class="panel-subtitle">Board KPI table keeps the units visible beside the trend and bridge view.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th class="num">Actual</th>
+                  <th class="num">Plan</th>
+                  <th class="num">Forecast</th>
+                  <th class="num">Var to Plan</th>
+                  <th class="num">Var to Forecast</th>
+                </tr>
+              </thead>
+              <tbody data-table></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel" style="margin-top: 12px; min-height: 0;">
           <h2>Board action queue</h2>
           <p class="panel-subtitle">Owner-ready actions are shown beside the dashboard so the pack leads to a decision.</p>
           <div class="action-list" data-actions></div>
@@ -467,10 +581,16 @@
           ],
           chart: [62, 68, 71, 78, 82, 88],
           bridge: [
-            ["Volume", 78, "$3.2M"],
-            ["Price / mix", 54, "$1.8M"],
-            ["Cost discipline", 42, "$1.1M"],
-            ["One-off drag", 28, "-$0.7M", true]
+            ["Volume", 78, "+$0.7M"],
+            ["Price / mix", 54, "+$0.5M"],
+            ["Cost discipline", 42, "+$0.3M"],
+            ["One-off drag", 28, "-$0.4M", true]
+          ],
+          table: [
+            ["Revenue", "$36.7M", "$34.8M", "$35.6M", "+$1.9M", "+$1.1M"],
+            ["Gross margin", "28.9%", "28.1%", "28.5%", "+0.8 pts", "+0.4 pts"],
+            ["EBITDA", "$4.3M", "$3.2M", "$3.8M", "+$1.1M", "+$0.5M"],
+            ["Cash balance", "$37.6M", "$35.8M", "$36.9M", "+$1.8M", "+$0.7M"]
           ],
           actions: [
             ["Lock May board narrative", "CFO office", "Now"],
@@ -491,10 +611,16 @@
           ],
           chart: [72, 76, 74, 81, 87, 93],
           bridge: [
-            ["Collections", 82, "$14.2M"],
-            ["Supplier timing", 47, "$4.8M"],
-            ["Capex hold", 32, "$2.1M"],
-            ["FX movement", 24, "-$1.2M", true]
+            ["Collections", 82, "+$5.4M"],
+            ["Supplier timing", 47, "-$1.2M", true],
+            ["Capex hold", 32, "+$0.8M"],
+            ["FX movement", 24, "-$1.8M", true]
+          ],
+          table: [
+            ["Cash balance", "$37.6M", "$35.8M", "$36.9M", "+$1.8M", "+$0.7M"],
+            ["Runway", "9.9 months", "8.4 months", "9.2 months", "+1.5 months", "+0.7 months"],
+            ["Net burn", "$3.8M", "$4.2M", "$4.0M", "-$0.4M", "-$0.2M"],
+            ["DSO", "37 days", "41 days", "39 days", "-4 days", "-2 days"]
           ],
           actions: [
             ["Pull top AR aging list", "Treasury", "Today"],
@@ -520,6 +646,12 @@
             ["Cash surplus", 51, "+0.3x"],
             ["FX risk", 30, "-0.2x", true]
           ],
+          table: [
+            ["Enterprise value", "$462M", "$431M", "$448M", "+$31M", "+$14M"],
+            ["Leverage", "0.2x", "0.4x", "0.3x", "-0.2x", "-0.1x"],
+            ["Covenant room", "84%", "78%", "81%", "+6 pts", "+3 pts"],
+            ["Risk score", "Low", "Medium", "Low", "Improved", "Stable"]
+          ],
           actions: [
             ["Update valuation sensitivity", "CFO office", "Board pack"],
             ["Document covenant headroom", "Treasury", "This week"],
@@ -539,6 +671,7 @@
       const chart = document.querySelector("[data-chart]");
       const bridge = document.querySelector("[data-bridge]");
       const actions = document.querySelector("[data-actions]");
+      const table = document.querySelector("[data-table]");
       const tabs = document.querySelectorAll("[data-view]");
       let activeView = "performance";
 
@@ -564,18 +697,69 @@
         return scenarioFactor() * periodFactor() * regionFactor();
       }
 
+      function pathFor(values) {
+        const width = 820;
+        const left = 56;
+        const right = 28;
+        const top = 34;
+        const bottom = 46;
+        const plotWidth = width - left - right;
+        const plotHeight = 280 - top - bottom;
+        return values
+          .map((value, index) => {
+            const x = left + (plotWidth / (values.length - 1)) * index;
+            const y = top + plotHeight - (Math.max(12, Math.min(96, value)) / 100) * plotHeight;
+            return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
+          })
+          .join(" ");
+      }
+
+      function renderBoardTrend(data) {
+        const base = data.chart;
+        const factor = scenarioFactor() * periodFactor();
+        const actual = base.map((value, index) => Math.max(12, Math.min(96, value * factor + Math.sin(index + 1) * 4)));
+        const plan = base.map((value, index) => Math.max(12, Math.min(96, value + 5 - index * 0.7)));
+        const forecast = base.map((value, index) => Math.max(12, Math.min(96, value * 0.96 + 4 + Math.cos(index) * 3)));
+        const quality = base.map((value, index) => Math.max(12, Math.min(88, value * 0.36 + 18 + index * 0.8)));
+        const labels = ["M1", "M2", "M3", "M4", "M5", "M6"];
+        const xFor = (index) => 56 + ((820 - 56 - 28) / 5) * index;
+        chart.innerHTML = `
+          <svg viewBox="0 0 820 280" class="chart-svg" role="img" aria-label="${data.title} Actual Plan Forecast trend">
+            <circle cx="56" cy="16" r="4" fill="#f97316"/><text x="65" y="20" class="axis">Actual</text>
+            <circle cx="148" cy="16" r="4" fill="#2563eb"/><text x="157" y="20" class="axis">Plan</text>
+            <circle cx="226" cy="16" r="4" fill="#2a9d8f"/><text x="235" y="20" class="axis">Forecast</text>
+            <circle cx="330" cy="16" r="4" fill="#f59e0b"/><text x="339" y="20" class="axis">Board decision index</text>
+            <line x1="56" y1="234" x2="792" y2="234" class="grid-line"/><text x="46" y="238" text-anchor="end" class="axis">0</text>
+            <line x1="56" y1="134" x2="792" y2="134" class="grid-line"/><text x="46" y="138" text-anchor="end" class="axis">50</text>
+            <line x1="56" y1="34" x2="792" y2="34" class="grid-line"/><text x="46" y="38" text-anchor="end" class="axis">100</text>
+            <line x1="56" y1="234" x2="792" y2="234" class="zero-line"/>
+            <path d="${pathFor(actual)}" class="line-orange"/>
+            <path d="${pathFor(plan)}" class="line-blue dashed"/>
+            <path d="${pathFor(forecast)}" class="line-teal dashed"/>
+            <path d="${pathFor(quality)}" class="line-amber"/>
+            ${labels.map((label, index) => `<text x="${xFor(index).toFixed(1)}" y="264" text-anchor="middle" class="axis">${label}</text>`).join("")}
+          </svg>
+        `;
+      }
+
       function formatAdjusted(value) {
-        const match = value.match(/^\$([\d.]+)([KMB])?$/);
-        if (!match) return value;
-        const numeric = Number(match[1]);
-        if (!Number.isFinite(numeric)) return value;
-        return `$${(numeric * dashboardFactor()).toFixed(1)}${match[2] || ""}`;
+        return value;
+      }
+
+      function boardVarianceClass(metric, value) {
+        const text = String(value).toLowerCase();
+        if (text.includes("improved") || text.includes("stable")) return "good";
+        const riskMetric = /burn|dso|leverage|risk/i.test(metric);
+        const isNegative = String(value).trim().startsWith("-");
+        const isPositive = String(value).trim().startsWith("+");
+        if (riskMetric) return isPositive ? "bad" : "good";
+        return isNegative ? "bad" : "good";
       }
 
       function render() {
         const data = views[activeView];
         title.textContent = data.title;
-        lens.textContent = `${data.lens} Illustrative lens: ${scenarioSelect.value} / ${periodSelect.value} / ${regionSelect.value}.`;
+        lens.textContent = `${data.lens} Trend lens: ${scenarioSelect.value} / ${periodSelect.value} / ${regionSelect.value}. KPI table remains the base board case.`;
         chartTitle.textContent = data.chartTitle;
         chartCopy.textContent = data.chartCopy;
 
@@ -583,17 +767,28 @@
           .map(([label, value, delta]) => `<div class="kpi"><span>${label}</span><strong>${formatAdjusted(value)}</strong><small>${delta}</small></div>`)
           .join("");
 
-        chart.innerHTML = data.chart
-          .map((height, index) => `<div class="bar"><i style="height:${Math.min(96, Math.max(18, height * scenarioFactor() * periodFactor()))}%"></i><span>M${index + 1}</span></div>`)
-          .join("");
+        renderBoardTrend(data);
 
         bridge.innerHTML = data.bridge
           .map(([label, width, value, negative]) => `
             <div class="bridge-row">
               <span>${label}</span>
-              <div class="track ${negative ? "negative" : ""}"><i style="width:${Math.min(96, Math.max(8, width * scenarioFactor() * regionFactor()))}%"></i></div>
+              <div class="track ${negative ? "negative" : ""}"><i style="width:${Math.min(96, Math.max(8, width))}%"></i></div>
               <span>${value}</span>
             </div>
+          `)
+          .join("");
+
+        table.innerHTML = data.table
+          .map(([metric, actual, plan, forecast, varPlan, varForecast]) => `
+            <tr>
+              <td>${metric}</td>
+              <td class="num">${actual}</td>
+              <td class="num">${plan}</td>
+              <td class="num">${forecast}</td>
+              <td class="num ${boardVarianceClass(metric, varPlan)}">${varPlan}</td>
+              <td class="num ${boardVarianceClass(metric, varForecast)}">${varForecast}</td>
+            </tr>
           `)
           .join("");
 
