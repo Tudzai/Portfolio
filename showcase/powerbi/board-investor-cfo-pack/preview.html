@@ -385,10 +385,10 @@
           <span>Project 20</span>
           <strong>Board Investor CFO Pack</strong>
         </div>
-        <div class="tabs" role="tablist" aria-label="Board pack pages">
-          <button class="tab is-active" type="button" data-view="performance">Performance</button>
-          <button class="tab" type="button" data-view="cash">Cash Plan</button>
-          <button class="tab" type="button" data-view="risk">Risk &amp; Valuation</button>
+        <div class="tabs" role="group" aria-label="Board pack pages">
+          <button class="tab is-active" type="button" data-view="performance" aria-pressed="true">Performance</button>
+          <button class="tab" type="button" data-view="cash" aria-pressed="false">Cash Plan</button>
+          <button class="tab" type="button" data-view="risk" aria-pressed="false">Risk &amp; Valuation</button>
         </div>
         <p class="side-note">
           Interactive public-safe preview. Numbers are synthetic portfolio samples designed to show CFO storytelling,
@@ -548,11 +548,28 @@
         return 1;
       }
 
+      function periodFactor() {
+        if (periodSelect.value === "Q2 2026") return 1.02;
+        if (periodSelect.value === "FY 2026") return 1.06;
+        return 1;
+      }
+
+      function regionFactor() {
+        if (regionSelect.value === "Vietnam") return 0.74;
+        if (regionSelect.value === "Regional") return 1.18;
+        return 1;
+      }
+
+      function dashboardFactor() {
+        return scenarioFactor() * periodFactor() * regionFactor();
+      }
+
       function formatAdjusted(value) {
-        if (!value.startsWith("$")) return value;
-        const numeric = Number(value.replace(/[$Mx]/g, ""));
+        const match = value.match(/^\$([\d.]+)([KMB])?$/);
+        if (!match) return value;
+        const numeric = Number(match[1]);
         if (!Number.isFinite(numeric)) return value;
-        return `$${(numeric * scenarioFactor()).toFixed(1)}M`;
+        return `$${(numeric * dashboardFactor()).toFixed(1)}${match[2] || ""}`;
       }
 
       function render() {
@@ -567,14 +584,14 @@
           .join("");
 
         chart.innerHTML = data.chart
-          .map((height, index) => `<div class="bar"><i style="height:${Math.max(18, height * scenarioFactor())}%"></i><span>M${index + 1}</span></div>`)
+          .map((height, index) => `<div class="bar"><i style="height:${Math.min(96, Math.max(18, height * scenarioFactor() * periodFactor()))}%"></i><span>M${index + 1}</span></div>`)
           .join("");
 
         bridge.innerHTML = data.bridge
           .map(([label, width, value, negative]) => `
             <div class="bridge-row">
               <span>${label}</span>
-              <div class="track ${negative ? "negative" : ""}"><i style="width:${Math.min(96, width * scenarioFactor())}%"></i></div>
+              <div class="track ${negative ? "negative" : ""}"><i style="width:${Math.min(96, Math.max(8, width * scenarioFactor() * regionFactor()))}%"></i></div>
               <span>${value}</span>
             </div>
           `)
@@ -584,7 +601,11 @@
           .map(([name, owner, timing]) => `<div class="action"><div><strong>${name}</strong><span>${owner}</span></div><em>${timing}</em></div>`)
           .join("");
 
-        tabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.view === activeView));
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.view === activeView;
+          tab.classList.toggle("is-active", isActive);
+          tab.setAttribute("aria-pressed", String(isActive));
+        });
       }
 
       tabs.forEach((tab) => {

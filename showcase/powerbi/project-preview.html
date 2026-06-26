@@ -409,10 +409,10 @@
 
       <section class="dashboard" aria-label="Interactive project dashboard preview">
         <article class="panel">
-          <div class="tabs" aria-label="Dashboard lens">
-            <button class="tab is-active" type="button" data-lens="executive">Executive</button>
-            <button class="tab" type="button" data-lens="drivers">Drivers</button>
-            <button class="tab" type="button" data-lens="actions">Actions</button>
+          <div class="tabs" role="group" aria-label="Dashboard lens">
+            <button class="tab is-active" type="button" data-lens="executive" aria-pressed="true">Executive</button>
+            <button class="tab" type="button" data-lens="drivers" aria-pressed="false">Drivers</button>
+            <button class="tab" type="button" data-lens="actions" aria-pressed="false">Actions</button>
           </div>
           <h2 id="chartTitle">Executive scorecard</h2>
           <p class="panel-subtitle" id="chartSubtitle"></p>
@@ -801,7 +801,11 @@
       tabs.forEach((tab) => {
         tab.addEventListener("click", () => {
           activeLens = tab.dataset.lens;
-          tabs.forEach((item) => item.classList.toggle("is-active", item === tab));
+          tabs.forEach((item) => {
+            const isActive = item === tab;
+            item.classList.toggle("is-active", isActive);
+            item.setAttribute("aria-pressed", String(isActive));
+          });
           render();
         });
       });

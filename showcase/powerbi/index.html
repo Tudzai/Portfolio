@@ -182,6 +182,57 @@
         line-height: 1.45;
       }
 
+      .chart-mode-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        margin-top: 18px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+      }
+
+      .chart-mode-panel p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .chart-mode-buttons {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .chart-mode-button {
+        min-height: 42px;
+        padding: 9px 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface-strong);
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.86rem;
+        font-weight: 850;
+      }
+
+      .chart-mode-button:hover,
+      .chart-mode-button:focus-visible {
+        border-color: rgba(13, 123, 123, 0.42);
+        color: var(--teal);
+        outline: none;
+      }
+
+      .chart-mode-button.is-active {
+        border-color: var(--teal);
+        background: var(--teal);
+        color: #fff;
+      }
+
       .section {
         padding-top: clamp(42px, 7vw, 72px);
       }
@@ -278,7 +329,6 @@
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        margin-top: auto;
       }
 
       .proof-list span {
@@ -298,12 +348,91 @@
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
+        margin-top: auto;
       }
 
       .project-actions .button {
         min-height: 38px;
         padding: 9px 12px;
         font-size: 0.86rem;
+      }
+
+      .project-mini-chart {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        min-height: 138px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(135deg, rgba(13, 123, 123, 0.07), rgba(201, 129, 40, 0.06)),
+          var(--bg);
+      }
+
+      .project-mini-chart figcaption {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+        justify-content: space-between;
+        margin: 0;
+      }
+
+      .chart-focus {
+        color: var(--ink);
+        font-size: 0.84rem;
+        font-weight: 900;
+        line-height: 1.25;
+      }
+
+      .chart-value {
+        color: var(--teal);
+        font-size: 0.8rem;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .mini-chart-bars {
+        display: grid;
+        gap: 8px;
+      }
+
+      .mini-chart-row {
+        display: grid;
+        grid-template-columns: minmax(72px, 0.55fr) minmax(0, 1fr) 38px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .mini-chart-label,
+      .mini-chart-score {
+        color: var(--muted);
+        font-size: 0.74rem;
+        font-weight: 850;
+        line-height: 1.2;
+      }
+
+      .mini-chart-track {
+        height: 9px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(217, 223, 218, 0.92);
+      }
+
+      .mini-chart-fill {
+        display: block;
+        height: 100%;
+        min-width: 14%;
+        border-radius: inherit;
+        background: var(--teal);
+        transition: width 180ms ease, background 180ms ease;
+      }
+
+      .mini-chart-note {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.42;
       }
 
       .note {
@@ -320,6 +449,7 @@
         .hero,
         .section-heading,
         .summary-strip,
+        .chart-mode-panel,
         .project-grid {
           grid-template-columns: 1fr;
         }
@@ -349,8 +479,27 @@
         }
 
         .button,
-        .chip {
+        .chip,
+        .chart-mode-button {
           width: 100%;
+        }
+
+        .chart-mode-buttons {
+          width: 100%;
+        }
+
+        .project-mini-chart figcaption,
+        .mini-chart-row {
+          grid-template-columns: 1fr;
+        }
+
+        .project-mini-chart figcaption {
+          display: grid;
+          gap: 4px;
+        }
+
+        .chart-value {
+          white-space: normal;
         }
       }
     </style>
@@ -393,6 +542,18 @@
         <div><strong>9</strong><span>CFO, FP&amp;A, treasury, margin, governance, and board products prioritized for recruiter scan.</span></div>
         <div><strong>20</strong><span>interactive previews with project-level GitHub source folders.</span></div>
         <div><strong>0</strong><span>raw data, PBIX, PBIT, local path, or private BI source files published here.</span></div>
+      </section>
+
+      <section class="chart-mode-panel" aria-labelledby="chart-mode-title">
+        <div>
+          <p class="kicker" id="chart-mode-title">Project chart lens</p>
+          <p>Executive score, risk pressure, and owner action readiness across all 20 projects.</p>
+        </div>
+        <div class="chart-mode-buttons" role="group" aria-label="Project card chart lens">
+          <button class="chart-mode-button is-active" type="button" data-chart-mode="score" aria-pressed="true">Executive</button>
+          <button class="chart-mode-button" type="button" data-chart-mode="risk" aria-pressed="false">Risk</button>
+          <button class="chart-mode-button" type="button" data-chart-mode="action" aria-pressed="false">Action</button>
+        </div>
       </section>
 
       <section class="section" id="cfo-fpa" aria-labelledby="cfo-fpa-title">
@@ -658,6 +819,195 @@
         "01": "monthly-fpa-performance-pack/",
         "20": "board-investor-cfo-pack/"
       };
+      const chartModes = {
+        score: { label: "Executive score", color: "var(--teal)" },
+        risk: { label: "Risk pressure", color: "var(--amber)" },
+        action: { label: "Action readiness", color: "var(--green)" }
+      };
+      const projectMiniCharts = {
+        "01": {
+          score: { value: "$36.7M revenue", bars: [["Revenue", 88], ["GM", 78], ["EBITDA", 72]], note: "Close pack connects actuals, forecast, bridge, and cash." },
+          risk: { value: "$0.9M cost pressure", bars: [["Cost", 64], ["Cash", 69], ["Forecast", 74]], note: "Variance pressure is visible before the review meeting." },
+          action: { value: "3 owner queues", bars: [["Sales", 82], ["Ops", 76], ["Finance", 88]], note: "Owner commentary turns the dashboard into a management pack." }
+        },
+        "02": {
+          score: { value: "6.4% MAPE", bars: [["Volume", 82], ["Rate", 73], ["Cash", 69]], note: "Driver model translates assumptions into forecast calls." },
+          risk: { value: "Downside cash guardrail", bars: [["Inflation", 71], ["Hiring", 58], ["Demand", 64]], note: "Scenario pressure shows where the forecast can break." },
+          action: { value: "Forecast signoff", bars: [["FP&A", 88], ["Owners", 78], ["CFO", 72]], note: "Each assumption is tied to an accountable business owner." }
+        },
+        "03": {
+          score: { value: "$48.2M GMV", bars: [["GMV", 84], ["Orders", 76], ["Refunds", 71]], note: "Executive ecommerce lens balances growth and margin quality." },
+          risk: { value: "2.1% refund rate", bars: [["Refunds", 62], ["Mix", 58], ["AOV", 54]], note: "Category leakage and refunds are isolated for action." },
+          action: { value: "$1.8M mix upside", bars: [["Commercial", 84], ["Ops", 68], ["Finance", 78]], note: "Growth actions focus on profitable categories and repeat buyers." }
+        },
+        "04": {
+          score: { value: "4.9% order conversion", bars: [["Visit", 92], ["Cart", 54], ["Order", 38]], note: "Funnel chart makes leakage visible by step." },
+          risk: { value: "$0.7M leakage", bars: [["Checkout", 78], ["Mobile", 56], ["Traffic", 63]], note: "Conversion risk is framed as financial value at stake." },
+          action: { value: "Checkout fix queue", bars: [["Product", 82], ["Marketing", 74], ["Finance", 70]], note: "The preview links funnel leakage to product and spend decisions." }
+        },
+        "05": {
+          score: { value: "68% M3 retention", bars: [["M1", 86], ["M3", 68], ["M12", 43]], note: "Cohort decay is visible without opening the full dashboard." },
+          risk: { value: "11.2% churn risk", bars: [["Dormant", 76], ["Value", 59], ["Winback", 64]], note: "Retention pressure is sized by customer value." },
+          action: { value: "$8.6M retained value", bars: [["CRM", 84], ["Commercial", 72], ["Finance", 77]], note: "Win-back priorities are tied to LTV and incentive cost." }
+        },
+        "06": {
+          score: { value: "4.8x ROAS", bars: [["Search", 82], ["Affiliate", 74], ["Social", 45]], note: "Campaign scan separates scale candidates from waste." },
+          risk: { value: "31% budget at risk", bars: [["Display", 78], ["Fatigue", 67], ["CAC", 54]], note: "Spend risk is shown as redeployable budget." },
+          action: { value: "$1.2M redeploy", bars: [["Marketing", 82], ["Finance", 86], ["Growth", 70]], note: "Budget action is explicit: scale, pause, or fix." }
+        },
+        "07": {
+          score: { value: "2,840 sellers", bars: [["GMV", 86], ["SLA", 80], ["Rating", 72]], note: "Seller quality is connected to growth pool and risk." },
+          risk: { value: "3.8% cancel rate", bars: [["Cancel", 62], ["Stockout", 70], ["Fulfillment", 52]], note: "Operational risk is ranked before it hits GMV." },
+          action: { value: "$3.1M growth pool", bars: [["Marketplace", 84], ["Ops", 78], ["Finance", 72]], note: "Seller enablement is translated into financial upside." }
+        },
+        "08": {
+          score: { value: "$92.5M TPV", bars: [["TPV", 90], ["Take rate", 63], ["Margin", 70]], note: "Payments profitability is shown through volume and fee economics." },
+          risk: { value: "$0.09 unit profit", bars: [["Cost", 68], ["Fee", 57], ["Mix", 62]], note: "Merchant and processing cost pressure stay visible." },
+          action: { value: "Fee tier review", bars: [["Commercial", 80], ["Finance", 84], ["Ops", 68]], note: "Low-fee contracts and cost exceptions get an owner path." }
+        },
+        "09": {
+          score: { value: "$41.6M loan book", bars: [["Current", 82], ["1-30 DPD", 54], ["60+ DPD", 18]], note: "Credit risk is summarized through loan book migration." },
+          risk: { value: "$1.1M provision gap", bars: [["Vintage", 74], ["DPD", 82], ["Provision", 76]], note: "Provision pressure is visible for CFO review." },
+          action: { value: "Collections focus", bars: [["Risk", 82], ["Collections", 86], ["Finance", 78]], note: "Risk, collections, and finance share the same action queue." }
+        },
+        "10": {
+          score: { value: "12,480 alerts", bars: [["Rules", 74], ["SLA", 83], ["Exposure", 66]], note: "Fraud operations are framed by alert quality and exposure." },
+          risk: { value: "$0.8M exposure", bars: [["Clusters", 76], ["Backlog", 66], ["False +", 58]], note: "Risk pressure separates real exposure from noisy rules." },
+          action: { value: "SLA escalation", bars: [["Risk Ops", 84], ["Analytics", 78], ["Compliance", 82]], note: "The dashboard shows who tunes, clears, and escalates." }
+        },
+        "11": {
+          score: { value: "520K funded accounts", bars: [["Onboard", 88], ["Funded", 69], ["Retained", 52]], note: "Growth quality is visible from onboarding to retention." },
+          risk: { value: "8.8% churn", bars: [["Churn", 73], ["Dormant", 68], ["Channel", 55]], note: "Retention and channel risks are tied to unit economics." },
+          action: { value: "2.7x LTV/CAC", bars: [["Growth", 82], ["CRM", 78], ["Finance", 86]], note: "Spend quality connects to funded accounts and LTV/CAC." }
+        },
+        "12": {
+          score: { value: "$1.8B AUM", bars: [["AUM", 89], ["Retention", 84], ["Suitability", 72]], note: "AUM retention is connected to client and suitability risk." },
+          risk: { value: "$46M at-risk AUM", bars: [["Outflow", 76], ["Market", 62], ["Suitability", 70]], note: "Client risk is translated into fee revenue exposure." },
+          action: { value: "Advisor contact list", bars: [["Advisory", 86], ["Risk", 78], ["Finance", 74]], note: "High-AUM accounts get an owner-ready retention path." }
+        },
+        "13": {
+          score: { value: "99.2% close tie-out", bars: [["Entity", 78], ["FX", 63], ["Elims", 57]], note: "Regional consolidation shows entity, FX, and elimination views." },
+          risk: { value: "$2.6M FX variance", bars: [["FX", 78], ["Elims", 66], ["Close", 58]], note: "Close exceptions are visible before regional reporting." },
+          action: { value: "Country owner comments", bars: [["Regional", 86], ["Accounting", 76], ["CFO", 72]], note: "Country variance owners are built into the review flow." }
+        },
+        "14": {
+          score: { value: "14.8 runway months", bars: [["Cash", 77], ["AR", 58], ["DSO", 48]], note: "Treasury view prioritizes cash, AR, and runway." },
+          risk: { value: "$6.2M overdue AR", bars: [["Overdue", 82], ["FX", 56], ["DSO", 74]], note: "Working capital pressure is sized for escalation." },
+          action: { value: "Collection action queue", bars: [["Treasury", 86], ["Commercial", 78], ["Finance", 84]], note: "Owners can move from DSO view to collection action." }
+        },
+        "15": {
+          score: { value: "$18.4M ARR", bars: [["ARR", 80], ["NRR", 75], ["Payback", 56]], note: "SaaS metrics connect ARR, retention, and efficiency." },
+          risk: { value: "7.1% logo churn", bars: [["Churn", 72], ["Payback", 58], ["SMB", 66]], note: "Growth quality risk is clear enough for board prep." },
+          action: { value: "ARR bridge owner path", bars: [["Sales", 82], ["CS", 78], ["Finance", 86]], note: "Expansion and churn actions feed the forecast bridge." }
+        },
+        "16": {
+          score: { value: "$7.3M cost variance", bars: [["Material", 66], ["Labor", 58], ["Yield", 76]], note: "Cost FP&A view decomposes variance into controllable drivers." },
+          risk: { value: "48 inventory days", bars: [["Material", 78], ["Idle cap.", 68], ["Inventory", 62]], note: "Capacity, yield, and inventory pressure are visible together." },
+          action: { value: "Margin recovery plan", bars: [["Ops", 84], ["Procurement", 80], ["Finance", 78]], note: "Recovery actions are assigned by plant and cost owner." }
+        },
+        "17": {
+          score: { value: "$62.8M lane revenue", bars: [["Air", 64], ["Ocean", 73], ["Road", 59]], note: "Trade lane profitability is visible by service line." },
+          risk: { value: "37 loss lanes", bars: [["Loss lanes", 82], ["Fuel", 60], ["Customers", 76]], note: "Loss-making lanes and customers stay in view." },
+          action: { value: "$2.3M repricing pool", bars: [["Commercial", 86], ["Ops", 76], ["Finance", 82]], note: "The dashboard supports repricing and renegotiation calls." }
+        },
+        "18": {
+          score: { value: "$1.9M carbon cost", bars: [["Scope 1", 48], ["Scope 2", 55], ["Scope 3", 82]], note: "ESG finance connects emissions to carbon cost exposure." },
+          risk: { value: "12 supplier risks", bars: [["Suppliers", 78], ["Carbon", 66], ["Scope 3", 82]], note: "Supplier intensity and carbon price risk are finance-owned." },
+          action: { value: "18% abatement ROI", bars: [["Procurement", 76], ["Finance", 84], ["ESG", 80]], note: "Abatement choices are framed by ROI and payback." }
+        },
+        "19": {
+          score: { value: "99.6% refresh SLA", bars: [["Refresh", 91], ["Complete", 84], ["Recon", 67]], note: "BI governance makes trust and refresh reliability visible." },
+          risk: { value: "8 recon breaks", bars: [["Mapping", 72], ["Recon", 76], ["Owner SLA", 58]], note: "Data quality risk is pushed into owner queues." },
+          action: { value: "42 data checks", bars: [["Data owner", 78], ["Finance", 86], ["BI", 82]], note: "Governance checks support confident close reporting." }
+        },
+        "20": {
+          score: { value: "3 board tabs", bars: [["Performance", 80], ["Cash", 74], ["Runway", 86]], note: "Board pack combines performance, cash plan, and valuation risk." },
+          risk: { value: "Valuation watchlist", bars: [["Risk", 58], ["Covenant", 72], ["Runway", 86]], note: "Investor-level risk stays visible next to cash runway." },
+          action: { value: "Board narrative queue", bars: [["CFO", 88], ["CEO", 74], ["FP&A", 86]], note: "Board story, risks, and actions are tied together." }
+        }
+      };
+      let activeChartMode = "score";
+
+      function getChartPayload(no) {
+        return projectMiniCharts[no]?.[activeChartMode] || projectMiniCharts[no]?.score;
+      }
+
+      function renderCardChart(card, no) {
+        const payload = getChartPayload(no);
+        if (!payload) return;
+
+        let chart = card.querySelector(".project-mini-chart");
+        const actions = card.querySelector(".project-actions");
+        if (!chart) {
+          chart = document.createElement("figure");
+          chart.className = "project-mini-chart";
+          const proof = card.querySelector(".proof-list");
+          if (proof?.parentElement) card.insertBefore(chart, proof);
+          else if (actions?.parentElement) card.insertBefore(chart, actions);
+          else card.append(chart);
+        }
+
+        const mode = chartModes[activeChartMode];
+        chart.setAttribute("aria-label", `${mode.label} chart for project ${no}`);
+        chart.dataset.chartReady = "true";
+        chart.replaceChildren();
+
+        const caption = document.createElement("figcaption");
+        const focus = document.createElement("span");
+        focus.className = "chart-focus";
+        focus.textContent = mode.label;
+        const value = document.createElement("span");
+        value.className = "chart-value";
+        value.textContent = payload.value;
+        caption.append(focus, value);
+
+        const bars = document.createElement("div");
+        bars.className = "mini-chart-bars";
+        payload.bars.forEach(([label, score]) => {
+          const bounded = Math.max(14, Math.min(96, score));
+          const row = document.createElement("div");
+          row.className = "mini-chart-row";
+
+          const labelEl = document.createElement("span");
+          labelEl.className = "mini-chart-label";
+          labelEl.textContent = label;
+
+          const track = document.createElement("span");
+          track.className = "mini-chart-track";
+          track.title = `${label}: ${bounded}%`;
+
+          const fill = document.createElement("span");
+          fill.className = "mini-chart-fill";
+          fill.style.width = `${bounded}%`;
+          fill.style.background = mode.color;
+          track.append(fill);
+
+          const scoreEl = document.createElement("span");
+          scoreEl.className = "mini-chart-score";
+          scoreEl.textContent = `${bounded}%`;
+
+          row.append(labelEl, track, scoreEl);
+          bars.append(row);
+        });
+
+        const note = document.createElement("p");
+        note.className = "mini-chart-note";
+        note.textContent = payload.note;
+        chart.append(caption, bars, note);
+      }
+
+      function renderAllCardCharts() {
+        document.querySelectorAll(".chart-mode-button").forEach((button) => {
+          const isActive = button.dataset.chartMode === activeChartMode;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+
+        document.querySelectorAll(".project-card").forEach((card) => {
+          const no = card.querySelector(".project-no")?.textContent.trim();
+          if (no) renderCardChart(card, no);
+        });
+      }
 
       document.querySelectorAll(".project-card").forEach((card) => {
         const no = card.querySelector(".project-no")?.textContent.trim();
@@ -686,6 +1036,14 @@
         actions.append(preview, github);
         if (!actions.parentElement) card.append(actions);
       });
+
+      document.querySelectorAll(".chart-mode-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeChartMode = button.dataset.chartMode || "score";
+          renderAllCardCharts();
+        });
+      });
+      renderAllCardCharts();
     </script>
   </body>
 </html>

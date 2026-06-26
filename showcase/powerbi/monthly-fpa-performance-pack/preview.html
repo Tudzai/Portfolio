@@ -426,7 +426,7 @@
       <article class="panel full">
         <div class="chart-title">Drill-down Matrix</div>
         <div class="chart-subtitle">Switch level to inspect company performance by business unit, product, region, or customer.</div>
-        <div class="tabs" id="tabs"></div>
+        <div class="tabs" id="tabs" role="group" aria-label="Drill-down level"></div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -485,7 +485,9 @@
         </tr>
       `).join("");
       [...tabs.querySelectorAll("button")].forEach(button => {
-        button.classList.toggle("active", button.dataset.level === level);
+        const isActive = button.dataset.level === level;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
       });
     }
 
@@ -494,6 +496,7 @@
       button.className = "tab" + (idx === 0 ? " active" : "");
       button.type = "button";
       button.dataset.level = level;
+      button.setAttribute("aria-pressed", String(idx === 0));
       button.textContent = level;
       button.addEventListener("click", () => render(level));
       tabs.appendChild(button);
