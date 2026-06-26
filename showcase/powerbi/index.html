@@ -182,6 +182,83 @@
         line-height: 1.45;
       }
 
+      .start-strip {
+        display: grid;
+        grid-template-columns: minmax(220px, 0.34fr) minmax(0, 1fr);
+        gap: 14px;
+        margin-top: 18px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+      }
+
+      .start-copy {
+        display: grid;
+        align-content: start;
+        gap: 8px;
+      }
+
+      .start-copy h2 {
+        margin: 0;
+        font-size: clamp(1.25rem, 2vw, 1.65rem);
+        line-height: 1.18;
+      }
+
+      .start-copy p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.58;
+      }
+
+      .start-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .start-card {
+        display: grid;
+        gap: 8px;
+        min-height: 172px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface-strong);
+      }
+
+      .start-card:hover,
+      .start-card:focus-visible {
+        border-color: rgba(13, 123, 123, 0.42);
+        outline: none;
+      }
+
+      .start-card span {
+        color: var(--teal);
+        font-weight: 900;
+      }
+
+      .start-card strong {
+        font-size: 0.96rem;
+        line-height: 1.24;
+      }
+
+      .start-card em,
+      .start-card small {
+        color: var(--muted);
+        font-style: normal;
+        line-height: 1.42;
+      }
+
+      .start-card em {
+        font-size: 0.84rem;
+        font-weight: 850;
+      }
+
+      .start-card small {
+        font-size: 0.78rem;
+      }
+
       .chart-mode-panel {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -449,9 +526,14 @@
         .hero,
         .section-heading,
         .summary-strip,
+        .start-strip,
         .chart-mode-panel,
         .project-grid {
           grid-template-columns: 1fr;
+        }
+
+        .start-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
         .hero-preview {
@@ -474,8 +556,13 @@
         }
 
         .summary-strip div,
+        .start-card,
         .project-card {
           min-height: auto;
+        }
+
+        .start-grid {
+          grid-template-columns: 1fr;
         }
 
         .button,
@@ -510,11 +597,11 @@
 
       <section class="hero">
         <div>
-          <p class="kicker">Power BI decision products</p>
-          <h1>20 BI projects mapped to CFO, FP&amp;A, commercial, risk, and governance decisions.</h1>
+          <p class="kicker">Power BI decision previews</p>
+          <h1>20 public-safe Power BI decision previews, led by CFO and FP&amp;A case studies.</h1>
           <p class="lead">
-            This hub organizes the Power BI portfolio by the business question each product answers. It keeps the
-            recruiter path clear: finance judgment first, model depth second, and public-safe interactive proof throughout.
+            This hub organizes the Power BI portfolio by the business question each preview answers. It keeps the
+            recruiter path clear: finance judgment first, model depth second, and public-safe interactive proof patterns throughout.
           </p>
           <div class="hero-actions">
             <a class="button" href="#cfo-fpa">Start with CFO and FP&amp;A</a>
@@ -538,16 +625,56 @@
       </section>
 
       <section class="summary-strip" aria-label="Power BI portfolio summary">
-        <div><strong>20</strong><span>BI products across finance, growth, risk, and governance.</span></div>
+        <div><strong>20</strong><span>Public-safe BI decision previews across finance, growth, risk, and governance.</span></div>
         <div><strong>9</strong><span>CFO, FP&amp;A, treasury, margin, governance, and board products prioritized for recruiter scan.</span></div>
-        <div><strong>20</strong><span>interactive previews with project-level GitHub source folders.</span></div>
+        <div><strong>20</strong><span>Route-level project briefs with interactive preview patterns and GitHub source folders.</span></div>
         <div><strong>0</strong><span>raw data, PBIX, PBIT, local path, or private BI source files published here.</span></div>
+      </section>
+
+      <section class="start-strip" aria-labelledby="start-here-title">
+        <div class="start-copy">
+          <p class="kicker">Start here</p>
+          <h2 id="start-here-title">Open these 5 first for FP&amp;A hiring proof.</h2>
+          <p>They show management reporting, forecasting, regional close control, cash discipline, and margin recovery.</p>
+        </div>
+        <div class="start-grid">
+          <a class="start-card" href="monthly-fpa-performance-pack/">
+            <span>01</span>
+            <strong>Monthly FP&amp;A Performance Pack</strong>
+            <em>Best proof: management reporting</em>
+            <small>Actual/Budget/Forecast, EBITDA bridge, cash view, and owner comments.</small>
+          </a>
+          <a class="start-card" href="driver-based-forecasting/">
+            <span>02</span>
+            <strong>Driver-Based Forecasting</strong>
+            <em>Best proof: forecast ownership</em>
+            <small>Volume, rate, headcount, cost inflation, cash guardrail, and weighted MAPE.</small>
+          </a>
+          <a class="start-card" href="regional-fpa-consolidation/">
+            <span>13</span>
+            <strong>Regional FP&amp;A Consolidation</strong>
+            <em>Best proof: MNC close control</em>
+            <small>Entity variance, FX bridge, eliminations, P&amp;L tie-out, and owner signoff.</small>
+          </a>
+          <a class="start-card" href="treasury-working-capital/">
+            <span>14</span>
+            <strong>Treasury Working Capital</strong>
+            <em>Best proof: cash discipline</em>
+            <small>Cash roll-forward, overdue AR, DSO, runway, FX exposure, and collection queue.</small>
+          </a>
+          <a class="start-card" href="logistics-trade-lane-profitability/">
+            <span>17</span>
+            <strong>Logistics Trade Lane Profitability</strong>
+            <em>Best proof: commercial finance</em>
+            <small>Lane margin, loss customers, fuel surcharge pressure, and gross profit recovery.</small>
+          </a>
+        </div>
       </section>
 
       <section class="chart-mode-panel" aria-labelledby="chart-mode-title">
         <div>
           <p class="kicker" id="chart-mode-title">Project chart lens</p>
-          <p>Executive score, risk pressure, and owner action readiness across all 20 projects.</p>
+          <p>Scan each preview by finance question, metric at risk, and owner action readiness.</p>
         </div>
         <div class="chart-mode-buttons" role="group" aria-label="Project card chart lens">
           <button class="chart-mode-button is-active" type="button" data-chart-mode="score" aria-pressed="true">Executive</button>
@@ -575,7 +702,7 @@
             <p>Executive close pack tying Actual/Budget/Forecast to EBITDA bridge, cash visibility, drilldowns, and action commentary.</p>
             <div class="proof-list"><span>53 DAX measures</span><span>13-table model</span><span>variance bridge</span></div>
             <div class="project-actions">
-              <a class="button" href="monthly-fpa-performance-pack/">View preview</a>
+              <a class="button" href="monthly-fpa-performance-pack/">Read case</a>
               <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2001%20-%20Monthly%20FP%26A%20Performance%20Pack" target="_blank" rel="noopener">GitHub folder</a>
             </div>
           </article>
@@ -584,10 +711,10 @@
             <div class="card-top"><span class="project-no">20</span><span class="status">Interactive preview</span></div>
             <p class="label">Board reporting</p>
             <h3>Board Investor CFO Pack</h3>
-            <p>Board-ready CFO pack connecting performance, cash plan, runway, valuation risk, and investor-level KPIs.</p>
-            <div class="proof-list"><span>3 page tabs</span><span>scenario controls</span><span>action queue</span></div>
+            <p>Board pack summarizing performance, cash runway, covenant headroom, valuation sensitivity, and owner actions.</p>
+            <div class="proof-list"><span>3 page tabs</span><span>cash runway tie-out</span><span>action queue</span></div>
             <div class="project-actions">
-              <a class="button" href="board-investor-cfo-pack/">View preview</a>
+              <a class="button" href="board-investor-cfo-pack/">Read case</a>
               <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2020%20-%20Board%20Investor%20CFO%20Pack" target="_blank" rel="noopener">GitHub folder</a>
             </div>
           </article>
@@ -597,9 +724,9 @@
             <p class="label">Planning model</p>
             <h3>Driver-Based Forecasting</h3>
             <p>Scenario model translating volume, cost, headcount, and cash assumptions into forecast decisions.</p>
-            <div class="proof-list"><span>5 pages</span><span>scenario planning</span><span>forecast MAPE</span></div>
+            <div class="proof-list"><span>5 pages</span><span>scenario planning</span><span>weighted MAPE</span></div>
             <div class="project-actions">
-              <a class="button" href="project-preview.html?project=02">View preview</a>
+              <a class="button" href="driver-based-forecasting/">Read case</a>
               <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2002%20-%20Driver-Based%20Forecasting" target="_blank" rel="noopener">GitHub folder</a>
             </div>
           </article>
@@ -608,16 +735,16 @@
             <div class="card-top"><span class="project-no">13</span><span class="status">Brief</span></div>
             <p class="label">Regional MNC finance</p>
             <h3>Regional FP&amp;A Consolidation</h3>
-            <p>Regional consolidation command center for country/entity variance, FX translation, eliminations, and close exceptions.</p>
-            <div class="proof-list"><span>multi-entity</span><span>FX variance</span><span>close control</span></div>
+            <p>Regional consolidation view for country/entity variance, FX translation, eliminations, and close exceptions.</p>
+            <div class="proof-list"><span>multi-entity</span><span>FX bridge</span><span>P&amp;L tie-out</span></div>
           </article>
 
           <article class="project-card" id="treasury-working-capital">
             <div class="card-top"><span class="project-no">14</span><span class="status">Brief</span></div>
             <p class="label">Treasury and cash</p>
             <h3>Treasury Working Capital</h3>
-            <p>Treasury view prioritizing AR, DSO, cash runway, FX exposure, liquidity, and collection actions.</p>
-            <div class="proof-list"><span>cash forecast</span><span>DSO/DPO/DIO</span><span>FX risk</span></div>
+            <p>Treasury view prioritizing cash roll-forward, overdue AR, DSO, runway, FX exposure, and collection actions.</p>
+            <div class="proof-list"><span>cash roll-forward</span><span>DSO and overdue AR</span><span>FX risk</span></div>
           </article>
 
           <article class="project-card" id="saas-cfo-metrics">
@@ -640,8 +767,8 @@
             <div class="card-top"><span class="project-no">17</span><span class="status">Brief</span></div>
             <p class="label">Commercial finance</p>
             <h3>Logistics Trade Lane Profitability</h3>
-            <p>Lane-level profitability cockpit showing customers, services, and lanes needing repricing or renegotiation.</p>
-            <div class="proof-list"><span>customer margin</span><span>trade lane</span><span>action queue</span></div>
+            <p>Lane-level profitability view showing customers, services, and lanes needing repricing or renegotiation.</p>
+            <div class="proof-list"><span>customer margin</span><span>trade lane</span><span>gross profit recovery</span></div>
           </article>
 
           <article class="project-card" id="finance-data-quality-bi-governance">
@@ -671,7 +798,7 @@
             <div class="card-top"><span class="project-no">03</span><span class="status">Brief</span></div>
             <p class="label">Ecommerce executive KPIs</p>
             <h3>Ecommerce Executive Performance</h3>
-            <p>Executive performance cockpit for revenue, margin, customers, orders, refunds, and ecommerce operating levers.</p>
+            <p>Executive ecommerce review for revenue, margin, customers, orders, refunds, and operating levers.</p>
             <div class="proof-list"><span>GMV</span><span>orders</span><span>category mix</span></div>
           </article>
 
@@ -695,7 +822,7 @@
             <div class="card-top"><span class="project-no">06</span><span class="status">Brief</span></div>
             <p class="label">Marketing finance</p>
             <h3>Marketing Campaign ROI</h3>
-            <p>Campaign ROI command center showing which channels to scale, pause, or fix based on spend efficiency.</p>
+            <p>Campaign ROI review showing which channels to scale, pause, or fix based on spend efficiency.</p>
             <div class="proof-list"><span>ROAS</span><span>CAC</span><span>scale / cut</span></div>
           </article>
 
@@ -741,7 +868,7 @@
             <div class="card-top"><span class="project-no">10</span><span class="status">Brief</span></div>
             <p class="label">Risk operations</p>
             <h3>AML Fraud Monitoring</h3>
-            <p>Fraud command center surfacing suspicious patterns, case backlog, rule performance, and AML monitoring actions.</p>
+            <p>Fraud monitoring view surfacing suspicious patterns, case backlog, rule performance, and AML actions.</p>
             <div class="proof-list"><span>alerts</span><span>case SLA</span><span>rule performance</span></div>
           </article>
 
@@ -817,6 +944,24 @@
       };
       const previewRoutes = {
         "01": "monthly-fpa-performance-pack/",
+        "02": "driver-based-forecasting/",
+        "03": "ecommerce-executive-performance/",
+        "04": "customer-funnel-conversion/",
+        "05": "retention-cohort-ltv/",
+        "06": "marketing-campaign-roi/",
+        "07": "marketplace-seller-performance/",
+        "08": "digital-payments-profitability/",
+        "09": "bnpl-credit-risk-provision/",
+        "10": "aml-fraud-monitoring/",
+        "11": "neobank-growth-retention-ltv/",
+        "12": "wealthtech-aum-client-retention/",
+        "13": "regional-fpa-consolidation/",
+        "14": "treasury-working-capital/",
+        "15": "saas-cfo-metrics/",
+        "16": "manufacturing-cost-fpa/",
+        "17": "logistics-trade-lane-profitability/",
+        "18": "esg-carbon-finance/",
+        "19": "finance-data-quality-bi-governance/",
         "20": "board-investor-cfo-pack/"
       };
       const chartModes = {
@@ -826,12 +971,12 @@
       };
       const projectMiniCharts = {
         "01": {
-          score: { value: "$36.7M revenue", bars: [["Revenue", 88], ["GM", 78], ["EBITDA", 72]], note: "Close pack connects actuals, forecast, bridge, and cash." },
+          score: { value: "333.1M revenue", bars: [["Revenue", 88], ["GM", 29], ["EBITDA", 72]], note: "Close pack connects actuals, forecast, bridge, and cash." },
           risk: { value: "$0.9M cost pressure", bars: [["Cost", 64], ["Cash", 69], ["Forecast", 74]], note: "Variance pressure is visible before the review meeting." },
           action: { value: "3 owner queues", bars: [["Sales", 82], ["Ops", 76], ["Finance", 88]], note: "Owner commentary turns the dashboard into a management pack." }
         },
         "02": {
-          score: { value: "6.4% MAPE", bars: [["Volume", 82], ["Rate", 73], ["Cash", 69]], note: "Driver model translates assumptions into forecast calls." },
+          score: { value: "6.4% weighted MAPE", bars: [["Volume", 82], ["Rate", 73], ["Cash", 69]], note: "Driver model translates assumptions into forecast calls." },
           risk: { value: "Downside cash guardrail", bars: [["Inflation", 71], ["Hiring", 58], ["Demand", 64]], note: "Scenario pressure shows where the forecast can break." },
           action: { value: "Forecast signoff", bars: [["FP&A", 88], ["Owners", 78], ["CFO", 72]], note: "Each assumption is tied to an accountable business owner." }
         },
@@ -852,7 +997,7 @@
         },
         "06": {
           score: { value: "4.8x ROAS", bars: [["Search", 82], ["Affiliate", 74], ["Social", 45]], note: "Campaign scan separates scale candidates from waste." },
-          risk: { value: "31% budget at risk", bars: [["Display", 78], ["Fatigue", 67], ["CAC", 54]], note: "Spend risk is shown as redeployable budget." },
+          risk: { value: "31% spend below hurdle", bars: [["Display", 78], ["Fatigue", 67], ["CAC", 54]], note: "Spend risk is shown as redeployable budget." },
           action: { value: "$1.2M redeploy", bars: [["Marketing", 82], ["Finance", 86], ["Growth", 70]], note: "Budget action is explicit: scale, pause, or fix." }
         },
         "07": {
@@ -867,7 +1012,7 @@
         },
         "09": {
           score: { value: "$41.6M loan book", bars: [["Current", 82], ["1-30 DPD", 54], ["60+ DPD", 18]], note: "Credit risk is summarized through loan book migration." },
-          risk: { value: "$1.1M provision gap", bars: [["Vintage", 74], ["DPD", 82], ["Provision", 76]], note: "Provision pressure is visible for CFO review." },
+          risk: { value: "$1.1M ECL gap", bars: [["Vintage", 74], ["DPD", 82], ["Provision", 76]], note: "Provision pressure is visible for CFO review." },
           action: { value: "Collections focus", bars: [["Risk", 82], ["Collections", 86], ["Finance", 78]], note: "Risk, collections, and finance share the same action queue." }
         },
         "10": {
@@ -886,8 +1031,8 @@
           action: { value: "Advisor contact list", bars: [["Advisory", 86], ["Risk", 78], ["Finance", 74]], note: "High-AUM accounts get an owner-ready retention path." }
         },
         "13": {
-          score: { value: "99.2% close tie-out", bars: [["Entity", 78], ["FX", 63], ["Elims", 57]], note: "Regional consolidation shows entity, FX, and elimination views." },
-          risk: { value: "$2.6M FX variance", bars: [["FX", 78], ["Elims", 66], ["Close", 58]], note: "Close exceptions are visible before regional reporting." },
+          score: { value: "100% P&L tie-out", bars: [["Entity", 78], ["FX", 63], ["Elims", 57]], note: "Regional consolidation shows entity, FX, and elimination views." },
+          risk: { value: "$2.6M FX bridge", bars: [["FX", 78], ["Elims", 66], ["Close", 58]], note: "Close exceptions are visible before regional reporting." },
           action: { value: "Country owner comments", bars: [["Regional", 86], ["Accounting", 76], ["CFO", 72]], note: "Country variance owners are built into the review flow." }
         },
         "14": {
@@ -908,7 +1053,7 @@
         "17": {
           score: { value: "$62.8M lane revenue", bars: [["Air", 64], ["Ocean", 73], ["Road", 59]], note: "Trade lane profitability is visible by service line." },
           risk: { value: "37 loss lanes", bars: [["Loss lanes", 82], ["Fuel", 60], ["Customers", 76]], note: "Loss-making lanes and customers stay in view." },
-          action: { value: "$2.3M repricing pool", bars: [["Commercial", 86], ["Ops", 76], ["Finance", 82]], note: "The dashboard supports repricing and renegotiation calls." }
+          action: { value: "$2.3M GP recovery", bars: [["Commercial", 86], ["Ops", 76], ["Finance", 82]], note: "The dashboard supports repricing and renegotiation calls." }
         },
         "18": {
           score: { value: "$1.9M carbon cost", bars: [["Scope 1", 48], ["Scope 2", 55], ["Scope 3", 82]], note: "ESG finance connects emissions to carbon cost exposure." },
@@ -1015,7 +1160,7 @@
         if (!no || !folder) return;
 
         const status = card.querySelector(".status");
-        if (status) status.textContent = "Interactive preview";
+        if (status) status.textContent = "Decision preview";
 
         const actions = card.querySelector(".project-actions") || document.createElement("div");
         actions.className = "project-actions";
@@ -1024,7 +1169,7 @@
         const preview = document.createElement("a");
         preview.className = "button";
         preview.href = previewRoutes[no] || `project-preview.html?project=${no}`;
-        preview.textContent = "View preview";
+        preview.textContent = "Read case";
 
         const github = document.createElement("a");
         github.className = "button secondary";

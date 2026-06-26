@@ -391,7 +391,7 @@
           <button class="tab" type="button" data-view="risk" aria-pressed="false">Risk &amp; Valuation</button>
         </div>
         <p class="side-note">
-          Interactive public-safe preview. Numbers are synthetic portfolio samples designed to show CFO storytelling,
+          Interactive public-safe preview. Numbers are synthetic portfolio samples designed to show board reporting logic,
           not company-confidential data.
         </p>
       </aside>
@@ -399,14 +399,14 @@
       <section class="main">
         <div class="topbar">
           <div>
-            <p class="kicker">Board-ready finance control tower</p>
+            <p class="kicker">Board-ready finance pack</p>
             <h1 data-title>Performance</h1>
             <p class="lens" data-lens>
               Track revenue, gross margin, EBITDA, and cash health for the latest board cycle.
             </p>
           </div>
           <div class="filters" aria-label="Preview controls">
-            <select data-scenario aria-label="Scenario">
+            <select data-scenario aria-label="Illustrative scenario">
               <option>Base</option>
               <option>Upside</option>
               <option>Downside</option>
@@ -461,9 +461,9 @@
           chartCopy: "Synthetic monthly trend across revenue and EBITDA, with the current board cycle highlighted.",
           kpis: [
             ["Revenue", "$36.7M", "+8.2% YoY"],
-            ["Gross margin", "77.8%", "+1.6 pts"],
-            ["EBITDA", "$14.3M", "+5.4% YoY"],
-            ["Cash balance", "$376.7M", "+$18.4M"]
+            ["Gross margin", "28.9%", "+1.6 pts"],
+            ["EBITDA", "$4.3M", "+5.4% YoY"],
+            ["Cash balance", "$37.6M", "+$1.8M"]
           ],
           chart: [62, 68, 71, 78, 82, 88],
           bridge: [
@@ -484,8 +484,8 @@
           chartTitle: "Cash balance and runway guardrail",
           chartCopy: "The cash page keeps liquidity, AR timing, and funding runway in the same management view.",
           kpis: [
-            ["Cash balance", "$376.7M", "+$18.4M"],
-            ["Runway", "99.0x", "above guardrail"],
+            ["Cash balance", "$37.6M", "+$1.8M"],
+            ["Runway", "9.9 months", "cash / net burn"],
             ["Net burn", "$3.8M", "-6.1% vs plan"],
             ["DSO", "37 days", "-4 days"]
           ],
@@ -575,7 +575,7 @@
       function render() {
         const data = views[activeView];
         title.textContent = data.title;
-        lens.textContent = `${data.lens} Lens: ${scenarioSelect.value} / ${periodSelect.value} / ${regionSelect.value}.`;
+        lens.textContent = `${data.lens} Illustrative lens: ${scenarioSelect.value} / ${periodSelect.value} / ${regionSelect.value}.`;
         chartTitle.textContent = data.chartTitle;
         chartCopy.textContent = data.chartCopy;
 
