@@ -1,52 +1,169 @@
 <!doctype html>
-<html lang="en" data-project="09">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>BNPL Credit Risk Provision Interactive Preview | Truong Dinh Anh Tu</title>
     <style>
+      :root { --bg: #f6f7f4; --surface: #fff; --ink: #17201d; --muted: #5f6d68; --line: #d9dfda; --teal: #7a3f64; --amber: #c28a2e; --blue: #27635f; --risk: #a24d61; --good: #2f766b; }
       * { box-sizing: border-box; }
-      html, body { margin: 0; min-height: 100%; background: #f6f7f4; }
-      body { font-family: Inter, Arial, sans-serif; }
-      iframe { display: block; width: 100%; min-height: 100vh; border: 0; background: #fff; }
-      .fallback { padding: 18px; color: #17201d; }
-      .fallback a { color: #0d7b7b; font-weight: 800; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, Arial, sans-serif; }
+      .dashboard { width: min(1220px, calc(100% - 32px)); margin: 0 auto; padding: 18px 0 34px; }
+      .topbar { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; justify-content: space-between; padding: 18px 0; }
+      .eyebrow { margin: 0 0 6px; color: var(--amber); font-size: .72rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+      h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.45rem); line-height: 1.08; overflow-wrap: anywhere; }
+      .subtitle { max-width: 760px; margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
+      .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; min-width: min(100%, 340px); }
+      .chip { border: 1px solid var(--line); border-radius: 999px; padding: 9px 12px; background: var(--surface); color: var(--muted); font-size: .82rem; font-weight: 800; }
+      .kpi-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+      .kpi { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+      .kpi span, .panel-label, .driver-card span { display: block; color: var(--muted); font-size: .72rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+      .kpi strong { display: block; margin: 8px 0 6px; font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1; overflow-wrap: anywhere; }
+      .kpi em { color: var(--good); font-style: normal; font-size: .82rem; font-weight: 800; }
+      .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: 12px; margin-top: 12px; }
+      .panel { min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 18px; overflow: hidden; }
+      .panel h2 { margin: 6px 0 12px; font-size: 1.15rem; }
+      .chart-wrap { width: 100%; overflow: hidden; }
+      .chart-svg { display: block; width: 100%; height: auto; min-height: 230px; }
+      .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; color: var(--muted); font-size: .82rem; font-weight: 800; }
+      .legend i { display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; border-radius: 999px; background: var(--teal); }
+      .legend i.plan { background: var(--amber); }
+      .driver-list { display: grid; gap: 10px; }
+      .driver-row { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(120px, 2fr) 44px; gap: 9px; align-items: center; font-size: .88rem; font-weight: 800; color: var(--muted); }
+      .bar { height: 10px; border-radius: 999px; background: #e8ede8; overflow: hidden; }
+      .bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--amber)); }
+      .driver-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+      .driver-card { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; }
+      .driver-card strong { display: block; margin: 6px 0; font-size: .96rem; }
+      .driver-card em { color: var(--good); font-style: normal; font-weight: 900; }
+      .driver-card.risk em { color: var(--risk); }
+      table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+      th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+      th { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+      td { line-height: 1.4; }
+      .good { color: var(--good); font-weight: 900; }
+      .bad { color: var(--risk); font-weight: 900; }
+      .full { margin-top: 12px; }
+      .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+      .tab { border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); padding: 9px 12px; font-weight: 900; cursor: pointer; }
+      .tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+      .commentary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .commentary article { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; }
+      .commentary strong { display: block; margin-bottom: 8px; }
+      .commentary p { margin: 0; color: var(--muted); line-height: 1.5; }
+      .footnote { margin: 16px 0 0; color: var(--muted); font-size: .85rem; line-height: 1.5; }
+      @media (max-width: 1040px) { .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .layout { grid-template-columns: 1fr; } }
+      @media (max-width: 720px) {
+        .dashboard { width: min(100% - 24px, 1220px); padding-top: 12px; }
+        .topbar { display: block; }
+        .filters { justify-content: flex-start; margin-top: 14px; }
+        .kpi-grid, .driver-cards, .commentary { grid-template-columns: 1fr; }
+        .driver-row { grid-template-columns: 1fr; gap: 6px; }
+        .panel { padding: 14px; }
+        table { font-size: .82rem; }
+        th, td { padding: 9px 7px; }
+      }
     </style>
   </head>
   <body>
-    <iframe id="projectPreview" title="BNPL Credit Risk Provision interactive preview"></iframe>
-    <noscript>
-      <p class="fallback">Open the <a href="../project-preview.html?project=09">interactive preview</a>.</p>
-    </noscript>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Interactive Power BI-style preview / Project 09</p>
+          <h1>BNPL Credit Risk Provision</h1>
+          <p class="subtitle">Credit-risk provision dashboard for loan book trend, delinquency, collections SLA, and provision pressure. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
+        </div>
+        <div class="filters" aria-label="Demo filter chips">
+          <span class="chip">Period: QTD</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scenario: Base</span>
+        </div>
+      </header>
+      <section class="kpi-grid" aria-label="KPI summary">
+          <article class="kpi"><span>loan book</span><strong>$41.6M</strong><em>+3.8% vs plan</em></article>
+          <article class="kpi"><span>30+ DPD</span><strong>6.7%</strong><em>needs recovery</em></article>
+          <article class="kpi"><span>loss rate</span><strong>2.9%</strong><em>+2.1 pts vs LY</em></article>
+          <article class="kpi"><span>ECL provision gap</span><strong>$1.1M</strong><em>2 risk flag(s)</em></article>
+          <article class="kpi"><span>driver health score</span><strong>46%</strong><em>weighted from dashboard levers</em></article>
+          <article class="kpi"><span>owner actions</span><strong>3</strong><em>decision queue ready</em></article>
+      </section>
+      <section class="layout">
+        <article class="panel">
+          <span class="panel-label">Trend and forecast call</span>
+          <h2>loan book versus operating plan</h2>
+          <div class="chart-wrap">
+            <svg class="chart-svg" viewBox="0 0 760 300" role="img" aria-label="Actual and plan trend chart" xmlns="http://www.w3.org/2000/svg">
+              <rect width="760" height="300" rx="10" fill="#fbfcfa"/>
+              <g stroke="#d9dfda" stroke-width="1">
+                <line x1="48" y1="60" x2="718" y2="60"/><line x1="48" y1="118" x2="718" y2="118"/><line x1="48" y1="176" x2="718" y2="176"/><line x1="48" y1="234" x2="718" y2="234"/>
+              </g>
+              <polyline points="36.0,34.0 242.0,122.6 448.0,192.8 654.0,226.0" fill="none" stroke="#7a3f64" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="36.0,34.0 242.0,124.1 448.0,194.7 654.0,226.0" fill="none" stroke="#c28a2e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 8"/>
+              <g fill="#7a3f64"><circle cx="36.0" cy="34.0" r="5"/><circle cx="242.0" cy="122.6" r="5"/><circle cx="448.0" cy="192.8" r="5"/><circle cx="654.0" cy="226.0" r="5"/></g>
+              <text x="48" y="282" fill="#5f6d68" font-size="13" font-weight="800">Jan</text><text x="678" y="282" fill="#5f6d68" font-size="13" font-weight="800">Dec</text>
+            </svg>
+          </div>
+          <div class="legend"><span><i></i>Actual / latest view</span><span><i class="plan"></i>Plan / benchmark</span></div>
+        </article>
+        <article class="panel">
+          <span class="panel-label">Driver heatmap</span>
+          <h2>What is moving the decision?</h2>
+          <div class="driver-list"><div class="driver-row"><span>Current</span><div class="bar"><i style="width:82%"></i></div><strong>82%</strong></div>
+              <div class="driver-row"><span>1-30 DPD</span><div class="bar"><i style="width:54%"></i></div><strong>54%</strong></div>
+              <div class="driver-row"><span>31-60 DPD</span><div class="bar"><i style="width:31%"></i></div><strong>31%</strong></div>
+              <div class="driver-row"><span>60+ DPD</span><div class="bar"><i style="width:18%"></i></div><strong>18%</strong></div></div>
+          <div class="driver-cards"><article class="driver-card risk"><span>Risk driver</span><strong>Vintage mix</strong><em>-$0.5M</em></article>
+              <article class="driver-card "><span>Positive driver</span><strong>Collections lift</strong><em>+$0.3M</em></article>
+              <article class="driver-card risk"><span>Risk driver</span><strong>Merchant cohort</strong><em>-$0.2M</em></article></div>
+        </article>
+      </section>
+      <section class="layout full">
+        <article class="panel">
+          <span class="panel-label">Scenario table</span>
+          <h2>Decision scenarios</h2>
+          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>$41.6M</td><td>6.7%</td><td>62%</td><td>Current run-rate</td></tr>
+                <tr><td>Base case</td><td>$43.3M</td><td>6.7%</td><td>52%</td><td>Commit forecast</td></tr>
+                <tr><td>Upside</td><td>$45.3M</td><td>2.9%</td><td>58%</td><td>Scale winners</td></tr>
+                <tr><td>Risk case</td><td>$39.9M</td><td>$1.1M</td><td>48%</td><td>Protect downside</td></tr></tbody></table>
+        </article>
+        <article class="panel">
+          <span class="panel-label">Bridge and ownership</span>
+          <h2>Variance to action bridge</h2>
+          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Vintage mix</td><td class="bad">-$0.5M</td><td>Recovery required</td><td>Risk</td></tr>
+                <tr><td>Collections lift</td><td class="good">+$0.3M</td><td>Protect momentum</td><td>Collections</td></tr>
+                <tr><td>Merchant cohort</td><td class="bad">-$0.2M</td><td>Recovery required</td><td>Finance</td></tr></tbody></table>
+        </article>
+      </section>
+      <section class="panel full">
+        <span class="panel-label">Drilldown tabs</span>
+        <h2>Owner action queue</h2>
+        <div class="tabs"><button class="tab active" type="button" data-tab="0">Risk</button>
+              <button class="tab" type="button" data-tab="1">Collections</button>
+              <button class="tab" type="button" data-tab="2">Finance</button></div>
+        <table aria-label="Drilldown table"><thead><tr><th>View</th><th>Action</th><th>Metric / driver</th><th>Priority</th></tr></thead><tbody id="drilldown-body"></tbody></table>
+      </section>
+      <section class="commentary full" aria-label="Executive commentary">
+        <article><strong>So what</strong><p>loan book is the headline signal, but the decision depends on whether the driver movement is structural or temporary.</p></article>
+        <article><strong>Now what</strong><p>Tighten exposure for weak merchant cohorts.</p></article>
+        <article><strong>Governance</strong><p>Bridge signs, scenario totals, and owner actions are reconciled before the pack is used in a management review.</p></article>
+      </section>
+      <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
+    </main>
     <script>
-      const projectNo = document.documentElement.dataset.project;
-      const params = new URLSearchParams(window.location.search);
-      params.set("project", projectNo);
-      if (!params.has("embed")) params.set("embed", "1");
-
-      const frame = document.querySelector("#projectPreview");
-      frame.src = `../project-preview.html?${params.toString()}`;
-
-      function resizePreviewFrame() {
-        try {
-          const doc = frame.contentDocument || frame.contentWindow?.document;
-          if (!doc) return;
-          const height = Math.max(
-            window.innerHeight,
-            doc.documentElement?.scrollHeight || 0,
-            doc.body?.scrollHeight || 0
-          );
-          frame.style.height = `${height + 12}px`;
-        } catch {
-          frame.style.height = "100vh";
-        }
+      const drilldownRows = [[["Risk decision","Tighten exposure for weak merchant cohorts.","Vintage mix","High"],["Metric owner","Refresh loan book every close cycle.","$41.6M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","46% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","6.7%","High"]],[["Collections decision","Focus accounts before 60+ DPD migration.","Collections lift","Medium"],["Metric owner","Refresh 30+ DPD every close cycle.","6.7%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","46% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","2.9%","Low"]],[["Finance decision","Update provision sensitivity for CFO review.","Merchant cohort","High"],["Metric owner","Refresh loss rate every close cycle.","2.9%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","46% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$1.1M","High"]]];
+      const actionSummary = [{"owner":"Risk","action":"Tighten exposure for weak merchant cohorts."},{"owner":"Collections","action":"Focus accounts before 60+ DPD migration."},{"owner":"Finance","action":"Update provision sensitivity for CFO review."}];
+      const tbody = document.querySelector('#drilldown-body');
+      const tabs = Array.from(document.querySelectorAll('.tab'));
+      function renderTab(index) {
+        const rows = drilldownRows[index] || drilldownRows[0] || [];
+        tbody.innerHTML = rows.map(function(row) {
+          return '<tr><td>' + row[0] + '</td><td>' + row[1] + '</td><td>' + row[2] + '</td><td>' + row[3] + '</td></tr>';
+        }).join('');
+        tabs.forEach(function(tab, tabIndex) { tab.classList.toggle('active', tabIndex === index); });
       }
-
-      frame.addEventListener("load", () => {
-        resizePreviewFrame();
-        setTimeout(resizePreviewFrame, 250);
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() { renderTab(Number(tab.dataset.tab)); });
       });
-      window.addEventListener("resize", resizePreviewFrame);
+      renderTab(0);
+      window.previewActions = actionSummary;
     </script>
   </body>
 </html>
