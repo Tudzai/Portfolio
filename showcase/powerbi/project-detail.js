@@ -250,8 +250,8 @@
     return;
   }
 
-  const previewUrl = `../project-preview.html?project=${encodeURIComponent(project.no)}`;
-  const embeddedPreviewUrl = `${previewUrl}&embed=1`;
+  const previewUrl = "preview.html";
+  const embeddedPreviewUrl = `../project-preview.html?project=${encodeURIComponent(project.no)}&embed=1`;
   const repoUrl = repoBase + encodeURIComponent(project.folder);
   const proof = proofFor(project);
   document.title = `${project.title} | Truong Dinh Anh Tu`;

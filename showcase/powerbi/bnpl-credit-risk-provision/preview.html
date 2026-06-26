@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-project="09">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BNPL Credit Risk Provision Interactive Preview | Truong Dinh Anh Tu</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: #f6f7f4; }
+      body { font-family: Inter, Arial, sans-serif; }
+      iframe { display: block; width: 100%; min-height: 100vh; border: 0; background: #fff; }
+      .fallback { padding: 18px; color: #17201d; }
+      .fallback a { color: #0d7b7b; font-weight: 800; }
+    </style>
+  </head>
+  <body>
+    <iframe id="projectPreview" title="BNPL Credit Risk Provision interactive preview"></iframe>
+    <noscript>
+      <p class="fallback">Open the <a href="../project-preview.html?project=09">interactive preview</a>.</p>
+    </noscript>
+    <script>
+      const projectNo = document.documentElement.dataset.project;
+      const params = new URLSearchParams(window.location.search);
+      params.set("project", projectNo);
+      if (!params.has("embed")) params.set("embed", "1");
+
+      const frame = document.querySelector("#projectPreview");
+      frame.src = `../project-preview.html?${params.toString()}`;
+
+      function resizePreviewFrame() {
+        try {
+          const doc = frame.contentDocument || frame.contentWindow?.document;
+          if (!doc) return;
+          const height = Math.max(
+            window.innerHeight,
+            doc.documentElement?.scrollHeight || 0,
+            doc.body?.scrollHeight || 0
+          );
+          frame.style.height = `${height + 12}px`;
+        } catch {
+          frame.style.height = "100vh";
+        }
+      }
+
+      frame.addEventListener("load", () => {
+        resizePreviewFrame();
+        setTimeout(resizePreviewFrame, 250);
+      });
+      window.addEventListener("resize", resizePreviewFrame);
+    </script>
+  </body>
+</html>
