@@ -1239,10 +1239,15 @@
         actions.className = "project-actions";
         actions.replaceChildren();
 
+        const caseLink = document.createElement("a");
+        caseLink.className = "button";
+        caseLink.href = previewRoutes[no] || `project-preview.html?project=${no}`;
+        caseLink.textContent = "Read case";
+
         const preview = document.createElement("a");
-        preview.className = "button";
-        preview.href = previewRoutes[no] || `project-preview.html?project=${no}`;
-        preview.textContent = "Read case";
+        preview.className = "button secondary";
+        preview.href = previewRoutes[no] ? `${previewRoutes[no]}preview.html` : `project-preview.html?project=${no}`;
+        preview.textContent = "Open preview";
 
         const github = document.createElement("a");
         github.className = "button secondary";
@@ -1251,7 +1256,7 @@
         github.rel = "noopener";
         github.textContent = "GitHub folder";
 
-        actions.append(preview, github);
+        actions.append(caseLink, preview, github);
         if (!actions.parentElement) card.append(actions);
       });
 
