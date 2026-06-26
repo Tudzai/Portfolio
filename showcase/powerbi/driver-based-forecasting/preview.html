@@ -1,52 +1,507 @@
 <!doctype html>
-<html lang="en" data-project="02">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Driver-Based Forecasting Interactive Preview | Truong Dinh Anh Tu</title>
-    <style>
-      * { box-sizing: border-box; }
-      html, body { margin: 0; min-height: 100%; background: #f6f7f4; }
-      body { font-family: Inter, Arial, sans-serif; }
-      iframe { display: block; width: 100%; min-height: 100vh; border: 0; background: #fff; }
-      .fallback { padding: 18px; color: #17201d; }
-      .fallback a { color: #0d7b7b; font-weight: 800; }
-    </style>
-  </head>
-  <body>
-    <iframe id="projectPreview" title="Driver-Based Forecasting interactive preview"></iframe>
-    <noscript>
-      <p class="fallback">Open the <a href="../project-preview.html?project=02">interactive preview</a>.</p>
-    </noscript>
-    <script>
-      const projectNo = document.documentElement.dataset.project;
-      const params = new URLSearchParams(window.location.search);
-      params.set("project", projectNo);
-      if (!params.has("embed")) params.set("embed", "1");
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Driver-Based Forecasting Dashboard</title>
+  <style>
+    :root {
+      --orange: #F97316;
+      --orange-dark: #C2410C;
+      --teal: #2A9D8F;
+      --blue: #2563EB;
+      --red: #D62828;
+      --amber: #F59E0B;
+      --purple: #7C3AED;
+      --ink: #111827;
+      --muted: #64748B;
+      --line: #E5E7EB;
+      --soft-line: #F1F5F9;
+      --bg: #F8FAFC;
+      --panel: #FFFFFF;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .shell { max-width: 1480px; margin: 0 auto; padding: 24px; }
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 30px; line-height: 1.15; margin: 0; letter-spacing: 0; }
+    .subtitle { color: var(--muted); font-size: 13px; margin-top: 7px; }
+    .filterbar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .chip {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #334155;
+      white-space: nowrap;
+    }
+    .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      min-width: 0;
+    }
+    .kpi {
+      grid-column: span 2;
+      min-height: 136px;
+      border-top: 4px solid var(--orange);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .kpi.blue { border-top-color: var(--blue); }
+    .kpi.teal { border-top-color: var(--teal); }
+    .kpi.amber { border-top-color: var(--amber); }
+    .kpi.purple { border-top-color: var(--purple); }
+    .kpi.red { border-top-color: var(--red); }
+    .half { grid-column: span 6; }
+    .wide { grid-column: span 8; }
+    .side { grid-column: span 4; }
+    .full { grid-column: span 12; }
+    .label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .value { font-size: 30px; line-height: 1.1; font-weight: 700; overflow-wrap: anywhere; }
+    .delta { margin-top: 8px; font-size: 12px; line-height: 1.35; }
+    .bad { color: var(--red); }
+    .good { color: var(--teal); }
+    .neutral { color: var(--muted); }
+    .chart-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+    .chart-subtitle { color: var(--muted); font-size: 12px; margin-top: -4px; margin-bottom: 10px; }
+    .chart-svg { width: 100%; min-height: 260px; display: block; }
+    .grid-line { stroke: #E5E7EB; stroke-width: 1; }
+    .zero-line { stroke: #CBD5E1; stroke-width: 1.3; }
+    .line-orange { fill: none; stroke: var(--orange); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .line-teal { fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .line-blue { fill: none; stroke: var(--blue); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .line-red { fill: none; stroke: var(--red); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .line-amber { fill: none; stroke: var(--amber); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .dashed { stroke-dasharray: 8 7; }
+    .axis { fill: var(--muted); font-size: 11px; }
+    .driver-list { display: grid; gap: 12px; margin-top: 12px; }
+    .driver-row {
+      display: grid;
+      grid-template-columns: minmax(110px, 1.1fr) minmax(96px, 2fr) 76px;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .driver-name { color: #334155; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .driver-track { height: 12px; background: #F1F5F9; border-radius: 999px; overflow: hidden; }
+    .driver-bar { display: block; height: 100%; border-radius: 999px; }
+    .driver-bar.good { background: var(--teal); }
+    .driver-bar.bad { background: var(--red); }
+    .driver-bar.neutral { background: var(--amber); }
+    .driver-value { text-align: right; font-weight: 700; }
+    .table-wrap { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { border-bottom: 1px solid var(--soft-line); padding: 10px 8px; font-size: 12px; text-align: left; }
+    th { color: var(--muted); font-weight: 700; background: #F8FAFC; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .wf {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(80px, 1fr));
+      gap: 10px;
+      align-items: end;
+      min-height: 260px;
+      overflow-x: auto;
+      padding-top: 10px;
+    }
+    .wf-item { min-width: 84px; text-align: center; }
+    .wf-plot {
+      height: 180px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      border-bottom: 1px solid var(--line);
+    }
+    .wf-bar { width: 62%; border-radius: 6px 6px 0 0; }
+    .wf-bar.total { background: var(--orange); }
+    .wf-bar.good { background: var(--teal); }
+    .wf-bar.bad { background: var(--red); }
+    .wf-bar.neutral { background: var(--amber); }
+    .wf-value { font-size: 12px; font-weight: 700; margin-top: 6px; }
+    .wf-value.total { color: var(--orange-dark); }
+    .wf-label { color: var(--muted); font-size: 11px; line-height: 1.25; margin-top: 5px; min-height: 30px; }
+    .commentary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .commentary-block {
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      min-width: 0;
+    }
+    .commentary h3 { margin: 0 0 8px; font-size: 13px; }
+    .commentary p { margin: 0; color: #334155; font-size: 13px; line-height: 1.48; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .tab {
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+      border-radius: 6px;
+      padding: 8px 11px;
+      color: #334155;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .tab.active { border-color: var(--orange); background: #FFF7ED; color: #9A3412; font-weight: 700; }
+    .footnote { color: var(--muted); font-size: 11px; margin-top: 10px; }
+    @media (max-width: 1180px) {
+      .kpi { grid-column: span 4; }
+      .wide, .side, .half { grid-column: span 12; }
+    }
+    @media (max-width: 720px) {
+      .shell { padding: 16px; }
+      .topbar { grid-template-columns: 1fr; }
+      .filterbar { justify-content: flex-start; }
+      .kpi, .wide, .side, .half, .full { grid-column: span 12; }
+      .commentary { grid-template-columns: 1fr; }
+      .value { font-size: 28px; }
+      .driver-row { grid-template-columns: 1fr 1.5fr 72px; }
+      .chart-svg { min-height: 220px; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="topbar">
+      <div>
+        <h1>Driver-Based Forecasting</h1>
+        <div class="subtitle">Synthetic scenario planning pack, actuals through May 2026 and forecast through Dec 2027</div>
+      </div>
+      <div class="filterbar">
+        <div class="chip">Scenario Base</div>
+        <div class="chip">Years 2026-2027</div>
+        <div class="chip">All regions</div>
+        <div class="chip">USD</div>
+      </div>
+    </section>
 
-      const frame = document.querySelector("#projectPreview");
-      frame.src = `../project-preview.html?${params.toString()}`;
+    <section class="grid">
+      <article class="panel kpi blue">
+        <div>
+          <div class="label">Base Revenue</div>
+          <div class="value">$273.4M</div>
+        </div>
+        <div class="delta good">+$49.5M upside<br>-$41.2M downside</div>
+      </article>
+      <article class="panel kpi teal">
+        <div>
+          <div class="label">Base EBITDA</div>
+          <div class="value">$31.4M</div>
+        </div>
+        <div class="delta">11.5% margin</div>
+      </article>
+      <article class="panel kpi amber">
+        <div>
+          <div class="label">Gross Margin</div>
+          <div class="value">19.7%</div>
+        </div>
+        <div class="delta good">+2.6 pts vs downside</div>
+      </article>
+      <article class="panel kpi purple">
+        <div>
+          <div class="label">Ending Cash</div>
+          <div class="value">$21.9M</div>
+        </div>
+        <div class="delta">Dec 2027 base case</div>
+      </article>
+      <article class="panel kpi red">
+        <div>
+          <div class="label">Forecast Accuracy</div>
+          <div class="value">6.4%</div>
+        </div>
+        <div class="delta good">MAPE historical</div>
+      </article>
+      <article class="panel kpi">
+        <div>
+          <div class="label">Assumption Owners</div>
+          <div class="value">5</div>
+        </div>
+        <div class="delta">Volume, rate, cost, hiring, cash</div>
+      </article>
 
-      function resizePreviewFrame() {
-        try {
-          const doc = frame.contentDocument || frame.contentWindow?.document;
-          if (!doc) return;
-          const height = Math.max(
-            window.innerHeight,
-            doc.documentElement?.scrollHeight || 0,
-            doc.body?.scrollHeight || 0
-          );
-          frame.style.height = `${height + 12}px`;
-        } catch {
-          frame.style.height = "100vh";
-        }
-      }
+      <article class="panel wide">
+        <div class="chart-title">12M Trend: Revenue Forecast by Scenario</div>
+        <div class="chart-subtitle">Actuals are locked through May 2026; base, upside, and downside forecast lines start at forecast signoff.</div>
+        <svg viewBox="0 0 820 300" class="chart-svg" role="img" aria-label="12 month revenue forecast trend by scenario">
+          <circle cx="56" cy="14" r="4" fill="#F97316"/><text x="65" y="18" class="axis">Actual</text>
+          <circle cx="148" cy="14" r="4" fill="#2563EB"/><text x="157" y="18" class="axis">Base</text>
+          <circle cx="226" cy="14" r="4" fill="#2A9D8F"/><text x="235" y="18" class="axis">Upside</text>
+          <circle cx="322" cy="14" r="4" fill="#D62828"/><text x="331" y="18" class="axis">Downside</text>
+          <line x1="56" y1="254" x2="792" y2="254" class="grid-line"/><text x="46" y="258" text-anchor="end" class="axis">0M</text>
+          <line x1="56" y1="139" x2="792" y2="139" class="grid-line"/><text x="46" y="143" text-anchor="end" class="axis">160M</text>
+          <line x1="56" y1="24" x2="792" y2="24" class="grid-line"/><text x="46" y="28" text-anchor="end" class="axis">320M</text>
+          <line x1="56" y1="254" x2="792" y2="254" class="zero-line"/>
+          <path d="M 56.0 188.0 L 122.9 180.8 L 189.8 176.5 L 256.7 168.7 L 323.6 161.6 L 390.5 153.8 L 457.5 144.9" class="line-orange"/>
+          <path d="M 457.5 144.9 L 524.4 134.1 L 591.3 117.6 L 658.2 91.0 L 725.1 70.1 L 792.0 63.0" class="line-blue dashed"/>
+          <path d="M 457.5 132.6 L 524.4 112.6 L 591.3 83.0 L 658.2 58.5 L 725.1 37.9 L 792.0 29.8" class="line-teal dashed"/>
+          <path d="M 457.5 157.3 L 524.4 151.2 L 591.3 134.1 L 658.2 116.2 L 725.1 102.5 L 792.0 95.3" class="line-red dashed"/>
+          <text x="56.0" y="284" text-anchor="middle" class="axis">06/25</text>
+          <text x="189.8" y="284" text-anchor="middle" class="axis">08/25</text>
+          <text x="323.6" y="284" text-anchor="middle" class="axis">10/25</text>
+          <text x="457.5" y="284" text-anchor="middle" class="axis">12/25</text>
+          <text x="591.3" y="284" text-anchor="middle" class="axis">03/26</text>
+          <text x="725.1" y="284" text-anchor="middle" class="axis">06/26</text>
+          <text x="792.0" y="284" text-anchor="middle" class="axis">12/27</text>
+        </svg>
+      </article>
+      <article class="panel side">
+        <div class="chart-title">Forecast Variance by Driver</div>
+        <div class="chart-subtitle">Latest base case sensitivity versus downside guardrail.</div>
+        <div class="driver-list">
+          <div class="driver-row">
+            <div class="driver-name">Volume growth</div>
+            <div class="driver-track"><span class="driver-bar good" style="width:92%"></span></div>
+            <div class="driver-value good">+$18.4M</div>
+          </div>
+          <div class="driver-row">
+            <div class="driver-name">Rate / yield</div>
+            <div class="driver-track"><span class="driver-bar good" style="width:74%"></span></div>
+            <div class="driver-value good">+$9.7M</div>
+          </div>
+          <div class="driver-row">
+            <div class="driver-name">Cost inflation</div>
+            <div class="driver-track"><span class="driver-bar bad" style="width:86%"></span></div>
+            <div class="driver-value bad">-$6.8M</div>
+          </div>
+          <div class="driver-row">
+            <div class="driver-name">Hiring phasing</div>
+            <div class="driver-track"><span class="driver-bar bad" style="width:54%"></span></div>
+            <div class="driver-value bad">-$2.1M</div>
+          </div>
+          <div class="driver-row">
+            <div class="driver-name">Cash timing</div>
+            <div class="driver-track"><span class="driver-bar neutral" style="width:62%"></span></div>
+            <div class="driver-value neutral">$21.9M</div>
+          </div>
+        </div>
+      </article>
 
-      frame.addEventListener("load", () => {
-        resizePreviewFrame();
-        setTimeout(resizePreviewFrame, 250);
+      <article class="panel full">
+        <div class="chart-title">Forecast Signoff Table</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th class="num">Actual Run Rate</th>
+                <th class="num">Base</th>
+                <th class="num">Upside</th>
+                <th class="num">Downside</th>
+                <th class="num">Risk / Opportunity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Revenue</td>
+                <td class="num">$223.9M</td>
+                <td class="num">$273.4M</td>
+                <td class="num">$322.9M</td>
+                <td class="num">$232.2M</td>
+                <td class="num good">+$49.5M upside</td>
+              </tr>
+              <tr>
+                <td>EBITDA</td>
+                <td class="num">$24.7M</td>
+                <td class="num">$31.4M</td>
+                <td class="num">$43.9M</td>
+                <td class="num">$18.6M</td>
+                <td class="num bad">-$12.8M downside</td>
+              </tr>
+              <tr>
+                <td>Gross Margin %</td>
+                <td class="num">18.8%</td>
+                <td class="num">19.7%</td>
+                <td class="num">21.4%</td>
+                <td class="num">17.1%</td>
+                <td class="num good">+1.7 pts upside</td>
+              </tr>
+              <tr>
+                <td>Ending Cash</td>
+                <td class="num">$13.0M</td>
+                <td class="num">$21.9M</td>
+                <td class="num">$32.8M</td>
+                <td class="num">$10.3M</td>
+                <td class="num bad">$4.7M buffer over guardrail</td>
+              </tr>
+              <tr>
+                <td>Forecast MAPE</td>
+                <td class="num">6.4%</td>
+                <td class="num">6.1%</td>
+                <td class="num">5.8%</td>
+                <td class="num">7.9%</td>
+                <td class="num bad">1.8 pts accuracy risk</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel half">
+        <div class="chart-title">Base to Downside EBITDA Bridge</div>
+        <div class="chart-subtitle">Bridge isolates forecast pressure into demand, pricing, cost, headcount, and working-capital timing.</div>
+        <div class="wf">
+          <div class="wf-item">
+            <div class="wf-plot"><div class="wf-bar total" style="height:170px"></div></div>
+            <div class="wf-value total">$31.4M</div>
+            <div class="wf-label">Base EBITDA</div>
+          </div>
+          <div class="wf-item">
+            <div class="wf-plot"><div class="wf-bar bad" style="height:64px"></div></div>
+            <div class="wf-value bad">-$6.2M</div>
+            <div class="wf-label">Volume softness</div>
+          </div>
+          <div class="wf-item">
+            <div class="wf-plot"><div class="wf-bar bad" style="height:42px"></div></div>
+            <div class="wf-value bad">-$3.9M</div>
+            <div class="wf-label">Rate pressure</div>
+          </div>
+          <div class="wf-item">
+            <div class="wf-plot"><div class="wf-bar bad" style="height:31px"></div></div>
+            <div class="wf-value bad">-$2.8M</div>
+            <div class="wf-label">Cost inflation</div>
+          </div>
+          <div class="wf-item">
+            <div class="wf-plot"><div class="wf-bar good" style="height:18px"></div></div>
+            <div class="wf-value good">+$1.5M</div>
+            <div class="wf-label">Hiring deferral</div>
+          </div>
+          <div class="wf-item">
+            <div class="wf-plot"><div class="wf-bar neutral" style="height:14px"></div></div>
+            <div class="wf-value neutral">-$1.4M</div>
+            <div class="wf-label">FX and timing</div>
+          </div>
+          <div class="wf-item">
+            <div class="wf-plot"><div class="wf-bar total" style="height:101px"></div></div>
+            <div class="wf-value total">$18.6M</div>
+            <div class="wf-label">Downside EBITDA</div>
+          </div>
+        </div>
+      </article>
+      <article class="panel half">
+        <div class="chart-title">Commentary</div>
+        <div class="commentary">
+          <div class="commentary-block">
+            <h3>What happened?</h3>
+            <p>Base revenue remains above the actual run rate, but the latest forecast depends on volume recovery and rate discipline through the second half.</p>
+          </div>
+          <div class="commentary-block">
+            <h3>Why?</h3>
+            <p>Scenario spread is driven by demand elasticity, cost inflation, and hiring timing. Cash stays positive in downside but only clears the guardrail by $4.7M.</p>
+          </div>
+          <div class="commentary-block">
+            <h3>What next?</h3>
+            <p>Lock owner assumptions, test cost inflation sensitivity, and refresh the cash guardrail before the CFO signs the base forecast.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel full">
+        <div class="chart-title">Drill-down Matrix</div>
+        <div class="chart-subtitle">Switch level to inspect forecast assumptions by owner, service line, region, or exception queue.</div>
+        <div class="tabs" id="tabs" role="group" aria-label="Forecast drill-down level"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th id="dimension-heading">Assumption Owner</th>
+                <th class="num">Base Revenue</th>
+                <th class="num">Upside Revenue</th>
+                <th class="num">Downside Revenue</th>
+                <th class="num">EBITDA Impact</th>
+                <th class="num">Cash Impact</th>
+                <th>Owner</th>
+              </tr>
+            </thead>
+            <tbody id="drilldown-body"></tbody>
+          </table>
+        </div>
+        <div class="footnote">Static HTML version of the dashboard. The public page demonstrates forecast logic, scenario bridge, and owner signoff without publishing PBIX, raw extracts, or private model files.</div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const DATA = {
+      "Assumption Owner": [
+        ["Volume growth", "$112.6M", "$137.8M", "$92.4M", "+$8.7M", "+$6.1M", "Commercial"],
+        ["Rate / yield", "$74.2M", "$86.3M", "$62.1M", "+$5.2M", "+$3.4M", "Pricing"],
+        ["Direct cost inflation", "$53.9M", "$49.8M", "$61.2M", "-$6.8M", "-$4.2M", "Operations"],
+        ["Hiring phasing", "$18.5M", "$20.4M", "$16.7M", "-$2.1M", "+$1.5M", "People"],
+        ["Collections timing", "$14.2M", "$28.6M", "$9.8M", "+$0.7M", "$21.9M", "Treasury"]
+      ],
+      "Service Line": [
+        ["Freight forwarding", "$96.4M", "$116.7M", "$82.8M", "+$7.6M", "+$5.8M", "Commercial"],
+        ["Contract logistics", "$68.1M", "$78.4M", "$56.9M", "+$4.1M", "+$3.2M", "Operations"],
+        ["E-commerce fulfillment", "$61.8M", "$74.2M", "$52.0M", "+$3.3M", "+$2.4M", "Growth"],
+        ["Customs brokerage", "$47.1M", "$53.6M", "$40.5M", "+$2.0M", "+$1.1M", "Finance"]
+      ],
+      "Region": [
+        ["South", "$88.5M", "$105.2M", "$75.1M", "+$5.9M", "+$4.8M", "Regional FP&A"],
+        ["North", "$72.6M", "$85.3M", "$61.7M", "+$4.2M", "+$3.6M", "Regional FP&A"],
+        ["Central", "$55.4M", "$65.8M", "$46.5M", "+$2.7M", "+$2.1M", "Regional FP&A"],
+        ["Overseas", "$56.9M", "$66.6M", "$48.9M", "+$3.4M", "+$2.9M", "Regional FP&A"]
+      ],
+      "Exception Queue": [
+        ["Late owner input", "$42.0M", "$49.1M", "$35.4M", "-$1.8M", "-$1.2M", "FP&A"],
+        ["Cost inflation risk", "$53.9M", "$49.8M", "$61.2M", "-$6.8M", "-$4.2M", "Operations"],
+        ["Cash guardrail watch", "$21.9M", "$32.8M", "$10.3M", "-$1.4M", "$4.7M buffer", "Treasury"],
+        ["MAPE outlier lane", "$18.6M", "$22.4M", "$15.2M", "-$0.9M", "-$0.5M", "Analytics"]
+      ]
+    };
+
+    const tabs = document.getElementById("tabs");
+    const tbody = document.getElementById("drilldown-body");
+    const heading = document.getElementById("dimension-heading");
+
+    function classFor(value) {
+      if (value.startsWith("-")) return "bad";
+      if (value.startsWith("+")) return "good";
+      return "neutral";
+    }
+
+    function render(level) {
+      heading.textContent = level;
+      tbody.innerHTML = DATA[level].map(row => `
+        <tr>
+          <td>${row[0]}</td>
+          <td class="num">${row[1]}</td>
+          <td class="num">${row[2]}</td>
+          <td class="num">${row[3]}</td>
+          <td class="num ${classFor(row[4])}">${row[4]}</td>
+          <td class="num ${classFor(row[5])}">${row[5]}</td>
+          <td>${row[6]}</td>
+        </tr>
+      `).join("");
+      [...tabs.querySelectorAll("button")].forEach(button => {
+        const isActive = button.dataset.level === level;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
       });
-      window.addEventListener("resize", resizePreviewFrame);
-    </script>
-  </body>
+    }
+
+    Object.keys(DATA).forEach((level, idx) => {
+      const button = document.createElement("button");
+      button.className = "tab" + (idx === 0 ? " active" : "");
+      button.type = "button";
+      button.dataset.level = level;
+      button.setAttribute("aria-pressed", String(idx === 0));
+      button.textContent = level;
+      button.addEventListener("click", () => render(level));
+      tabs.appendChild(button);
+    });
+    render("Assumption Owner");
+  </script>
+</body>
 </html>
