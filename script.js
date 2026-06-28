@@ -94,6 +94,245 @@ document.querySelectorAll("[data-track-event]").forEach((element) => {
   });
 });
 
+const blogLangKey = "blogLang";
+const blogPosts = [
+  {
+    id: "agentic-ai-power-bi-part-1",
+    slug: "power-bi-agentic-ai-part-1",
+    status: "coming-soon",
+    category: "Power BI / Agentic AI",
+    tags: ["Power BI", "Agentic AI", "FP&A Automation", "Governance"],
+    title: {
+      vi: "Xây Power BI bằng Agentic AI - Phần 1",
+      en: "Building Power BI with Agentic AI - Part 1",
+    },
+    summary: {
+      vi: "Cách biến yêu cầu kinh doanh thành dashboard logic, model plan và checklist triển khai với sự hỗ trợ của Agentic AI.",
+      en: "How to turn business questions into dashboard logic, model planning, and implementation checklists with Agentic AI.",
+    },
+    angle: {
+      vi: "Từ business question đến semantic model, visual logic, QA checklist và governance trước khi publish.",
+      en: "From business question to semantic model, visual logic, QA checklist, and governance before publishing.",
+    },
+  },
+];
+
+const blogCopy = {
+  vi: {
+    homeKicker: "FP&A Notes / Blog",
+    homeTitle: "Ghi chú thực chiến về Power BI, FP&A automation và Agentic AI cho quyết định tài chính.",
+    homeIntro:
+      "Ghi chú thực chiến về FP&A, Power BI, forecasting, automation và cách dùng AI như một cộng sự phân tích.",
+    homeSignalLabel: "Góc nhìn",
+    homeSignalTitle: "AI chỉ có giá trị khi làm quyết định tài chính rõ hơn.",
+    homeSignalBody:
+      "Blog sẽ nối công cụ với business question, model governance, QA checks và next action đủ rõ để quản lý dùng được.",
+    homeSignalOneLabel: "Lens",
+    homeSignalOneValue: "Business question trước",
+    homeSignalTwoLabel: "Control",
+    homeSignalTwoValue: "QA và governance rõ ràng",
+    blogPageKicker: "FP&A Notes / Blog",
+    blogPageTitle: "Blog",
+    blogPageIntro:
+      "Ghi chú thực chiến về FP&A, Power BI, forecasting, automation và cách dùng AI như một cộng sự phân tích.",
+    blogPagePill: "VN / ENG",
+    statusComingSoon: "Sắp ra mắt",
+    previewTopic: "Xem chủ đề",
+    cardMetaLabel: "Bài đầu tiên",
+    articleKicker: "Power BI / Agentic AI",
+    articleStatus: "Sắp ra mắt",
+    articleTitle: "Xây Power BI bằng Agentic AI - Phần 1",
+    articleSummary:
+      "Cách biến yêu cầu kinh doanh thành dashboard logic, model plan và checklist triển khai với sự hỗ trợ của Agentic AI.",
+    articleLead:
+      "Bài viết này sẽ tập trung vào cách dùng Agentic AI như một cộng sự phân tích: hỏi đúng business question, phác thảo model, kiểm tra logic, và chuẩn bị Power BI output có thể review được.",
+    articlePlanTitle: "Nội dung sẽ bao gồm",
+    articlePlanOneTitle: "Business question",
+    articlePlanOneBody: "Chuyển yêu cầu mơ hồ thành câu hỏi quản trị rõ: ai cần quyết định gì, theo KPI nào, trong kỳ nào.",
+    articlePlanTwoTitle: "Dashboard logic",
+    articlePlanTwoBody: "Thiết kế page flow, KPI hierarchy, drill path và owner/action để dashboard không chỉ đẹp mà còn dùng được.",
+    articlePlanThreeTitle: "Model plan",
+    articlePlanThreeBody: "Tách fact/dimension, định nghĩa measure, kiểm soát relationship và chuẩn bị semantic model dễ audit.",
+    articlePlanFourTitle: "QA / governance",
+    articlePlanFourBody: "Dùng AI để tạo checklist kiểm tra tie-out, variance logic, filter behavior, naming và public-safe review.",
+    articleComingSoonTitle: "Đang chuẩn bị bản hướng dẫn đầu tiên.",
+    articleComingSoonBody:
+      "Placeholder này giữ chỗ cho Part 1. Khi publish, bài sẽ ưu tiên workflow thực chiến và finance judgment thay vì chỉ liệt kê prompt.",
+    backToBlog: "Quay lại Blog",
+  },
+  en: {
+    homeKicker: "FP&A Notes / Blog",
+    homeTitle: "Practical notes on Power BI, FP&A automation, and Agentic AI decision workflows.",
+    homeIntro:
+      "Practical notes on FP&A, Power BI, forecasting, automation, and using AI as an analytical partner.",
+    homeSignalLabel: "Editorial angle",
+    homeSignalTitle: "AI is only useful when it improves the finance decision.",
+    homeSignalBody:
+      "Blog posts will connect tooling to business questions, model governance, QA checks, and management-ready next actions.",
+    homeSignalOneLabel: "Lens",
+    homeSignalOneValue: "Business question first",
+    homeSignalTwoLabel: "Control",
+    homeSignalTwoValue: "QA and governance visible",
+    blogPageKicker: "FP&A Notes / Blog",
+    blogPageTitle: "Blog",
+    blogPageIntro:
+      "Practical notes on FP&A, Power BI, forecasting, automation, and using AI as an analytical partner.",
+    blogPagePill: "VN / ENG",
+    statusComingSoon: "Coming soon",
+    previewTopic: "Preview topic",
+    cardMetaLabel: "First article",
+    articleKicker: "Power BI / Agentic AI",
+    articleStatus: "Coming soon",
+    articleTitle: "Building Power BI with Agentic AI - Part 1",
+    articleSummary:
+      "How to turn business questions into dashboard logic, model planning, and implementation checklists with Agentic AI.",
+    articleLead:
+      "This article will focus on using Agentic AI as an analytical partner: framing the business question, drafting the model, checking logic, and preparing a Power BI output that can be reviewed.",
+    articlePlanTitle: "What it will cover",
+    articlePlanOneTitle: "Business question",
+    articlePlanOneBody: "Turn a vague request into a clear management question: who needs to decide what, by which KPI, and in which period.",
+    articlePlanTwoTitle: "Dashboard logic",
+    articlePlanTwoBody: "Design page flow, KPI hierarchy, drill paths, and owner/action framing so the dashboard is useful, not just polished.",
+    articlePlanThreeTitle: "Model plan",
+    articlePlanThreeBody: "Separate facts and dimensions, define measures, control relationships, and prepare an auditable semantic model.",
+    articlePlanFourTitle: "QA / governance",
+    articlePlanFourBody: "Use AI to build checks for tie-outs, variance logic, filter behavior, naming, and public-safe review.",
+    articleComingSoonTitle: "The first guide is being prepared.",
+    articleComingSoonBody:
+      "This placeholder reserves Part 1. When published, the article will prioritize practical workflow and finance judgment over prompt lists.",
+    backToBlog: "Back to Blog",
+  },
+};
+
+const blogPageMeta = {
+  index: {
+    vi: {
+      title: "Blog | Truong Dinh Anh Tu",
+      description: "Ghi chú thực chiến về FP&A, Power BI, forecasting, automation và Agentic AI.",
+    },
+    en: {
+      title: "Blog | Truong Dinh Anh Tu",
+      description: "Practical notes on FP&A, Power BI, forecasting, automation, and Agentic AI.",
+    },
+  },
+  article: {
+    vi: {
+      title: "Xây Power BI bằng Agentic AI - Phần 1 | Blog",
+      description: "Bài sắp ra mắt về cách xây Power BI bằng Agentic AI với business question, model plan và QA governance.",
+    },
+    en: {
+      title: "Building Power BI with Agentic AI - Part 1 | Blog",
+      description: "Coming-soon guide to building Power BI with Agentic AI through business questions, model planning, and QA governance.",
+    },
+  },
+};
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getStoredBlogLang() {
+  try {
+    const savedLang = localStorage.getItem(blogLangKey);
+    return savedLang === "en" || savedLang === "vi" ? savedLang : "vi";
+  } catch {
+    return "vi";
+  }
+}
+
+function storeBlogLang(lang) {
+  try {
+    localStorage.setItem(blogLangKey, lang);
+  } catch {
+    return false;
+  }
+  return true;
+}
+
+function renderBlogCards(rootElement, lang) {
+  const copy = blogCopy[lang];
+  const basePath = rootElement.dataset.blogBase || "";
+  const cards = blogPosts
+    .map((post) => {
+      const href = `${basePath}${post.slug}/`;
+      const tagMarkup = post.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
+
+      return `
+        <article class="blog-card">
+          <div class="blog-card-main">
+            <div class="blog-card-topline">
+              <span class="blog-status-badge">${escapeHtml(copy.statusComingSoon)}</span>
+              <span>${escapeHtml(copy.cardMetaLabel)}</span>
+            </div>
+            <p class="case-label">${escapeHtml(post.category)}</p>
+            <h3><a href="${escapeHtml(href)}">${escapeHtml(post.title[lang])}</a></h3>
+            <p>${escapeHtml(post.summary[lang])}</p>
+            <p class="blog-angle">${escapeHtml(post.angle[lang])}</p>
+            <div class="product-tags" aria-label="Blog tags">${tagMarkup}</div>
+          </div>
+          <div class="blog-card-action">
+            <a class="button quiet" href="${escapeHtml(href)}">
+              <i data-lucide="book-open-text"></i>
+              ${escapeHtml(copy.previewTopic)}
+            </a>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  rootElement.innerHTML = cards;
+}
+
+function updateBlogPageMeta(lang) {
+  const pageType = document.body.dataset.blogPageType;
+  const meta = pageType ? blogPageMeta[pageType]?.[lang] : null;
+  if (!meta) return;
+
+  document.documentElement.lang = lang === "vi" ? "vi" : "en";
+  document.title = meta.title;
+
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.setAttribute("content", meta.description);
+}
+
+function applyBlogLanguage(lang, shouldStore = true) {
+  const selectedLang = lang === "en" ? "en" : "vi";
+  const copy = blogCopy[selectedLang];
+
+  document.querySelectorAll("[data-blog-copy]").forEach((element) => {
+    const key = element.dataset.blogCopy;
+    if (copy[key]) element.textContent = copy[key];
+  });
+
+  document.querySelectorAll("[data-blog-root]").forEach((rootElement) => {
+    renderBlogCards(rootElement, selectedLang);
+  });
+
+  document.querySelectorAll("[data-blog-lang-option]").forEach((button) => {
+    const isActive = button.dataset.blogLangOption === selectedLang;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  if (shouldStore) storeBlogLang(selectedLang);
+  updateBlogPageMeta(selectedLang);
+  window.lucide?.createIcons();
+}
+
+if (document.querySelector("[data-blog-shell]")) {
+  const initialBlogLang = getStoredBlogLang();
+  document.querySelectorAll("[data-blog-lang-option]").forEach((button) => {
+    button.addEventListener("click", () => applyBlogLanguage(button.dataset.blogLangOption));
+  });
+  applyBlogLanguage(initialBlogLang, false);
+}
+
 if (welcomeGate) {
   const welcomeSeenKey = "portfolio-welcome-seen";
   const forceWelcomeGate = new URLSearchParams(window.location.search).get("welcome") === "1";
@@ -401,6 +640,10 @@ const revealItems = document.querySelectorAll(
     ".proof-path-card",
     ".decision-card",
     ".bi-product-card",
+    ".blog-feature-note",
+    ".blog-card",
+    ".blog-placeholder-panel",
+    ".blog-plan-card",
     ".process-main",
     ".process-proof",
     ".python-lab-main",
