@@ -95,6 +95,8 @@ document.querySelectorAll("[data-track-event]").forEach((element) => {
 });
 
 const blogLangKey = "blogLang";
+const blogLangVersionKey = "blogLangVersion";
+const blogLangVersion = "20260629-eng-default";
 const blogPosts = [
   {
     id: "agentic-ai-power-bi-part-1",
@@ -119,23 +121,23 @@ const blogPosts = [
 
 const blogCopy = {
   vi: {
-    homeKicker: "FP&A Notes / Blog",
-    homeTitle: "Ghi chú thực chiến về Power BI, FP&A automation và Agentic AI cho quyết định tài chính.",
+    homeKicker: "Learning Notes / Blog",
+    homeTitle: "Ghi chú về tài chính, công nghệ, AI và những bài học mình học được trong quá trình xây dựng.",
     homeIntro:
-      "Ghi chú thực chiến về FP&A, Power BI, forecasting, automation và cách dùng AI như một cộng sự phân tích.",
-    homeSignalLabel: "Góc nhìn",
-    homeSignalTitle: "AI chỉ có giá trị khi làm quyết định tài chính rõ hơn.",
+      "Đây là nơi mình chia sẻ trải nghiệm học hỏi, góc nhìn thực chiến và những bài học hữu ích cho người quan tâm tới tài chính, dữ liệu, công nghệ và AI.",
+    homeSignalLabel: "Góc chia sẻ",
+    homeSignalTitle: "Mục tiêu không phải là nói cho thật kỹ thuật. Mục tiêu là biến việc học thành giá trị hữu ích.",
     homeSignalBody:
-      "Blog sẽ nối công cụ với business question, model governance, QA checks và next action đủ rõ để quản lý dùng được.",
-    homeSignalOneLabel: "Lens",
-    homeSignalOneValue: "Business question trước",
-    homeSignalTwoLabel: "Control",
-    homeSignalTwoValue: "QA và governance rõ ràng",
-    blogPageKicker: "FP&A Notes / Blog",
+      "Mình viết về cách tư duy tài chính, công cụ dữ liệu và AI workflow có thể giúp mọi người làm việc rõ hơn, học nhanh hơn và ra quyết định tốt hơn.",
+    homeSignalOneLabel: "Theme",
+    homeSignalOneValue: "Finance, tech, AI",
+    homeSignalTwoLabel: "Style",
+    homeSignalTwoValue: "Bài học thực tế",
+    blogPageKicker: "Learning Notes / Blog",
     blogPageTitle: "Blog",
     blogPageIntro:
-      "Ghi chú thực chiến về FP&A, Power BI, forecasting, automation và cách dùng AI như một cộng sự phân tích.",
-    blogPagePill: "VN / ENG",
+      "Đây là nơi mình chia sẻ trải nghiệm học hỏi, góc nhìn thực chiến và những bài học hữu ích cho người quan tâm tới tài chính, dữ liệu, công nghệ và AI.",
+    blogPagePill: "ENG / VN",
     statusComingSoon: "Sắp ra mắt",
     previewTopic: "Xem chủ đề",
     cardMetaLabel: "Bài đầu tiên",
@@ -161,23 +163,23 @@ const blogCopy = {
     backToBlog: "Quay lại Blog",
   },
   en: {
-    homeKicker: "FP&A Notes / Blog",
-    homeTitle: "Practical notes on Power BI, FP&A automation, and Agentic AI decision workflows.",
+    homeKicker: "Learning Notes / Blog",
+    homeTitle: "Notes on finance, technology, AI, and the lessons I am learning while building.",
     homeIntro:
-      "Practical notes on FP&A, Power BI, forecasting, automation, and using AI as an analytical partner.",
+      "A place for practical reflections from a finance enthusiast who likes learning in public, connecting business judgment with tools, and sharing useful lessons for others.",
     homeSignalLabel: "Editorial angle",
-    homeSignalTitle: "AI is only useful when it improves the finance decision.",
+    homeSignalTitle: "The goal is not to sound technical. It is to make learning useful.",
     homeSignalBody:
-      "Blog posts will connect tooling to business questions, model governance, QA checks, and management-ready next actions.",
-    homeSignalOneLabel: "Lens",
-    homeSignalOneValue: "Business question first",
-    homeSignalTwoLabel: "Control",
-    homeSignalTwoValue: "QA and governance visible",
-    blogPageKicker: "FP&A Notes / Blog",
+      "I write about how finance thinking, data tools, and AI workflows can help people work clearer, learn faster, and make better decisions.",
+    homeSignalOneLabel: "Theme",
+    homeSignalOneValue: "Finance, tech, AI",
+    homeSignalTwoLabel: "Style",
+    homeSignalTwoValue: "Practical lessons",
+    blogPageKicker: "Learning Notes / Blog",
     blogPageTitle: "Blog",
     blogPageIntro:
-      "Practical notes on FP&A, Power BI, forecasting, automation, and using AI as an analytical partner.",
-    blogPagePill: "VN / ENG",
+      "A place for practical reflections from a finance enthusiast who likes learning in public, connecting business judgment with tools, and sharing useful lessons for others.",
+    blogPagePill: "ENG / VN",
     statusComingSoon: "Coming soon",
     previewTopic: "Preview topic",
     cardMetaLabel: "First article",
@@ -208,11 +210,11 @@ const blogPageMeta = {
   index: {
     vi: {
       title: "Blog | Truong Dinh Anh Tu",
-      description: "Ghi chú thực chiến về FP&A, Power BI, forecasting, automation và Agentic AI.",
+      description: "Ghi chú học hỏi và chia sẻ về tài chính, dữ liệu, công nghệ, AI và cách biến kiến thức thành giá trị thực tế.",
     },
     en: {
       title: "Blog | Truong Dinh Anh Tu",
-      description: "Practical notes on FP&A, Power BI, forecasting, automation, and Agentic AI.",
+      description: "Learning notes on finance, data, technology, AI, and turning practical curiosity into useful value.",
     },
   },
   article: {
@@ -238,16 +240,22 @@ function escapeHtml(value) {
 
 function getStoredBlogLang() {
   try {
+    if (localStorage.getItem(blogLangVersionKey) !== blogLangVersion) {
+      localStorage.setItem(blogLangKey, "en");
+      localStorage.setItem(blogLangVersionKey, blogLangVersion);
+      return "en";
+    }
     const savedLang = localStorage.getItem(blogLangKey);
-    return savedLang === "en" || savedLang === "vi" ? savedLang : "vi";
+    return savedLang === "en" || savedLang === "vi" ? savedLang : "en";
   } catch {
-    return "vi";
+    return "en";
   }
 }
 
 function storeBlogLang(lang) {
   try {
     localStorage.setItem(blogLangKey, lang);
+    localStorage.setItem(blogLangVersionKey, blogLangVersion);
   } catch {
     return false;
   }
