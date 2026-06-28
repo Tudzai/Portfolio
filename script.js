@@ -69,6 +69,31 @@ function writeSessionFlag(key, value) {
   return true;
 }
 
+function getTrackedText(element) {
+  return element.textContent.replace(/\s+/g, " ").trim();
+}
+
+function trackPortfolioEvent(eventName, properties = {}) {
+  if (!window.posthog || typeof window.posthog.capture !== "function") return;
+
+  window.posthog.capture(eventName, {
+    page_path: window.location.pathname,
+    page_url: window.location.href,
+    page_title: document.title,
+    ...properties,
+  });
+}
+
+document.querySelectorAll("[data-track-event]").forEach((element) => {
+  element.addEventListener("click", () => {
+    trackPortfolioEvent(element.dataset.trackEvent, {
+      cta_label: element.dataset.trackLabel || getTrackedText(element),
+      cta_location: element.dataset.trackLocation || "unspecified",
+      destination: element.getAttribute("href") || null,
+    });
+  });
+});
+
 if (welcomeGate) {
   const welcomeSeenKey = "portfolio-welcome-seen";
   const forceWelcomeGate = new URLSearchParams(window.location.search).get("welcome") === "1";

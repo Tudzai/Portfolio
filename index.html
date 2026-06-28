@@ -226,11 +226,25 @@
           </div>
         </aside>
         <div class="welcome-actions">
-          <button class="button primary" type="button" data-welcome-close>
+          <button
+            class="button primary"
+            type="button"
+            data-welcome-close
+            data-track-event="portfolio entered"
+            data-track-label="Enter Portfolio"
+            data-track-location="welcome gate"
+          >
             Enter Portfolio
             <i data-lucide="arrow-right"></i>
           </button>
-          <a class="button quiet welcome-proof-link" href="cv.html" data-welcome-close>
+          <a
+            class="button quiet welcome-proof-link"
+            href="cv.html"
+            data-welcome-close
+            data-track-event="cv opened"
+            data-track-label="View CV"
+            data-track-location="welcome gate"
+          >
             <i data-lucide="file-text"></i>
             View CV
           </a>
@@ -308,7 +322,13 @@
                   <i data-lucide="route"></i>
                   Review in 5 minutes
                 </a>
-                <a class="button secondary" href="cv.html">
+                <a
+                  class="button secondary"
+                  href="cv.html"
+                  data-track-event="cv opened"
+                  data-track-label="View CV"
+                  data-track-location="hero"
+                >
                   <i data-lucide="file-text"></i>
                   View CV
                 </a>
@@ -675,7 +695,13 @@
               <span>01</span>
               <h3>Confirm role fit</h3>
               <p>Start with the 30-second fit and CV to confirm commercial FP&amp;A, finance BI, or regional finance match.</p>
-              <a class="text-link" href="cv.html">Open CV</a>
+              <a
+                class="text-link"
+                href="cv.html"
+                data-track-event="cv opened"
+                data-track-label="Open CV"
+                data-track-location="review route"
+              >Open CV</a>
             </article>
             <article>
               <span>02</span>
@@ -1255,6 +1281,6 @@ python src/run_pipeline.py</code></pre>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=hero-after-welcome-20260620"></script>
+    <script src="script.js?v=posthog-cta-tracking-20260628"></script>
   </body>
 </html>
