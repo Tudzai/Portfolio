@@ -94,9 +94,6 @@ document.querySelectorAll("[data-track-event]").forEach((element) => {
   });
 });
 
-const blogLangKey = "blogLang";
-const blogLangVersionKey = "blogLangVersion";
-const blogLangVersion = "20260629-learning-log-soft-copy";
 const blogPosts = [
   {
     id: "agentic-ai-power-bi-part-1",
@@ -122,21 +119,21 @@ const blogPosts = [
 const blogCopy = {
   vi: {
     homeKicker: "Nhật ký học hỏi",
-    homeTitle: "Ghi chú ngắn về finance, data, Power BI và AI từ quá trình xây dựng công cụ hỗ trợ quyết định kinh doanh.",
+    homeTitle: "Nơi chia sẻ kinh nghiệm từ quá trình học và xây dựng với tài chính, dữ liệu, công nghệ và AI.",
     homeIntro:
-      "Những bài học thực tế khi biến câu hỏi kinh doanh còn mơ hồ thành báo cáo, forecast và hành động rõ hơn.",
+      "Tôi viết về những điều mình học được khi biến câu hỏi kinh doanh thành báo cáo, quy trình và quyết định rõ hơn.",
     homeSignalLabel: "Góc chia sẻ",
-    homeSignalTitle: "Phán đoán tài chính trước. Công cụ theo sau.",
+    homeSignalTitle: "Không phải blog kỹ thuật. Giống một nhật ký làm nghề hơn.",
     homeSignalBody:
-      "Tôi viết về cách finance, data và AI có thể giúp người làm kinh doanh nhìn vấn đề rõ hơn, làm việc nhanh hơn và quyết định tự tin hơn.",
-    homeSignalOneLabel: "Niềm tin",
-    homeSignalOneValue: "Finance dẫn dắt",
+      "Tôi chia sẻ bài học thực tế, lỗi đã gặp, những cải tiến nhỏ và cách suy nghĩ phía sau công việc finance. Công nghệ giúp tôi làm nhanh hơn, nhưng câu hỏi kinh doanh vẫn là điểm bắt đầu.",
+    homeSignalOneLabel: "Tinh thần",
+    homeSignalOneValue: "Học và chia sẻ",
     homeSignalTwoLabel: "Cách viết",
-    homeSignalTwoValue: "Ngắn, thực tế, dễ hiểu",
+    homeSignalTwoValue: "Dễ hiểu, thực tế",
     blogPageKicker: "Nhật ký học hỏi",
     blogPageTitle: "Blog",
     blogPageIntro:
-      "Ghi chú ngắn về finance, data, Power BI và AI từ quá trình xây dựng công cụ hỗ trợ quyết định kinh doanh.",
+      "Nơi chia sẻ kinh nghiệm, quá trình học hỏi và những góc nhìn thực tế khi kết nối tài chính, dữ liệu, công nghệ và AI.",
     blogPagePill: "ENG / VN",
     statusComingSoon: "Sắp ra mắt",
     previewTopic: "Đọc ghi chú",
@@ -164,21 +161,21 @@ const blogCopy = {
   },
   en: {
     homeKicker: "Learning Log",
-    homeTitle: "Notes on finance, data, Power BI, and AI from building decision tools for business teams.",
+    homeTitle: "A place to share lessons from building with finance, data, technology, and AI.",
     homeIntro:
-      "Practical lessons from turning messy business questions into clearer reporting, forecasts, and actions.",
-    homeSignalLabel: "A simple belief",
-    homeSignalTitle: "Finance judgment first. Tools second.",
+      "I write about what I learn while turning business questions into clearer reports, workflows, and decisions.",
+    homeSignalLabel: "A working journal",
+    homeSignalTitle: "Not a tech blog. More like a working journal.",
     homeSignalBody:
-      "I write about how finance, data, and AI can help business people see the issue clearly, work faster, and decide with more confidence.",
-    homeSignalOneLabel: "Belief",
-    homeSignalOneValue: "Finance leads",
+      "I share practical lessons, mistakes, small wins, and the thinking process behind finance work. Technology helps me work faster, but the business question still leads the work.",
+    homeSignalOneLabel: "Spirit",
+    homeSignalOneValue: "Learn and share",
     homeSignalTwoLabel: "Style",
-    homeSignalTwoValue: "Short and practical",
+    homeSignalTwoValue: "Clear and practical",
     blogPageKicker: "Learning Log",
     blogPageTitle: "Blog",
     blogPageIntro:
-      "Notes on finance, data, Power BI, and AI from building decision tools for business teams.",
+      "A place to share lessons, learning journeys, and practical reflections from connecting finance, data, technology, and AI.",
     blogPagePill: "ENG / VN",
     statusComingSoon: "Coming soon",
     previewTopic: "Read the note",
@@ -210,11 +207,11 @@ const blogPageMeta = {
   index: {
     vi: {
       title: "Blog | Truong Dinh Anh Tu",
-      description: "Nhật ký học hỏi về finance, data, Power BI và AI từ quá trình xây dựng công cụ hỗ trợ quyết định kinh doanh.",
+      description: "Nơi chia sẻ kinh nghiệm, quá trình học hỏi và góc nhìn thực tế khi kết nối tài chính, dữ liệu, công nghệ và AI.",
     },
     en: {
       title: "Blog | Truong Dinh Anh Tu",
-      description: "Learning notes on finance, data, Power BI, and AI from building decision tools for business teams.",
+      description: "A place to share lessons, learning journeys, and practical reflections from connecting finance, data, technology, and AI.",
     },
   },
   article: {
@@ -236,30 +233,6 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function getStoredBlogLang() {
-  try {
-    if (localStorage.getItem(blogLangVersionKey) !== blogLangVersion) {
-      localStorage.setItem(blogLangKey, "en");
-      localStorage.setItem(blogLangVersionKey, blogLangVersion);
-      return "en";
-    }
-    const savedLang = localStorage.getItem(blogLangKey);
-    return savedLang === "en" || savedLang === "vi" ? savedLang : "en";
-  } catch {
-    return "en";
-  }
-}
-
-function storeBlogLang(lang) {
-  try {
-    localStorage.setItem(blogLangKey, lang);
-    localStorage.setItem(blogLangVersionKey, blogLangVersion);
-  } catch {
-    return false;
-  }
-  return true;
 }
 
 function renderBlogCards(rootElement, lang) {
@@ -309,8 +282,8 @@ function updateBlogPageMeta(lang) {
   if (description) description.setAttribute("content", meta.description);
 }
 
-function applyBlogLanguage(lang, shouldStore = true) {
-  const selectedLang = lang === "en" ? "en" : "vi";
+function applyBlogLanguage(lang) {
+  const selectedLang = lang === "vi" ? "vi" : "en";
   const copy = blogCopy[selectedLang];
 
   document.querySelectorAll("[data-blog-copy]").forEach((element) => {
@@ -328,17 +301,15 @@ function applyBlogLanguage(lang, shouldStore = true) {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
-  if (shouldStore) storeBlogLang(selectedLang);
   updateBlogPageMeta(selectedLang);
   window.lucide?.createIcons();
 }
 
 if (document.querySelector("[data-blog-shell]")) {
-  const initialBlogLang = getStoredBlogLang();
   document.querySelectorAll("[data-blog-lang-option]").forEach((button) => {
     button.addEventListener("click", () => applyBlogLanguage(button.dataset.blogLangOption));
   });
-  applyBlogLanguage(initialBlogLang, false);
+  applyBlogLanguage("en");
 }
 
 if (welcomeGate) {
