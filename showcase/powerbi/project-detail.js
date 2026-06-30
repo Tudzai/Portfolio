@@ -119,10 +119,10 @@
     },
     "18": {
       question: "Where does carbon exposure create a finance-owned cost decision?",
-      logic: "Scope emissions, carbon cost exposure, supplier intensity, and abatement ROI are connected to payback and governance risk.",
-      recommendation: "Prioritize abatement projects with positive ROI and engage high-intensity suppliers first.",
-      build: "Emissions, supplier, carbon cost, abatement, and governance views frame sustainability as a finance decision.",
-      qa: "Carbon cost exposure = tCO2e multiplied by carbon price assumption; abatement ROI compares avoided cost with project investment."
+      logic: "Scope emissions, carbon cost exposure, supplier intensity, and abatement ROI are connected to selected year, region, BU, scope, and price context.",
+      recommendation: "Prioritize supplier hotspots, refresh carbon price exposure, and sequence abatement initiatives by ROI and implementation status.",
+      build: "Top slicers, header Current Lens, four large KPI cards, scenario charts, and dynamic TableEx action cards frame sustainability as a finance decision.",
+      qa: "Carbon cost exposure = tCO2e multiplied by carbon price assumption; dynamic table-card SVG hashes were tested across six slicer states to prevent static snapshot regressions."
     },
     "19": {
       question: "Can finance trust the dashboard before close reporting?",

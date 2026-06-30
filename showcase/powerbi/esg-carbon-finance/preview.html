@@ -15,7 +15,7 @@
       .subtitle { max-width: 760px; margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
       .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; min-width: min(100%, 340px); }
       .chip { border: 1px solid var(--line); border-radius: 999px; padding: 9px 12px; background: var(--surface); color: var(--muted); font-size: .82rem; font-weight: 800; }
-      .kpi-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+      .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
       .kpi { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
       .kpi span, .panel-label, .driver-card span { display: block; color: var(--muted); font-size: .72rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
       .kpi strong { display: block; margin: 8px 0 6px; font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1; overflow-wrap: anywhere; }
@@ -71,19 +71,17 @@
         <div>
           <p class="eyebrow">Interactive Power BI-style preview / Project 18</p>
           <h1>ESG Carbon Finance</h1>
-          <p class="subtitle">ESG finance dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and governance. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
+        <p class="subtitle">ESG finance dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and governance. The Power BI v39 release keeps slicers at the top, uses four large KPI cards, and renders dynamic TableEx action cards that respond to filter context.</p>
         </div>
         <div class="filters" aria-label="Demo filter chips">
-          <span class="chip">Period: QTD</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scenario: Base</span>
+          <span class="chip">Year: All</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scope: All</span><span class="chip">Price: $50/t</span>
         </div>
       </header>
       <section class="kpi-grid" aria-label="KPI summary">
-          <article class="kpi"><span>tCO2e</span><strong>42.5K</strong><em>+3.8% vs plan</em></article>
-          <article class="kpi"><span>carbon cost exposure</span><strong>$1.9M</strong><em>needs recovery</em></article>
-          <article class="kpi"><span>abatement ROI</span><strong>18%</strong><em>+2.1 pts vs LY</em></article>
-          <article class="kpi"><span>supplier risks</span><strong>12</strong><em>2 risk flag(s)</em></article>
-          <article class="kpi"><span>driver health score</span><strong>62%</strong><em>weighted from dashboard levers</em></article>
-          <article class="kpi"><span>owner actions</span><strong>3</strong><em>decision queue ready</em></article>
+          <article class="kpi"><span>Total emissions</span><strong>719.5K</strong><em>tCO2e selected lens</em></article>
+          <article class="kpi"><span>Carbon cost</span><strong>$36.0M</strong><em>at selected price</em></article>
+          <article class="kpi"><span>Intensity</span><strong>123.1</strong><em>tCO2e per $M revenue</em></article>
+          <article class="kpi"><span>Latest month</span><strong>22.0K</strong><em>with sparkline context</em></article>
       </section>
       <section class="layout">
         <article class="panel">
@@ -106,30 +104,30 @@
         <article class="panel">
           <span class="panel-label">Driver heatmap</span>
           <h2>What is moving the decision?</h2>
-          <div class="driver-list"><div class="driver-row"><span>Scope 1</span><div class="bar"><i style="width:48%"></i></div><strong>48%</strong></div>
-              <div class="driver-row"><span>Scope 2</span><div class="bar"><i style="width:55%"></i></div><strong>55%</strong></div>
-              <div class="driver-row"><span>Scope 3</span><div class="bar"><i style="width:82%"></i></div><strong>82%</strong></div>
-              <div class="driver-row"><span>Abatement</span><div class="bar"><i style="width:64%"></i></div><strong>64%</strong></div></div>
-          <div class="driver-cards"><article class="driver-card risk"><span>Risk driver</span><strong>Supplier intensity</strong><em>-$0.8M</em></article>
-              <article class="driver-card "><span>Positive driver</span><strong>Energy mix</strong><em>+$0.3M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>Carbon price</strong><em>-$0.5M</em></article></div>
+          <div class="driver-list"><div class="driver-row"><span>Scope 1</span><div class="bar"><i style="width:62%"></i></div><strong>0.26M</strong></div>
+              <div class="driver-row"><span>Scope 2</span><div class="bar"><i style="width:22%"></i></div><strong>0.09M</strong></div>
+              <div class="driver-row"><span>Scope 3</span><div class="bar"><i style="width:88%"></i></div><strong>0.37M</strong></div>
+              <div class="driver-row"><span>Abatement ROI</span><div class="bar"><i style="width:74%"></i></div><strong>37.5%</strong></div></div>
+          <div class="driver-cards"><article class="driver-card risk"><span>Risk driver</span><strong>Scope 3 suppliers</strong><em>0.37M</em></article>
+              <article class="driver-card "><span>Positive driver</span><strong>Abatement ROI</strong><em>37.5%</em></article>
+              <article class="driver-card risk"><span>Cost driver</span><strong>Carbon price</strong><em>$36.0M</em></article></div>
         </article>
       </section>
       <section class="layout full">
         <article class="panel">
           <span class="panel-label">Scenario table</span>
           <h2>Decision scenarios</h2>
-          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>42.5K</td><td>$1.9M</td><td>62%</td><td>Current run-rate</td></tr>
-                <tr><td>Base case</td><td>+3%</td><td>$1.9M</td><td>68%</td><td>Commit forecast</td></tr>
-                <tr><td>Upside</td><td>+6%</td><td>18%</td><td>74%</td><td>Scale winners</td></tr>
-                <tr><td>Risk case</td><td>-2%</td><td>12</td><td>48%</td><td>Protect downside</td></tr></tbody></table>
+          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>QA signal</th><th>Decision use</th></tr></thead><tbody><tr><td>Selected lens</td><td>719.5K tCO2e</td><td>$36.0M</td><td>6 states</td><td>Current exposure</td></tr>
+                <tr><td>Base internal price</td><td>$36M</td><td>$50/t</td><td>Pass</td><td>Budget exposure</td></tr>
+                <tr><td>Regulatory convergence</td><td>$65M</td><td>scenario cost</td><td>Pass</td><td>Downside planning</td></tr>
+                <tr><td>Stress price shock</td><td>$101M</td><td>scenario cost</td><td>Pass</td><td>CFO risk review</td></tr></tbody></table>
         </article>
         <article class="panel">
           <span class="panel-label">Bridge and ownership</span>
           <h2>Variance to action bridge</h2>
-          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Supplier intensity</td><td class="bad">-$0.8M</td><td>Recovery required</td><td>Procurement</td></tr>
-                <tr><td>Energy mix</td><td class="good">+$0.3M</td><td>Protect momentum</td><td>Finance</td></tr>
-                <tr><td>Carbon price</td><td class="bad">-$0.5M</td><td>Recovery required</td><td>ESG</td></tr></tbody></table>
+          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Scope 3 suppliers</td><td class="bad">0.37M tCO2e</td><td>Prioritize supplier follow-up</td><td>Procurement</td></tr>
+                <tr><td>Carbon price</td><td class="bad">$36.0M</td><td>Refresh scenario exposure</td><td>Finance</td></tr>
+                <tr><td>Abatement ROI</td><td class="good">37.5%</td><td>Sequence investment queue</td><td>ESG</td></tr></tbody></table>
         </article>
       </section>
       <section class="panel full">
@@ -141,15 +139,15 @@
         <table aria-label="Drilldown table"><thead><tr><th>View</th><th>Action</th><th>Metric / driver</th><th>Priority</th></tr></thead><tbody id="drilldown-body"></tbody></table>
       </section>
       <section class="commentary full" aria-label="Executive commentary">
-        <article><strong>So what</strong><p>tCO2e is the headline signal, but the decision depends on whether the driver movement is structural or temporary.</p></article>
-        <article><strong>Now what</strong><p>Engage high-intensity suppliers.</p></article>
-        <article><strong>Governance</strong><p>Bridge signs, scenario totals, and owner actions are reconciled before the pack is used in a management review.</p></article>
+        <article><strong>So what</strong><p>Scope 3 is the largest emissions driver, and carbon cost exposure changes materially under price scenarios.</p></article>
+        <article><strong>Now what</strong><p>Prioritize supplier hotspots and abatement initiatives with the strongest ROI.</p></article>
+        <article><strong>Governance</strong><p>Dynamic table-card hashes were tested across six slicer states before publishing the PBIX release.</p></article>
       </section>
       <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
     </main>
     <script>
-      const drilldownRows = [[["Procurement decision","Engage high-intensity suppliers.","Supplier intensity","High"],["Metric owner","Refresh tCO2e every close cycle.","42.5K","Medium"],["Finance check","Validate bridge tie-out before management pack release.","62% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$1.9M","High"]],[["Finance decision","Model carbon price exposure.","Energy mix","Medium"],["Metric owner","Refresh carbon cost exposure every close cycle.","$1.9M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","62% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","18%","Low"]],[["ESG decision","Prioritize abatement projects with payback.","Carbon price","High"],["Metric owner","Refresh abatement ROI every close cycle.","18%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","62% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","12","High"]]];
-      const actionSummary = [{"owner":"Procurement","action":"Engage high-intensity suppliers."},{"owner":"Finance","action":"Model carbon price exposure."},{"owner":"ESG","action":"Prioritize abatement projects with payback."}];
+      const drilldownRows = [[["Procurement decision","Prioritize high-intensity supplier follow-up.","Scope 3 suppliers","High"],["Metric owner","Refresh supplier intensity every close cycle.","0.37M","Medium"],["Finance check","Validate dynamic table output under region and BU slicers.","6-state QA","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$36.0M","High"]],[["Finance decision","Refresh carbon price exposure and scenario cost sensitivity.","Carbon price","High"],["Metric owner","Reconcile carbon cost to selected price lens.","$36.0M","Medium"],["Finance check","Validate scenario bars and table card hashes before release.","Pass","Medium"],["Next follow-up","Size regulatory convergence and stress-price shock.","$65M / $101M","High"]],[["ESG decision","Sequence abatement initiatives by ROI and implementation status.","Abatement ROI","High"],["Metric owner","Refresh abatement queue by scope and BU.","37.5%","Medium"],["Finance check","Validate investment queue responds to slicers.","4 unique hashes","Medium"],["Next follow-up","Bring approved initiatives into the management action queue.","Top 4","High"]]];
+      const actionSummary = [{"owner":"Procurement","action":"Prioritize high-intensity supplier follow-up."},{"owner":"Finance","action":"Refresh carbon price exposure and scenario cost sensitivity."},{"owner":"ESG","action":"Sequence abatement initiatives by ROI and implementation status."}];
       const tbody = document.querySelector('#drilldown-body');
       const tabs = Array.from(document.querySelectorAll('.tab'));
       function renderTab(index) {

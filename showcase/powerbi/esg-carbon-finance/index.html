@@ -24,7 +24,7 @@
       h1 { max-width: 880px; margin: 0; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.04; letter-spacing: 0; overflow-wrap: anywhere; }
       .lead { max-width: 850px; margin: 0; color: var(--muted); font-size: 1.05rem; line-height: 1.72; }
       .preview { overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-      .preview svg { width: 100%; display: block; }
+      .preview img { width: 100%; display: block; }
       .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
       .card { padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
       .card strong { display: block; margin-bottom: 8px; }
@@ -51,22 +51,8 @@
       <section class="hero">
         <p class="kicker">Power BI ESG finance</p>
         <h1>ESG Carbon Finance</h1>
-        <p class="lead">ESG finance decision dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and owner governance. The preview frames the dashboard as an FP&amp;A decision product: what moved, why it moved, owner action, and the metric guardrail to monitor next.</p>
-        <div class="preview"><svg viewBox="0 0 720 390" role="img" aria-label="ESG Carbon Finance dashboard mockup" xmlns="http://www.w3.org/2000/svg">
-    <rect width="720" height="390" rx="18" fill="#ffffff"/>
-    <rect x="0" y="0" width="720" height="54" rx="18" fill="#17201d"/>
-    <text x="28" y="34" fill="#ffffff" font-size="16" font-weight="800">ESG Carbon Finance</text>
-    <text x="590" y="34" fill="#badbd8" font-size="12" font-weight="800">Project 18</text>
-    <rect x="28" y="74" width="300" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
-    <g><text x="34" y="85" fill="#43514d" font-size="13" font-weight="700">Scope 1</text><rect x="160" y="70" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="70" width="197" height="16" rx="8" fill="#0d7b7b"/><text x="606" y="84" fill="#17201d" font-size="12" font-weight="800">48%</text></g><g><text x="34" y="121" fill="#43514d" font-size="13" font-weight="700">Scope 2</text><rect x="160" y="106" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="106" width="225" height="16" rx="8" fill="#c98128"/><text x="606" y="120" fill="#17201d" font-size="12" font-weight="800">55%</text></g><g><text x="34" y="157" fill="#43514d" font-size="13" font-weight="700">Scope 3</text><rect x="160" y="142" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="142" width="336" height="16" rx="8" fill="#315e66"/><text x="606" y="156" fill="#17201d" font-size="12" font-weight="800">82%</text></g><g><text x="34" y="193" fill="#43514d" font-size="13" font-weight="700">Abatement</text><rect x="160" y="178" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="178" width="262" height="16" rx="8" fill="#0d7b7b"/><text x="606" y="192" fill="#17201d" font-size="12" font-weight="800">64%</text></g>
-    <rect x="356" y="74" width="336" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
-    <polyline points="36.0,226.0 232.0,178.0 428.0,34.0 624.0,106.0" fill="none" stroke="#0d7b7b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(330 52) scale(.5 .72)"/>
-    <polyline points="36.0,226.0 232.0,178.0 428.0,34.0 624.0,106.0" fill="none" stroke="#c98128" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 7" transform="translate(330 82) scale(.5 .55)" opacity=".85"/>
-    <text x="382" y="116" fill="#17201d" font-size="34" font-weight="900">42.5K</text>
-    <text x="382" y="142" fill="#5f6d68" font-size="13" font-weight="700">tCO2e</text>
-    <rect x="28" y="326" width="664" height="36" rx="8" fill="#eef4f1"/>
-    <text x="48" y="349" fill="#17201d" font-size="13" font-weight="800">Interactive preview includes KPI cards, driver bridge, scenario table, and owner actions.</text>
-  </svg></div>
+        <p class="lead">ESG finance decision dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and owner governance. The v39 release uses four large KPI cards, top slicers, a header Current Lens, and dynamic TableEx cards that respond to slicers instead of static snapshot rows.</p>
+        <div class="preview"><img src="project18_v39_dynamic_table_cards_canvas_crop.png" alt="Project 18 ESG Carbon Finance Power BI dashboard v39 screenshot with header lens, slicers, four KPI cards, charts, and dynamic table cards" /></div>
         <div class="actions">
           <a class="button" href="preview.html">Open interactive HTML preview</a>
           <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2018%20-%20ESG%20Carbon%20Finance" target="_blank" rel="noopener">GitHub folder</a>
@@ -80,9 +66,9 @@
         <iframe src="preview.html" title="ESG Carbon Finance interactive preview"></iframe>
       </section>
       <section class="grid" aria-label="Project proof points">
-        <article class="card"><strong>Executive question</strong><p>Which KPI is off plan, which driver explains the gap, and which owner should take the next action?</p></article>
-        <article class="card"><strong>Finance logic</strong><p>42.5K tCO2e, $1.9M carbon cost exposure, and 2 risk driver(s) are linked into a decision bridge.</p></article>
-        <article class="card"><strong>Metric definitions / QA checks</strong><p>Scenario totals, bridge math, driver signs, and action ownership are checked before publishing; all values use portfolio-safe synthetic data.</p></article>
+        <article class="card"><strong>Executive question</strong><p>Which emissions and carbon-cost hotspots need CFO action under the selected region, BU, scope, and price lens?</p></article>
+        <article class="card"><strong>Finance logic</strong><p>$36.0M carbon cost exposure, 719.5K tCO2e, scenario cost sensitivity, and abatement ROI are tied to owner action.</p></article>
+        <article class="card"><strong>Metric definitions / QA checks</strong><p>Dynamic table-card hashes were tested across six slicer states; validator gates now fail static table snapshots and scrollbar regressions.</p></article>
       </section>
       <p class="note">This portfolio preview uses synthetic or anonymized data to demonstrate FP&amp;A reporting logic without exposing company-confidential information.</p>
     </main>
