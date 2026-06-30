@@ -1,169 +1,66 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Logistics Trade Lane Profitability Interactive Preview | Truong Dinh Anh Tu</title>
-    <style>
-      :root { --bg: #f6f7f4; --surface: #fff; --ink: #17201d; --muted: #5f6d68; --line: #d9dfda; --teal: #4d6f8f; --amber: #ba6c2f; --blue: #336b5e; --risk: #a24d61; --good: #2f766b; }
-      * { box-sizing: border-box; }
-      body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, Arial, sans-serif; }
-      .dashboard { width: min(1220px, calc(100% - 32px)); margin: 0 auto; padding: 18px 0 34px; }
-      .topbar { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; justify-content: space-between; padding: 18px 0; }
-      .eyebrow { margin: 0 0 6px; color: var(--amber); font-size: .72rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
-      h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.45rem); line-height: 1.08; overflow-wrap: anywhere; }
-      .subtitle { max-width: 760px; margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
-      .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; min-width: min(100%, 340px); }
-      .chip { border: 1px solid var(--line); border-radius: 999px; padding: 9px 12px; background: var(--surface); color: var(--muted); font-size: .82rem; font-weight: 800; }
-      .kpi-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
-      .kpi { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
-      .kpi span, .panel-label, .driver-card span { display: block; color: var(--muted); font-size: .72rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
-      .kpi strong { display: block; margin: 8px 0 6px; font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1; overflow-wrap: anywhere; }
-      .kpi em { color: var(--good); font-style: normal; font-size: .82rem; font-weight: 800; }
-      .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: 12px; margin-top: 12px; }
-      .panel { min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 18px; overflow: hidden; }
-      .panel h2 { margin: 6px 0 12px; font-size: 1.15rem; }
-      .chart-wrap { width: 100%; overflow: hidden; }
-      .chart-svg { display: block; width: 100%; height: auto; min-height: 230px; }
-      .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; color: var(--muted); font-size: .82rem; font-weight: 800; }
-      .legend i { display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; border-radius: 999px; background: var(--teal); }
-      .legend i.plan { background: var(--amber); }
-      .driver-list { display: grid; gap: 10px; }
-      .driver-row { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(120px, 2fr) 44px; gap: 9px; align-items: center; font-size: .88rem; font-weight: 800; color: var(--muted); }
-      .bar { height: 10px; border-radius: 999px; background: #e8ede8; overflow: hidden; }
-      .bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--amber)); }
-      .driver-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
-      .driver-card { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; }
-      .driver-card strong { display: block; margin: 6px 0; font-size: .96rem; }
-      .driver-card em { color: var(--good); font-style: normal; font-weight: 900; }
-      .driver-card.risk em { color: var(--risk); }
-      table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-      th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-      th { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
-      td { line-height: 1.4; }
-      .good { color: var(--good); font-weight: 900; }
-      .bad { color: var(--risk); font-weight: 900; }
-      .full { margin-top: 12px; }
-      .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-      .tab { border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); padding: 9px 12px; font-weight: 900; cursor: pointer; }
-      .tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
-      .commentary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-      .commentary article { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; }
-      .commentary strong { display: block; margin-bottom: 8px; }
-      .commentary p { margin: 0; color: var(--muted); line-height: 1.5; }
-      .footnote { margin: 16px 0 0; color: var(--muted); font-size: .85rem; line-height: 1.5; }
-      @media (max-width: 1040px) { .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .layout { grid-template-columns: 1fr; } }
-      @media (max-width: 720px) {
-        .dashboard { width: min(100% - 24px, 1220px); padding-top: 12px; }
-        .topbar { display: block; }
-        .filters { justify-content: flex-start; margin-top: 14px; }
-        .kpi-grid, .driver-cards, .commentary { grid-template-columns: 1fr; }
-        .driver-row { grid-template-columns: 1fr; gap: 6px; }
-        .panel { padding: 14px; }
-        table { font-size: .82rem; }
-        th, td { padding: 9px 7px; }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="dashboard">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Interactive Power BI-style preview / Project 17</p>
-          <h1>Logistics Trade Lane Profitability</h1>
-          <p class="subtitle">Lane-level profitability view showing customers, services, and lanes needing repricing or renegotiation. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
-        </div>
-        <div class="filters" aria-label="Demo filter chips">
-          <span class="chip">Period: QTD</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scenario: Base</span>
-        </div>
-      </header>
-      <section class="kpi-grid" aria-label="KPI summary">
-          <article class="kpi"><span>lane revenue</span><strong>$62.8M</strong><em>+3.8% vs plan</em></article>
-          <article class="kpi"><span>gross margin %</span><strong>21.6%</strong><em>needs recovery</em></article>
-          <article class="kpi"><span>loss lanes</span><strong>37</strong><em>+2.1 pts vs LY</em></article>
-          <article class="kpi"><span>gross profit recovery pool</span><strong>$2.3M</strong><em>2 risk flag(s)</em></article>
-          <article class="kpi"><span>driver health score</span><strong>66%</strong><em>weighted from dashboard levers</em></article>
-          <article class="kpi"><span>owner actions</span><strong>3</strong><em>decision queue ready</em></article>
-      </section>
-      <section class="layout">
-        <article class="panel">
-          <span class="panel-label">Trend and forecast call</span>
-          <h2>lane revenue versus operating plan</h2>
-          <div class="chart-wrap">
-            <svg class="chart-svg" viewBox="0 0 760 300" role="img" aria-label="Actual and plan trend chart" xmlns="http://www.w3.org/2000/svg">
-              <rect width="760" height="300" rx="10" fill="#fbfcfa"/>
-              <g stroke="#d9dfda" stroke-width="1">
-                <line x1="48" y1="60" x2="718" y2="60"/><line x1="48" y1="118" x2="718" y2="118"/><line x1="48" y1="176" x2="718" y2="176"/><line x1="48" y1="234" x2="718" y2="234"/>
-              </g>
-              <polyline points="36.0,226.0 242.0,70.0 448.0,190.0 654.0,34.0" fill="none" stroke="#4d6f8f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="36.0,226.0 242.0,84.5 448.0,175.5 654.0,34.0" fill="none" stroke="#ba6c2f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 8"/>
-              <g fill="#4d6f8f"><circle cx="36.0" cy="226.0" r="5"/><circle cx="242.0" cy="70.0" r="5"/><circle cx="448.0" cy="190.0" r="5"/><circle cx="654.0" cy="34.0" r="5"/></g>
-              <text x="48" y="282" fill="#5f6d68" font-size="13" font-weight="800">Jan</text><text x="678" y="282" fill="#5f6d68" font-size="13" font-weight="800">Dec</text>
-            </svg>
-          </div>
-          <div class="legend"><span><i></i>Actual / latest view</span><span><i class="plan"></i>Plan / benchmark</span></div>
-        </article>
-        <article class="panel">
-          <span class="panel-label">Driver heatmap</span>
-          <h2>What is moving the decision?</h2>
-          <div class="driver-list"><div class="driver-row"><span>Air</span><div class="bar"><i style="width:64%"></i></div><strong>64%</strong></div>
-              <div class="driver-row"><span>Ocean</span><div class="bar"><i style="width:73%"></i></div><strong>73%</strong></div>
-              <div class="driver-row"><span>Road</span><div class="bar"><i style="width:59%"></i></div><strong>59%</strong></div>
-              <div class="driver-row"><span>Customs</span><div class="bar"><i style="width:68%"></i></div><strong>68%</strong></div></div>
-          <div class="driver-cards"><article class="driver-card risk"><span>Risk driver</span><strong>Fuel surcharge</strong><em>-$0.6M</em></article>
-              <article class="driver-card "><span>Positive driver</span><strong>Lane mix</strong><em>+$0.8M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>Loss customers</strong><em>-$1.1M</em></article></div>
-        </article>
-      </section>
-      <section class="layout full">
-        <article class="panel">
-          <span class="panel-label">Scenario table</span>
-          <h2>Decision scenarios</h2>
-          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>$62.8M</td><td>21.6%</td><td>62%</td><td>Current run-rate</td></tr>
-                <tr><td>Base case</td><td>$65.3M</td><td>21.6%</td><td>72%</td><td>Commit forecast</td></tr>
-                <tr><td>Upside</td><td>$68.5M</td><td>37</td><td>78%</td><td>Scale winners</td></tr>
-                <tr><td>Risk case</td><td>$60.3M</td><td>$2.3M</td><td>50%</td><td>Protect downside</td></tr></tbody></table>
-        </article>
-        <article class="panel">
-          <span class="panel-label">Bridge and ownership</span>
-          <h2>Variance to action bridge</h2>
-          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Fuel surcharge</td><td class="bad">-$0.6M</td><td>Recovery required</td><td>Commercial</td></tr>
-                <tr><td>Lane mix</td><td class="good">+$0.8M</td><td>Protect momentum</td><td>Ops</td></tr>
-                <tr><td>Loss customers</td><td class="bad">-$1.1M</td><td>Recovery required</td><td>Finance</td></tr></tbody></table>
-        </article>
-      </section>
-      <section class="panel full">
-        <span class="panel-label">Drilldown tabs</span>
-        <h2>Owner action queue</h2>
-        <div class="tabs"><button class="tab active" type="button" data-tab="0">Commercial</button>
-              <button class="tab" type="button" data-tab="1">Ops</button>
-              <button class="tab" type="button" data-tab="2">Finance</button></div>
-        <table aria-label="Drilldown table"><thead><tr><th>View</th><th>Action</th><th>Metric / driver</th><th>Priority</th></tr></thead><tbody id="drilldown-body"></tbody></table>
-      </section>
-      <section class="commentary full" aria-label="Executive commentary">
-        <article><strong>So what</strong><p>lane revenue is the headline signal, but the decision depends on whether the driver movement is structural or temporary.</p></article>
-        <article><strong>Now what</strong><p>Reprice loss lanes and low-yield accounts.</p></article>
-        <article><strong>Governance</strong><p>Bridge signs, scenario totals, and owner actions are reconciled before the pack is used in a management review.</p></article>
-      </section>
-      <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
-    </main>
-    <script>
-      const drilldownRows = [[["Commercial decision","Reprice loss lanes and low-yield accounts.","Fuel surcharge","High"],["Metric owner","Refresh lane revenue every close cycle.","$62.8M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","66% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","21.6%","High"]],[["Ops decision","Reduce exception cost on air lanes.","Lane mix","Medium"],["Metric owner","Refresh gross margin % every close cycle.","21.6%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","66% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","37","Low"]],[["Finance decision","Track customer margin action queue.","Loss customers","High"],["Metric owner","Refresh loss lanes every close cycle.","37","Medium"],["Finance check","Validate bridge tie-out before management pack release.","66% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$2.3M","High"]]];
-      const actionSummary = [{"owner":"Commercial","action":"Reprice loss lanes and low-yield accounts."},{"owner":"Ops","action":"Reduce exception cost on air lanes."},{"owner":"Finance","action":"Track customer margin action queue."}];
-      const tbody = document.querySelector('#drilldown-body');
-      const tabs = Array.from(document.querySelectorAll('.tab'));
-      function renderTab(index) {
-        const rows = drilldownRows[index] || drilldownRows[0] || [];
-        tbody.innerHTML = rows.map(function(row) {
-          return '<tr><td>' + row[0] + '</td><td>' + row[1] + '</td><td>' + row[2] + '</td><td>' + row[3] + '</td></tr>';
-        }).join('');
-        tabs.forEach(function(tab, tabIndex) { tab.classList.toggle('active', tabIndex === index); });
-      }
-      tabs.forEach(function(tab) {
-        tab.addEventListener('click', function() { renderTab(Number(tab.dataset.tab)); });
-      });
-      renderTab(0);
-      window.previewActions = actionSummary;
-    </script>
-  </body>
-</html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project 17 - Logistics Trade Lane Profitability</title>
+<style>
+:root { --bg:#F8FAFC; --panel:#FFFFFF; --border:#CBD5E1; --text:#0F172A; --muted:#475569; --blue:#2563EB; --teal:#0F766E; --green:#15803D; --amber:#B45309; --red:#DC2626; }
+* { box-sizing:border-box; } body { margin:0; font-family:Segoe UI,Arial,sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1280px; margin:0 auto; padding:24px; } header { display:flex; flex-wrap:wrap; justify-content:space-between; gap:20px; align-items:flex-start; border-bottom:1px solid var(--border); padding-bottom:16px; }
+h1 { margin:0; font-size:26px; letter-spacing:0; } .sub { color:var(--muted); margin-top:6px; font-size:13px; }
+.tabs { display:flex; gap:8px; margin:18px 0; flex-wrap:wrap; } button { min-height:40px; border:1px solid var(--border); background:white; padding:9px 12px; border-radius:6px; color:var(--text); cursor:pointer; } button:hover { border-color:var(--blue); } button.active { background:var(--blue); color:white; border-color:var(--blue); }
+.page { display:none; } .page.active { display:block; }
+.kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; } .card,.panel { min-width:0; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.panel { overflow:auto; }
+.label { color:var(--muted); font-size:12px; } .value { font-size:23px; line-height:1.22; font-weight:700; margin-top:5px; overflow-wrap:anywhere; } .grid { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(320px,1fr); gap:14px; margin-top:14px; } .grid3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:14px; }
+svg { width:100%; height:250px; display:block; } table { width:100%; min-width:640px; border-collapse:collapse; font-size:12px; } th,td { padding:8px 6px; border-bottom:1px solid #E2E8F0; text-align:left; vertical-align:top; overflow-wrap:anywhere; } th { color:var(--muted); font-weight:600; } .neg { color:var(--red); font-weight:700; } .pos { color:var(--green); font-weight:700; }
+.methodology { margin:0 auto 24px; max-width:1280px; padding:12px 24px; color:var(--muted); font-size:12px; line-height:1.55; }
+@media (max-width:900px) { .grid,.grid3 { grid-template-columns:1fr; } .wrap { padding:14px; } .methodology { padding:0 14px 18px; } }
+</style>
+</head>
+<body><div class="wrap">
+<header><div><h1>Logistics Trade Lane Profitability</h1><div class="sub">Synthetic portfolio BI product | latest period 2026-05 | three-tab Power BI blueprint</div></div><div class="sub">Seed 17042</div></header>
+<div class="tabs"><button class="active" data-tab="overview">Executive Overview</button><button data-tab="lane">Trade Lane Margin</button><button data-tab="action">Cost Drivers & Action Queue</button></div>
+<section id="overview" class="page active"><div class="kpis" id="kpis"></div><div class="grid"><div class="panel"><h3>Revenue and GP Trend</h3><svg id="trend"></svg></div><div class="panel"><h3>Bottom Margin Lanes</h3><table id="bottom"></table></div></div></section>
+<section id="lane" class="page"><div class="grid"><div class="panel"><h3>Lane Revenue vs Margin</h3><svg id="laneBars"></svg></div><div class="panel"><h3>Top Margin Lanes</h3><table id="top"></table></div></div></section>
+<section id="action" class="page"><div class="grid3"><div class="panel"><h3>Reprice Opportunity</h3><div class="value" id="reprice"></div><div class="label">negative margin floor</div></div><div class="panel"><h3>Action Queue</h3><div class="value">108</div><div class="label">synthetic actions</div></div><div class="panel"><h3>Bridge Records</h3><div class="value">10241</div><div class="label">driver rows</div></div></div><div class="panel" style="margin-top:14px"><h3>Action Queue</h3><table id="actions"></table></div></section>
+</div>
+<footer class="methodology"><strong>Methodology / source note:</strong> Static HTML dashboard built from synthetic logistics finance data for portfolio demonstration. It models lane revenue, gross profit, shipment volume, repricing exposure, cost-driver issues, and owner action queues without publishing source BI files or raw operational records.</footer>
+<script id="data" type="application/json">{"overview": {"revenue": 11059779.43, "cost": 10445542.81, "gp": 614236.64, "shipments": 3542, "margin": 0.05553787432088056, "reprice": 254611.58}, "monthly": [{"revenue": 8690018.18, "cost": 8168691.04, "gp": 521327.21, "shipments": 3148, "margin": 0.05999149819960446, "reprice": 240312.45, "period": "2025-01"}, {"revenue": 8879626.19, "cost": 8115975.93, "gp": 763650.22, "shipments": 3382, "margin": 0.08600026663960277, "reprice": 264952.86, "period": "2025-02"}, {"revenue": 10514237.17, "cost": 10070705.94, "gp": 443531.3, "shipments": 4216, "margin": 0.04218387818619085, "reprice": 363952.61, "period": "2025-03"}, {"revenue": 9016892.13, "cost": 8404124.35, "gp": 612767.79, "shipments": 3519, "margin": 0.06795775985400415, "reprice": 250284.37, "period": "2025-04"}, {"revenue": 9677996.27, "cost": 9019977.89, "gp": 658018.4199999999, "shipments": 3269, "margin": 0.06799118346839371, "reprice": 233012.21, "period": "2025-05"}, {"revenue": 8212081.43, "cost": 7641700.36, "gp": 570381.17, "shipments": 2874, "margin": 0.06945634609957832, "reprice": 210855.73, "period": "2025-06"}, {"revenue": 9518338.88, "cost": 8761255.35, "gp": 757083.54, "shipments": 3232, "margin": 0.07953946056604363, "reprice": 212431.77, "period": "2025-07"}, {"revenue": 7919979.37, "cost": 7391805.79, "gp": 528173.54, "shipments": 2989, "margin": 0.06668875199355476, "reprice": 245089.54, "period": "2025-08"}, {"revenue": 6921142.37, "cost": 6571086.91, "gp": 350055.39, "shipments": 2582, "margin": 0.05057768953248682, "reprice": 209323.96, "period": "2025-09"}, {"revenue": 7986211.56, "cost": 7561268.63, "gp": 424942.95, "shipments": 2951, "margin": 0.05320957838487315, "reprice": 213794.88, "period": "2025-10"}, {"revenue": 7549224.01, "cost": 7062967.0, "gp": 486256.95, "shipments": 2612, "margin": 0.06441151426370245, "reprice": 165119.1, "period": "2025-11"}, {"revenue": 10597777.22, "cost": 9952524.65, "gp": 645252.55, "shipments": 3575, "margin": 0.06088564956642861, "reprice": 256088.4, "period": "2025-12"}, {"revenue": 8453737.11, "cost": 7963581.06, "gp": 490155.94, "shipments": 2905, "margin": 0.05798097736209354, "reprice": 203270.35, "period": "2026-01"}, {"revenue": 9615883.99, "cost": 9208935.28, "gp": 406948.73000000004, "shipments": 3236, "margin": 0.04232047000808295, "reprice": 275039.81, "period": "2026-02"}, {"revenue": 10842628.34, "cost": 10140931.27, "gp": 701697.1, "shipments": 3314, "margin": 0.06471651319185584, "reprice": 235065.27, "period": "2026-03"}, {"revenue": 11414551.08, "cost": 10451159.52, "gp": 963391.59, "shipments": 3509, "margin": 0.08440030477308968, "reprice": 251370.29, "period": "2026-04"}, {"revenue": 11059779.43, "cost": 10445542.81, "gp": 614236.64, "shipments": 3542, "margin": 0.05553787432088056, "reprice": 254611.58, "period": "2026-05"}], "lanes": [{"revenue": 1271898.96, "cost": 1316943.84, "gp": -45044.84, "shipments": 549, "margin": -0.03541542325028711, "reprice": 54377.05, "lane": "ID-JKT -> VN-HCM", "mode": "Ocean FCL"}, {"revenue": 311754.93, "cost": 343597.68, "gp": -31842.739999999998, "shipments": 274, "margin": -0.10214029333874527, "reprice": 32281.46, "lane": "VN-DAD -> KR-PUS", "mode": "Ocean LCL"}, {"revenue": 454476.09, "cost": 485059.51, "gp": -30583.43, "shipments": 363, "margin": -0.06729381517078269, "reprice": 38571.01, "lane": "MY-KUL -> VN-HCM", "mode": "Road+Sea"}, {"revenue": 75566.81, "cost": 103705.06999999999, "gp": -28138.28, "shipments": 139, "margin": -0.372362946113512, "reprice": 28138.28, "lane": "TH-BKK -> VN-HCM", "mode": "Road"}, {"revenue": 38142.92, "cost": 65783.02, "gp": -27640.13, "shipments": 83, "margin": -0.7246464088223975, "reprice": 27640.13, "lane": "KH-PNH -> VN-HCM", "mode": "Road"}, {"revenue": 161272.32, "cost": 170560.92, "gp": -9288.59, "shipments": 159, "margin": -0.057595686600155564, "reprice": 10857.59, "lane": "CN-SHA -> VN-HCM", "mode": "Ocean LCL"}, {"revenue": 475433.69, "cost": 466501.87, "gp": 8931.83, "shipments": 106, "margin": 0.018786699781414312, "reprice": 5939.34, "lane": "VN-HAN -> CN-SZX", "mode": "Air"}, {"revenue": 737823.34, "cost": 724406.76, "gp": 13416.59, "shipments": 105, "margin": 0.018184014075781338, "reprice": 9415.890000000001, "lane": "VN-HAN -> JP-TYO", "mode": "Air"}, {"revenue": 888887.87, "cost": 834358.3, "gp": 54529.57, "shipments": 346, "margin": 0.061345836567665166, "reprice": 24916.18, "lane": "VN-HCM -> AE-JEA", "mode": "Ocean FCL"}, {"revenue": 918854.95, "cost": 774093.0700000001, "gp": 144761.86, "shipments": 250, "margin": 0.1575459325761917, "reprice": 2286.3199999999997, "lane": "SG-SIN -> AU-SYD", "mode": "Ocean FCL"}, {"revenue": 2835609.7600000002, "cost": 2578057.51, "gp": 257552.28, "shipments": 560, "margin": 0.0908278295670699, "reprice": 5140.43, "lane": "VN-HCM -> DE-HAM", "mode": "Ocean FCL"}, {"revenue": 2890057.79, "cost": 2582475.2600000002, "gp": 307582.52, "shipments": 608, "margin": 0.10642780952833474, "reprice": 15047.9, "lane": "VN-HCM -> US-LAX", "mode": "Ocean FCL"}], "actions": [{"customer": "BluePeak Electronics", "lane": "VN-HCM -> US-LAX", "issue": "Claims spike", "owner": "Procurement", "risk": 295779.41, "status": "Open"}, {"customer": "BluePeak Electronics", "lane": "VN-HCM -> DE-HAM", "issue": "Claims spike", "owner": "Customer Success", "risk": 207319.83, "status": "Open"}, {"customer": "Mekong Machinery", "lane": "VN-HCM -> DE-HAM", "issue": "Demurrage exposure", "owner": "Customer Success", "risk": 166053.21, "status": "In Review"}, {"customer": "BluePeak Electronics", "lane": "VN-HCM -> DE-HAM", "issue": "Below target margin", "owner": "Commercial", "risk": 147912.63, "status": "Open"}, {"customer": "BluePeak Electronics", "lane": "VN-HCM -> US-LAX", "issue": "Carrier rate gap", "owner": "Finance BP", "risk": 124065.01, "status": "Open"}, {"customer": "BluePeak Electronics", "lane": "VN-HAN -> JP-TYO", "issue": "Claims spike", "owner": "Commercial", "risk": 100549.61, "status": "In Review"}, {"customer": "Aster Apparel Group", "lane": "VN-HCM -> US-LAX", "issue": "Demurrage exposure", "owner": "Customer Success", "risk": 97915.64, "status": "Open"}, {"customer": "Ion Mobility", "lane": "VN-HCM -> DE-HAM", "issue": "Claims spike", "owner": "Commercial", "risk": 96083.04, "status": "In Review"}, {"customer": "Mekong Machinery", "lane": "ID-JKT -> VN-HCM", "issue": "Carrier rate gap", "owner": "Finance BP", "risk": 91335.11, "status": "Open"}, {"customer": "Jade Consumer Goods", "lane": "VN-HCM -> DE-HAM", "issue": "Carrier rate gap", "owner": "Finance BP", "risk": 88185.99, "status": "Action Agreed"}, {"customer": "Mekong Machinery", "lane": "VN-HAN -> JP-TYO", "issue": "Below target margin", "owner": "Commercial", "risk": 86363.88, "status": "Open"}, {"customer": "Aster Apparel Group", "lane": "ID-JKT -> VN-HCM", "issue": "Carrier rate gap", "owner": "Finance BP", "risk": 85518.81, "status": "In Review"}, {"customer": "Ion Mobility", "lane": "VN-HCM -> US-LAX", "issue": "Below target margin", "owner": "Commercial", "risk": 84075.42, "status": "In Review"}, {"customer": "Delta Fresh Foods", "lane": "VN-HCM -> US-LAX", "issue": "Claims spike", "owner": "Operations", "risk": 82908.42, "status": "Open"}, {"customer": "Aster Apparel Group", "lane": "VN-HAN -> CN-SZX", "issue": "Demurrage exposure", "owner": "Customer Success", "risk": 79911.13, "status": "Open"}, {"customer": "Jade Consumer Goods", "lane": "VN-HCM -> US-LAX", "issue": "Demurrage exposure", "owner": "Operations", "risk": 79368.99, "status": "In Review"}]}</script>
+<script>
+const d = JSON.parse(document.getElementById('data').textContent);
+const fmt = n => '$' + Math.round(n).toLocaleString();
+const pct = n => (n*100).toFixed(1) + '%';
+function kpis() {
+ const o=d.overview; const rows=[['Net Revenue',fmt(o.revenue)],['Gross Profit',fmt(o.gp)],['GP Margin',pct(o.margin)],['Shipments',o.shipments.toLocaleString()],['Cost / Shipment',fmt(o.cost/o.shipments)],['Reprice Opp.',fmt(o.reprice)]];
+ document.getElementById('kpis').innerHTML = rows.map(r=>`<div class="card"><div class="label">${r[0]}</div><div class="value">${r[1]}</div></div>`).join('');
+ document.getElementById('reprice').textContent=fmt(o.reprice);
+}
+function table(id, rows) {
+ document.getElementById(id).innerHTML='<thead><tr><th>Lane</th><th>Mode</th><th>Revenue</th><th>GP%</th></tr></thead><tbody>'+rows.map(x=>`<tr><td>${x.lane}</td><td>${x.mode}</td><td>${fmt(x.revenue)}</td><td class="${x.margin<0?'neg':'pos'}">${pct(x.margin)}</td></tr>`).join('')+'</tbody>';
+}
+function actionTable() {
+ document.getElementById('actions').innerHTML='<thead><tr><th>Customer</th><th>Lane</th><th>Issue</th><th>Owner</th><th>Risk</th><th>Status</th></tr></thead><tbody>'+d.actions.map(x=>`<tr><td>${x.customer}</td><td>${x.lane}</td><td>${x.issue}</td><td>${x.owner}</td><td>${fmt(x.risk)}</td><td>${x.status}</td></tr>`).join('')+'</tbody>';
+}
+function bars(svgId, rows, metric) {
+ const svg=document.getElementById(svgId), w=760,h=250,p=32; const max=Math.max(...rows.map(r=>Math.abs(r[metric]))); let out=`<line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#CBD5E1"/>`;
+ rows.slice(0,10).forEach((r,i)=>{ const bw=(w-p*2)/10-8; const x=p+i*((w-p*2)/10); const val=Math.abs(r[metric]); const bh=(val/max)*(h-p*2); const y=h-p-bh; const color=r.margin<0?'#DC2626':'#0F766E'; out+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="4" fill="${color}"><title>${r.lane} ${fmt(r[metric])}</title></rect>`; }); svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.innerHTML=out;
+}
+function trend() { bars('trend', d.monthly, 'revenue'); }
+function updateQa() {
+ window.__dashboardQa = {
+  activePage: document.querySelector('.page.active')?.id || '',
+  tabs: document.querySelectorAll('button[data-tab]').length,
+  visibleKpiCards: document.querySelectorAll('.page.active .card .value').length,
+  visiblePanels: document.querySelectorAll('.page.active .panel').length,
+  tables: document.querySelectorAll('table').length,
+  svgs: document.querySelectorAll('svg').length,
+  lanes: d.lanes.length,
+  actions: d.actions.length
+ };
+}
+document.querySelectorAll('button[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('button[data-tab]').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active');updateQa();});
+kpis(); table('bottom', d.lanes.slice(0,8)); table('top', d.lanes.slice(-8).reverse()); actionTable(); trend(); bars('laneBars', d.lanes.slice().sort((a,b)=>b.revenue-a.revenue), 'revenue');
+updateQa();
+</script></body></html>

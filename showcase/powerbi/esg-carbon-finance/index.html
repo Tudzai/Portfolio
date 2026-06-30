@@ -21,8 +21,8 @@
       .back { display: inline-flex; margin-bottom: 26px; color: var(--teal); font-weight: 800; }
       .hero { display: grid; gap: 20px; padding: clamp(26px, 5vw, 44px); border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
       .kicker { margin: 0; color: var(--amber); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-      h1 { max-width: 880px; margin: 0; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.04; letter-spacing: 0; overflow-wrap: anywhere; }
-      .lead { max-width: 850px; margin: 0; color: var(--muted); font-size: 1.05rem; line-height: 1.72; }
+      h1 { max-width: 920px; margin: 0; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.04; letter-spacing: 0; overflow-wrap: anywhere; }
+      .lead { max-width: 880px; margin: 0; color: var(--muted); font-size: 1.05rem; line-height: 1.72; }
       .preview { overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
       .preview img { width: 100%; display: block; }
       .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
@@ -35,13 +35,13 @@
       .frame-card { overflow: hidden; margin-top: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
       .frame-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--line); }
       .frame-head h2 { margin: 0; font-size: 1.05rem; }
-      iframe { display: block; width: 100%; height: 780px; border: 0; background: #fff; }
+      iframe { display: block; width: 100%; height: 980px; border: 0; background: #fff; }
       .note { margin: 20px 0 0; color: var(--muted); line-height: 1.65; }
       @media (max-width: 820px) {
         .shell { width: min(100% - 28px, 1120px); padding-top: 22px; }
         .grid { grid-template-columns: 1fr; }
         .button { width: 100%; }
-        iframe { height: 900px; }
+        iframe { height: 980px; }
       }
     </style>
   </head>
@@ -51,8 +51,10 @@
       <section class="hero">
         <p class="kicker">Power BI ESG finance</p>
         <h1>ESG Carbon Finance</h1>
-        <p class="lead">ESG finance decision dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and owner governance. The v39 release uses four large KPI cards, top slicers, a header Current Lens, and dynamic TableEx cards that respond to slicers instead of static snapshot rows.</p>
-        <div class="preview"><img src="project18_v39_dynamic_table_cards_canvas_crop.png" alt="Project 18 ESG Carbon Finance Power BI dashboard v39 screenshot with header lens, slicers, four KPI cards, charts, and dynamic table cards" /></div>
+        <p class="lead">ESG finance decision dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, MACC, and owner governance. The preview now uses the final project dashboard source so recruiters can interact with the actual artifact, not a static screenshot-only case.</p>
+        <div class="preview">
+          <img src="screenshots/01-esg-finance-overview.png" alt="ESG Carbon Finance executive dashboard preview" />
+        </div>
         <div class="actions">
           <a class="button" href="preview.html">Open interactive HTML preview</a>
           <a class="button secondary" href="https://github.com/Tudzai/powerbi-fpa-analytics-portfolio/tree/main/Project%2018%20-%20ESG%20Carbon%20Finance" target="_blank" rel="noopener">GitHub folder</a>
@@ -66,11 +68,11 @@
         <iframe src="preview.html" title="ESG Carbon Finance interactive preview"></iframe>
       </section>
       <section class="grid" aria-label="Project proof points">
-        <article class="card"><strong>Executive question</strong><p>Which emissions and carbon-cost hotspots need CFO action under the selected region, BU, scope, and price lens?</p></article>
-        <article class="card"><strong>Finance logic</strong><p>$36.0M carbon cost exposure, 719.5K tCO2e, scenario cost sensitivity, and abatement ROI are tied to owner action.</p></article>
-        <article class="card"><strong>Metric definitions / QA checks</strong><p>Dynamic table-card hashes were tested across six slicer states; validator gates now fail static table snapshots and scrollbar regressions.</p></article>
+        <article class="card"><strong>Executive question</strong><p>Which emissions, suppliers, and carbon-cost scenarios need CFO action under the current abatement and target-status lens?</p></article>
+        <article class="card"><strong>Finance logic</strong><p>Four-tab dashboard covering ESG finance overview, supplier intensity, carbon scenario ROI, and risk control tower from synthetic ESG finance data.</p></article>
+        <article class="card"><strong>Metric definitions / QA checks</strong><p>Emissions, carbon cost, supplier intensity, abatement reduction, payback, ROI, MACC, capex status, and guardrails reconcile before publishing.</p></article>
       </section>
-      <p class="note">This portfolio preview uses synthetic or anonymized data to demonstrate FP&amp;A reporting logic without exposing company-confidential information.</p>
+      <p class="note">This portfolio preview uses synthetic or anonymized data to demonstrate FP&amp;A carbon finance and governance logic without exposing company-confidential information.</p>
     </main>
     <script>
       const previewFrame = document.querySelector('iframe');
@@ -79,10 +81,10 @@
         try {
           const doc = previewFrame.contentDocument || (previewFrame.contentWindow && previewFrame.contentWindow.document);
           if (!doc) return;
-          const height = Math.max(780, doc.documentElement ? doc.documentElement.scrollHeight : 0, doc.body ? doc.body.scrollHeight : 0);
+          const height = Math.max(980, doc.documentElement ? doc.documentElement.scrollHeight : 0, doc.body ? doc.body.scrollHeight : 0);
           previewFrame.style.height = (height + 12) + 'px';
         } catch (error) {
-          previewFrame.style.height = '900px';
+          previewFrame.style.height = '980px';
         }
       }
       previewFrame && previewFrame.addEventListener('load', function () { resizePreviewFrame(); setTimeout(resizePreviewFrame, 250); });

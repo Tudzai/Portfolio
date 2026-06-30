@@ -186,10 +186,10 @@ window.powerBiProjectDetails = [
     title: "Logistics Trade Lane Profitability",
     lens: "Commercial finance",
     summary: "Lane-level profitability view showing customers, services, and lanes needing repricing or renegotiation.",
-    metrics: [["$62.8M", "lane revenue"], ["21.6%", "gross margin %"], ["37", "loss lanes"], ["$2.3M", "gross profit recovery pool"]],
-    bars: [["Air", 64], ["Ocean", 73], ["Road", 59], ["Customs", 68]],
-    drivers: [["Fuel surcharge", "-$0.6M", true], ["Lane mix", "+$0.8M", false], ["Loss customers", "-$1.1M", true]],
-    actions: [["Commercial", "Reprice loss lanes and low-yield accounts."], ["Ops", "Reduce exception cost on air lanes."], ["Finance", "Track customer margin action queue."]]
+    metrics: [["$11.1M", "net revenue"], ["$614K", "gross profit"], ["5.6%", "GP margin"], ["$255K", "reprice exposure"]],
+    bars: [["FCL", 78], ["Air", 22], ["LCL", 18], ["Road", 8]],
+    drivers: [["Loss lanes", "-$143K", true], ["Reprice exposure", "-$255K", true], ["Top FCL lanes", "+$452K", false]],
+    actions: [["Commercial", "Reprice negative-margin lanes and low-yield accounts."], ["Ops", "Reduce claims, demurrage, and exception cost."], ["Finance", "Track lane margin and owner action queue."]]
   },
   {
     no: "18",
@@ -197,10 +197,10 @@ window.powerBiProjectDetails = [
     folder: "Project 18 - ESG Carbon Finance",
     title: "ESG Carbon Finance",
     lens: "ESG finance",
-    summary: "CFO-style ESG finance dashboard with top slicers, header Current Lens, four large KPI cards, dynamic TableEx action cards, carbon cost scenarios, and abatement ROI governance.",
-    metrics: [["719.5K", "total tCO2e"], ["$36.0M", "carbon cost exposure"], ["4", "dynamic table cards"], ["6", "slicer QA states"]],
-    bars: [["Scope 1", 62], ["Scope 2", 35], ["Scope 3", 88], ["Abatement", 74]],
-    drivers: [["Carbon price", "-$36.0M", true], ["Scope 3 suppliers", "-719.5K tCO2e", true], ["Abatement ROI", "+37.5%", false]],
+    summary: "CFO-style ESG finance dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and risk governance.",
+    metrics: [["719.5K", "total tCO2e"], ["$64.8M", "carbon cost at $90/t"], ["123.1", "tCO2e per $M"], ["29.1K", "target gap"]],
+    bars: [["Scope 1", 62], ["Scope 2", 21], ["Scope 3", 88], ["Abatement", 74]],
+    drivers: [["Carbon price", "-$64.8M", true], ["Scope 3 exposure", "-371.6K tCO2e", true], ["Abatement ROI", "+44.9%", false]],
     actions: [["Procurement", "Prioritize high-intensity supplier follow-up."], ["Finance", "Refresh carbon price exposure and scenario cost sensitivity."], ["ESG", "Sequence abatement initiatives by ROI and implementation status."]]
   },
   {
