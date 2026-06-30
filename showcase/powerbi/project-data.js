@@ -197,7 +197,7 @@ window.powerBiProjectDetails = [
     folder: "Project 18 - ESG Carbon Finance",
     title: "ESG Carbon Finance",
     lens: "ESG finance",
-    summary: "ESG finance dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and governance.",
+    summary: "ESG finance decision dashboard linking emissions, supplier intensity, carbon cost exposure, abatement ROI, and owner governance.",
     metrics: [["42.5K", "tCO2e"], ["$1.9M", "carbon cost exposure"], ["18%", "abatement ROI"], ["12", "supplier risks"]],
     bars: [["Scope 1", 48], ["Scope 2", 55], ["Scope 3", 82], ["Abatement", 64]],
     drivers: [["Supplier intensity", "-$0.8M", true], ["Energy mix", "+$0.3M", false], ["Carbon price", "-$0.5M", true]],
