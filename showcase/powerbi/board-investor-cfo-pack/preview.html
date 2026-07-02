@@ -20,7 +20,7 @@
       --green: #4d8d4b;
       --gold: #be7c10;
       --red: #b73535;
-      --shadow: 0 10px 24px rgba(24, 8, 39, .18);
+      --shadow: 0 8px 18px rgba(24, 8, 39, .14);
       --dashboard-scale: 1;
     }
 
@@ -37,7 +37,7 @@
       margin: 0;
       background: #f7f4fb;
       color: var(--ink);
-      font: 13px/1.35 "Segoe UI", Arial, sans-serif;
+      font: 12px/1.38 "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
     }
 
     button,
@@ -252,8 +252,8 @@
       background: rgba(255, 255, 255, .10);
       border: 1px solid rgba(255, 255, 255, .44);
       border-radius: 8px;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 700;
       cursor: pointer;
     }
 
@@ -280,9 +280,9 @@
       height: 30px;
       margin: 0;
       color: #edeaf9;
-      font-size: 23px;
+      font-size: 22px;
       line-height: 30px;
-      font-weight: 800;
+      font-weight: 750;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -297,7 +297,7 @@
       gap: 10px;
       color: #edeaf9;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 750;
     }
 
     .pack-id span:first-child {
@@ -308,9 +308,9 @@
     .chip-row {
       position: absolute;
       left: 650px;
-      top: 6px;
-      width: 420px;
-      height: 60px;
+      top: 8px;
+      width: 480px;
+      height: 42px;
       display: flex;
       align-items: center;
       justify-content: flex-end;
@@ -320,8 +320,8 @@
 
     .chip {
       min-width: 116px;
-      max-width: 154px;
-      height: 42px;
+      max-width: 155px;
+      height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -331,8 +331,8 @@
       background: #f7f4fb;
       border: 1px solid #d5cde6;
       border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
+      font-size: 10.5px;
+      font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -363,7 +363,7 @@
     .kpi-card,
     .panel {
       position: absolute;
-      background: var(--panel);
+      background: linear-gradient(180deg, #f3edf9 0%, var(--panel) 100%);
       border: 1px solid var(--line);
       border-radius: 8px;
       box-shadow: var(--shadow);
@@ -404,14 +404,14 @@
       background: var(--accent);
       border-radius: 5px;
       font-size: 10px;
-      font-weight: 900;
+      font-weight: 750;
     }
 
     .kpi-label {
       min-width: 0;
       color: var(--ink);
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 14.5px;
+      font-weight: 750;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -426,9 +426,9 @@
 
     .kpi-value {
       color: var(--accent);
-      font-size: 27px;
-      line-height: 1.2;
-      font-weight: 800;
+      font-size: 25px;
+      line-height: 1.12;
+      font-weight: 760;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -437,7 +437,7 @@
     .spark {
       display: block;
       width: 100%;
-      height: 36px;
+      height: 32px;
       border-radius: 8px;
       overflow: hidden;
     }
@@ -461,7 +461,7 @@
       color: #211a32;
       font-size: 10px;
       line-height: 1.1;
-      font-weight: 800;
+      font-weight: 700;
     }
 
     .kpi-foot b {
@@ -469,7 +469,7 @@
       color: #6e667b;
       font-size: 12px;
       line-height: 1.12;
-      font-weight: 600;
+      font-weight: 560;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -477,24 +477,24 @@
 
     .kpi-foot .good b {
       color: #5b9d5f;
-      font-weight: 800;
+      font-weight: 750;
     }
 
     .kpi-foot .bad b {
       color: var(--red);
-      font-weight: 800;
+      font-weight: 750;
     }
 
     .panel {
-      padding: 11px 12px 12px;
+      padding: 12px 12px 12px;
     }
 
     .panel h2 {
       margin: 0 0 5px;
       color: var(--ink);
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.12;
-      font-weight: 800;
+      font-weight: 760;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -504,7 +504,7 @@
       display: block;
       margin-bottom: 8px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.15;
       white-space: nowrap;
       overflow: hidden;
@@ -516,7 +516,7 @@
       flex-wrap: wrap;
       gap: 8px 12px;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 10.5px;
       line-height: 1;
     }
 
@@ -558,7 +558,7 @@
       color: var(--muted);
       background: transparent;
       border: 0;
-      font-size: 11px;
+      font-size: 10.5px;
       text-align: left;
     }
 
@@ -569,7 +569,7 @@
     button.bar-row:hover span:first-child,
     button.bar-row.active span:first-child {
       color: var(--ink);
-      font-weight: 800;
+      font-weight: 740;
     }
 
     button.bar-row.active .bar-track {
@@ -640,17 +640,18 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
+      margin-top: 7px;
       overflow: hidden;
       background: #fff;
       border-radius: 6px;
-      font-size: 11px;
+      font-size: 10.5px;
+      table-layout: fixed;
     }
 
     th,
     td {
-      padding: 7px 8px;
-      border-bottom: 1px solid #e2daef;
+      padding: 5px 7px;
+      border-bottom: 1px solid #e6def0;
       text-align: left;
       white-space: nowrap;
       overflow: hidden;
@@ -659,7 +660,7 @@
 
     th {
       color: var(--ink);
-      font-weight: 800;
+      font-weight: 720;
       background: #f7f4fb;
     }
 
@@ -669,13 +670,13 @@
 
     .status {
       display: inline-block;
-      min-width: 50px;
-      padding: 2px 7px;
+      min-width: 36px;
+      padding: 2px 5px;
       color: #14532d;
       background: #dff6eb;
       border-radius: 999px;
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 730;
       text-align: center;
     }
 
@@ -687,6 +688,93 @@
     .status.risk {
       color: #7f1d1d;
       background: #fee2e2;
+    }
+
+    .metric-table th:nth-child(1),
+    .metric-table td:nth-child(1) {
+      width: 23%;
+    }
+
+    .metric-table th:nth-child(2),
+    .metric-table td:nth-child(2),
+    .metric-table th:nth-child(3),
+    .metric-table td:nth-child(3) {
+      width: 15%;
+    }
+
+    .metric-table th:nth-child(4),
+    .metric-table td:nth-child(4) {
+      width: 18%;
+    }
+
+    .metric-table th:nth-child(5),
+    .metric-table td:nth-child(5) {
+      width: 14%;
+    }
+
+    .metric-table th:nth-child(6),
+    .metric-table td:nth-child(6) {
+      width: 15%;
+    }
+
+    .metric-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      max-width: 100%;
+      font-weight: 680;
+      color: var(--ink);
+    }
+
+    .metric-dot {
+      width: 7px;
+      height: 7px;
+      flex: 0 0 auto;
+      border-radius: 2px;
+      background: var(--dot);
+    }
+
+    .metric-value {
+      color: #332947;
+      font-weight: 680;
+    }
+
+    .variance-cell {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .variance-cell b {
+      color: var(--var-color);
+      font-size: 10.5px;
+      font-weight: 740;
+      white-space: nowrap;
+    }
+
+    .variance-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e1d9ec;
+    }
+
+    .variance-fill {
+      display: block;
+      width: var(--value);
+      height: 100%;
+      border-radius: 999px;
+      background: var(--var-color);
+      opacity: .9;
+    }
+
+    .mini-spark {
+      display: block;
+      width: 40px;
+      height: 18px;
     }
 
     @media (max-width: 900px) {
@@ -775,19 +863,19 @@
     };
 
     const kpiPositions = [
-      { x: 204, y: 49, w: 266, h: 160 },
-      { x: 471, y: 49, w: 300, h: 160 },
-      { x: 738, y: 49, w: 266, h: 160 },
-      { x: 1004, y: 49, w: 271, h: 160 }
+      { x: 204, y: 72, w: 258, h: 146 },
+      { x: 474, y: 72, w: 258, h: 146 },
+      { x: 744, y: 72, w: 258, h: 146 },
+      { x: 1014, y: 72, w: 258, h: 146 }
     ];
 
     const panelPositions = [
-      { x: 206, y: 215, w: 426, h: 210 },
-      { x: 641, y: 217, w: 304, h: 210 },
-      { x: 966, y: 218, w: 293, h: 210 },
-      { x: 204, y: 444, w: 426, h: 248 },
-      { x: 646, y: 444, w: 304, h: 248 },
-      { x: 966, y: 444, w: 294, h: 248 }
+      { x: 206, y: 234, w: 426, h: 194 },
+      { x: 641, y: 234, w: 304, h: 194 },
+      { x: 966, y: 234, w: 293, h: 194 },
+      { x: 204, y: 448, w: 426, h: 244 },
+      { x: 646, y: 448, w: 304, h: 244 },
+      { x: 966, y: 448, w: 294, h: 244 }
     ];
 
     const COLORS = {
@@ -1256,18 +1344,143 @@
       `;
     }
 
-    function tablePanel(panel) {
-      const header = panel.headers.map(head => `<th>${escapeHtml(head)}</th>`).join("");
-      const rows = panel.rows.map((row) => {
-        const cells = row.map((cell, index) => {
-          if (index === row.length - 1) {
-            const kind = cell === "Watch" ? "watch" : cell === "Risk" ? "risk" : "";
-            return `<td><span class="status ${kind}">${escapeHtml(cell)}</span></td>`;
-          }
-          return `<td>${escapeHtml(cell)}</td>`;
-        }).join("");
-        return `<tr>${cells}</tr>`;
+    function parseDisplayValue(value) {
+      const text = String(value || "").trim();
+      const cleaned = text.replace(/[$,%x,]/g, "");
+      let number = Number.parseFloat(cleaned);
+      if (!Number.isFinite(number)) return 0;
+      if (/B/i.test(text)) number *= 1000;
+      return number;
+    }
+
+    function tableColor(status, delta, lowerBetter = false) {
+      if (status === "Risk") return COLORS.red;
+      if (status === "Watch") return COLORS.gold;
+      const favorable = lowerBetter ? delta <= 0 : delta >= 0;
+      return favorable ? COLORS.green : COLORS.red;
+    }
+
+    function tableVariance(metric, actual, plan, status) {
+      const actualValue = parseDisplayValue(actual);
+      const planValue = parseDisplayValue(plan);
+      const delta = actualValue - planValue;
+      const lowerBetter = /funding|burn|risk|leverage/i.test(metric);
+      const color = tableColor(status, delta, lowerBetter);
+      const isPercent = String(actual).includes("%") || String(plan).includes("%");
+      const display = isPercent
+        ? `${delta >= 0 ? "+" : ""}${delta.toFixed(1)}pt`
+        : `${delta >= 0 ? "+" : "-"}${money(Math.abs(delta), Math.abs(delta) >= 10 ? 0 : 1)}`;
+
+      return { delta, color, display };
+    }
+
+    function miniSpark(values, color) {
+      const safeValues = values.length ? values : [0, 0];
+      const min = Math.min(...safeValues);
+      const max = Math.max(...safeValues);
+      const spread = max - min || 1;
+      const coords = safeValues.map((value, index) => {
+        const x = 2 + index * (40 / Math.max(1, safeValues.length - 1));
+        const y = 15 - ((value - min) / spread) * 12;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      return `
+        <svg class="mini-spark" viewBox="0 0 44 18" aria-hidden="true">
+          <line x1="1" y1="14.5" x2="43" y2="14.5" stroke="#ddd4eb" stroke-width="1"/>
+          <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+    }
+
+    function tableSeries(metric) {
+      if (/revenue/i.test(metric)) return seriesValues("revenue");
+      if (/ebitda/i.test(metric)) return seriesValues("ebitda");
+      if (/margin/i.test(metric)) {
+        const revenue = seriesValues("revenue");
+        return seriesValues("grossProfit").map((value, index) => value / Math.max(.01, revenue[index] || 1));
+      }
+      if (/cash/i.test(metric)) return seriesValues("cash");
+      if (/funding/i.test(metric)) return seriesValues("fundingNeed");
+      if (/free|operating|fcf/i.test(metric)) return seriesValues("fcf");
+      if (/cloud|fx|renewal|covenant|risk/i.test(metric)) return seriesValues("riskExposure");
+      return seriesValues("ebitda");
+    }
+
+    function renderMetricTable(panel) {
+      const rowVariance = panel.rows.map((row) => tableVariance(row[0], row[1], row[2], row[3]));
+      const maxDelta = Math.max(...rowVariance.map(item => Math.abs(item.delta)), .01);
+      const rows = panel.rows.map((row, index) => {
+        const [metric, actual, plan, status] = row;
+        const variance = rowVariance[index];
+        const width = Math.max(8, Math.min(100, Math.abs(variance.delta) / maxDelta * 100));
+        const statusClass = status === "Risk" ? "risk" : status === "Watch" ? "watch" : "";
+        const color = variance.color;
+
+        return `
+          <tr>
+            <td><span class="metric-name"><i class="metric-dot" style="--dot:${color}"></i>${escapeHtml(metric)}</span></td>
+            <td><span class="metric-value">${escapeHtml(actual)}</span></td>
+            <td>${escapeHtml(plan)}</td>
+            <td>
+              <span class="variance-cell" style="--var-color:${color}">
+                <b>${escapeHtml(variance.display)}</b>
+                <span class="variance-track"><span class="variance-fill" style="--value:${width.toFixed(0)}%"></span></span>
+              </span>
+            </td>
+            <td>${miniSpark(tableSeries(metric), color)}</td>
+            <td><span class="status ${statusClass}">${escapeHtml(status)}</span></td>
+          </tr>
+        `;
       }).join("");
+
+      return `
+        <table class="metric-table">
+          <thead><tr><th>Metric</th><th>Actual</th><th>Plan</th><th>Variance</th><th>Trend</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function renderRiskTable(panel) {
+      const maxExposure = Math.max(...panel.rows.map(row => parseDisplayValue(row[1])), 1);
+      const rows = panel.rows.map((row, index) => {
+        const [risk, exposure, owner, signal] = row;
+        const exposureValue = parseDisplayValue(exposure);
+        const width = Math.max(8, Math.min(100, exposureValue / maxExposure * 100));
+        const statusClass = signal === "Risk" ? "risk" : signal === "Watch" ? "watch" : "";
+        const color = signal === "Risk" ? COLORS.red : signal === "Watch" ? COLORS.gold : COLORS.green;
+        const series = tableSeries(risk).map(value => value * (1 - index * .08));
+
+        return `
+          <tr>
+            <td><span class="metric-name"><i class="metric-dot" style="--dot:${color}"></i>${escapeHtml(risk)}</span></td>
+            <td>
+              <span class="variance-cell" style="--var-color:${color}">
+                <b>${escapeHtml(exposure)}</b>
+                <span class="variance-track"><span class="variance-fill" style="--value:${width.toFixed(0)}%"></span></span>
+              </span>
+            </td>
+            <td>${escapeHtml(owner)}</td>
+            <td>${miniSpark(series, color)}</td>
+            <td><span class="status ${statusClass}">${escapeHtml(signal)}</span></td>
+          </tr>
+        `;
+      }).join("");
+
+      return `
+        <table class="metric-table">
+          <thead><tr><th>Risk</th><th>Exposure</th><th>Owner</th><th>Signal</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function tablePanel(panel) {
+      if (panel.headers.includes("Plan")) return renderMetricTable(panel);
+      if (panel.headers.includes("Owner")) return renderRiskTable(panel);
+
+      const header = panel.headers.map(head => `<th>${escapeHtml(head)}</th>`).join("");
+      const rows = panel.rows.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
       return `<table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>`;
     }
 
@@ -1784,7 +1997,7 @@
     }
 
     function updateQaState() {
-      const overflowCandidates = document.querySelectorAll(".nav button,.slicer,.chip,.kpi-card,.kpi-value,.kpi-label,.kpi-foot b,.page-title,.panel h2,.panel small,.bar-row span,.bar-row b,th,td,.status");
+      const overflowCandidates = document.querySelectorAll(".nav button,.slicer,.chip,.kpi-card,.kpi-value,.kpi-label,.kpi-foot b,.page-title,.panel h2,.panel small,.bar-row span,.bar-row b,.metric-name,.metric-value,.variance-cell b,th,td,.status");
       const visibleOverflow = Array.from(overflowCandidates).filter((el) => {
         const rect = el.getBoundingClientRect();
         const style = window.getComputedStyle(el);
@@ -1795,6 +2008,30 @@
         className: el.className || el.tagName,
         text: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80)
       }));
+
+      const kpiRects = Array.from(document.querySelectorAll(".kpi-card")).map((card) => card.getBoundingClientRect());
+      const kpiOverlapPx = kpiRects.reduce((maxOverlap, current, index) => {
+        const overlap = kpiRects.slice(index + 1).reduce((pairMax, next) => {
+          const horizontal = Math.max(0, Math.min(current.right, next.right) - Math.max(current.left, next.left));
+          const vertical = Math.max(0, Math.min(current.bottom, next.bottom) - Math.max(current.top, next.top));
+          return Math.max(pairMax, Math.round(horizontal * vertical));
+        }, 0);
+        return Math.max(maxOverlap, overlap);
+      }, 0);
+
+      const chipRow = document.querySelector(".chip-row")?.getBoundingClientRect();
+      const titleRect = document.querySelector(".page-title")?.getBoundingClientRect();
+      const packRect = document.querySelector(".pack-id")?.getBoundingClientRect();
+      const lensKpiOverlapPx = chipRow
+        ? kpiRects.reduce((maxOverlap, rect) => {
+          const horizontal = Math.max(0, Math.min(chipRow.right, rect.right) - Math.max(chipRow.left, rect.left));
+          const vertical = Math.max(0, Math.min(chipRow.bottom, rect.bottom) - Math.max(chipRow.top, rect.top));
+          return Math.max(maxOverlap, Math.round(horizontal * vertical));
+        }, 0)
+        : 0;
+      const headerOverlapPx = chipRow && titleRect && packRect
+        ? Math.max(0, Math.round(titleRect.right - chipRow.left), Math.round(chipRow.right - packRect.left))
+        : 0;
 
       window.__dashboardQa = {
         project: 20,
@@ -1809,6 +2046,9 @@
         svgVisuals: document.querySelectorAll("svg").length,
         dashboardScale: Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dashboard-scale")) || 1,
         visibleOverflow,
+        kpiOverlapPx,
+        lensKpiOverlapPx,
+        headerOverlapPx,
         bodyOverflowPx: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth
       };
     }
