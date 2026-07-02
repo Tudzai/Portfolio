@@ -1,818 +1,949 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Board Investor CFO Pack Interactive Preview</title>
-    <style>
-      :root {
-        --bg: #f6f7f4;
-        --ink: #17201d;
-        --muted: #5f6d68;
-        --line: #d9dfda;
-        --panel: #ffffff;
-        --panel-strong: #eef3ef;
-        --purple: #3f2468;
-        --violet: #7045a6;
-        --teal: #0f8f8a;
-        --amber: #d99a39;
-        --red: #c65555;
-        --green: #4b9a68;
-      }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project 20 - Board Investor CFO Pack</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --canvas: #463793;
+      --sidebar: #250642;
+      --sidebar-line: #8a6df0;
+      --panel: #f0eaf7;
+      --panel-soft: #f7f4fb;
+      --ink: #211a32;
+      --muted: #6e667b;
+      --line: #d5cde6;
+      --blue: #5b83e6;
+      --teal: #569b94;
+      --green: #4d8d4b;
+      --gold: #be7c10;
+      --red: #b73535;
+      --shadow: 0 10px 24px rgba(24, 8, 39, .18);
+      --dashboard-scale: 1;
+    }
 
-      * {
-        box-sizing: border-box;
-      }
+    * {
+      box-sizing: border-box;
+    }
 
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--ink);
-        font-family: Inter, Arial, sans-serif;
-      }
+    html,
+    body {
+      min-height: 100%;
+    }
 
-      button,
-      select {
-        font: inherit;
-      }
+    body {
+      margin: 0;
+      background: #f7f4fb;
+      color: var(--ink);
+      font: 13px/1.35 "Segoe UI", Arial, sans-serif;
+    }
 
-      .dashboard {
-        display: grid;
-        grid-template-columns: 220px minmax(0, 1fr);
-        min-height: 100vh;
-        min-width: 0;
-      }
+    .preview-frame {
+      min-height: 100vh;
+      padding: clamp(10px, 2vw, 22px);
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
-      .sidebar {
-        padding: 22px 18px;
-        background:
-          radial-gradient(circle at 20% 0%, rgba(217, 154, 57, 0.18), transparent 34%),
-          linear-gradient(180deg, #261540 0%, #150d24 100%);
-        color: #fff;
-      }
+    .dashboard-shell {
+      width: calc(1280px * var(--dashboard-scale));
+      height: calc(720px * var(--dashboard-scale));
+      margin: 0 auto;
+    }
 
-      .brand {
-        display: grid;
-        gap: 8px;
-        padding-bottom: 22px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-      }
+    .dashboard {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      min-width: 1280px;
+      overflow: hidden;
+      background: var(--canvas);
+      box-shadow: 0 18px 44px rgba(32, 18, 73, .24);
+      transform: scale(var(--dashboard-scale));
+      transform-origin: top left;
+    }
 
-      .brand span {
-        color: rgba(255, 255, 255, 0.65);
-        font-size: 0.72rem;
-        font-weight: 900;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
+    .sidebar {
+      position: absolute;
+      z-index: 10;
+      left: 14px;
+      top: 8px;
+      width: 176px;
+      height: 700px;
+      padding: 18px 16px 14px;
+      color: #fff;
+      background: var(--sidebar);
+      border: 1px solid rgba(255, 255, 255, .42);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
 
-      .brand strong {
-        max-width: 160px;
-        font-size: 1.35rem;
-        line-height: 1.05;
-      }
+    .signature {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      align-items: center;
+      gap: 10px;
+      height: 84px;
+      margin: 0 0 8px;
+      border-top: 4px solid #f8fbff;
+    }
 
-      .tabs {
-        display: grid;
-        gap: 8px;
-        margin-top: 22px;
-      }
+    .signature svg {
+      width: 56px;
+      height: 56px;
+      display: block;
+      filter: drop-shadow(0 8px 14px rgba(6, 7, 20, .38));
+    }
 
-      .tab {
-        min-height: 42px;
-        padding: 10px 12px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.07);
-        color: rgba(255, 255, 255, 0.78);
-        cursor: pointer;
-        text-align: left;
-        font-weight: 800;
-      }
+    .signature b {
+      color: #f8fbff;
+      font-size: 16px;
+      font-weight: 800;
+    }
 
-      .tab.is-active {
-        border-color: rgba(255, 255, 255, 0.44);
-        background: #fff;
-        color: var(--purple);
-      }
+    .nav {
+      display: grid;
+      gap: 9px;
+      margin: 6px 0 16px;
+    }
 
-      .side-note {
-        margin: 22px 0 0;
-        color: rgba(255, 255, 255, 0.66);
-        font-size: 0.82rem;
-        line-height: 1.55;
-      }
+    .nav button {
+      height: 40px;
+      display: grid;
+      grid-template-columns: 7px 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      color: #cfc3e6;
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid rgba(255, 255, 255, .48);
+      border-radius: 8px;
+      font: 700 14px "Segoe UI", Arial, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
 
-      .main {
-        padding: 22px;
-        min-width: 0;
-      }
+    .nav button::before {
+      content: "";
+      width: 7px;
+      height: 24px;
+      border-radius: 5px;
+      background: rgba(138, 109, 240, .58);
+    }
 
-      .topbar {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 16px;
-        align-items: end;
-        margin-bottom: 16px;
-      }
+    .nav button.active {
+      color: #fff;
+      background: #6b42d8;
+      border-color: rgba(255, 255, 255, .32);
+    }
 
-      .kicker {
-        margin: 0 0 6px;
-        color: var(--amber);
-        font-size: 0.72rem;
-        font-weight: 900;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
+    .nav button.active::before {
+      background: #f8fbff;
+    }
 
-      h1,
-      h2,
-      h3,
-      p {
-        margin: 0;
-      }
+    .rail-line {
+      height: 4px;
+      margin: 0 8px 10px;
+      border-radius: 4px;
+      background: var(--sidebar-line);
+    }
 
-      h1 {
-        font-size: clamp(1.6rem, 4vw, 2.6rem);
-        line-height: 1.04;
-      }
+    .lens-group {
+      padding: 0 4px;
+    }
 
-      .lens {
-        margin-top: 8px;
-        color: var(--muted);
-        line-height: 1.5;
-      }
+    .lens-title {
+      margin: 0 0 4px;
+      color: #cfc3e6;
+      font-size: 12px;
+      font-weight: 700;
+    }
 
-      .filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: flex-end;
-      }
+    .lens-title::after {
+      content: "";
+      display: block;
+      height: 4px;
+      margin: 4px 0 7px;
+      border-radius: 3px;
+      background: var(--sidebar-line);
+    }
 
-      select {
-        min-height: 38px;
-        padding: 8px 10px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        color: var(--ink);
-        font-weight: 750;
-      }
+    .filter-label {
+      display: grid;
+      grid-template-columns: 10px 1fr;
+      align-items: center;
+      gap: 8px;
+      height: 16px;
+      margin: 5px 0 3px;
+      color: #f8fbff;
+      font-size: 11px;
+      font-weight: 800;
+    }
 
-      .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-      }
+    .filter-label::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: #7fa4ff;
+    }
 
-      .kpi,
-      .panel {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        box-shadow: 0 1px 0 rgba(23, 15, 36, 0.04);
-      }
+    .slicer {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      color: #211a32;
+      background: #f7f4fb;
+      border: 1px solid #d5cde6;
+      border-radius: 8px;
+      font-weight: 700;
+    }
 
-      .kpi {
-        min-height: 122px;
-        padding: 16px;
-      }
+    .slicer::after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid #6e667b;
+    }
 
-      .kpi span {
-        color: var(--muted);
-        font-size: 0.78rem;
-        font-weight: 850;
-      }
+    .as-of {
+      position: absolute;
+      left: 36px;
+      bottom: 20px;
+      width: 112px;
+      color: #dcd4f4;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
 
-      .kpi strong {
-        display: block;
-        margin-top: 10px;
-        color: var(--purple);
-        font-size: clamp(1.35rem, 2.6vw, 2rem);
-        line-height: 1;
-      }
+    .page-title {
+      position: absolute;
+      left: 204px;
+      top: 16px;
+      width: 430px;
+      height: 30px;
+      margin: 0;
+      color: #edeaf9;
+      font-size: 23px;
+      line-height: 30px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
 
-      .kpi small {
-        display: block;
-        margin-top: 8px;
-        color: var(--green);
-        font-weight: 850;
-      }
+    .pack-id {
+      position: absolute;
+      right: 14px;
+      top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #edeaf9;
+      font-size: 12px;
+      font-weight: 800;
+    }
 
-      .grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.82fr);
-        gap: 12px;
-        margin-top: 12px;
-      }
+    .pack-id span:first-child {
+      color: #f7f4fb;
+      opacity: .74;
+    }
 
-      .panel {
-        min-height: 280px;
-        padding: 18px;
-        min-width: 0;
-      }
+    .chip-row {
+      position: absolute;
+      left: 620px;
+      top: 6px;
+      width: 446px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      border-top: 3px solid rgba(255, 255, 255, .9);
+    }
 
-      .panel h2 {
-        font-size: 1rem;
-        line-height: 1.2;
-      }
+    .chip {
+      min-width: 116px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 10px;
+      color: var(--ink);
+      background: #f7f4fb;
+      border: 1px solid #d5cde6;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 5px 12px rgba(24, 8, 39, .12);
+    }
 
-      .panel-subtitle {
-        margin-top: 6px;
-        color: var(--muted);
-        font-size: 0.86rem;
-        line-height: 1.5;
-      }
+    .chip i {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      background: currentColor;
+      opacity: .9;
+    }
 
-      .chart {
-        margin-top: 18px;
-        padding: 0 4px;
-      }
+    .content {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
 
-      .chart-svg {
-        display: block;
-        width: 100%;
-        min-height: 210px;
-      }
+    .kpi-card,
+    .panel {
+      position: absolute;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
 
-      .axis {
-        fill: var(--muted);
-        font-size: 12px;
-        font-weight: 750;
-      }
+    .kpi-card {
+      z-index: 2;
+      padding: 9px 14px 8px;
+    }
 
-      .grid-line {
-        stroke: #d7ded9;
-        stroke-width: 1;
-      }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 10px;
+      height: 4px;
+      border-radius: 5px;
+      background: var(--accent);
+    }
 
-      .zero-line {
-        stroke: #b7c1bb;
-        stroke-width: 1.2;
-      }
+    .kpi-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 13px;
+    }
 
-      .line-orange,
-      .line-blue,
-      .line-teal,
-      .line-amber {
-        fill: none;
-        stroke-width: 3.2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
+    .kpi-icon {
+      width: 19px;
+      height: 19px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 900;
+    }
 
-      .line-orange {
-        stroke: #f97316;
-      }
+    .kpi-label {
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 800;
+    }
 
-      .line-blue {
-        stroke: #2563eb;
-      }
+    .kpi-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 116px;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
 
-      .line-teal {
-        stroke: #2a9d8f;
-      }
+    .kpi-value {
+      color: var(--accent);
+      font-size: 30px;
+      line-height: 1.16;
+      font-weight: 800;
+      white-space: nowrap;
+    }
 
-      .line-amber {
-        stroke: #f59e0b;
-      }
+    .spark {
+      width: 116px;
+      height: 50px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
 
-      .dashed {
-        stroke-dasharray: 8 6;
-      }
+    .kpi-foot {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 7px;
+    }
 
-      .bar {
-        position: relative;
-        display: grid;
-        align-items: end;
-        height: 100%;
-      }
+    .kpi-foot div {
+      min-width: 0;
+      padding: 5px 9px;
+      background: rgba(255, 255, 255, .72);
+      border-radius: 8px;
+    }
 
-      .bar i {
-        display: block;
-        border-radius: 6px 6px 0 0;
-        background: linear-gradient(180deg, var(--violet), var(--purple));
-      }
+    .kpi-foot span {
+      display: block;
+      color: #211a32;
+      font-size: 11px;
+      font-weight: 800;
+    }
 
-      .bar span {
-        position: absolute;
-        bottom: -28px;
-        left: 50%;
-        color: var(--muted);
-        font-size: 0.72rem;
-        transform: translateX(-50%);
-      }
+    .kpi-foot b {
+      display: block;
+      color: #6e667b;
+      font-size: 12px;
+      font-weight: 600;
+    }
 
-      .bridge {
-        display: grid;
-        gap: 12px;
-        margin-top: 18px;
-      }
+    .kpi-foot .good b {
+      color: #5b9d5f;
+      font-weight: 800;
+    }
 
-      .bridge-row {
-        display: grid;
-        grid-template-columns: 112px minmax(0, 1fr) 74px;
-        gap: 10px;
-        align-items: center;
-      }
+    .kpi-foot .bad b {
+      color: var(--red);
+      font-weight: 800;
+    }
 
-      .bridge-row span {
-        color: var(--muted);
-        font-size: 0.82rem;
-        font-weight: 750;
-      }
+    .panel {
+      padding: 11px 12px 12px;
+    }
 
-      .track {
-        height: 12px;
-        overflow: hidden;
-        border-radius: 999px;
-        background: var(--panel-strong);
-      }
+    .panel h2 {
+      margin: 0 0 5px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.1;
+      font-weight: 800;
+    }
 
-      .track i {
-        display: block;
-        height: 100%;
-        border-radius: inherit;
-        background: var(--teal);
-      }
+    .panel small {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-      .track.negative i {
-        background: var(--red);
-      }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+    }
 
-      .table-wrap {
-        overflow-x: auto;
-        margin-top: 12px;
-        max-width: 100%;
-        min-width: 0;
-      }
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
 
-      table {
-        width: 100%;
-        min-width: 680px;
-        border-collapse: collapse;
-        font-size: 0.9rem;
-      }
+    .legend i {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--dot);
+    }
 
-      th,
-      td {
-        padding: 11px 10px;
-        border-bottom: 1px solid var(--line);
-        text-align: left;
-        white-space: nowrap;
-      }
+    .chart-svg {
+      display: block;
+      width: 100%;
+      height: 142px;
+      margin-top: 8px;
+    }
 
-      th {
-        color: var(--muted);
-        font-size: 0.76rem;
-        font-weight: 900;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
+    .bar-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
 
-      .num {
-        text-align: right;
-      }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 82px 1fr 46px;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
 
-      .good {
-        color: var(--teal);
-        font-weight: 850;
-      }
+    .bar-track {
+      height: 14px;
+      overflow: hidden;
+      background: #ded6eb;
+      border-radius: 3px;
+    }
 
-      .bad {
-        color: var(--red);
-        font-weight: 850;
-      }
+    .bar-fill {
+      height: 100%;
+      width: var(--value);
+      background: var(--fill);
+      border-radius: 3px;
+    }
 
-      .action-list {
-        display: grid;
-        gap: 10px;
-        margin-top: 16px;
-      }
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 116px 1fr;
+      align-items: center;
+      gap: 14px;
+      height: 145px;
+      margin-top: 8px;
+    }
 
-      .action {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 10px;
+    .donut {
+      position: relative;
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      background: conic-gradient(var(--a) 0 48%, var(--b) 48% 73%, var(--c) 73% 90%, var(--d) 90% 100%);
+    }
+
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 32px;
+      background: var(--panel);
+      border-radius: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    th,
+    td {
+      padding: 7px 8px;
+      border-bottom: 1px solid #e2daef;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--ink);
+      font-weight: 800;
+      background: #f7f4fb;
+    }
+
+    td {
+      color: #4f465f;
+    }
+
+    .status {
+      display: inline-block;
+      min-width: 50px;
+      padding: 2px 7px;
+      color: #14532d;
+      background: #dff6eb;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .status.watch {
+      color: #713f12;
+      background: #fef3c7;
+    }
+
+    .status.risk {
+      color: #7f1d1d;
+      background: #fee2e2;
+    }
+
+    @media (max-width: 900px) {
+      .preview-frame {
         padding: 12px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel-strong);
       }
-
-      .action strong {
-        display: block;
-        font-size: 0.9rem;
-      }
-
-      .action span {
-        color: var(--muted);
-        font-size: 0.78rem;
-      }
-
-      .action em {
-        align-self: start;
-        padding: 5px 8px;
-        border-radius: 999px;
-        background: rgba(217, 154, 57, 0.16);
-        color: #8a5615;
-        font-size: 0.72rem;
-        font-style: normal;
-        font-weight: 900;
-      }
-
-      @media (max-width: 960px) {
-        .dashboard {
-          grid-template-columns: 1fr;
-        }
-
-        .sidebar {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr);
-        }
-
-        .tabs {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .topbar,
-        .grid,
-        .kpi-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .filters {
-          justify-content: stretch;
-        }
-
-        select {
-          flex: 1 1 140px;
-          min-width: 0;
-        }
-      }
-
-      @media (max-width: 560px) {
-        .main,
-        .sidebar {
-          padding: 16px;
-        }
-
-        .tabs {
-          grid-template-columns: 1fr;
-        }
-
-        .bridge-row {
-          grid-template-columns: 88px minmax(0, 1fr);
-        }
-
-        .bridge-row span:last-child {
-          grid-column: 2;
-        }
-      }
-    </style>
-    <script src="../../../analytics.js?v=posthog-session-replay-20260702"></script>
-  </head>
-  <body>
-    <main class="dashboard">
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-frame">
+    <div class="dashboard-shell">
+      <div class="dashboard" role="application" aria-label="Board Investor CFO Pack preview">
       <aside class="sidebar">
-        <div class="brand">
-          <span>Project 20</span>
-          <strong>Board Investor CFO Pack</strong>
+        <div class="signature" aria-label="TDAT signature">
+          <svg viewBox="0 0 64 64" role="img" aria-label="AT modern FP&A monogram">
+            <defs>
+              <linearGradient id="bg" x1="7" y1="58" x2="57" y2="6" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#0a1323"/>
+                <stop offset=".58" stop-color="#101b2d"/>
+                <stop offset="1" stop-color="#14303a"/>
+              </linearGradient>
+              <linearGradient id="accent" x1="12" y1="51" x2="52" y2="44" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#8ab8ff"/>
+                <stop offset="1" stop-color="#8de1d6"/>
+              </linearGradient>
+            </defs>
+            <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+            <rect x="6" y="6" width="52" height="52" rx="11" fill="#f8fbff" fill-opacity=".025"/>
+            <rect x="6.5" y="6.5" width="51" height="51" rx="10.5" fill="none" stroke="#f8fbff" stroke-opacity=".13" stroke-width="1.6"/>
+            <text x="8.5" y="43" fill="#f8fbff" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900">AT</text>
+            <path d="M12 50C22 46.5 35 48 52 42.5" fill="none" stroke="url(#accent)" stroke-width="2.8" stroke-linecap="round" opacity=".88"/>
+            <circle cx="52" cy="42.5" r="2.85" fill="#e9bf72"/>
+          </svg>
+          <b>TDAT</b>
         </div>
-        <div class="tabs" role="group" aria-label="Board pack pages">
-          <button class="tab is-active" type="button" data-view="performance" aria-pressed="true">Performance</button>
-          <button class="tab" type="button" data-view="cash" aria-pressed="false">Cash Plan</button>
-          <button class="tab" type="button" data-view="risk" aria-pressed="false">Risk &amp; Valuation</button>
+
+        <nav class="nav" aria-label="Dashboard pages">
+          <button class="active" type="button" data-page="performance">01 Performance</button>
+          <button type="button" data-page="cash">02 Cash Plan</button>
+          <button type="button" data-page="risk">03 Risk Monitor</button>
+        </nav>
+
+        <div class="rail-line"></div>
+
+        <div class="lens-group">
+          <div class="lens-title">Global Lens</div>
+          <div class="filter-label">Year</div>
+          <div class="slicer">2026</div>
+          <div class="filter-label">Scenario</div>
+          <div class="slicer">Base</div>
         </div>
-        <p class="side-note">
-          Interactive public-safe preview. Numbers are synthetic portfolio values designed to show board reporting logic,
-          not company-confidential data.
-        </p>
+
+        <div class="lens-group" style="margin-top: 14px">
+          <div class="lens-title">P&amp;L Lens</div>
+          <div class="filter-label">Business Unit</div>
+          <div class="slicer">All BU</div>
+          <div class="filter-label">Region</div>
+          <div class="slicer">All Region</div>
+        </div>
+
+        <div class="as-of">Data through<br>May 2026</div>
       </aside>
 
-      <section class="main">
-        <div class="topbar">
-          <div>
-            <p class="kicker">Board-ready finance pack</p>
-            <h1 data-title>Performance</h1>
-            <p class="lens" data-lens>
-              Track revenue, gross margin, EBITDA, and cash health for the latest board cycle.
-            </p>
-          </div>
-          <div class="filters" aria-label="Trend lens controls">
-            <select data-scenario aria-label="Trend scenario lens">
-              <option>Base</option>
-              <option>Upside</option>
-              <option>Downside</option>
-            </select>
-            <select data-period aria-label="Trend period lens">
-              <option>May 2026</option>
-              <option>Q2 2026</option>
-              <option>FY 2026</option>
-            </select>
-            <select data-region aria-label="Trend region lens">
-              <option>Group</option>
-              <option>Vietnam</option>
-              <option>Regional</option>
-            </select>
-          </div>
+      <main class="content" id="content"></main>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pageOrder = ["performance", "cash", "risk"];
+
+    const kpiPositions = [
+      { x: 204, y: 49, w: 266, h: 160 },
+      { x: 471, y: 49, w: 300, h: 160 },
+      { x: 738, y: 49, w: 266, h: 160 },
+      { x: 1004, y: 49, w: 271, h: 160 }
+    ];
+
+    const panelPositions = [
+      { x: 206, y: 215, w: 426, h: 210 },
+      { x: 641, y: 217, w: 304, h: 210 },
+      { x: 966, y: 218, w: 293, h: 210 },
+      { x: 204, y: 444, w: 426, h: 248 },
+      { x: 646, y: 444, w: 304, h: 248 },
+      { x: 966, y: 444, w: 294, h: 248 }
+    ];
+
+    const pages = {
+      performance: {
+        title: "Board Performance Overview",
+        chips: [
+          { label: "Scenario: Base", color: "#4d8d4b" },
+          { label: "GM: +0.8 pts", color: "#569b94" },
+          { label: "Revenue: +3.9%", color: "#4d8d4b" }
+        ],
+        kpis: [
+          { label: "Revenue", value: "$36.7M", py: "$31.4M", yoy: "+16.4%", color: "#5b83e6", spark: [22, 23, 28, 29, 35, 34, 39, 43, 45] },
+          { label: "Margin", value: "77.8%", py: "75.9%", yoy: "+1.9pt", color: "#569b94", spark: [64, 72, 66, 76, 73, 74, 77, 75, 78] },
+          { label: "EBITDA", value: "$14.3M", py: "$12.5M", yoy: "+22.8%", color: "#4d8d4b", spark: [10, 11, 12, 13, 13, 14, 13, 15, 16] },
+          { label: "Cash", value: "$376.7M", py: "$348M", yoy: "+8.1%", color: "#be7c10", spark: [325, 330, 319, 342, 351, 359, 364, 371, 377] }
+        ],
+        panels: [
+          { title: "Revenue vs Plan + EBITDA Trend", subtitle: "Drilldown: Month > KPI", type: "combo", colors: ["#5b83e6", "#29258f", "#d07343", "#7a1b8d"] },
+          { title: "Revenue Mix by Region", subtitle: "Drilldown: Region", type: "donut", labels: ["Americas", "EMEA", "APAC", "LATAM"] },
+          { title: "Revenue by Business Unit", subtitle: "Drilldown: Business Unit", type: "bars", rows: [["Core SaaS", 88, "$18.4M"], ["Data", 72, "$10.2M"], ["Services", 52, "$6.1M"], ["Other", 34, "$2.0M"]] },
+          { title: "Board KPI Details", subtitle: "Actual, variance, status, and trend", type: "table", headers: ["Metric", "Actual", "Plan", "Status"], rows: [["Revenue", "$36.7M", "$35.3M", "Clear"], ["EBITDA", "$14.3M", "$13.1M", "Clear"], ["Margin", "77.8%", "77.0%", "Clear"], ["Cash", "$376.7M", "$365.0M", "Clear"]] },
+          { title: "Revenue vs Plan by BU", subtitle: "Drilldown: BU > Variance", type: "bars", rows: [["Core SaaS", 94, "+$1.0M"], ["Data", 66, "+$0.4M"], ["Services", 45, "-$0.2M"], ["Other", 30, "+$0.1M"]] },
+          { title: "EBITDA by BU", subtitle: "Drilldown: BU > EBITDA", type: "bars", rows: [["Core SaaS", 82, "$8.1M"], ["Data", 64, "$3.7M"], ["Services", 44, "$1.8M"], ["Other", 24, "$0.7M"]] }
+        ]
+      },
+      cash: {
+        title: "Financial Plan & Cash Runway",
+        chips: [
+          { label: "Scenario: Base", color: "#4d8d4b" },
+          { label: "Runway: 99.0x", color: "#5b83e6" },
+          { label: "Funding: $0", color: "#4d8d4b" }
+        ],
+        kpis: [
+          { label: "Cash", value: "$376.7M", py: "$348M", yoy: "+8.1%", color: "#be7c10", spark: [325, 330, 319, 342, 351, 359, 364, 371, 377] },
+          { label: "Runway", value: "99.0x", py: "88.4x", yoy: "+12.0%", color: "#5b83e6", spark: [74, 78, 81, 83, 87, 90, 93, 96, 99] },
+          { label: "FCF", value: "$13.5M", py: "$8.6M", yoy: "+18.3%", color: "#569b94", spark: [7, 8, 9, 10, 9, 11, 12, 12, 14] },
+          { label: "Burn", value: "$0", py: "$0.0M", yoy: "0.0%", color: "#b73535", spark: [2, 2, 1, 0, 0, 0, 0, 0, 0], mood: "bad" }
+        ],
+        panels: [
+          { title: "Cash Balance + Funding Need Trend", subtitle: "Drilldown: Month > Liquidity", type: "combo", colors: ["#5b83e6", "#be7c10", "#569b94", "#7a1b8d"] },
+          { title: "Funding Need by Scenario", subtitle: "Drilldown: Scenario", type: "bars", rows: [["Base", 4, "$0"], ["Upside", 2, "$0"], ["Downside", 18, "$6M"], ["Stress", 40, "$18M"]] },
+          { title: "Runway by Scenario", subtitle: "Drilldown: Scenario", type: "bars", rows: [["Upside", 100, "120x"], ["Base", 82, "99x"], ["Downside", 49, "54x"], ["Stress", 28, "31x"]] },
+          { title: "3-Statement Summary", subtitle: "Actual, plan, variance, and trend", type: "table", headers: ["Metric", "Actual", "Plan", "Status"], rows: [["Revenue", "$36.7M", "$35.3M", "Clear"], ["Operating CF", "$14.8M", "$13.2M", "Clear"], ["Free CF", "$13.5M", "$12.1M", "Clear"], ["Funding Need", "$0", "$0", "Clear"]] },
+          { title: "Opex by Cost Category", subtitle: "Drilldown: Cost Category", type: "bars", rows: [["Sales", 72, "$6.4M"], ["R&D", 64, "$5.9M"], ["G&A", 44, "$3.5M"], ["Ops", 38, "$2.8M"]] },
+          { title: "Free Cash Flow by Scenario", subtitle: "Drilldown: Scenario", type: "bars", rows: [["Upside", 84, "$16.8M"], ["Base", 68, "$13.5M"], ["Downside", 34, "$6.9M"], ["Stress", 12, "$2.4M"]] }
+        ]
+      },
+      risk: {
+        title: "Valuation, Covenants & Risk Monitor",
+        chips: [
+          { label: "Scenario: Base", color: "#4d8d4b" },
+          { label: "Leverage: 0.2x", color: "#be7c10" },
+          { label: "Status: Clear", color: "#4d8d4b" }
+        ],
+        kpis: [
+          { label: "EV", value: "$1.9B", py: "$1.9B", yoy: "+9.5%", color: "#5b83e6", spark: [1.5, 1.6, 1.7, 1.8, 1.7, 1.85, 1.9, 1.92, 1.94] },
+          { label: "Equity", value: "$1.5B", py: "$1.5B", yoy: "+8.8%", color: "#4d8d4b", spark: [1.1, 1.2, 1.25, 1.34, 1.3, 1.38, 1.42, 1.47, 1.5] },
+          { label: "Leverage", value: "0.2x", py: "0.3x", yoy: "-0.1x", color: "#be7c10", spark: [0.7, 0.5, 0.4, 0.35, 0.28, 0.24, 0.22, 0.2, 0.2] },
+          { label: "Risk", value: "$31M", py: "$31M", yoy: "-8.6%", color: "#b73535", spark: [45, 43, 39, 38, 36, 34, 33, 32, 31], mood: "bad" }
+        ],
+        panels: [
+          { title: "Valuation Range by Method", subtitle: "Drilldown: Method > Range", type: "bars", rows: [["DCF", 92, "$1.8B"], ["Comps", 84, "$1.9B"], ["Precedent", 70, "$1.6B"], ["Base", 78, "$1.7B"]] },
+          { title: "Risk Exposure by Severity", subtitle: "Drilldown: Severity", type: "bars", rows: [["Low", 20, "$4M"], ["Medium", 48, "$12M"], ["High", 68, "$31M"], ["Critical", 12, "$3M"]] },
+          { title: "Covenant Headroom Trend", subtitle: "Drilldown: Month > Covenant", type: "combo", colors: ["#5b83e6", "#be7c10", "#569b94", "#7a1b8d"] },
+          { title: "Risk Register", subtitle: "Risk, severity, exposure, board ask, and signal", type: "table", headers: ["Risk", "Exposure", "Owner", "Signal"], rows: [["FX / rates", "$12M", "CFO", "Watch"], ["Renewals", "$8M", "Sales", "Clear"], ["Cloud cost", "$6M", "Ops", "Watch"], ["Covenant", "$5M", "Finance", "Clear"]] },
+          { title: "Sensitivity Impact", subtitle: "Drilldown: Driver Case", type: "bars", rows: [["GM -1 pt", 76, "-$8M"], ["Revenue -3%", 58, "-$6M"], ["Opex +5%", 44, "-$4M"], ["WACC +1%", 34, "-$3M"]] },
+          { title: "Risk Exposure by Owner", subtitle: "Drilldown: Owner", type: "bars", rows: [["CFO", 82, "$13M"], ["Sales", 56, "$8M"], ["Ops", 42, "$6M"], ["Legal", 28, "$4M"]] }
+        ]
+      }
+    };
+
+    const content = document.getElementById("content");
+    const frame = document.querySelector(".preview-frame");
+    const shell = document.querySelector(".dashboard-shell");
+    const dashboard = document.querySelector(".dashboard");
+
+    function fitDashboard() {
+      const style = window.getComputedStyle(frame);
+      const horizontalPadding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const availableWidth = Math.max(320, frame.clientWidth - horizontalPadding);
+      const naturalScale = availableWidth / 1280;
+      const mobileReadableFloor = availableWidth < 720 ? 0.58 : 0;
+      const scale = Math.min(1, Math.max(naturalScale, mobileReadableFloor));
+      document.documentElement.style.setProperty("--dashboard-scale", scale.toFixed(4));
+      shell.style.width = `${Math.round(1280 * scale)}px`;
+      shell.style.height = `${Math.round(720 * scale)}px`;
+      updateQaState();
+    }
+
+    function styleBox(el, box) {
+      el.style.left = `${box.x}px`;
+      el.style.top = `${box.y}px`;
+      el.style.width = `${box.w}px`;
+      el.style.height = `${box.h}px`;
+    }
+
+    function sparkline(values, color, mood = "good") {
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const spread = max - min || 1;
+      const coords = values.map((value, index) => {
+        const x = 8 + index * (126 / (values.length - 1));
+        const y = 46 - ((value - min) / spread) * 34;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const start = coords.split(" ")[0].split(",");
+      const end = coords.split(" ").at(-1).split(",");
+      const band = mood === "bad" ? "#f3d7d7" : "#ddeedc";
+
+      return `
+        <svg class="spark" viewBox="0 0 142 56" aria-hidden="true">
+          <rect x="0" y="0" width="142" height="56" rx="8" fill="#f3effa"/>
+          <rect x="5" y="22" width="132" height="14" rx="7" fill="${band}"/>
+          <line x1="5" y1="29" x2="137" y2="29" stroke="#b8aecf" stroke-width="1" stroke-dasharray="4 5"/>
+          <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="${start[0]}" cy="${start[1]}" r="4" fill="#fff" stroke="#8f7bae" stroke-width="1.5"/>
+          <circle cx="${end[0]}" cy="${end[1]}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/>
+        </svg>
+      `;
+    }
+
+    function renderKpi(kpi, index) {
+      const el = document.createElement("article");
+      el.className = "kpi-card";
+      el.style.setProperty("--accent", kpi.color);
+      styleBox(el, kpiPositions[index]);
+      const icon = kpi.label.replace(/[^A-Za-z]/g, "").slice(0, 2);
+      const moodClass = kpi.mood === "bad" ? "bad" : "good";
+
+      el.innerHTML = `
+        <div class="kpi-head">
+          <span class="kpi-icon">${icon}</span>
+          <span class="kpi-label">${kpi.label}</span>
         </div>
-
-        <div class="kpi-grid" aria-label="Key metrics" data-kpis></div>
-
-        <div class="grid">
-          <article class="panel">
-            <h2 data-chart-title>Revenue and EBITDA trajectory</h2>
-            <p class="panel-subtitle" data-chart-copy>
-              The board view keeps the main performance trend visible before drilling into cash or valuation risk.
-            </p>
-            <div class="chart" aria-label="Synthetic trend chart" data-chart></div>
-          </article>
-
-          <article class="panel">
-            <h2 data-bridge-title>Decision bridge</h2>
-            <p class="panel-subtitle" data-bridge-copy>
-              Each page translates metric movement into the levers leadership can act on.
-            </p>
-            <div class="bridge" data-bridge></div>
-          </article>
+        <div class="kpi-body">
+          <div class="kpi-value">${kpi.value}</div>
+          ${sparkline(kpi.spark, kpi.color, kpi.mood)}
         </div>
+        <div class="kpi-foot">
+          <div><span>PY</span><b>${kpi.py}</b></div>
+          <div class="${moodClass}"><span>YoY</span><b>${kpi.yoy}</b></div>
+        </div>
+      `;
+      return el;
+    }
 
-        <article class="panel" style="margin-top: 12px; min-height: 0;">
-          <h2>Actual vs Plan vs Forecast</h2>
-          <p class="panel-subtitle">Board KPI table keeps the units visible beside the trend and bridge view.</p>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th class="num">Actual</th>
-                  <th class="num">Plan</th>
-                  <th class="num">Forecast</th>
-                  <th class="num">Var to Plan</th>
-                  <th class="num">Var to Forecast</th>
-                </tr>
-              </thead>
-              <tbody data-table></tbody>
-            </table>
-          </div>
-        </article>
+    function comboChart(panel) {
+      const colors = panel.colors;
+      return `
+        <div class="legend">
+          <span style="--dot:${colors[0]}"><i></i>Actual</span>
+          <span style="--dot:${colors[1]}"><i></i>Plan</span>
+          <span style="--dot:${colors[2]}"><i></i>Forecast</span>
+          <span style="--dot:${colors[3]}"><i></i>EBITDA</span>
+        </div>
+        <svg class="chart-svg" viewBox="0 0 400 142" aria-hidden="true">
+          <g stroke="#ded6eb" stroke-width="1">
+            <line x1="0" y1="30" x2="400" y2="30"/>
+            <line x1="0" y1="70" x2="400" y2="70"/>
+            <line x1="0" y1="110" x2="400" y2="110"/>
+          </g>
+          <polyline points="8,108 48,98 88,82 128,86 168,70 208,64 248,76 288,58 328,42 390,24" fill="none" stroke="${colors[0]}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="8,112 48,102 88,92 128,82 168,72 208,62 248,52 288,42 328,32 390,18" fill="none" stroke="${colors[1]}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="8,118 48,104 88,96 128,91 168,84 208,76 248,70 288,61 328,55 390,48" fill="none" stroke="${colors[2]}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
+          <polyline points="8,120 48,116 88,108 128,101 168,96 208,89 248,82 288,74 328,67 390,60" fill="none" stroke="${colors[3]}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+    }
 
-        <article class="panel" style="margin-top: 12px; min-height: 0;">
-          <h2>Board action queue</h2>
-          <p class="panel-subtitle">Owner-ready actions are shown beside the dashboard so the pack leads to a decision.</p>
-          <div class="action-list" data-actions></div>
-        </article>
-      </section>
-    </main>
+    function barChart(panel) {
+      const fills = ["#6b42d8", "#5b83e6", "#569b94", "#be7c10"];
+      const rows = panel.rows.map((row, index) => `
+        <div class="bar-row">
+          <span>${row[0]}</span>
+          <div class="bar-track"><div class="bar-fill" style="--value:${row[1]}%;--fill:${fills[index % fills.length]}"></div></div>
+          <b>${row[2]}</b>
+        </div>
+      `).join("");
+      return `<div class="bar-list">${rows}</div>`;
+    }
 
-    <script>
-      const views = {
-        performance: {
-          title: "Performance",
-          lens: "Track revenue, gross margin, EBITDA, and cash health for the latest board cycle.",
-          chartTitle: "Revenue and EBITDA trajectory",
-          chartCopy: "Synthetic monthly trend across revenue and EBITDA, with the current board cycle highlighted.",
-          kpis: [
-            ["Revenue", "$36.7M", "+8.2% YoY"],
-            ["Gross margin", "28.9%", "+1.6 pts"],
-            ["EBITDA", "$4.3M", "+5.4% YoY"],
-            ["Cash balance", "$37.6M", "+$1.8M"]
-          ],
-          chart: [62, 68, 71, 78, 82, 88],
-          bridge: [
-            ["Volume", 78, "+$0.7M"],
-            ["Price / mix", 54, "+$0.5M"],
-            ["Cost discipline", 42, "+$0.3M"],
-            ["One-off drag", 28, "-$0.4M", true]
-          ],
-          table: [
-            ["Revenue", "$36.7M", "$34.8M", "$35.6M", "+$1.9M", "+$1.1M"],
-            ["Gross margin", "28.9%", "28.1%", "28.5%", "+0.8 pts", "+0.4 pts"],
-            ["EBITDA", "$4.3M", "$3.2M", "$3.8M", "+$1.1M", "+$0.5M"],
-            ["Cash balance", "$37.6M", "$35.8M", "$36.9M", "+$1.8M", "+$0.7M"]
-          ],
-          actions: [
-            ["Lock May board narrative", "CFO office", "Now"],
-            ["Confirm pricing assumptions", "Commercial", "This week"],
-            ["Review margin protection list", "FP&A", "Next close"]
-          ]
-        },
-        cash: {
-          title: "Cash Plan",
-          lens: "Pressure-test cash balance, runway, burn sensitivity, and collection timing.",
-          chartTitle: "Cash balance and runway guardrail",
-          chartCopy: "The cash page keeps liquidity, AR timing, and funding runway in the same management view.",
-          kpis: [
-            ["Cash balance", "$37.6M", "+$1.8M"],
-            ["Runway", "9.9 months", "cash / net burn"],
-            ["Net burn", "$3.8M", "-6.1% vs plan"],
-            ["DSO", "37 days", "-4 days"]
-          ],
-          chart: [72, 76, 74, 81, 87, 93],
-          bridge: [
-            ["Collections", 82, "+$5.4M"],
-            ["Supplier timing", 47, "-$1.2M", true],
-            ["Capex hold", 32, "+$0.8M"],
-            ["FX movement", 24, "-$1.8M", true]
-          ],
-          table: [
-            ["Cash balance", "$37.6M", "$35.8M", "$36.9M", "+$1.8M", "+$0.7M"],
-            ["Runway", "9.9 months", "8.4 months", "9.2 months", "+1.5 months", "+0.7 months"],
-            ["Net burn", "$3.8M", "$4.2M", "$4.0M", "-$0.4M", "-$0.2M"],
-            ["DSO", "37 days", "41 days", "39 days", "-4 days", "-2 days"]
-          ],
-          actions: [
-            ["Pull top AR aging list", "Treasury", "Today"],
-            ["Hold non-critical capex", "Operations", "This month"],
-            ["Refresh downside cash case", "FP&A", "Board pack"]
-          ]
-        },
-        risk: {
-          title: "Risk & Valuation",
-          lens: "Connect leverage, valuation sensitivity, covenant space, and investor-facing risk narrative.",
-          chartTitle: "Valuation sensitivity by scenario",
-          chartCopy: "The risk page frames valuation range, leverage, and covenant room for board discussion.",
-          kpis: [
-            ["Enterprise value", "$462M", "+$31M vs base"],
-            ["Leverage", "0.2x", "low risk"],
-            ["Covenant room", "84%", "healthy"],
-            ["Risk score", "Low", "watch FX"]
-          ],
-          chart: [54, 61, 74, 83, 69, 92],
-          bridge: [
-            ["EBITDA quality", 74, "+0.6x"],
-            ["Revenue growth", 59, "+0.4x"],
-            ["Cash surplus", 51, "+0.3x"],
-            ["FX risk", 30, "-0.2x", true]
-          ],
-          table: [
-            ["Enterprise value", "$462M", "$431M", "$448M", "+$31M", "+$14M"],
-            ["Leverage", "0.2x", "0.4x", "0.3x", "-0.2x", "-0.1x"],
-            ["Covenant room", "84%", "78%", "81%", "+6 pts", "+3 pts"],
-            ["Risk score", "Low", "Medium", "Low", "Improved", "Stable"]
-          ],
-          actions: [
-            ["Update valuation sensitivity", "CFO office", "Board pack"],
-            ["Document covenant headroom", "Treasury", "This week"],
-            ["Prepare investor Q&A", "Strategy", "Before review"]
-          ]
-        }
-      };
+    function donutChart(panel) {
+      const colors = ["#5890f5", "#2e2c9a", "#d07343", "#7a1b8d"];
+      const legend = panel.labels.map((label, index) => `<span style="--dot:${colors[index]}"><i></i>${label}</span>`).join("");
+      return `
+        <div class="donut-wrap">
+          <div class="donut" style="--a:${colors[0]};--b:${colors[1]};--c:${colors[2]};--d:${colors[3]}"></div>
+          <div class="legend">${legend}</div>
+        </div>
+      `;
+    }
 
-      const scenarioSelect = document.querySelector("[data-scenario]");
-      const periodSelect = document.querySelector("[data-period]");
-      const regionSelect = document.querySelector("[data-region]");
-      const title = document.querySelector("[data-title]");
-      const lens = document.querySelector("[data-lens]");
-      const chartTitle = document.querySelector("[data-chart-title]");
-      const chartCopy = document.querySelector("[data-chart-copy]");
-      const kpis = document.querySelector("[data-kpis]");
-      const chart = document.querySelector("[data-chart]");
-      const bridge = document.querySelector("[data-bridge]");
-      const actions = document.querySelector("[data-actions]");
-      const table = document.querySelector("[data-table]");
-      const tabs = document.querySelectorAll("[data-view]");
-      let activeView = "performance";
+    function tablePanel(panel) {
+      const header = panel.headers.map((head) => `<th>${head}</th>`).join("");
+      const rows = panel.rows.map((row) => {
+        const cells = row.map((cell, index) => {
+          if (index === row.length - 1) {
+            const kind = cell === "Watch" ? "watch" : cell === "Risk" ? "risk" : "";
+            return `<td><span class="status ${kind}">${cell}</span></td>`;
+          }
+          return `<td>${cell}</td>`;
+        }).join("");
+        return `<tr>${cells}</tr>`;
+      }).join("");
+      return `<table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>`;
+    }
 
-      function scenarioFactor() {
-        if (scenarioSelect.value === "Upside") return 1.08;
-        if (scenarioSelect.value === "Downside") return 0.92;
-        return 1;
-      }
+    function renderPanel(panel, index) {
+      const el = document.createElement("section");
+      el.className = "panel";
+      styleBox(el, panelPositions[index]);
 
-      function periodFactor() {
-        if (periodSelect.value === "Q2 2026") return 1.02;
-        if (periodSelect.value === "FY 2026") return 1.06;
-        return 1;
-      }
+      const body = panel.type === "combo"
+        ? comboChart(panel)
+        : panel.type === "donut"
+          ? donutChart(panel)
+          : panel.type === "table"
+            ? tablePanel(panel)
+            : barChart(panel);
 
-      function regionFactor() {
-        if (regionSelect.value === "Vietnam") return 0.74;
-        if (regionSelect.value === "Regional") return 1.18;
-        return 1;
-      }
+      el.innerHTML = `
+        <h2>${panel.title}</h2>
+        <small>${panel.subtitle}</small>
+        ${body}
+      `;
+      return el;
+    }
 
-      function dashboardFactor() {
-        return scenarioFactor() * periodFactor() * regionFactor();
-      }
+    function renderPage(pageId) {
+      const page = pages[pageId];
+      content.innerHTML = "";
 
-      function pathFor(values) {
-        const width = 820;
-        const left = 56;
-        const right = 28;
-        const top = 34;
-        const bottom = 46;
-        const plotWidth = width - left - right;
-        const plotHeight = 280 - top - bottom;
-        return values
-          .map((value, index) => {
-            const x = left + (plotWidth / (values.length - 1)) * index;
-            const y = top + plotHeight - (Math.max(12, Math.min(96, value)) / 100) * plotHeight;
-            return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
-          })
-          .join(" ");
-      }
+      const title = document.createElement("h1");
+      title.className = "page-title";
+      title.textContent = page.title;
+      content.appendChild(title);
 
-      function renderBoardTrend(data) {
-        const base = data.chart;
-        const factor = scenarioFactor() * periodFactor();
-        const actual = base.map((value, index) => Math.max(12, Math.min(96, value * factor + Math.sin(index + 1) * 4)));
-        const plan = base.map((value, index) => Math.max(12, Math.min(96, value + 5 - index * 0.7)));
-        const forecast = base.map((value, index) => Math.max(12, Math.min(96, value * 0.96 + 4 + Math.cos(index) * 3)));
-        const quality = base.map((value, index) => Math.max(12, Math.min(88, value * 0.36 + 18 + index * 0.8)));
-        const labels = ["M1", "M2", "M3", "M4", "M5", "M6"];
-        const xFor = (index) => 56 + ((820 - 56 - 28) / 5) * index;
-        chart.innerHTML = `
-          <svg viewBox="0 0 820 280" class="chart-svg" role="img" aria-label="${data.title} Actual Plan Forecast trend">
-            <circle cx="56" cy="16" r="4" fill="#f97316"/><text x="65" y="20" class="axis">Actual</text>
-            <circle cx="148" cy="16" r="4" fill="#2563eb"/><text x="157" y="20" class="axis">Plan</text>
-            <circle cx="226" cy="16" r="4" fill="#2a9d8f"/><text x="235" y="20" class="axis">Forecast</text>
-            <circle cx="330" cy="16" r="4" fill="#f59e0b"/><text x="339" y="20" class="axis">Board decision index</text>
-            <line x1="56" y1="234" x2="792" y2="234" class="grid-line"/><text x="46" y="238" text-anchor="end" class="axis">0</text>
-            <line x1="56" y1="134" x2="792" y2="134" class="grid-line"/><text x="46" y="138" text-anchor="end" class="axis">50</text>
-            <line x1="56" y1="34" x2="792" y2="34" class="grid-line"/><text x="46" y="38" text-anchor="end" class="axis">100</text>
-            <line x1="56" y1="234" x2="792" y2="234" class="zero-line"/>
-            <path d="${pathFor(actual)}" class="line-orange"/>
-            <path d="${pathFor(plan)}" class="line-blue dashed"/>
-            <path d="${pathFor(forecast)}" class="line-teal dashed"/>
-            <path d="${pathFor(quality)}" class="line-amber"/>
-            ${labels.map((label, index) => `<text x="${xFor(index).toFixed(1)}" y="264" text-anchor="middle" class="axis">${label}</text>`).join("")}
-          </svg>
-        `;
-      }
+      const packId = document.createElement("div");
+      packId.className = "pack-id";
+      packId.innerHTML = "<span>FP20</span><strong>Board CFO Pack</strong>";
+      content.appendChild(packId);
 
-      function formatAdjusted(value) {
-        return value;
-      }
+      const chipRow = document.createElement("div");
+      chipRow.className = "chip-row";
+      chipRow.innerHTML = page.chips.map((chip) => `<span class="chip" style="color:${chip.color}"><i></i>${chip.label}</span>`).join("");
+      content.appendChild(chipRow);
 
-      function boardVarianceClass(metric, value) {
-        const text = String(value).toLowerCase();
-        if (text.includes("improved") || text.includes("stable")) return "good";
-        const riskMetric = /burn|dso|leverage|risk/i.test(metric);
-        const isNegative = String(value).trim().startsWith("-");
-        const isPositive = String(value).trim().startsWith("+");
-        if (riskMetric) return isPositive ? "bad" : "good";
-        return isNegative ? "bad" : "good";
-      }
+      page.kpis.forEach((kpi, index) => content.appendChild(renderKpi(kpi, index)));
+      page.panels.forEach((panel, index) => content.appendChild(renderPanel(panel, index)));
+    }
 
-      function render() {
-        const data = views[activeView];
-        title.textContent = data.title;
-        lens.textContent = `${data.lens} Trend lens: ${scenarioSelect.value} / ${periodSelect.value} / ${regionSelect.value}. KPI table remains the base board case.`;
-        chartTitle.textContent = data.chartTitle;
-        chartCopy.textContent = data.chartCopy;
-
-        kpis.innerHTML = data.kpis
-          .map(([label, value, delta]) => `<div class="kpi"><span>${label}</span><strong>${formatAdjusted(value)}</strong><small>${delta}</small></div>`)
-          .join("");
-
-        renderBoardTrend(data);
-
-        bridge.innerHTML = data.bridge
-          .map(([label, width, value, negative]) => `
-            <div class="bridge-row">
-              <span>${label}</span>
-              <div class="track ${negative ? "negative" : ""}"><i style="width:${Math.min(96, Math.max(8, width))}%"></i></div>
-              <span>${value}</span>
-            </div>
-          `)
-          .join("");
-
-        table.innerHTML = data.table
-          .map(([metric, actual, plan, forecast, varPlan, varForecast]) => `
-            <tr>
-              <td>${metric}</td>
-              <td class="num">${actual}</td>
-              <td class="num">${plan}</td>
-              <td class="num">${forecast}</td>
-              <td class="num ${boardVarianceClass(metric, varPlan)}">${varPlan}</td>
-              <td class="num ${boardVarianceClass(metric, varForecast)}">${varForecast}</td>
-            </tr>
-          `)
-          .join("");
-
-        actions.innerHTML = data.actions
-          .map(([name, owner, timing]) => `<div class="action"><div><strong>${name}</strong><span>${owner}</span></div><em>${timing}</em></div>`)
-          .join("");
-
-        tabs.forEach((tab) => {
-          const isActive = tab.dataset.view === activeView;
-          tab.classList.toggle("is-active", isActive);
-          tab.setAttribute("aria-pressed", String(isActive));
-        });
-      }
-
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-          activeView = tab.dataset.view;
-          render();
-        });
+    function setActive(pageId) {
+      document.querySelectorAll(".nav button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.page === pageId);
       });
+      renderPage(pageId);
+      updateQaState();
+    }
 
-      [scenarioSelect, periodSelect, regionSelect].forEach((control) => control.addEventListener("change", render));
-      render();
-    </script>
-  </body>
+    function updateQaState() {
+      const overflowCandidates = document.querySelectorAll(".nav button,.slicer,.chip,.kpi-card,.kpi-value,.kpi-label,.kpi-foot b,.page-title,.panel h2,.panel small,.bar-row span,.bar-row b,th,td,.status");
+      const visibleOverflow = Array.from(overflowCandidates).filter((el) => {
+        const rect = el.getBoundingClientRect();
+        const style = window.getComputedStyle(el);
+        if (rect.width < 1 || rect.height < 1 || style.display === "none" || style.visibility === "hidden") return false;
+        const clips = /(hidden|clip)/.test(style.overflow + style.overflowX + style.overflowY);
+        return clips && (el.scrollWidth > el.clientWidth + 2 || el.scrollHeight > el.clientHeight + 2);
+      }).map((el) => ({
+        className: el.className || el.tagName,
+        text: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80)
+      }));
+
+      const activePage = document.querySelector(".nav button.active")?.dataset.page || pageOrder[0];
+      window.__dashboardQa = {
+        project: 20,
+        activePage,
+        pages: pageOrder.length,
+        navigationButtons: document.querySelectorAll(".nav button").length,
+        kpiCards: document.querySelectorAll(".kpi-card").length,
+        panels: document.querySelectorAll(".panel").length,
+        tables: document.querySelectorAll("table").length,
+        svgVisuals: document.querySelectorAll("svg").length,
+        dashboardScale: Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dashboard-scale")) || 1,
+        visibleOverflow,
+        bodyOverflowPx: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth
+      };
+    }
+
+    document.querySelectorAll(".nav button").forEach((button) => {
+      button.addEventListener("click", () => setActive(button.dataset.page));
+    });
+
+    window.addEventListener("resize", fitDashboard);
+    setActive(pageOrder[0]);
+    fitDashboard();
+  </script>
+</body>
 </html>
