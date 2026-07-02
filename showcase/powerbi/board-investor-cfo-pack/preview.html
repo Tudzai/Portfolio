@@ -40,6 +40,17 @@
       font: 13px/1.35 "Segoe UI", Arial, sans-serif;
     }
 
+    button,
+    select {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    select:focus-visible {
+      outline: 3px solid #8ab8ff;
+      outline-offset: 2px;
+    }
+
     .preview-frame {
       min-height: 100vh;
       padding: clamp(10px, 2vw, 22px);
@@ -120,7 +131,7 @@
       background: rgba(255, 255, 255, .02);
       border: 1px solid rgba(255, 255, 255, .48);
       border-radius: 8px;
-      font: 700 14px "Segoe UI", Arial, sans-serif;
+      font-weight: 700;
       text-align: left;
       cursor: pointer;
     }
@@ -131,6 +142,11 @@
       height: 24px;
       border-radius: 5px;
       background: rgba(138, 109, 240, .58);
+    }
+
+    .nav button:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, .72);
     }
 
     .nav button.active {
@@ -170,13 +186,18 @@
       background: var(--sidebar-line);
     }
 
+    .filter-control {
+      display: block;
+      margin: 5px 0 8px;
+    }
+
     .filter-label {
       display: grid;
       grid-template-columns: 10px 1fr;
       align-items: center;
       gap: 8px;
       height: 16px;
-      margin: 5px 0 3px;
+      margin: 0 0 3px;
       color: #f8fbff;
       font-size: 11px;
       font-weight: 800;
@@ -190,26 +211,54 @@
       background: #7fa4ff;
     }
 
+    .select-wrap {
+      position: relative;
+      display: block;
+    }
+
+    .select-wrap::after {
+      content: "";
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      width: 0;
+      height: 0;
+      margin-top: -2px;
+      pointer-events: none;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid #6e667b;
+    }
+
     .slicer {
+      width: 100%;
       height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 12px;
+      display: block;
+      padding: 0 28px 0 12px;
       color: #211a32;
       background: #f7f4fb;
       border: 1px solid #d5cde6;
       border-radius: 8px;
       font-weight: 700;
+      cursor: pointer;
+      appearance: none;
     }
 
-    .slicer::after {
-      content: "";
-      width: 0;
-      height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 6px solid #6e667b;
+    .reset-btn {
+      width: 100%;
+      height: 32px;
+      margin-top: 11px;
+      color: #fff;
+      background: rgba(255, 255, 255, .10);
+      border: 1px solid rgba(255, 255, 255, .44);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .reset-btn:hover {
+      background: rgba(255, 255, 255, .18);
     }
 
     .as-of {
@@ -227,7 +276,7 @@
       position: absolute;
       left: 204px;
       top: 16px;
-      width: 430px;
+      width: 438px;
       height: 30px;
       margin: 0;
       color: #edeaf9;
@@ -235,6 +284,8 @@
       line-height: 30px;
       font-weight: 800;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .pack-id {
@@ -256,9 +307,9 @@
 
     .chip-row {
       position: absolute;
-      left: 620px;
+      left: 650px;
       top: 6px;
-      width: 446px;
+      width: 420px;
       height: 60px;
       display: flex;
       align-items: center;
@@ -269,23 +320,27 @@
 
     .chip {
       min-width: 116px;
-      height: 45px;
+      max-width: 154px;
+      height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
+      gap: 8px;
       padding: 0 10px;
       color: var(--ink);
       background: #f7f4fb;
       border: 1px solid #d5cde6;
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       box-shadow: 0 5px 12px rgba(24, 8, 39, .12);
     }
 
     .chip i {
+      flex: 0 0 auto;
       width: 14px;
       height: 14px;
       border-radius: 4px;
@@ -293,11 +348,16 @@
       opacity: .9;
     }
 
+    .chip span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .content {
       position: absolute;
       inset: 0;
       z-index: 1;
-      pointer-events: none;
     }
 
     .kpi-card,
@@ -312,7 +372,7 @@
 
     .kpi-card {
       z-index: 2;
-      padding: 9px 14px 8px;
+      padding: 8px 14px 7px;
     }
 
     .kpi-card::before {
@@ -320,7 +380,7 @@
       position: absolute;
       left: 16px;
       right: 16px;
-      top: 10px;
+      top: 9px;
       height: 4px;
       border-radius: 5px;
       background: var(--accent);
@@ -329,13 +389,15 @@
     .kpi-head {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 13px;
+      gap: 9px;
+      margin-top: 12px;
+      min-width: 0;
     }
 
     .kpi-icon {
       width: 19px;
       height: 19px;
+      flex: 0 0 19px;
       display: grid;
       place-items: center;
       color: #fff;
@@ -346,30 +408,36 @@
     }
 
     .kpi-label {
+      min-width: 0;
       color: var(--ink);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .kpi-body {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 116px;
-      align-items: center;
-      gap: 10px;
-      margin-top: 6px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2px;
+      margin-top: 3px;
     }
 
     .kpi-value {
       color: var(--accent);
-      font-size: 30px;
-      line-height: 1.16;
+      font-size: 27px;
+      line-height: 1.2;
       font-weight: 800;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .spark {
-      width: 116px;
-      height: 50px;
+      display: block;
+      width: 100%;
+      height: 36px;
       border-radius: 8px;
       overflow: hidden;
     }
@@ -377,13 +445,13 @@
     .kpi-foot {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 7px;
+      gap: 8px;
+      margin-top: 3px;
     }
 
     .kpi-foot div {
       min-width: 0;
-      padding: 5px 9px;
+      padding: 3px 8px;
       background: rgba(255, 255, 255, .72);
       border-radius: 8px;
     }
@@ -391,7 +459,8 @@
     .kpi-foot span {
       display: block;
       color: #211a32;
-      font-size: 11px;
+      font-size: 10px;
+      line-height: 1.1;
       font-weight: 800;
     }
 
@@ -399,7 +468,11 @@
       display: block;
       color: #6e667b;
       font-size: 12px;
+      line-height: 1.12;
       font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .kpi-foot .good b {
@@ -420,8 +493,11 @@
       margin: 0 0 5px;
       color: var(--ink);
       font-size: 15px;
-      line-height: 1.1;
+      line-height: 1.12;
       font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .panel small {
@@ -429,6 +505,10 @@
       margin-bottom: 8px;
       color: var(--muted);
       font-size: 12px;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .legend {
@@ -468,12 +548,41 @@
     }
 
     .bar-row {
+      width: 100%;
       display: grid;
-      grid-template-columns: 82px 1fr 46px;
+      grid-template-columns: 86px 1fr 54px;
       align-items: center;
       gap: 8px;
+      margin: 0;
+      padding: 0;
       color: var(--muted);
+      background: transparent;
+      border: 0;
       font-size: 11px;
+      text-align: left;
+    }
+
+    button.bar-row {
+      cursor: pointer;
+    }
+
+    button.bar-row:hover span:first-child,
+    button.bar-row.active span:first-child {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    button.bar-row.active .bar-track {
+      outline: 2px solid rgba(107, 66, 216, .35);
+      outline-offset: 2px;
+    }
+
+    .bar-row span,
+    .bar-row b {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .bar-track {
@@ -488,6 +597,7 @@
       width: var(--value);
       background: var(--fill);
       border-radius: 3px;
+      transition: width .22s ease;
     }
 
     .donut-wrap {
@@ -504,7 +614,7 @@
       width: 116px;
       height: 116px;
       border-radius: 50%;
-      background: conic-gradient(var(--a) 0 48%, var(--b) 48% 73%, var(--c) 73% 90%, var(--d) 90% 100%);
+      background: var(--donut);
     }
 
     .donut::after {
@@ -513,6 +623,18 @@
       inset: 32px;
       background: var(--panel);
       border-radius: 50%;
+    }
+
+    .donut-total {
+      position: absolute;
+      inset: 38px;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
     }
 
     table {
@@ -531,6 +653,8 @@
       border-bottom: 1px solid #e2daef;
       text-align: left;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     th {
@@ -576,64 +700,79 @@
   <div class="preview-frame">
     <div class="dashboard-shell">
       <div class="dashboard" role="application" aria-label="Board Investor CFO Pack preview">
-      <aside class="sidebar">
-        <div class="signature" aria-label="TDAT signature">
-          <svg viewBox="0 0 64 64" role="img" aria-label="AT modern FP&A monogram">
-            <defs>
-              <linearGradient id="bg" x1="7" y1="58" x2="57" y2="6" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#0a1323"/>
-                <stop offset=".58" stop-color="#101b2d"/>
-                <stop offset="1" stop-color="#14303a"/>
-              </linearGradient>
-              <linearGradient id="accent" x1="12" y1="51" x2="52" y2="44" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#8ab8ff"/>
-                <stop offset="1" stop-color="#8de1d6"/>
-              </linearGradient>
-            </defs>
-            <rect width="64" height="64" rx="14" fill="url(#bg)"/>
-            <rect x="6" y="6" width="52" height="52" rx="11" fill="#f8fbff" fill-opacity=".025"/>
-            <rect x="6.5" y="6.5" width="51" height="51" rx="10.5" fill="none" stroke="#f8fbff" stroke-opacity=".13" stroke-width="1.6"/>
-            <text x="8.5" y="43" fill="#f8fbff" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900">AT</text>
-            <path d="M12 50C22 46.5 35 48 52 42.5" fill="none" stroke="url(#accent)" stroke-width="2.8" stroke-linecap="round" opacity=".88"/>
-            <circle cx="52" cy="42.5" r="2.85" fill="#e9bf72"/>
-          </svg>
-          <b>TDAT</b>
-        </div>
+        <aside class="sidebar">
+          <div class="signature" aria-label="TDAT signature">
+            <svg viewBox="0 0 64 64" role="img" aria-label="AT modern FP&A monogram">
+              <defs>
+                <linearGradient id="bg" x1="7" y1="58" x2="57" y2="6" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#0a1323"/>
+                  <stop offset=".58" stop-color="#101b2d"/>
+                  <stop offset="1" stop-color="#14303a"/>
+                </linearGradient>
+                <linearGradient id="accent" x1="12" y1="51" x2="52" y2="44" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#8ab8ff"/>
+                  <stop offset="1" stop-color="#8de1d6"/>
+                </linearGradient>
+              </defs>
+              <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+              <rect x="6" y="6" width="52" height="52" rx="11" fill="#f8fbff" fill-opacity=".025"/>
+              <rect x="6.5" y="6.5" width="51" height="51" rx="10.5" fill="none" stroke="#f8fbff" stroke-opacity=".13" stroke-width="1.6"/>
+              <text x="8.5" y="43" fill="#f8fbff" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900">AT</text>
+              <path d="M12 50C22 46.5 35 48 52 42.5" fill="none" stroke="url(#accent)" stroke-width="2.8" stroke-linecap="round" opacity=".88"/>
+              <circle cx="52" cy="42.5" r="2.85" fill="#e9bf72"/>
+            </svg>
+            <b>TDAT</b>
+          </div>
 
-        <nav class="nav" aria-label="Dashboard pages">
-          <button class="active" type="button" data-page="performance">01 Performance</button>
-          <button type="button" data-page="cash">02 Cash Plan</button>
-          <button type="button" data-page="risk">03 Risk Monitor</button>
-        </nav>
+          <nav class="nav" aria-label="Dashboard pages">
+            <button class="active" type="button" data-page="performance">01 Performance</button>
+            <button type="button" data-page="cash">02 Cash Plan</button>
+            <button type="button" data-page="risk">03 Risk Monitor</button>
+          </nav>
 
-        <div class="rail-line"></div>
+          <div class="rail-line"></div>
 
-        <div class="lens-group">
-          <div class="lens-title">Global Lens</div>
-          <div class="filter-label">Year</div>
-          <div class="slicer">2026</div>
-          <div class="filter-label">Scenario</div>
-          <div class="slicer">Base</div>
-        </div>
+          <div class="lens-group">
+            <div class="lens-title">Global Lens</div>
+            <label class="filter-control">
+              <span class="filter-label">Year</span>
+              <span class="select-wrap"><select id="yearFilter" class="slicer" aria-label="Year filter"></select></span>
+            </label>
+            <label class="filter-control">
+              <span class="filter-label">Scenario</span>
+              <span class="select-wrap"><select id="scenarioFilter" class="slicer" aria-label="Scenario filter"></select></span>
+            </label>
+          </div>
 
-        <div class="lens-group" style="margin-top: 14px">
-          <div class="lens-title">P&amp;L Lens</div>
-          <div class="filter-label">Business Unit</div>
-          <div class="slicer">All BU</div>
-          <div class="filter-label">Region</div>
-          <div class="slicer">All Region</div>
-        </div>
+          <div class="lens-group" style="margin-top: 14px">
+            <div class="lens-title">P&amp;L Lens</div>
+            <label class="filter-control">
+              <span class="filter-label">Business Unit</span>
+              <span class="select-wrap"><select id="businessUnitFilter" class="slicer" aria-label="Business unit filter"></select></span>
+            </label>
+            <label class="filter-control">
+              <span class="filter-label">Region</span>
+              <span class="select-wrap"><select id="regionFilter" class="slicer" aria-label="Region filter"></select></span>
+            </label>
+            <button id="resetFilters" class="reset-btn" type="button">Reset Lens</button>
+          </div>
 
-        <div class="as-of">Data through<br>May 2026</div>
-      </aside>
+          <div class="as-of">Data through<br>May 2026</div>
+        </aside>
 
-      <main class="content" id="content"></main>
+        <main class="content" id="content"></main>
       </div>
     </div>
   </div>
 
   <script>
     const pageOrder = ["performance", "cash", "risk"];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const pageTitles = {
+      performance: "Board Performance Overview",
+      cash: "Financial Plan & Cash Runway",
+      risk: "Valuation, Covenants & Risk Monitor"
+    };
 
     const kpiPositions = [
       { x: 204, y: 49, w: 266, h: 160 },
@@ -651,79 +790,164 @@
       { x: 966, y: 444, w: 294, h: 248 }
     ];
 
-    const pages = {
-      performance: {
-        title: "Board Performance Overview",
-        chips: [
-          { label: "Scenario: Base", color: "#4d8d4b" },
-          { label: "GM: +0.8 pts", color: "#569b94" },
-          { label: "Revenue: +3.9%", color: "#4d8d4b" }
-        ],
-        kpis: [
-          { label: "Revenue", value: "$36.7M", py: "$31.4M", yoy: "+16.4%", color: "#5b83e6", spark: [22, 23, 28, 29, 35, 34, 39, 43, 45] },
-          { label: "Margin", value: "77.8%", py: "75.9%", yoy: "+1.9pt", color: "#569b94", spark: [64, 72, 66, 76, 73, 74, 77, 75, 78] },
-          { label: "EBITDA", value: "$14.3M", py: "$12.5M", yoy: "+22.8%", color: "#4d8d4b", spark: [10, 11, 12, 13, 13, 14, 13, 15, 16] },
-          { label: "Cash", value: "$376.7M", py: "$348M", yoy: "+8.1%", color: "#be7c10", spark: [325, 330, 319, 342, 351, 359, 364, 371, 377] }
-        ],
-        panels: [
-          { title: "Revenue vs Plan + EBITDA Trend", subtitle: "Drilldown: Month > KPI", type: "combo", colors: ["#5b83e6", "#29258f", "#d07343", "#7a1b8d"] },
-          { title: "Revenue Mix by Region", subtitle: "Drilldown: Region", type: "donut", labels: ["Americas", "EMEA", "APAC", "LATAM"] },
-          { title: "Revenue by Business Unit", subtitle: "Drilldown: Business Unit", type: "bars", rows: [["Core SaaS", 88, "$18.4M"], ["Data", 72, "$10.2M"], ["Services", 52, "$6.1M"], ["Other", 34, "$2.0M"]] },
-          { title: "Board KPI Details", subtitle: "Actual, variance, status, and trend", type: "table", headers: ["Metric", "Actual", "Plan", "Status"], rows: [["Revenue", "$36.7M", "$35.3M", "Clear"], ["EBITDA", "$14.3M", "$13.1M", "Clear"], ["Margin", "77.8%", "77.0%", "Clear"], ["Cash", "$376.7M", "$365.0M", "Clear"]] },
-          { title: "Revenue vs Plan by BU", subtitle: "Drilldown: BU > Variance", type: "bars", rows: [["Core SaaS", 94, "+$1.0M"], ["Data", 66, "+$0.4M"], ["Services", 45, "-$0.2M"], ["Other", 30, "+$0.1M"]] },
-          { title: "EBITDA by BU", subtitle: "Drilldown: BU > EBITDA", type: "bars", rows: [["Core SaaS", 82, "$8.1M"], ["Data", 64, "$3.7M"], ["Services", 44, "$1.8M"], ["Other", 24, "$0.7M"]] }
-        ]
-      },
-      cash: {
-        title: "Financial Plan & Cash Runway",
-        chips: [
-          { label: "Scenario: Base", color: "#4d8d4b" },
-          { label: "Runway: 99.0x", color: "#5b83e6" },
-          { label: "Funding: $0", color: "#4d8d4b" }
-        ],
-        kpis: [
-          { label: "Cash", value: "$376.7M", py: "$348M", yoy: "+8.1%", color: "#be7c10", spark: [325, 330, 319, 342, 351, 359, 364, 371, 377] },
-          { label: "Runway", value: "99.0x", py: "88.4x", yoy: "+12.0%", color: "#5b83e6", spark: [74, 78, 81, 83, 87, 90, 93, 96, 99] },
-          { label: "FCF", value: "$13.5M", py: "$8.6M", yoy: "+18.3%", color: "#569b94", spark: [7, 8, 9, 10, 9, 11, 12, 12, 14] },
-          { label: "Burn", value: "$0", py: "$0.0M", yoy: "0.0%", color: "#b73535", spark: [2, 2, 1, 0, 0, 0, 0, 0, 0], mood: "bad" }
-        ],
-        panels: [
-          { title: "Cash Balance + Funding Need Trend", subtitle: "Drilldown: Month > Liquidity", type: "combo", colors: ["#5b83e6", "#be7c10", "#569b94", "#7a1b8d"] },
-          { title: "Funding Need by Scenario", subtitle: "Drilldown: Scenario", type: "bars", rows: [["Base", 4, "$0"], ["Upside", 2, "$0"], ["Downside", 18, "$6M"], ["Stress", 40, "$18M"]] },
-          { title: "Runway by Scenario", subtitle: "Drilldown: Scenario", type: "bars", rows: [["Upside", 100, "120x"], ["Base", 82, "99x"], ["Downside", 49, "54x"], ["Stress", 28, "31x"]] },
-          { title: "3-Statement Summary", subtitle: "Actual, plan, variance, and trend", type: "table", headers: ["Metric", "Actual", "Plan", "Status"], rows: [["Revenue", "$36.7M", "$35.3M", "Clear"], ["Operating CF", "$14.8M", "$13.2M", "Clear"], ["Free CF", "$13.5M", "$12.1M", "Clear"], ["Funding Need", "$0", "$0", "Clear"]] },
-          { title: "Opex by Cost Category", subtitle: "Drilldown: Cost Category", type: "bars", rows: [["Sales", 72, "$6.4M"], ["R&D", 64, "$5.9M"], ["G&A", 44, "$3.5M"], ["Ops", 38, "$2.8M"]] },
-          { title: "Free Cash Flow by Scenario", subtitle: "Drilldown: Scenario", type: "bars", rows: [["Upside", 84, "$16.8M"], ["Base", 68, "$13.5M"], ["Downside", 34, "$6.9M"], ["Stress", 12, "$2.4M"]] }
-        ]
-      },
-      risk: {
-        title: "Valuation, Covenants & Risk Monitor",
-        chips: [
-          { label: "Scenario: Base", color: "#4d8d4b" },
-          { label: "Leverage: 0.2x", color: "#be7c10" },
-          { label: "Status: Clear", color: "#4d8d4b" }
-        ],
-        kpis: [
-          { label: "EV", value: "$1.9B", py: "$1.9B", yoy: "+9.5%", color: "#5b83e6", spark: [1.5, 1.6, 1.7, 1.8, 1.7, 1.85, 1.9, 1.92, 1.94] },
-          { label: "Equity", value: "$1.5B", py: "$1.5B", yoy: "+8.8%", color: "#4d8d4b", spark: [1.1, 1.2, 1.25, 1.34, 1.3, 1.38, 1.42, 1.47, 1.5] },
-          { label: "Leverage", value: "0.2x", py: "0.3x", yoy: "-0.1x", color: "#be7c10", spark: [0.7, 0.5, 0.4, 0.35, 0.28, 0.24, 0.22, 0.2, 0.2] },
-          { label: "Risk", value: "$31M", py: "$31M", yoy: "-8.6%", color: "#b73535", spark: [45, 43, 39, 38, 36, 34, 33, 32, 31], mood: "bad" }
-        ],
-        panels: [
-          { title: "Valuation Range by Method", subtitle: "Drilldown: Method > Range", type: "bars", rows: [["DCF", 92, "$1.8B"], ["Comps", 84, "$1.9B"], ["Precedent", 70, "$1.6B"], ["Base", 78, "$1.7B"]] },
-          { title: "Risk Exposure by Severity", subtitle: "Drilldown: Severity", type: "bars", rows: [["Low", 20, "$4M"], ["Medium", 48, "$12M"], ["High", 68, "$31M"], ["Critical", 12, "$3M"]] },
-          { title: "Covenant Headroom Trend", subtitle: "Drilldown: Month > Covenant", type: "combo", colors: ["#5b83e6", "#be7c10", "#569b94", "#7a1b8d"] },
-          { title: "Risk Register", subtitle: "Risk, severity, exposure, board ask, and signal", type: "table", headers: ["Risk", "Exposure", "Owner", "Signal"], rows: [["FX / rates", "$12M", "CFO", "Watch"], ["Renewals", "$8M", "Sales", "Clear"], ["Cloud cost", "$6M", "Ops", "Watch"], ["Covenant", "$5M", "Finance", "Clear"]] },
-          { title: "Sensitivity Impact", subtitle: "Drilldown: Driver Case", type: "bars", rows: [["GM -1 pt", 76, "-$8M"], ["Revenue -3%", 58, "-$6M"], ["Opex +5%", 44, "-$4M"], ["WACC +1%", 34, "-$3M"]] },
-          { title: "Risk Exposure by Owner", subtitle: "Drilldown: Owner", type: "bars", rows: [["CFO", 82, "$13M"], ["Sales", 56, "$8M"], ["Ops", 42, "$6M"], ["Legal", 28, "$4M"]] }
-        ]
-      }
+    const COLORS = {
+      blue: "#5b83e6",
+      navy: "#29258f",
+      teal: "#569b94",
+      green: "#4d8d4b",
+      gold: "#be7c10",
+      red: "#b73535",
+      plum: "#7a1b8d",
+      orange: "#d07343"
+    };
+
+    const SCENARIOS = {
+      Base: { color: COLORS.green, revenue: 1.00, gm: 0.000, opex: 0.000, risk: 1.00, multiple: 55, forecast: 1.012 },
+      Upside: { color: COLORS.blue, revenue: 1.075, gm: 0.012, opex: -0.006, risk: 0.82, multiple: 60, forecast: 1.044 },
+      Downside: { color: COLORS.gold, revenue: 0.915, gm: -0.025, opex: 0.012, risk: 1.34, multiple: 44, forecast: 0.958 },
+      Stress: { color: COLORS.red, revenue: 0.820, gm: -0.048, opex: 0.028, risk: 1.78, multiple: 35, forecast: 0.905 }
+    };
+
+    const BUSINESS_UNITS = [
+      { name: "Core SaaS", mix: 1.36, gm: 0.824, opex: 0.344, risk: 0.76, planBias: 0.010 },
+      { name: "Data", mix: 0.78, gm: 0.792, opex: 0.326, risk: 0.94, planBias: 0.000 },
+      { name: "Services", mix: 0.48, gm: 0.702, opex: 0.292, risk: 1.18, planBias: -0.014 },
+      { name: "Other", mix: 0.18, gm: 0.664, opex: 0.256, risk: 1.38, planBias: -0.024 }
+    ];
+
+    const REGIONS = [
+      { name: "Americas", mix: 1.18, gm: 0.012, opex: 0.004, risk: 0.92, cashLag: 0.028 },
+      { name: "EMEA", mix: 0.95, gm: 0.004, opex: 0.000, risk: 1.00, cashLag: 0.034 },
+      { name: "APAC", mix: 0.78, gm: -0.002, opex: -0.004, risk: 1.10, cashLag: 0.039 },
+      { name: "LATAM", mix: 0.46, gm: -0.015, opex: 0.006, risk: 1.28, cashLag: 0.052 }
+    ];
+
+    const state = {
+      page: "performance",
+      year: "2026",
+      scenario: "Base",
+      businessUnit: "All BU",
+      region: "All Region"
     };
 
     const content = document.getElementById("content");
     const frame = document.querySelector(".preview-frame");
     const shell = document.querySelector(".dashboard-shell");
     const dashboard = document.querySelector(".dashboard");
+
+    const DATA = buildData();
+
+    window.previewState = state;
+
+    window.previewActions = {
+      setPage,
+      setFilter,
+      resetFilters,
+      getSummary: () => financeSummary(state),
+      getRows: () => rowsFor(state).map(row => ({ ...row }))
+    };
+
+    function buildData() {
+      const months = [];
+      [2024, 2025, 2026].forEach((year) => {
+        const maxMonth = year === 2026 ? 5 : 12;
+        for (let month = 1; month <= maxMonth; month += 1) {
+          months.push({
+            id: `${year}-${String(month).padStart(2, "0")}`,
+            label: `${monthNames[month - 1]} ${year}`,
+            year,
+            month
+          });
+        }
+      });
+
+      const facts = [];
+      months.forEach((period) => {
+        BUSINESS_UNITS.forEach((bu, buIndex) => {
+          REGIONS.forEach((region, regionIndex) => {
+            Object.entries(SCENARIOS).forEach(([scenarioName, scenario]) => {
+              const yearLift = period.year === 2024 ? 0.84 : period.year === 2025 ? 0.94 : 1.045;
+              const season = 1 + Math.sin(((period.month - 1) / 12) * Math.PI * 2) * 0.045 + (period.month >= 10 ? 0.034 : 0);
+              const trend = 1 + ((period.year - 2024) * 12 + period.month) * 0.0045;
+              const noise = 1 + (((buIndex + 2) * 7 + (regionIndex + 3) * 5 + period.month) % 9 - 4) * 0.006;
+              const baseRevenue = 0.645 * bu.mix * region.mix * yearLift * season * trend * noise;
+              const planRevenue = baseRevenue * (0.982 + bu.planBias + (regionIndex - 1.5) * 0.004);
+              const revenue = baseRevenue * scenario.revenue;
+              const gmRate = clamp(bu.gm + region.gm + scenario.gm + period.month * 0.0005, 0.52, 0.86);
+              const planGmRate = clamp(bu.gm + region.gm - 0.003, 0.52, 0.86);
+              const grossProfit = revenue * gmRate;
+              const planGrossProfit = planRevenue * planGmRate;
+              const opexRate = clamp(bu.opex + region.opex + scenario.opex, 0.19, 0.45);
+              const opex = revenue * opexRate + 0.046 * bu.mix;
+              const planOpex = planRevenue * clamp(bu.opex + region.opex - 0.002, 0.19, 0.45) + 0.044 * bu.mix;
+              const ebitda = grossProfit - opex;
+              const planEbitda = planGrossProfit - planOpex;
+              const workingCapital = revenue * region.cashLag * (scenario.risk * 0.82);
+              const capex = revenue * 0.018;
+              const fcf = ebitda * 0.84 - workingCapital - capex;
+              const planFcf = planEbitda * 0.84 - planRevenue * (region.cashLag * 0.75) - planRevenue * 0.016;
+              const fundingNeed = Math.max(0, -fcf * 0.72 + revenue * (scenarioName === "Stress" ? 0.035 : scenarioName === "Downside" ? 0.012 : 0));
+              const riskExposure = revenue * 0.82 * scenario.risk * region.risk * bu.risk;
+              const severity = riskExposure > 0.95 ? "High" : riskExposure > 0.55 ? "Medium" : "Low";
+              const owner = bu.name === "Services" ? "Ops" : region.name === "LATAM" ? "CFO" : bu.name === "Core SaaS" ? "Sales" : "Finance";
+
+              facts.push({
+                ...period,
+                businessUnit: bu.name,
+                region: region.name,
+                scenario: scenarioName,
+                revenue,
+                planRevenue,
+                forecastRevenue: planRevenue * scenario.forecast,
+                grossProfit,
+                planGrossProfit,
+                opex,
+                planOpex,
+                ebitda,
+                planEbitda,
+                fcf,
+                planFcf,
+                fundingNeed,
+                riskExposure,
+                severity,
+                owner
+              });
+            });
+          });
+        });
+      });
+
+      return { months, facts };
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function sum(rows, key) {
+      return rows.reduce((total, row) => total + (Number(row[key]) || 0), 0);
+    }
+
+    function unique(list) {
+      return Array.from(new Set(list));
+    }
+
+    function styleBox(el, box) {
+      el.style.left = `${box.x}px`;
+      el.style.top = `${box.y}px`;
+      el.style.width = `${box.w}px`;
+      el.style.height = `${box.h}px`;
+    }
 
     function fitDashboard() {
       const style = window.getComputedStyle(frame);
@@ -738,34 +962,197 @@
       updateQaState();
     }
 
-    function styleBox(el, box) {
-      el.style.left = `${box.x}px`;
-      el.style.top = `${box.y}px`;
-      el.style.width = `${box.w}px`;
-      el.style.height = `${box.h}px`;
+    function rowsFor(filters, options = {}) {
+      const ignore = options.ignore || "";
+      return DATA.facts.filter((row) => {
+        if (String(row.year) !== String(filters.year)) return false;
+        if (filters.maxMonth && row.month > filters.maxMonth) return false;
+        if (row.scenario !== filters.scenario) return false;
+        if (ignore !== "businessUnit" && filters.businessUnit !== "All BU" && row.businessUnit !== filters.businessUnit) return false;
+        if (ignore !== "region" && filters.region !== "All Region" && row.region !== filters.region) return false;
+        if (options.month && row.month !== options.month) return false;
+        return true;
+      });
+    }
+
+    function coreTotals(rows) {
+      const revenue = sum(rows, "revenue");
+      const planRevenue = sum(rows, "planRevenue");
+      const grossProfit = sum(rows, "grossProfit");
+      const planGrossProfit = sum(rows, "planGrossProfit");
+      const ebitda = sum(rows, "ebitda");
+      const planEbitda = sum(rows, "planEbitda");
+      const fcf = sum(rows, "fcf");
+      const planFcf = sum(rows, "planFcf");
+      const opex = sum(rows, "opex");
+      const fundingNeed = sum(rows, "fundingNeed");
+      const riskExposure = sum(rows, "riskExposure");
+      const forecastRevenue = sum(rows, "forecastRevenue");
+      return {
+        revenue,
+        planRevenue,
+        forecastRevenue,
+        grossProfit,
+        planGrossProfit,
+        gmRate: revenue ? grossProfit / revenue : 0,
+        planGmRate: planRevenue ? planGrossProfit / planRevenue : 0,
+        ebitda,
+        planEbitda,
+        fcf,
+        planFcf,
+        opex,
+        fundingNeed,
+        riskExposure
+      };
+    }
+
+    function filterShare(filters) {
+      const selectedRows = rowsFor({ ...filters, scenario: "Base" });
+      const allRows = rowsFor({ ...filters, scenario: "Base", businessUnit: "All BU", region: "All Region" });
+      const allRevenue = sum(allRows, "revenue");
+      return allRevenue ? sum(selectedRows, "revenue") / allRevenue : 1;
+    }
+
+    function openingCash(year) {
+      if (String(year) === "2026") return 362;
+      if (String(year) === "2025") return 324;
+      return 292;
+    }
+
+    function monthCountForYear(year) {
+      return DATA.months.filter(month => String(month.year) === String(year)).length || 1;
+    }
+
+    function financeSummary(filters) {
+      const rows = rowsFor(filters);
+      const core = coreTotals(rows);
+      const share = filterShare(filters);
+      const months = unique(rows.map(row => row.month)).length || monthCountForYear(filters.year);
+      const cash = openingCash(filters.year) * share + core.fcf - core.fundingNeed;
+      const burn = Math.max(0, -core.fcf + core.fundingNeed);
+      const monthlyOpex = Math.max(0.7, core.opex / Math.max(1, months));
+      const runway = burn > 0 ? cash / Math.max(0.4, burn / Math.max(1, months)) : Math.min(120, cash / (monthlyOpex * 1.23));
+      const annualizedEbitda = core.ebitda * 12 / Math.max(1, months);
+      const debt = Math.max(4 * share, annualizedEbitda * (filters.scenario === "Stress" ? 0.46 : filters.scenario === "Downside" ? 0.34 : 0.21));
+      const ev = annualizedEbitda * SCENARIOS[filters.scenario].multiple;
+      const equity = Math.max(0, ev * 0.78 + cash * 0.16 - debt * 0.34);
+      const leverage = annualizedEbitda ? debt / annualizedEbitda : 0;
+      const covenantHeadroom = Math.max(0, 3.5 - leverage);
+      return {
+        ...core,
+        months,
+        cash,
+        burn,
+        runway,
+        annualizedEbitda,
+        debt,
+        ev,
+        equity,
+        leverage,
+        covenantHeadroom
+      };
+    }
+
+    function previousFilters() {
+      const comparableMonths = monthCountForYear(state.year);
+      return {
+        ...state,
+        year: String(Number(state.year) - 1),
+        scenario: "Base",
+        maxMonth: comparableMonths
+      };
+    }
+
+    function monthlyTrend(filters) {
+      const months = DATA.months.filter(month => String(month.year) === String(filters.year));
+      const share = filterShare(filters);
+      let cumulativeFcf = 0;
+      let cumulativeFunding = 0;
+      return months.map((period) => {
+        const rows = rowsFor(filters, { month: period.month });
+        const core = coreTotals(rows);
+        cumulativeFcf += core.fcf;
+        cumulativeFunding += core.fundingNeed;
+        return {
+          ...period,
+          ...core,
+          cash: openingCash(filters.year) * share + cumulativeFcf - cumulativeFunding,
+          burn: Math.max(0, -core.fcf + core.fundingNeed)
+        };
+      });
+    }
+
+    function money(value, digits = 1) {
+      const abs = Math.abs(value);
+      if (abs >= 1000) return `$${(value / 1000).toFixed(1)}B`;
+      return `$${value.toFixed(digits)}M`;
+    }
+
+    function money0(value) {
+      if (Math.abs(value) < 0.05) return "$0";
+      return money(value, Math.abs(value) >= 10 ? 0 : 1);
+    }
+
+    function pct(value, digits = 1) {
+      return `${(value * 100).toFixed(digits)}%`;
+    }
+
+    function signedPct(current, previous) {
+      if (!previous) return "+0.0%";
+      let change = (current - previous) / Math.abs(previous);
+      if (Math.abs(change) < 0.0005) change = 0;
+      return `${change >= 0 ? "+" : ""}${(change * 100).toFixed(1)}%`;
+    }
+
+    function signedPts(current, previous) {
+      let change = (current - previous) * 100;
+      if (Math.abs(change) < 0.05) change = 0;
+      return `${change >= 0 ? "+" : ""}${change.toFixed(1)}pt`;
+    }
+
+    function signedMoneyDelta(current, previous) {
+      let delta = current - previous;
+      if (Math.abs(delta) < 0.05) delta = 0;
+      return `${delta >= 0 ? "+" : "-"}${money(Math.abs(delta), Math.abs(delta) >= 10 ? 0 : 1)}`;
+    }
+
+    function fmtRunway(value) {
+      return `${value.toFixed(value >= 100 ? 0 : 1)}x`;
+    }
+
+    function favorableClass(current, previous, higherBetter = true) {
+      if (!previous) return "good";
+      const good = higherBetter ? current >= previous : current <= previous;
+      return good ? "good" : "bad";
+    }
+
+    function seriesValues(metric, filters = state) {
+      return monthlyTrend(filters).map(row => row[metric] || 0);
     }
 
     function sparkline(values, color, mood = "good") {
-      const min = Math.min(...values);
-      const max = Math.max(...values);
+      const safeValues = values.length ? values : [0, 0];
+      const min = Math.min(...safeValues);
+      const max = Math.max(...safeValues);
       const spread = max - min || 1;
-      const coords = values.map((value, index) => {
-        const x = 8 + index * (126 / (values.length - 1));
-        const y = 46 - ((value - min) / spread) * 34;
+      const coords = safeValues.map((value, index) => {
+        const x = 8 + index * (222 / Math.max(1, safeValues.length - 1));
+        const y = 40 - ((value - min) / spread) * 29;
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
-      const start = coords.split(" ")[0].split(",");
-      const end = coords.split(" ").at(-1).split(",");
+      const points = coords.split(" ");
+      const start = points[0].split(",");
+      const end = points[points.length - 1].split(",");
       const band = mood === "bad" ? "#f3d7d7" : "#ddeedc";
 
       return `
-        <svg class="spark" viewBox="0 0 142 56" aria-hidden="true">
-          <rect x="0" y="0" width="142" height="56" rx="8" fill="#f3effa"/>
-          <rect x="5" y="22" width="132" height="14" rx="7" fill="${band}"/>
-          <line x1="5" y1="29" x2="137" y2="29" stroke="#b8aecf" stroke-width="1" stroke-dasharray="4 5"/>
-          <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="${start[0]}" cy="${start[1]}" r="4" fill="#fff" stroke="#8f7bae" stroke-width="1.5"/>
-          <circle cx="${end[0]}" cy="${end[1]}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/>
+        <svg class="spark" viewBox="0 0 238 46" aria-hidden="true">
+          <rect x="0" y="0" width="238" height="46" rx="8" fill="#f3effa"/>
+          <rect x="7" y="18" width="224" height="12" rx="6" fill="${band}"/>
+          <line x1="7" y1="24" x2="231" y2="24" stroke="#b8aecf" stroke-width="1" stroke-dasharray="4 5"/>
+          <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="${start[0]}" cy="${start[1]}" r="3.6" fill="#fff" stroke="#8f7bae" stroke-width="1.4"/>
+          <circle cx="${end[0]}" cy="${end[1]}" r="4.8" fill="${color}" stroke="#fff" stroke-width="2"/>
         </svg>
       `;
     }
@@ -776,80 +1163,108 @@
       el.style.setProperty("--accent", kpi.color);
       styleBox(el, kpiPositions[index]);
       const icon = kpi.label.replace(/[^A-Za-z]/g, "").slice(0, 2);
-      const moodClass = kpi.mood === "bad" ? "bad" : "good";
 
       el.innerHTML = `
         <div class="kpi-head">
-          <span class="kpi-icon">${icon}</span>
-          <span class="kpi-label">${kpi.label}</span>
+          <span class="kpi-icon">${escapeHtml(icon)}</span>
+          <span class="kpi-label">${escapeHtml(kpi.label)}</span>
         </div>
         <div class="kpi-body">
-          <div class="kpi-value">${kpi.value}</div>
+          <div class="kpi-value">${escapeHtml(kpi.value)}</div>
           ${sparkline(kpi.spark, kpi.color, kpi.mood)}
         </div>
         <div class="kpi-foot">
-          <div><span>PY</span><b>${kpi.py}</b></div>
-          <div class="${moodClass}"><span>YoY</span><b>${kpi.yoy}</b></div>
+          <div><span>PY</span><b>${escapeHtml(kpi.py)}</b></div>
+          <div class="${kpi.mood}"><span>YoY</span><b>${escapeHtml(kpi.yoy)}</b></div>
         </div>
       `;
       return el;
     }
 
+    function pointsFor(values, width = 400, height = 142) {
+      const safeValues = values.length ? values : [0, 0];
+      const min = Math.min(0, ...safeValues);
+      const max = Math.max(...safeValues, 1);
+      const spread = max - min || 1;
+      return safeValues.map((value, index) => {
+        const x = 8 + index * ((width - 18) / Math.max(1, safeValues.length - 1));
+        const y = height - 18 - ((value - min) / spread) * (height - 36);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+    }
+
     function comboChart(panel) {
-      const colors = panel.colors;
+      const legend = panel.series.map(item => `<span style="--dot:${item.color}"><i></i>${escapeHtml(item.label)}</span>`).join("");
+      const lines = panel.series.map(item => `
+        <polyline points="${pointsFor(item.values)}" fill="none" stroke="${item.color}" stroke-width="${item.width || 4}" stroke-linecap="round" stroke-linejoin="round" opacity="${item.opacity || 1}"/>
+      `).join("");
       return `
-        <div class="legend">
-          <span style="--dot:${colors[0]}"><i></i>Actual</span>
-          <span style="--dot:${colors[1]}"><i></i>Plan</span>
-          <span style="--dot:${colors[2]}"><i></i>Forecast</span>
-          <span style="--dot:${colors[3]}"><i></i>EBITDA</span>
-        </div>
+        <div class="legend">${legend}</div>
         <svg class="chart-svg" viewBox="0 0 400 142" aria-hidden="true">
           <g stroke="#ded6eb" stroke-width="1">
             <line x1="0" y1="30" x2="400" y2="30"/>
             <line x1="0" y1="70" x2="400" y2="70"/>
             <line x1="0" y1="110" x2="400" y2="110"/>
           </g>
-          <polyline points="8,108 48,98 88,82 128,86 168,70 208,64 248,76 288,58 328,42 390,24" fill="none" stroke="${colors[0]}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <polyline points="8,112 48,102 88,92 128,82 168,72 208,62 248,52 288,42 328,32 390,18" fill="none" stroke="${colors[1]}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <polyline points="8,118 48,104 88,96 128,91 168,84 208,76 248,70 288,61 328,55 390,48" fill="none" stroke="${colors[2]}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
-          <polyline points="8,120 48,116 88,108 128,101 168,96 208,89 248,82 288,74 328,67 390,60" fill="none" stroke="${colors[3]}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          ${lines}
         </svg>
       `;
     }
 
     function barChart(panel) {
-      const fills = ["#6b42d8", "#5b83e6", "#569b94", "#be7c10"];
-      const rows = panel.rows.map((row, index) => `
-        <div class="bar-row">
-          <span>${row[0]}</span>
-          <div class="bar-track"><div class="bar-fill" style="--value:${row[1]}%;--fill:${fills[index % fills.length]}"></div></div>
-          <b>${row[2]}</b>
-        </div>
-      `).join("");
+      const fills = [COLORS.plum, COLORS.blue, COLORS.teal, COLORS.gold, COLORS.orange];
+      const maxValue = Math.max(...panel.rows.map(row => Math.abs(row.value)), 1);
+      const rows = panel.rows.map((row, index) => {
+        const pctWidth = Math.max(3, Math.min(100, Math.abs(row.value) / maxValue * 100));
+        const fill = row.color || fills[index % fills.length];
+        const active = panel.clickFilter && state[panel.clickFilter] === row.filterValue;
+        const tag = panel.clickFilter ? "button" : "div";
+        const attrs = panel.clickFilter
+          ? `type="button" data-filter-kind="${panel.clickFilter}" data-filter-value="${escapeHtml(row.filterValue)}" aria-label="Filter ${escapeHtml(panel.clickFilter)} ${escapeHtml(row.label)}"`
+          : "";
+        return `
+          <${tag} class="bar-row ${active ? "active" : ""}" ${attrs}>
+            <span>${escapeHtml(row.label)}</span>
+            <div class="bar-track"><div class="bar-fill" style="--value:${pctWidth.toFixed(1)}%;--fill:${fill}"></div></div>
+            <b>${escapeHtml(row.display)}</b>
+          </${tag}>
+        `;
+      }).join("");
       return `<div class="bar-list">${rows}</div>`;
     }
 
     function donutChart(panel) {
-      const colors = ["#5890f5", "#2e2c9a", "#d07343", "#7a1b8d"];
-      const legend = panel.labels.map((label, index) => `<span style="--dot:${colors[index]}"><i></i>${label}</span>`).join("");
+      const colors = [COLORS.blue, COLORS.navy, COLORS.orange, COLORS.plum, COLORS.teal];
+      const total = panel.segments.reduce((acc, row) => acc + Math.max(0, row.value), 0) || 1;
+      let cursor = 0;
+      const parts = panel.segments.map((segment, index) => {
+        const start = cursor;
+        const next = cursor + Math.max(0, segment.value) / total * 100;
+        cursor = next;
+        return `${colors[index % colors.length]} ${start.toFixed(1)}% ${next.toFixed(1)}%`;
+      });
+      const legend = panel.segments.map((segment, index) => `
+        <span style="--dot:${colors[index % colors.length]}"><i></i>${escapeHtml(segment.label)}</span>
+      `).join("");
       return `
         <div class="donut-wrap">
-          <div class="donut" style="--a:${colors[0]};--b:${colors[1]};--c:${colors[2]};--d:${colors[3]}"></div>
+          <div class="donut" style="--donut:conic-gradient(${parts.join(", ")})">
+            <div class="donut-total">${escapeHtml(panel.totalLabel)}</div>
+          </div>
           <div class="legend">${legend}</div>
         </div>
       `;
     }
 
     function tablePanel(panel) {
-      const header = panel.headers.map((head) => `<th>${head}</th>`).join("");
+      const header = panel.headers.map(head => `<th>${escapeHtml(head)}</th>`).join("");
       const rows = panel.rows.map((row) => {
         const cells = row.map((cell, index) => {
           if (index === row.length - 1) {
             const kind = cell === "Watch" ? "watch" : cell === "Risk" ? "risk" : "";
-            return `<td><span class="status ${kind}">${cell}</span></td>`;
+            return `<td><span class="status ${kind}">${escapeHtml(cell)}</span></td>`;
           }
-          return `<td>${cell}</td>`;
+          return `<td>${escapeHtml(cell)}</td>`;
         }).join("");
         return `<tr>${cells}</tr>`;
       }).join("");
@@ -870,20 +1285,436 @@
             : barChart(panel);
 
       el.innerHTML = `
-        <h2>${panel.title}</h2>
-        <small>${panel.subtitle}</small>
+        <h2>${escapeHtml(panel.title)}</h2>
+        <small>${escapeHtml(panel.subtitle)}</small>
         ${body}
       `;
       return el;
     }
 
+    function groupsFor(dimension, metric, filters = state, options = {}) {
+      const rows = rowsFor(filters, { ignore: options.ignore });
+      const labels = dimension === "businessUnit" ? BUSINESS_UNITS.map(item => item.name) : REGIONS.map(item => item.name);
+      return labels.map((label) => {
+        const groupRows = rows.filter(row => row[dimension] === label);
+        const totals = coreTotals(groupRows);
+        return {
+          label,
+          value: metric === "gmRate" ? totals.gmRate : totals[metric],
+          totals
+        };
+      }).filter(row => row.totals.revenue > 0);
+    }
+
+    function scenarioRows(metric) {
+      return Object.keys(SCENARIOS).map((scenario) => {
+        const summary = financeSummary({ ...state, scenario });
+        return {
+          label: scenario,
+          filterValue: scenario,
+          value: summary[metric],
+          summary
+        };
+      });
+    }
+
+    function statusFromVariance(value, caution, risk, lowerBetter = false) {
+      const pass = lowerBetter ? value <= caution : value >= caution;
+      const hardRisk = lowerBetter ? value >= risk : value <= risk;
+      if (hardRisk) return "Risk";
+      return pass ? "Clear" : "Watch";
+    }
+
+    function chipsFor(page, summary) {
+      const scenarioColor = SCENARIOS[state.scenario].color;
+      const scope = state.businessUnit === "All BU" && state.region === "All Region"
+        ? "Scope: Total Co"
+        : state.businessUnit !== "All BU" && state.region !== "All Region"
+          ? `${state.businessUnit} / ${state.region}`
+          : state.businessUnit !== "All BU"
+            ? `BU: ${state.businessUnit}`
+            : `Region: ${state.region}`;
+
+      if (page === "cash") {
+        return [
+          { label: `Scenario: ${state.scenario}`, color: scenarioColor },
+          { label: `Runway: ${fmtRunway(summary.runway)}`, color: COLORS.blue },
+          { label: `Funding: ${money0(summary.fundingNeed)}`, color: summary.fundingNeed > 0 ? COLORS.red : COLORS.green }
+        ];
+      }
+
+      if (page === "risk") {
+        const status = summary.leverage > 3.0 || summary.riskExposure > summary.revenue * 1.1 ? "Watch" : "Clear";
+        return [
+          { label: `Scenario: ${state.scenario}`, color: scenarioColor },
+          { label: `Leverage: ${summary.leverage.toFixed(1)}x`, color: COLORS.gold },
+          { label: `Status: ${status}`, color: status === "Clear" ? COLORS.green : COLORS.red }
+        ];
+      }
+
+      return [
+        { label: `Scenario: ${state.scenario}`, color: scenarioColor },
+        { label: scope, color: COLORS.teal },
+        { label: `Rev vs plan: ${signedPct(summary.revenue, summary.planRevenue)}`, color: summary.revenue >= summary.planRevenue ? COLORS.green : COLORS.red }
+      ];
+    }
+
+    function kpisFor(page) {
+      const now = financeSummary(state);
+      const prev = financeSummary(previousFilters());
+
+      if (page === "cash") {
+        return [
+          {
+            label: "Cash",
+            value: money(now.cash, 1),
+            py: money(prev.cash, 0),
+            yoy: signedPct(now.cash, prev.cash),
+            color: COLORS.gold,
+            spark: seriesValues("cash"),
+            mood: favorableClass(now.cash, prev.cash)
+          },
+          {
+            label: "Runway",
+            value: fmtRunway(now.runway),
+            py: fmtRunway(prev.runway),
+            yoy: signedPct(now.runway, prev.runway),
+            color: COLORS.blue,
+            spark: seriesValues("cash").map((value, index) => value / Math.max(1, 4 + index)),
+            mood: favorableClass(now.runway, prev.runway)
+          },
+          {
+            label: "FCF",
+            value: money(now.fcf, 1),
+            py: money(prev.fcf, 1),
+            yoy: signedPct(now.fcf, prev.fcf),
+            color: COLORS.teal,
+            spark: seriesValues("fcf"),
+            mood: favorableClass(now.fcf, prev.fcf)
+          },
+          {
+            label: "Burn",
+            value: money0(now.burn),
+            py: money0(prev.burn),
+            yoy: signedPct(now.burn, prev.burn || 1),
+            color: COLORS.red,
+            spark: seriesValues("burn"),
+            mood: favorableClass(now.burn, prev.burn, false)
+          }
+        ];
+      }
+
+      if (page === "risk") {
+        return [
+          {
+            label: "EV",
+            value: money(now.ev, 1),
+            py: money(prev.ev, 1),
+            yoy: signedPct(now.ev, prev.ev),
+            color: COLORS.blue,
+            spark: seriesValues("ebitda").map(value => value * SCENARIOS[state.scenario].multiple),
+            mood: favorableClass(now.ev, prev.ev)
+          },
+          {
+            label: "Equity",
+            value: money(now.equity, 1),
+            py: money(prev.equity, 1),
+            yoy: signedPct(now.equity, prev.equity),
+            color: COLORS.green,
+            spark: seriesValues("ebitda").map(value => value * SCENARIOS[state.scenario].multiple * 0.78),
+            mood: favorableClass(now.equity, prev.equity)
+          },
+          {
+            label: "Leverage",
+            value: `${now.leverage.toFixed(1)}x`,
+            py: `${prev.leverage.toFixed(1)}x`,
+            yoy: `${(now.leverage - prev.leverage).toFixed(1)}x`,
+            color: COLORS.gold,
+            spark: seriesValues("ebitda").map((value, index) => Math.max(0.05, (now.debt / Math.max(0.1, value * 12 / Math.max(1, index + 1))))),
+            mood: favorableClass(now.leverage, prev.leverage, false)
+          },
+          {
+            label: "Risk",
+            value: money(now.riskExposure, 0),
+            py: money(prev.riskExposure, 0),
+            yoy: signedPct(now.riskExposure, prev.riskExposure),
+            color: COLORS.red,
+            spark: seriesValues("riskExposure"),
+            mood: favorableClass(now.riskExposure, prev.riskExposure, false)
+          }
+        ];
+      }
+
+      return [
+        {
+          label: "Revenue",
+          value: money(now.revenue, 1),
+          py: money(prev.revenue, 1),
+          yoy: signedPct(now.revenue, prev.revenue),
+          color: COLORS.blue,
+          spark: seriesValues("revenue"),
+          mood: favorableClass(now.revenue, prev.revenue)
+        },
+        {
+          label: "Margin",
+          value: pct(now.gmRate),
+          py: pct(prev.gmRate),
+          yoy: signedPts(now.gmRate, prev.gmRate),
+          color: COLORS.teal,
+          spark: seriesValues("grossProfit").map((value, index) => value / Math.max(0.1, seriesValues("revenue")[index] || 1)),
+          mood: favorableClass(now.gmRate, prev.gmRate)
+        },
+        {
+          label: "EBITDA",
+          value: money(now.ebitda, 1),
+          py: money(prev.ebitda, 1),
+          yoy: signedPct(now.ebitda, prev.ebitda),
+          color: COLORS.green,
+          spark: seriesValues("ebitda"),
+          mood: favorableClass(now.ebitda, prev.ebitda)
+        },
+        {
+          label: "Cash",
+          value: money(now.cash, 1),
+          py: money(prev.cash, 0),
+          yoy: signedPct(now.cash, prev.cash),
+          color: COLORS.gold,
+          spark: seriesValues("cash"),
+          mood: favorableClass(now.cash, prev.cash)
+        }
+      ];
+    }
+
+    function boardKpiRows(summary) {
+      return [
+        ["Revenue", money(summary.revenue, 1), money(summary.planRevenue, 1), statusFromVariance(summary.revenue / Math.max(0.1, summary.planRevenue), 0.99, 0.94)],
+        ["EBITDA", money(summary.ebitda, 1), money(summary.planEbitda, 1), statusFromVariance(summary.ebitda / Math.max(0.1, summary.planEbitda), 0.98, 0.92)],
+        ["Margin", pct(summary.gmRate), pct(summary.planGmRate), statusFromVariance(summary.gmRate - summary.planGmRate, -0.004, -0.018)],
+        ["Cash", money(summary.cash, 1), money(openingCash(state.year) * filterShare(state) + summary.planFcf, 1), statusFromVariance(summary.cash, openingCash(state.year) * filterShare(state) * 0.98, openingCash(state.year) * filterShare(state) * 0.90)]
+      ];
+    }
+
+    function threeStatementRows(summary) {
+      return [
+        ["Revenue", money(summary.revenue, 1), money(summary.planRevenue, 1), statusFromVariance(summary.revenue / Math.max(0.1, summary.planRevenue), 0.99, 0.94)],
+        ["Operating CF", money(summary.fcf + summary.fundingNeed, 1), money(summary.planFcf + summary.fundingNeed, 1), statusFromVariance(summary.fcf, summary.planFcf * 0.96, summary.planFcf * 0.85)],
+        ["Free CF", money(summary.fcf, 1), money(summary.planFcf, 1), statusFromVariance(summary.fcf, summary.planFcf * 0.96, summary.planFcf * 0.84)],
+        ["Funding Need", money0(summary.fundingNeed), "$0", statusFromVariance(summary.fundingNeed, 0.5, 4.0, true)]
+      ];
+    }
+
+    function riskRegisterRows(summary) {
+      const base = summary.riskExposure;
+      return [
+        ["FX / rates", money(base * 0.34, 1), "CFO", base > 34 ? "Risk" : "Watch"],
+        ["Renewals", money(base * 0.25, 1), "Sales", base > 48 ? "Watch" : "Clear"],
+        ["Cloud cost", money(base * 0.22, 1), "Ops", base > 30 ? "Watch" : "Clear"],
+        ["Covenant", money(base * 0.19, 1), "Finance", summary.leverage > 3 ? "Risk" : "Clear"]
+      ];
+    }
+
+    function panelsFor(page) {
+      const summary = financeSummary(state);
+      const trend = monthlyTrend(state);
+      const regionGroups = groupsFor("region", "revenue", state, { ignore: "region" });
+      const buGroups = groupsFor("businessUnit", "revenue", state, { ignore: "businessUnit" });
+
+      if (page === "cash") {
+        const scenarioFunding = scenarioRows("fundingNeed");
+        const scenarioRunway = scenarioRows("runway");
+        const scenarioFcf = scenarioRows("fcf");
+        const costRows = [
+          ["Sales", 0.34],
+          ["R&D", 0.29],
+          ["G&A", 0.20],
+          ["Ops", 0.17]
+        ].map(([label, share]) => ({ label, value: summary.opex * share, display: money(summary.opex * share, 1) }));
+
+        return [
+          {
+            title: "Cash Balance + Funding Need Trend",
+            subtitle: `${state.year} liquidity under ${state.scenario}`,
+            type: "combo",
+            series: [
+              { label: "Cash", color: COLORS.gold, values: trend.map(row => row.cash), width: 5 },
+              { label: "FCF", color: COLORS.teal, values: trend.map(row => row.fcf), width: 4 },
+              { label: "Funding", color: COLORS.red, values: trend.map(row => row.fundingNeed), width: 4, opacity: .78 }
+            ]
+          },
+          {
+            title: "Funding Need by Scenario",
+            subtitle: "Liquidity need by scenario",
+            type: "bars",
+            clickFilter: "scenario",
+            rows: scenarioFunding.map(row => ({ label: row.label, value: row.value, display: money0(row.value), filterValue: row.label, color: SCENARIOS[row.label].color }))
+          },
+          {
+            title: "Runway by Scenario",
+            subtitle: "Scenario liquidity runway",
+            type: "bars",
+            clickFilter: "scenario",
+            rows: scenarioRunway.map(row => ({ label: row.label, value: row.value, display: fmtRunway(row.value), filterValue: row.label, color: SCENARIOS[row.label].color }))
+          },
+          {
+            title: "3-Statement Summary",
+            subtitle: "Actual, plan, variance, and status",
+            type: "table",
+            headers: ["Metric", "Actual", "Plan", "Status"],
+            rows: threeStatementRows(summary)
+          },
+          {
+            title: "Opex by Cost Category",
+            subtitle: "Functional spend lens",
+            type: "bars",
+            rows: costRows
+          },
+          {
+            title: "Free Cash Flow by Scenario",
+            subtitle: "FCF after working capital and capex",
+            type: "bars",
+            clickFilter: "scenario",
+            rows: scenarioFcf.map(row => ({ label: row.label, value: row.value, display: money(row.value, 1), filterValue: row.label, color: SCENARIOS[row.label].color }))
+          }
+        ];
+      }
+
+      if (page === "risk") {
+        const valuationRows = [
+          { label: "DCF", value: summary.ev * 0.98, display: money(summary.ev * 0.98, 1) },
+          { label: "Comps", value: summary.ev * 1.03, display: money(summary.ev * 1.03, 1) },
+          { label: "Precedent", value: summary.ev * 0.88, display: money(summary.ev * 0.88, 1) },
+          { label: "Base", value: summary.ev * 0.94, display: money(summary.ev * 0.94, 1) }
+        ];
+        const riskRows = ["Low", "Medium", "High"].map((severity) => {
+          const rows = rowsFor(state).filter(row => row.severity === severity);
+          const value = sum(rows, "riskExposure");
+          return { label: severity, value, display: money(value, 1), color: severity === "High" ? COLORS.red : severity === "Medium" ? COLORS.gold : COLORS.green };
+        });
+        const ownerRows = ["CFO", "Sales", "Ops", "Finance"].map((owner) => {
+          const rows = rowsFor(state).filter(row => row.owner === owner);
+          const value = sum(rows, "riskExposure");
+          return { label: owner, value, display: money(value, 1) };
+        });
+        const sensitivityRows = [
+          { label: "GM -1 pt", value: summary.revenue * 0.010, display: `-${money(summary.revenue * 0.010, 1)}` },
+          { label: "Revenue -3%", value: summary.revenue * summary.gmRate * 0.030, display: `-${money(summary.revenue * summary.gmRate * 0.030, 1)}` },
+          { label: "Opex +5%", value: summary.opex * 0.050, display: `-${money(summary.opex * 0.050, 1)}` },
+          { label: "WACC +1%", value: summary.ev * 0.018, display: `-${money(summary.ev * 0.018, 1)}` }
+        ];
+
+        return [
+          {
+            title: "Valuation Range by Method",
+            subtitle: "Enterprise value sensitivity",
+            type: "bars",
+            rows: valuationRows
+          },
+          {
+            title: "Risk Exposure by Severity",
+            subtitle: "Scenario-adjusted exposure",
+            type: "bars",
+            rows: riskRows
+          },
+          {
+            title: "Covenant Headroom Trend",
+            subtitle: "Leverage and headroom path",
+            type: "combo",
+            series: [
+              { label: "Headroom", color: COLORS.green, values: trend.map((row, index) => Math.max(0, 3.5 - (summary.debt / Math.max(0.1, row.ebitda * 12 / Math.max(1, index + 1))))), width: 5 },
+              { label: "Leverage", color: COLORS.gold, values: trend.map((row, index) => summary.debt / Math.max(0.1, row.ebitda * 12 / Math.max(1, index + 1))), width: 4 },
+              { label: "Risk", color: COLORS.red, values: trend.map(row => row.riskExposure / Math.max(1, summary.riskExposure) * 3.5), width: 4, opacity: .75 }
+            ]
+          },
+          {
+            title: "Risk Register",
+            subtitle: "Risk, exposure, owner, and signal",
+            type: "table",
+            headers: ["Risk", "Exposure", "Owner", "Signal"],
+            rows: riskRegisterRows(summary)
+          },
+          {
+            title: "Sensitivity Impact",
+            subtitle: "Downside value at risk",
+            type: "bars",
+            rows: sensitivityRows
+          },
+          {
+            title: "Risk Exposure by Owner",
+            subtitle: "Action ownership lens",
+            type: "bars",
+            rows: ownerRows
+          }
+        ];
+      }
+
+      return [
+        {
+          title: "Revenue vs Plan + EBITDA Trend",
+          subtitle: `${state.year} monthly plan and forecast path`,
+          type: "combo",
+          series: [
+            { label: "Actual", color: COLORS.blue, values: trend.map(row => row.revenue), width: 5 },
+            { label: "Plan", color: COLORS.navy, values: trend.map(row => row.planRevenue), width: 4 },
+            { label: "Forecast", color: COLORS.orange, values: trend.map(row => row.forecastRevenue), width: 4, opacity: .78 },
+            { label: "EBITDA", color: COLORS.plum, values: trend.map(row => row.ebitda), width: 4 }
+          ]
+        },
+        {
+          title: "Revenue Mix by Region",
+          subtitle: "Revenue share by geography",
+          type: "donut",
+          totalLabel: money(summary.revenue, 1),
+          segments: regionGroups.map(row => ({ label: row.label, value: row.value }))
+        },
+        {
+          title: "Revenue by Business Unit",
+          subtitle: "Revenue contribution by owner",
+          type: "bars",
+          clickFilter: "businessUnit",
+          rows: buGroups.map(row => ({ label: row.label, value: row.value, display: money(row.value, 1), filterValue: row.label }))
+        },
+        {
+          title: "Board KPI Details",
+          subtitle: "Actual, variance, status, and trend",
+          type: "table",
+          headers: ["Metric", "Actual", "Plan", "Status"],
+          rows: boardKpiRows(summary)
+        },
+        {
+          title: "Revenue vs Plan by BU",
+          subtitle: "Variance to plan by owner",
+          type: "bars",
+          clickFilter: "businessUnit",
+          rows: buGroups.map((row) => {
+            const variance = row.totals.revenue - row.totals.planRevenue;
+            return {
+              label: row.label,
+              value: Math.abs(variance),
+              display: signedMoneyDelta(row.totals.revenue, row.totals.planRevenue),
+              filterValue: row.label,
+              color: variance >= 0 ? COLORS.green : COLORS.red
+            };
+          })
+        },
+        {
+          title: "EBITDA by BU",
+          subtitle: "Contribution after opex",
+          type: "bars",
+          clickFilter: "businessUnit",
+          rows: buGroups.map(row => ({ label: row.label, value: row.totals.ebitda, display: money(row.totals.ebitda, 1), filterValue: row.label }))
+        }
+      ];
+    }
+
     function renderPage(pageId) {
-      const page = pages[pageId];
+      const summary = financeSummary(state);
+      const kpis = kpisFor(pageId);
+      const panels = panelsFor(pageId);
       content.innerHTML = "";
 
       const title = document.createElement("h1");
       title.className = "page-title";
-      title.textContent = page.title;
+      title.textContent = pageTitles[pageId];
       content.appendChild(title);
 
       const packId = document.createElement("div");
@@ -893,19 +1724,63 @@
 
       const chipRow = document.createElement("div");
       chipRow.className = "chip-row";
-      chipRow.innerHTML = page.chips.map((chip) => `<span class="chip" style="color:${chip.color}"><i></i>${chip.label}</span>`).join("");
+      chipRow.innerHTML = chipsFor(pageId, summary).map((chip) => `
+        <span class="chip" style="color:${chip.color}"><i></i><span>${escapeHtml(chip.label)}</span></span>
+      `).join("");
       content.appendChild(chipRow);
 
-      page.kpis.forEach((kpi, index) => content.appendChild(renderKpi(kpi, index)));
-      page.panels.forEach((panel, index) => content.appendChild(renderPanel(panel, index)));
+      kpis.forEach((kpi, index) => content.appendChild(renderKpi(kpi, index)));
+      panels.forEach((panel, index) => content.appendChild(renderPanel(panel, index)));
+      updateQaState();
     }
 
-    function setActive(pageId) {
+    function setPage(pageId) {
+      state.page = pageId;
       document.querySelectorAll(".nav button").forEach((button) => {
         button.classList.toggle("active", button.dataset.page === pageId);
       });
       renderPage(pageId);
-      updateQaState();
+    }
+
+    function setFilter(key, value) {
+      state[key] = value;
+      syncControls();
+      renderPage(state.page);
+    }
+
+    function resetFilters() {
+      state.year = "2026";
+      state.scenario = "Base";
+      state.businessUnit = "All BU";
+      state.region = "All Region";
+      syncControls();
+      renderPage(state.page);
+    }
+
+    function fillSelect(id, values, selected) {
+      const select = document.getElementById(id);
+      select.innerHTML = values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+      select.value = selected;
+    }
+
+    function initControls() {
+      fillSelect("yearFilter", ["2026", "2025"], state.year);
+      fillSelect("scenarioFilter", Object.keys(SCENARIOS), state.scenario);
+      fillSelect("businessUnitFilter", ["All BU", ...BUSINESS_UNITS.map(item => item.name)], state.businessUnit);
+      fillSelect("regionFilter", ["All Region", ...REGIONS.map(item => item.name)], state.region);
+
+      document.getElementById("yearFilter").addEventListener("change", event => setFilter("year", event.target.value));
+      document.getElementById("scenarioFilter").addEventListener("change", event => setFilter("scenario", event.target.value));
+      document.getElementById("businessUnitFilter").addEventListener("change", event => setFilter("businessUnit", event.target.value));
+      document.getElementById("regionFilter").addEventListener("change", event => setFilter("region", event.target.value));
+      document.getElementById("resetFilters").addEventListener("click", resetFilters);
+    }
+
+    function syncControls() {
+      document.getElementById("yearFilter").value = state.year;
+      document.getElementById("scenarioFilter").value = state.scenario;
+      document.getElementById("businessUnitFilter").value = state.businessUnit;
+      document.getElementById("regionFilter").value = state.region;
     }
 
     function updateQaState() {
@@ -921,12 +1796,13 @@
         text: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80)
       }));
 
-      const activePage = document.querySelector(".nav button.active")?.dataset.page || pageOrder[0];
       window.__dashboardQa = {
         project: 20,
-        activePage,
+        activePage: state.page,
+        filters: { ...state },
         pages: pageOrder.length,
         navigationButtons: document.querySelectorAll(".nav button").length,
+        filterControls: document.querySelectorAll("select").length,
         kpiCards: document.querySelectorAll(".kpi-card").length,
         panels: document.querySelectorAll(".panel").length,
         tables: document.querySelectorAll("table").length,
@@ -938,11 +1814,18 @@
     }
 
     document.querySelectorAll(".nav button").forEach((button) => {
-      button.addEventListener("click", () => setActive(button.dataset.page));
+      button.addEventListener("click", () => setPage(button.dataset.page));
+    });
+
+    content.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-filter-kind]");
+      if (!target) return;
+      setFilter(target.dataset.filterKind, target.dataset.filterValue);
     });
 
     window.addEventListener("resize", fitDashboard);
-    setActive(pageOrder[0]);
+    initControls();
+    setPage(pageOrder[0]);
     fitDashboard();
   </script>
 </body>
