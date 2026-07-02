@@ -13,4 +13,99 @@
     defaults: "2026-05-30",
     person_profiles: "identified_only",
   });
+
+  function isEmbeddedFrame() {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  }
+
+  function getSection(pathname = window.location.pathname) {
+    if (pathname === "/Portfolio/" || pathname === "/Portfolio/index.html") return "home";
+    if (pathname.includes("/showcase/powerbi/")) return "powerbi";
+    if (pathname.includes("/showcase/fpa-decision-cases/")) return "fpa-decision-cases";
+    if (pathname.includes("/showcase/python-automation/")) return "python-automation";
+    if (pathname.includes("/blog/")) return "blog";
+    if (pathname.endsWith("/cv.html")) return "cv";
+    if (pathname.endsWith("/share.html")) return "share";
+    if (pathname.endsWith("/404.html")) return "404";
+    return "portfolio";
+  }
+
+  function safeUrl(url) {
+    if (!url) return null;
+    try {
+      const parsed = new URL(url, window.location.href);
+      if (parsed.protocol === "mailto:" || parsed.protocol === "tel:") return parsed.protocol;
+      if (parsed.origin === "null") return parsed.protocol;
+      return `${parsed.origin}${parsed.pathname}`;
+    } catch {
+      return null;
+    }
+  }
+
+  function getLinkLabel(link) {
+    return (link.dataset.trackLabel || link.textContent || link.getAttribute("aria-label") || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120) || null;
+  }
+
+  function getLinkKind(link, url) {
+    const href = link.getAttribute("href") || "";
+    const protocol = url?.protocol || "";
+    const pathname = (url?.pathname || "").toLowerCase();
+
+    if (protocol === "mailto:" || protocol === "tel:") return "contact";
+    if (pathname.endsWith(".pdf")) return "pdf";
+    if (url && url.origin !== window.location.origin) return "outbound";
+    if (href.startsWith("#")) return "anchor";
+    return "internal";
+  }
+
+  function capturePortfolioEvent(eventName, properties = {}) {
+    if (!window.posthog || typeof window.posthog.capture !== "function") return;
+    window.posthog.capture(eventName, {
+      page_path: window.location.pathname,
+      page_url: safeUrl(window.location.href),
+      page_title: document.title,
+      page_section: getSection(),
+      is_embedded_frame: isEmbeddedFrame(),
+      ...properties,
+    });
+  }
+
+  capturePortfolioEvent("portfolio_page_loaded", {
+    referrer_url: safeUrl(document.referrer),
+  });
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest?.("a[href]");
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+    if (!href || href.startsWith("javascript:")) return;
+    if (link.closest("[data-track-event]")) return;
+
+    let url = null;
+    try {
+      url = new URL(href, window.location.href);
+    } catch {
+      return;
+    }
+
+    const linkKind = getLinkKind(link, url);
+
+    capturePortfolioEvent("portfolio_link_clicked", {
+      link_kind: linkKind,
+      link_label: getLinkLabel(link),
+      destination_url: safeUrl(url.href),
+      destination_path: url.origin === window.location.origin ? url.pathname : null,
+      destination_host: url.hostname || null,
+      opens_new_tab: link.target === "_blank",
+      is_cv_pdf: url.pathname.toLowerCase().includes("truong-dinh-anh-tu-cv"),
+    });
+  });
 })();
