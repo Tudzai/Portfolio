@@ -3961,33 +3961,24 @@ main > section {
 }
 
 .cv-viewer-section {
-  min-height: 78vh;
+  display: grid;
+  gap: 24px;
+}
+
+.cv-page {
+  margin: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
-  box-shadow: 0 1px 0 rgba(23, 32, 29, 0.03);
+  box-shadow: 0 18px 46px rgba(23, 32, 29, 0.1);
 }
 
-.cv-viewer {
+.cv-page img {
   display: block;
   width: 100%;
-  height: min(86vh, 980px);
-  min-height: 680px;
-  border: 0;
-  background: var(--surface-strong);
-}
-
-.cv-fallback {
-  display: grid;
-  gap: 18px;
-  padding: 28px;
-}
-
-.cv-fallback p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.6;
+  height: auto;
+  background: var(--surface);
 }
 
 .detail-hero-grid {
@@ -5680,9 +5671,8 @@ code {
     width: calc(100% - 32px);
   }
 
-  .cv-viewer {
-    height: 72vh;
-    min-height: 520px;
+  .cv-viewer-section {
+    gap: 16px;
   }
 
   .section-heading {
