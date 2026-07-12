@@ -96,6 +96,29 @@ document.querySelectorAll("[data-track-event]").forEach((element) => {
 
 const blogPosts = [
   {
+    id: "predictive-collections-agent",
+    slug: "predictive-collections-agent",
+    status: "published",
+    category: "Financial Services / Agentic AI",
+    tags: ["Collections", "Credit Risk", "Working Capital", "Human-in-the-Loop"],
+    title: {
+      vi: "Thiết kế Predictive Collections Agent hành động trước khi khoản thanh toán bị trễ",
+      en: "Designing a Predictive Collections Agent That Acts Before a Payment Is Missed",
+    },
+    summary: {
+      vi: "Cách tôi biến một đề bài collections phản ứng chậm thành vòng lặp quyết định có early warning, next-best action và hai cổng human approval.",
+      en: "How I turned a reactive collections brief into a governed decision loop with early warning, next-best action, and two human approval gates.",
+    },
+    angle: {
+      vi: "Bài viết tiếng Anh · AABW 2026 · Có slide tương tác và business case FP&A.",
+      en: "AABW 2026 build story · Interactive deck · Finance case · Controlled pilot plan.",
+    },
+    meta: {
+      vi: "Bài viết tiếng Anh · 12 phút",
+      en: "AABW 2026 · 12 min read",
+    },
+  },
+  {
     id: "agentic-ai-power-bi-part-1",
     slug: "power-bi-agentic-ai-part-1",
     status: "coming-soon",
@@ -135,7 +158,12 @@ const blogCopy = {
     blogPageIntro:
       "Nơi chia sẻ kinh nghiệm, quá trình học hỏi và những góc nhìn thực tế khi kết nối tài chính, dữ liệu, công nghệ và AI.",
     blogPagePill: "ENG / VN",
+    blogPageStatus: "Đã đăng + sắp ra mắt",
+    blogPageListKicker: "Tài chính / Dữ liệu / Agentic AI",
+    blogPageListTitle: "Bài viết và câu chuyện xây dựng mới nhất",
+    statusPublished: "Đã đăng",
     statusComingSoon: "Sắp ra mắt",
+    readArticle: "Đọc bài viết",
     previewTopic: "Đọc ghi chú",
     cardMetaLabel: "Bài đầu tiên",
     articleKicker: "Power BI / Agentic AI",
@@ -177,7 +205,12 @@ const blogCopy = {
     blogPageIntro:
       "A place to share lessons, learning journeys, and practical reflections from connecting finance, data, technology, and AI.",
     blogPagePill: "ENG / VN",
+    blogPageStatus: "Published + upcoming",
+    blogPageListKicker: "Finance / Data / Agentic AI",
+    blogPageListTitle: "Latest notes and build stories",
+    statusPublished: "Published",
     statusComingSoon: "Coming soon",
+    readArticle: "Read the article",
     previewTopic: "Read the note",
     cardMetaLabel: "First note",
     articleKicker: "Power BI / Agentic AI",
@@ -242,13 +275,18 @@ function renderBlogCards(rootElement, lang) {
     .map((post) => {
       const href = `${basePath}${post.slug}/`;
       const tagMarkup = post.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
+      const isPublished = post.status === "published";
+      const statusLabel = isPublished ? copy.statusPublished : copy.statusComingSoon;
+      const cardMeta = post.meta?.[lang] || copy.cardMetaLabel;
+      const actionLabel = isPublished ? copy.readArticle : copy.previewTopic;
+      const statusClass = isPublished ? " is-published" : "";
 
       return `
         <article class="blog-card">
           <div class="blog-card-main">
             <div class="blog-card-topline">
-              <span class="blog-status-badge">${escapeHtml(copy.statusComingSoon)}</span>
-              <span>${escapeHtml(copy.cardMetaLabel)}</span>
+              <span class="blog-status-badge${statusClass}">${escapeHtml(statusLabel)}</span>
+              <span>${escapeHtml(cardMeta)}</span>
             </div>
             <p class="case-label">${escapeHtml(post.category)}</p>
             <h3><a href="${escapeHtml(href)}">${escapeHtml(post.title[lang])}</a></h3>
@@ -259,7 +297,7 @@ function renderBlogCards(rootElement, lang) {
           <div class="blog-card-action">
             <a class="button quiet" href="${escapeHtml(href)}">
               <i data-lucide="book-open-text"></i>
-              ${escapeHtml(copy.previewTopic)}
+              ${escapeHtml(actionLabel)}
             </a>
           </div>
         </article>

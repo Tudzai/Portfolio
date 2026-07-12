@@ -3044,6 +3044,12 @@ main > section {
   font-weight: 900;
 }
 
+.blog-status-badge.is-published {
+  border-color: rgba(15, 159, 143, 0.42);
+  background: rgba(15, 159, 143, 0.12);
+  color: var(--green);
+}
+
 .blog-card h3 {
   margin: 0;
   font-size: clamp(1.45rem, 3vw, 2.25rem);
