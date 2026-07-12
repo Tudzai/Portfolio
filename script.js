@@ -99,8 +99,22 @@ const blogPosts = [
     id: "predictive-collections-agent",
     slug: "predictive-collections-agent",
     status: "published",
+    featured: true,
+    publishedAt: "2026-07-13",
+    readMinutes: 12,
+    language: "en",
     category: "Financial Services / Agentic AI",
+    topics: ["Finance", "Agentic AI", "Working Capital"],
     tags: ["Collections", "Credit Risk", "Working Capital", "Human-in-the-Loop"],
+    image: {
+      src: "predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png",
+      width: 1672,
+      height: 941,
+      alt: {
+        vi: "Workflow Predictive Collections Agent từ tín hiệu khách hàng đến kiểm soát của con người và vòng lặp học hỏi",
+        en: "Predictive Collections Agent workflow from customer signals through human approval and controlled learning",
+      },
+    },
     title: {
       vi: "Thiết kế Predictive Collections Agent hành động trước khi khoản thanh toán bị trễ",
       en: "Designing a Predictive Collections Agent That Acts Before a Payment Is Missed",
@@ -122,7 +136,10 @@ const blogPosts = [
     id: "agentic-ai-power-bi-part-1",
     slug: "power-bi-agentic-ai-part-1",
     status: "coming-soon",
+    featured: false,
+    language: "en",
     category: "Power BI / Agentic AI",
+    topics: ["Finance", "Agentic AI", "Power BI"],
     tags: ["Finance", "Power BI", "AI workflow", "Decision tools"],
     title: {
       vi: "Xây Power BI cùng Agentic AI - Phần 1",
@@ -244,7 +261,7 @@ const blogPageMeta = {
     },
     en: {
       title: "Blog | Truong Dinh Anh Tu",
-      description: "A place to share lessons, learning journeys, and practical reflections from connecting finance, data, technology, and AI.",
+      description: "Evidence-led build stories about finance decisions, data products, agentic AI, workflow controls, and practical implementation lessons.",
     },
   },
   article: {
@@ -268,44 +285,218 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-function renderBlogCards(rootElement, lang) {
-  const copy = blogCopy[lang];
-  const basePath = rootElement.dataset.blogBase || "";
-  const cards = blogPosts
-    .map((post) => {
-      const href = `${basePath}${post.slug}/`;
-      const tagMarkup = post.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
-      const isPublished = post.status === "published";
-      const statusLabel = isPublished ? copy.statusPublished : copy.statusComingSoon;
-      const cardMeta = post.meta?.[lang] || copy.cardMetaLabel;
-      const actionLabel = isPublished ? copy.readArticle : copy.previewTopic;
-      const statusClass = isPublished ? " is-published" : "";
+const blogState = {
+  query: "",
+  topic: "all",
+};
 
-      return `
-        <article class="blog-card">
-          <div class="blog-card-main">
-            <div class="blog-card-topline">
-              <span class="blog-status-badge${statusClass}">${escapeHtml(statusLabel)}</span>
-              <span>${escapeHtml(cardMeta)}</span>
-            </div>
-            <p class="case-label">${escapeHtml(post.category)}</p>
-            <h3><a href="${escapeHtml(href)}">${escapeHtml(post.title[lang])}</a></h3>
-            <p>${escapeHtml(post.summary[lang])}</p>
-            <p class="blog-angle">${escapeHtml(post.angle[lang])}</p>
-            <div class="product-tags" aria-label="Blog tags">${tagMarkup}</div>
-          </div>
-          <div class="blog-card-action">
-            <a class="button quiet" href="${escapeHtml(href)}">
-              <i data-lucide="book-open-text"></i>
-              ${escapeHtml(actionLabel)}
-            </a>
-          </div>
-        </article>
-      `;
+function getPublishedBlogPosts() {
+  return blogPosts
+    .filter((post) => post.status === "published")
+    .sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
+}
+
+function formatBlogDate(value, lang) {
+  if (!value) return "";
+  const locale = lang === "vi" ? "vi-VN" : "en-US";
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(`${value}T12:00:00`));
+}
+
+function getBlogPostMeta(post, lang) {
+  const date = formatBlogDate(post.publishedAt, lang);
+  const readTime = post.readMinutes
+    ? lang === "vi"
+      ? `${post.readMinutes} phút đọc`
+      : `${post.readMinutes} min read`
+    : "";
+  const language = post.language === "en" ? (lang === "vi" ? "Bài viết bằng tiếng Anh" : "English article") : "";
+  return [date, readTime, language].filter(Boolean);
+}
+
+function getBlogTagMarkup(post, limit = 3) {
+  const visibleTags = post.tags.slice(0, limit);
+  const hiddenCount = Math.max(post.tags.length - visibleTags.length, 0);
+  return [
+    ...visibleTags.map((tag) => `<span>${escapeHtml(tag)}</span>`),
+    hiddenCount ? `<span aria-label="${hiddenCount} more topics">+${hiddenCount}</span>` : "",
+  ].join("");
+}
+
+function getBlogImageMarkup(post, basePath, className, loading = "lazy") {
+  if (!post.image) return "";
+  const imagePath = `${basePath}${post.image.src}`;
+  const alt = post.image.alt?.en || "";
+  return `
+    <img
+      class="${className}"
+      src="${escapeHtml(imagePath)}"
+      alt="${escapeHtml(alt)}"
+      width="${post.image.width}"
+      height="${post.image.height}"
+      loading="${loading}"
+      decoding="async"
+    />
+  `;
+}
+
+function renderBlogFeature(post, lang, basePath) {
+  if (!post) return "";
+  const copy = blogCopy[lang];
+  const href = `${basePath}${post.slug}/`;
+  const metaMarkup = getBlogPostMeta(post, lang).map((item) => `<span>${escapeHtml(item)}</span>`).join("");
+  const imageMarkup = getBlogImageMarkup(post, basePath, "blog-feature-image", "eager");
+
+  return `
+    <article class="blog-feature-card">
+      <a
+        class="blog-feature-media"
+        href="${escapeHtml(href)}"
+        aria-label="${escapeHtml(post.title[lang])}"
+        data-blog-track-event="blog_feature_open"
+      >${imageMarkup}</a>
+      <div class="blog-feature-content">
+        <div class="blog-feature-topline">
+          <span class="blog-status-badge is-published">${escapeHtml(copy.statusPublished)}</span>
+          <span>${escapeHtml(post.category)}</span>
+        </div>
+        <div class="blog-card-meta" aria-label="Article details">${metaMarkup}</div>
+        <h3><a href="${escapeHtml(href)}" data-blog-track-event="blog_feature_open">${escapeHtml(post.title[lang])}</a></h3>
+        <p>${escapeHtml(post.summary[lang])}</p>
+        <div class="product-tags blog-card-tags" aria-label="Article topics">${getBlogTagMarkup(post)}</div>
+        <a class="button primary blog-feature-action" href="${escapeHtml(href)}" data-blog-track-event="blog_feature_open">
+          <i data-lucide="arrow-up-right"></i>
+          ${escapeHtml(copy.readArticle)}
+        </a>
+      </div>
+    </article>
+  `;
+}
+
+function renderBlogArchiveCard(post, lang, basePath) {
+  const copy = blogCopy[lang];
+  const href = `${basePath}${post.slug}/`;
+  const metaMarkup = getBlogPostMeta(post, lang).slice(0, 2).map((item) => `<span>${escapeHtml(item)}</span>`).join("");
+  const imageMarkup = getBlogImageMarkup(post, basePath, "blog-archive-image");
+
+  return `
+    <article class="blog-archive-card">
+      ${imageMarkup ? `<a class="blog-archive-media" href="${escapeHtml(href)}" tabindex="-1" aria-hidden="true">${imageMarkup}</a>` : ""}
+      <div class="blog-archive-content">
+        <p class="case-label">${escapeHtml(post.category)}</p>
+        <div class="blog-card-meta" aria-label="Article details">${metaMarkup}</div>
+        <h3><a href="${escapeHtml(href)}" data-blog-track-event="blog_archive_open">${escapeHtml(post.title[lang])}</a></h3>
+        <p>${escapeHtml(post.summary[lang])}</p>
+        <a class="blog-text-link" href="${escapeHtml(href)}" data-blog-track-event="blog_archive_open">
+          ${escapeHtml(copy.readArticle)} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </article>
+  `;
+}
+
+function renderUpcomingBlogCard(post, lang, basePath) {
+  const copy = blogCopy[lang];
+  const href = `${basePath}${post.slug}/`;
+  return `
+    <article class="blog-upcoming-card">
+      <div class="blog-card-topline">
+        <span class="blog-status-badge">${escapeHtml(copy.statusComingSoon)}</span>
+        <span>${escapeHtml(post.category)}</span>
+      </div>
+      <h3>${escapeHtml(post.title[lang])}</h3>
+      <p>${escapeHtml(post.summary[lang])}</p>
+      <a class="blog-text-link" href="${escapeHtml(href)}" data-blog-track-event="blog_upcoming_preview">
+        ${escapeHtml(copy.previewTopic)} <span aria-hidden="true">→</span>
+      </a>
+    </article>
+  `;
+}
+
+function blogPostMatches(post) {
+  const topicMatches = blogState.topic === "all" || post.topics.includes(blogState.topic);
+  const haystack = [post.category, ...post.topics, ...post.tags, post.title.en, post.title.vi, post.summary.en, post.summary.vi]
+    .join(" ")
+    .toLocaleLowerCase();
+  return topicMatches && (!blogState.query || haystack.includes(blogState.query));
+}
+
+function renderBlogCards(rootElement, lang) {
+  const basePath = rootElement.dataset.blogBase || "";
+  const view = rootElement.dataset.blogView || "index";
+  const publishedPosts = getPublishedBlogPosts();
+  const featuredPost = publishedPosts.find((post) => post.featured) || publishedPosts[0];
+  const isFiltered = Boolean(blogState.query || blogState.topic !== "all");
+
+  if (view === "home" || view === "feature") {
+    rootElement.innerHTML = isFiltered && view === "feature" ? "" : renderBlogFeature(featuredPost, lang, basePath);
+    return;
+  }
+
+  if (view === "upcoming") {
+    rootElement.innerHTML = blogPosts
+      .filter((post) => post.status === "coming-soon")
+      .map((post) => renderUpcomingBlogCard(post, lang, basePath))
+      .join("");
+    return;
+  }
+
+  const archivePosts = publishedPosts
+    .filter(blogPostMatches)
+    .filter((post) => isFiltered || post.id !== featuredPost?.id);
+  rootElement.innerHTML = archivePosts.map((post) => renderBlogArchiveCard(post, lang, basePath)).join("");
+  rootElement.dataset.resultCount = String(archivePosts.length);
+}
+
+function renderBlogFilters(lang) {
+  const filtersRoot = document.querySelector("[data-blog-filters]");
+  const toolbar = document.querySelector("[data-blog-archive-toolbar]");
+  const publishedPosts = getPublishedBlogPosts();
+  if (!filtersRoot) return;
+
+  const topics = [...new Set(publishedPosts.flatMap((post) => post.topics))].sort();
+  const labels = [
+    { value: "all", label: lang === "vi" ? "Tất cả" : "All" },
+    ...topics.map((topic) => ({ value: topic, label: topic })),
+  ];
+  filtersRoot.innerHTML = labels
+    .map(({ value, label }) => {
+      const isActive = value === blogState.topic;
+      return `<button type="button" data-blog-topic="${escapeHtml(value)}" aria-pressed="${isActive}">${escapeHtml(label)}</button>`;
     })
     .join("");
 
-  rootElement.innerHTML = cards;
+  if (toolbar) toolbar.hidden = publishedPosts.length < 2;
+}
+
+function updateBlogCollectionState(lang) {
+  const publishedPosts = getPublishedBlogPosts();
+  const matchingPosts = publishedPosts.filter(blogPostMatches);
+  const isFiltered = Boolean(blogState.query || blogState.topic !== "all");
+  const archiveRoot = document.querySelector('[data-blog-view="index"]');
+  const archiveCount = Number(archiveRoot?.dataset.resultCount || 0);
+  const featuredSection = document.querySelector("[data-blog-featured-section]");
+  const archiveSection = document.querySelector("[data-blog-archive-section]");
+  const emptyState = document.querySelector("[data-blog-empty]");
+  const resultCount = document.querySelector("[data-blog-result-count]");
+
+  document.querySelectorAll("[data-blog-count]").forEach((element) => {
+    element.textContent = lang === "vi"
+      ? `${publishedPosts.length} bài đã đăng`
+      : `${publishedPosts.length} published ${publishedPosts.length === 1 ? "article" : "articles"}`;
+  });
+
+  if (featuredSection) featuredSection.hidden = isFiltered || publishedPosts.length === 0;
+  if (archiveSection) archiveSection.hidden = !isFiltered && archiveCount === 0;
+  if (emptyState) emptyState.hidden = matchingPosts.length > 0;
+  if (resultCount) {
+    resultCount.textContent = lang === "vi"
+      ? `${matchingPosts.length} kết quả`
+      : `${matchingPosts.length} ${matchingPosts.length === 1 ? "article" : "articles"}`;
+  }
 }
 
 function updateBlogPageMeta(lang) {
@@ -333,6 +524,9 @@ function applyBlogLanguage(lang) {
     renderBlogCards(rootElement, selectedLang);
   });
 
+  renderBlogFilters(selectedLang);
+  updateBlogCollectionState(selectedLang);
+
   document.querySelectorAll("[data-blog-lang-option]").forEach((button) => {
     const isActive = button.dataset.blogLangOption === selectedLang;
     button.classList.toggle("is-active", isActive);
@@ -347,8 +541,115 @@ if (document.querySelector("[data-blog-shell]")) {
   document.querySelectorAll("[data-blog-lang-option]").forEach((button) => {
     button.addEventListener("click", () => applyBlogLanguage(button.dataset.blogLangOption));
   });
+
+  document.querySelector("[data-blog-search]")?.addEventListener("input", (event) => {
+    blogState.query = event.target.value.trim().toLocaleLowerCase();
+    applyBlogLanguage("en");
+  });
+
+  document.querySelector("[data-blog-filters]")?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-blog-topic]");
+    if (!button) return;
+    blogState.topic = button.dataset.blogTopic || "all";
+    applyBlogLanguage("en");
+  });
+
+  document.querySelector("[data-blog-clear]")?.addEventListener("click", () => {
+    blogState.query = "";
+    blogState.topic = "all";
+    const searchInput = document.querySelector("[data-blog-search]");
+    if (searchInput) searchInput.value = "";
+    applyBlogLanguage("en");
+  });
+
   applyBlogLanguage("en");
 }
+
+document.addEventListener("click", (event) => {
+  const trackedLink = event.target.closest("[data-blog-track-event]");
+  if (!trackedLink) return;
+  trackPortfolioEvent(trackedLink.dataset.blogTrackEvent, {
+    cta_label: trackedLink.getAttribute("aria-label") || getTrackedText(trackedLink),
+    cta_location: "blog",
+    destination: trackedLink.getAttribute("href") || null,
+  });
+});
+
+function setupArticleNavigation() {
+  const article = document.querySelector(".aabw-article-page article");
+  const progressBar = document.querySelector("[data-article-progress]");
+  if (!article) return;
+
+  const sections = [...article.querySelectorAll(".article-section")]
+    .map((section) => {
+      const heading = section.querySelector("h2[id]");
+      if (!heading) return null;
+      const kicker = section.querySelector(".section-kicker");
+      return {
+        id: heading.id,
+        label: kicker?.textContent.trim() || heading.textContent.trim(),
+        section,
+      };
+    })
+    .filter(Boolean);
+
+  const tocMarkup = sections
+    .map(({ id, label }, index) => `
+      <a href="#${escapeHtml(id)}">
+        <span>${String(index + 1).padStart(2, "0")}</span>
+        <span>${escapeHtml(label)}</span>
+      </a>
+    `)
+    .join("");
+  document.querySelectorAll("[data-article-toc]").forEach((toc) => {
+    toc.innerHTML = tocMarkup;
+  });
+
+  document.querySelectorAll("[data-article-toc] a").forEach((link) => {
+    link.addEventListener("click", () => {
+      const mobileToc = link.closest("details");
+      if (mobileToc) mobileToc.open = false;
+    });
+  });
+
+  function setActiveSection(id) {
+    document.querySelectorAll("[data-article-toc] a").forEach((link) => {
+      const isActive = link.getAttribute("href") === `#${id}`;
+      link.classList.toggle("is-active", isActive);
+      if (isActive) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  let progressFrame = null;
+  function updateActiveToc() {
+    const marker = (header?.offsetHeight || 72) + 52;
+    let activeSection = sections[0];
+    sections.forEach((candidate) => {
+      if (candidate.section.getBoundingClientRect().top <= marker) activeSection = candidate;
+    });
+    if (activeSection) setActiveSection(activeSection.id);
+  }
+
+  function updateReadingProgress() {
+    progressFrame = null;
+    updateActiveToc();
+    if (!progressBar) return;
+    const start = article.offsetTop;
+    const distance = Math.max(article.offsetHeight - window.innerHeight, 1);
+    const progress = Math.min(Math.max((window.scrollY - start) / distance, 0), 1);
+    progressBar.style.transform = `scaleX(${progress})`;
+  }
+
+  window.addEventListener("scroll", () => {
+    if (progressFrame) return;
+    progressFrame = window.requestAnimationFrame(updateReadingProgress);
+  }, { passive: true });
+  window.addEventListener("resize", updateReadingProgress);
+  updateReadingProgress();
+}
+
+setupArticleNavigation();
 
 if (welcomeGate) {
   const welcomeSeenKey = "portfolio-welcome-seen";

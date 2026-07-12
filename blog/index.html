@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="A place to share lessons, learning journeys, and practical reflections from connecting finance, data, technology, and AI."
+      content="Evidence-led build stories about finance decisions, data products, agentic AI, workflow controls, and practical implementation lessons."
     />
     <title>Blog | Truong Dinh Anh Tu</title>
     <link rel="canonical" href="https://tudzai.github.io/Portfolio/blog/" />
@@ -16,7 +16,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg?v=at-orbit-harmony-20260620" />
-    <link rel="stylesheet" href="../styles.css?v=aabw-blog-20260713" />
+    <link rel="stylesheet" href="../styles.css?v=blog-ux-20260713" />
     <script src="../analytics.js?v=posthog-session-replay-20260702"></script>
   </head>
   <body class="detail-page" data-blog-page="true" data-blog-page-type="index" data-blog-shell>
@@ -30,53 +30,106 @@
         <a href="../index.html#bi-products">BI Products</a>
         <a href="../index.html#automation">Automation</a>
         <a href="../index.html#work">Experience</a>
-        <a href="../index.html#blog">Blog</a>
+        <a href="./" aria-current="page">Blog</a>
         <a href="../index.html#contact">Contact</a>
       </nav>
       <div class="header-actions">
         <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
           <i data-lucide="sun-moon"></i>
         </button>
+        <button class="icon-button mobile-menu-button" type="button" data-menu-toggle aria-label="Open menu" title="Menu">
+          <i data-lucide="menu"></i>
+        </button>
       </div>
     </header>
 
+    <nav class="mobile-nav" data-mobile-nav aria-label="Mobile navigation">
+      <a href="../index.html#decision-cases">Decision Cases</a>
+      <a href="../index.html#bi-products">BI Products</a>
+      <a href="../index.html#automation">Automation</a>
+      <a href="../index.html#work">Experience</a>
+      <a href="./" aria-current="page">Blog</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+
     <main class="page-shell blog-page">
-      <section class="detail-hero" aria-labelledby="blog-page-title">
+      <section class="detail-hero blog-index-hero" aria-labelledby="blog-page-title">
         <p class="breadcrumb"><a href="../index.html#top">Home</a> / Blog</p>
         <div class="blog-page-titlebar">
           <div>
-            <p class="eyebrow" data-blog-copy="blogPageKicker">Learning Log</p>
-            <h1 id="blog-page-title" data-blog-copy="blogPageTitle">Blog</h1>
-            <p data-blog-copy="blogPageIntro">
-              A place to share lessons, learning journeys, and practical reflections from connecting finance, data,
-              technology, and AI.
+            <p class="eyebrow">Decision journal</p>
+            <h1 id="blog-page-title">Finance, data, and AI—translated into decisions.</h1>
+            <p>
+              Practical build stories about the question, the workflow, the controls, and the evidence behind each
+              decision product.
             </p>
           </div>
-          <div class="blog-language-toggle" role="group" aria-label="Blog language">
-            <button type="button" data-blog-lang-option="en" aria-pressed="true">ENG</button>
-            <button type="button" data-blog-lang-option="vi" aria-pressed="false">VN</button>
-          </div>
+          <aside class="blog-hero-note" aria-label="Blog publishing details">
+            <span>Articles in English</span>
+            <strong data-blog-count>1 published article</strong>
+          </aside>
         </div>
-        <div class="blog-page-toolbar">
-          <span class="process-pill" data-blog-copy="blogPagePill">ENG / VN</span>
-          <span class="blog-status-badge is-published" data-blog-copy="blogPageStatus">Published + upcoming</span>
+        <div class="blog-topic-line" aria-label="Core blog topics">
+          <span>Finance judgment</span>
+          <span>Data products</span>
+          <span>Agentic AI</span>
         </div>
       </section>
 
-      <section class="detail-section" aria-labelledby="blog-list-title">
-        <div class="section-heading">
+      <section class="detail-section blog-featured-section" aria-label="Featured article" data-blog-featured-section>
+        <div
+          class="blog-grid blog-featured-root"
+          data-blog-root
+          data-blog-view="feature"
+          data-blog-base=""
+        ></div>
+      </section>
+
+      <section class="detail-section blog-archive-section" aria-labelledby="blog-list-title" data-blog-archive-section>
+        <div class="section-heading blog-archive-heading">
           <div>
-            <p class="section-kicker" data-blog-copy="blogPageListKicker">Finance / Data / Agentic AI</p>
-            <h2 id="blog-list-title" data-blog-copy="blogPageListTitle">Latest notes and build stories</h2>
+            <p class="section-kicker">Article library</p>
+            <h2 id="blog-list-title">Browse by the decision you need to make.</h2>
           </div>
         </div>
-        <div
-          class="blog-grid blog-index-grid"
-          data-blog-root
-          data-blog-view="index"
-          data-blog-base=""
-          aria-live="polite"
-        ></div>
+
+        <div class="blog-archive-toolbar" data-blog-archive-toolbar hidden>
+          <label class="blog-search-field">
+            <span>Search articles</span>
+            <span class="blog-search-control">
+              <i data-lucide="search"></i>
+              <input type="search" placeholder="Search title, topic, or skill" autocomplete="off" data-blog-search />
+            </span>
+          </label>
+          <div class="blog-filter-field">
+            <span>Filter by topic</span>
+            <div class="blog-filter-chips" data-blog-filters aria-label="Filter articles by topic"></div>
+          </div>
+          <p class="blog-result-count" data-blog-result-count aria-live="polite"></p>
+        </div>
+
+        <div class="blog-archive-grid" data-blog-root data-blog-view="index" data-blog-base=""></div>
+        <div class="blog-empty-state" data-blog-empty hidden>
+          <h3>No matching article yet.</h3>
+          <p>Try another topic, or reset the library to see every published article.</p>
+          <button class="button quiet" type="button" data-blog-clear>Reset filters</button>
+        </div>
+        <noscript>
+          <p class="source-note">
+            JavaScript is off. Read the featured article:
+            <a href="predictive-collections-agent/">Designing a Predictive Collections Agent</a>.
+          </p>
+        </noscript>
+      </section>
+
+      <section class="detail-section blog-upcoming-section" aria-labelledby="blog-upcoming-title" data-blog-upcoming-section>
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Up next</p>
+            <h2 id="blog-upcoming-title">What I am writing next.</h2>
+          </div>
+        </div>
+        <div class="blog-upcoming-grid" data-blog-root data-blog-view="upcoming" data-blog-base=""></div>
       </section>
     </main>
 
@@ -86,6 +139,6 @@
     </footer>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="../script.js?v=aabw-blog-20260713"></script>
+    <script src="../script.js?v=blog-ux-20260713"></script>
   </body>
 </html>

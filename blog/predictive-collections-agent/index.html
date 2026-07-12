@@ -40,8 +40,8 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg?v=at-orbit-harmony-20260620" />
-    <link rel="stylesheet" href="../../styles.css?v=aabw-blog-20260713" />
-    <link rel="stylesheet" href="article.css?v=aabw-blog-20260713" />
+    <link rel="stylesheet" href="../../styles.css?v=blog-ux-20260713" />
+    <link rel="stylesheet" href="article.css?v=blog-ux-20260713" />
     <script src="../../analytics.js?v=posthog-session-replay-20260702"></script>
     <script type="application/ld+json">
       {
@@ -78,8 +78,21 @@
         <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
           <i data-lucide="sun-moon"></i>
         </button>
+        <button class="icon-button mobile-menu-button" type="button" data-menu-toggle aria-label="Open menu" title="Menu">
+          <i data-lucide="menu"></i>
+        </button>
       </div>
+      <div class="article-progress" aria-hidden="true"><span data-article-progress></span></div>
     </header>
+
+    <nav class="mobile-nav" data-mobile-nav aria-label="Mobile navigation">
+      <a href="../../index.html#decision-cases">Decision Cases</a>
+      <a href="../../index.html#bi-products">BI Products</a>
+      <a href="../../index.html#automation">Automation</a>
+      <a href="../../index.html#work">Experience</a>
+      <a href="../" aria-current="page">Blog</a>
+      <a href="../../index.html#contact">Contact</a>
+    </nav>
 
     <main class="page-shell blog-page">
       <article>
@@ -110,6 +123,53 @@
           </div>
         </header>
 
+        <section class="article-summary" aria-labelledby="article-summary-title">
+          <div class="article-summary-heading">
+            <p class="section-kicker">Article at a glance</p>
+            <h2 id="article-summary-title">One decision loop, three design principles.</h2>
+          </div>
+          <div class="article-summary-grid">
+            <article>
+              <span>01</span>
+              <strong>Predict before the due date</strong>
+              <p>Move from reactive dunning to a 7–14 day early-warning window.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <strong>Recommend, then require approval</strong>
+              <p>Separate scoring, treatment, outreach, and learning into auditable decisions.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <strong>Prove value with a control group</strong>
+              <p>Measure cure uplift, cost-to-collect, cash timing, and customer guardrails.</p>
+            </article>
+          </div>
+          <div class="article-summary-actions">
+            <a class="button primary" href="deck/" target="_blank" rel="noreferrer">
+              <i data-lucide="presentation"></i>
+              Open the 6-slide case
+            </a>
+            <a class="button quiet" href="#workflow-title">
+              <i data-lucide="route"></i>
+              Jump to the workflow
+            </a>
+          </div>
+        </section>
+
+        <div class="article-reading-layout">
+          <aside class="article-toc-card" aria-labelledby="article-toc-title">
+            <p class="section-kicker">Reading guide</p>
+            <h2 id="article-toc-title">On this page</h2>
+            <nav data-article-toc aria-label="Article sections"></nav>
+          </aside>
+
+          <div class="article-reading-main">
+            <details class="article-mobile-toc">
+              <summary>On this page <span>10 sections</span></summary>
+              <nav data-article-toc aria-label="Article sections"></nav>
+            </details>
+
         <section class="detail-section article-section" aria-labelledby="opening-title">
           <div class="article-section-heading">
             <p class="section-kicker">The reframing</p>
@@ -134,20 +194,57 @@
             more selectively, and with more accountability?”
           </blockquote>
 
-          <figure class="article-figure">
-            <img
-              src="assets/challenge-problem-statement.png"
-              alt="Official AABW Predictive Collections Agent challenge title and problem statement"
-              width="800"
-              height="540"
-            />
-            <figcaption>
-              <span>Official AABW challenge brief: Predictive early-warning and personalised collections agent.</span>
+          <div class="official-brief" aria-labelledby="official-brief-title">
+            <div class="official-brief-heading">
+              <div>
+                <p class="section-kicker">Official brief · readable version</p>
+                <h3 id="official-brief-title">The source requirements, transcribed as accessible HTML.</h3>
+              </div>
               <a
+                class="blog-text-link"
                 href="https://aitalent.genaifund.ai/tracks/financial-services-ii/predictive-collections-agent"
                 target="_blank"
                 rel="noreferrer"
-              >View the source brief</a>
+              >Open source <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="official-brief-grid">
+              <article>
+                <span>Problem statement</span>
+                <p>
+                  Collections is largely reactive, with standard dunning after missed payments instead of early risk
+                  detection and outreach tailored to the borrower’s situation.
+                </p>
+              </article>
+              <article>
+                <span>Build direction</span>
+                <p>
+                  Score a mock portfolio, flag likely missed payments 7–14 days early, explain the risk drivers, and
+                  recommend channel and message treatments.
+                </p>
+              </article>
+              <article>
+                <span>Data and controls</span>
+                <p>
+                  Use repayment history, balances, transactions, behavioural signals, past outcomes, and treatment
+                  history—with mock data, explainable outputs, and human sign-off before new treatments go live.
+                </p>
+              </article>
+            </div>
+          </div>
+
+          <figure class="article-figure source-evidence source-evidence--800">
+            <a class="source-evidence-link" href="assets/challenge-problem-statement.png" target="_blank">
+              <img
+                src="assets/challenge-problem-statement.png"
+                alt="Official AABW Predictive Collections Agent challenge title and problem statement"
+                width="800"
+                height="540"
+                decoding="async"
+              />
+            </a>
+            <figcaption>
+              <span>Official AABW challenge brief: Predictive early-warning and personalised collections agent.</span>
+              <a href="assets/challenge-problem-statement.png" target="_blank">Open original PNG</a>
             </figcaption>
           </figure>
 
@@ -171,25 +268,37 @@
           </div>
 
           <div class="evidence-grid">
-            <figure class="article-figure">
-              <img
-                src="assets/challenge-build-outcomes.png"
-                alt="AABW challenge build direction and expected outcomes"
-                width="800"
-                height="540"
-                loading="lazy"
-              />
-              <figcaption><span>Build direction and expected outcomes from the official brief.</span></figcaption>
+            <figure class="article-figure source-evidence source-evidence--800">
+              <a class="source-evidence-link" href="assets/challenge-build-outcomes.png" target="_blank">
+                <img
+                  src="assets/challenge-build-outcomes.png"
+                  alt="AABW challenge build direction and expected outcomes"
+                  width="800"
+                  height="540"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <figcaption>
+                <span>Build direction and expected outcomes from the official brief.</span>
+                <a href="assets/challenge-build-outcomes.png" target="_blank">Open original PNG</a>
+              </figcaption>
             </figure>
-            <figure class="article-figure">
-              <img
-                src="assets/challenge-data-and-stack.png"
-                alt="AABW challenge expected outcomes and data notes"
-                width="800"
-                height="540"
-                loading="lazy"
-              />
-              <figcaption><span>Mock data, explainable outputs, and human sign-off were explicit requirements.</span></figcaption>
+            <figure class="article-figure source-evidence source-evidence--800">
+              <a class="source-evidence-link" href="assets/challenge-data-and-stack.png" target="_blank">
+                <img
+                  src="assets/challenge-data-and-stack.png"
+                  alt="AABW challenge expected outcomes and data notes"
+                  width="800"
+                  height="540"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <figcaption>
+                <span>Mock data, explainable outputs, and human sign-off were explicit requirements.</span>
+                <a href="assets/challenge-data-and-stack.png" target="_blank">Open original PNG</a>
+              </figcaption>
             </figure>
           </div>
         </section>
@@ -220,6 +329,17 @@
                 sandbox="allow-scripts"
               ></iframe>
             </div>
+            <a class="deck-mobile-poster" href="deck/" target="_blank" rel="noreferrer">
+              <img
+                src="deck/assets/workflow-ai-agent-ver69.png"
+                alt="Preview of the Predictive Collections Agent workflow deck"
+                width="1672"
+                height="941"
+                loading="lazy"
+                decoding="async"
+              />
+              <span><i data-lucide="presentation"></i> Open the interactive deck</span>
+            </a>
             <div class="deck-actions">
               <p>
                 The embedded deck is optimised for desktop. On a phone—or if reduced motion is enabled—open the full
@@ -247,9 +367,10 @@
             <img
               src="deck/assets/workflow-ai-agent-ver69.png"
               alt="AI agent-powered collections workflow from customer signals through risk scoring, treatment, human approval, outreach and learning"
-              width="1920"
-              height="1080"
+              width="1672"
+              height="941"
               loading="lazy"
+              decoding="async"
             />
             <figcaption><span>The target workflow: early warning, recommendation, accountable action, and controlled learning.</span></figcaption>
           </figure>
@@ -513,15 +634,21 @@
             </p>
           </div>
 
-          <figure class="article-figure">
-            <img
-              src="assets/aabw-used-perks.png"
-              alt="AABW perk cards for AWS credits and OpenAI credits plus ChatGPT Plus"
-              width="1030"
-              height="520"
-              loading="lazy"
-            />
-            <figcaption><span>The relevant AABW credit cards shown in the participant portal in July 2026.</span></figcaption>
+          <figure class="article-figure source-evidence source-evidence--1030">
+            <a class="source-evidence-link" href="assets/aabw-used-perks.png" target="_blank">
+              <img
+                src="assets/aabw-used-perks.png"
+                alt="AABW perk cards for AWS credits and OpenAI credits plus ChatGPT Plus"
+                width="1030"
+                height="520"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <figcaption>
+              <span>The relevant AABW credit cards shown in the participant portal in July 2026.</span>
+              <a href="assets/aabw-used-perks.png" target="_blank">Open original PNG</a>
+            </figcaption>
           </figure>
 
           <div class="perks-grid">
@@ -649,6 +776,8 @@
             data or credentials are published.
           </div>
         </section>
+          </div>
+        </div>
       </article>
     </main>
 
@@ -658,6 +787,6 @@
     </footer>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="../../script.js?v=aabw-blog-20260713"></script>
+    <script src="../../script.js?v=blog-ux-20260713"></script>
   </body>
 </html>
