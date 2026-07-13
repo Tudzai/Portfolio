@@ -162,7 +162,7 @@
       const fileNote = createElement(
         "p",
         "model-file-note",
-        `${model.file.format} · ${model.file.size} · ${model.compatibility} · Synthetic template`,
+        `${model.file.format || ".xlsx"} · ${model.file.size} · ${model.compatibility} · Synthetic template`,
       );
       card.append(fileNote);
     } else {
