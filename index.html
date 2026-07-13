@@ -21,10 +21,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="home.css?v=portfolio-redesign-20260713" />
+    <link rel="stylesheet" href="home.css?v=executive-motion-20260713-3" />
 
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="website" />
@@ -89,6 +89,7 @@
   </head>
   <body class="portfolio-home-v2">
     <a class="skip-link" href="#main-content">Skip to content</a>
+    <span class="scroll-sentinel" data-scroll-sentinel aria-hidden="true"></span>
 
     <header class="home-header" data-home-header>
       <div class="home-header-inner">
@@ -149,7 +150,7 @@
             <p class="eyebrow"><span></span> Commercial FP&amp;A Analyst · Ho Chi Minh City</p>
             <h1 id="hero-title">
               I turn logistics finance data into
-              <span>forecasts, performance decisions, and cash actions.</span>
+              <span>forecasts, margin actions, and cash decisions.</span>
             </h1>
             <p class="hero-intro">
               At BEE Logistics, I support budgeting, management reporting, profitability, working capital, and
@@ -165,7 +166,7 @@
                 data-track-label="View selected work"
                 data-track-location="hero"
               >
-                View selected work <span aria-hidden="true">↘</span>
+                Review 3 decision cases <span aria-hidden="true">↘</span>
               </a>
               <a
                 class="home-button home-button-secondary"
@@ -210,6 +211,54 @@
                 <h2 id="recruiter-card-title">Finance-first. Automation-enabled.</h2>
               </div>
               <span class="availability-badge"><i></i> Open to opportunities</span>
+            </div>
+
+            <div class="hero-decision-lens" data-decision-lens>
+              <div class="decision-lens-tabs" role="tablist" aria-label="FP&A decision lenses">
+                <button
+                  id="decision-tab-forecast"
+                  type="button"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="decision-lens-readout"
+                  data-lens-label="Forecast lens"
+                  data-lens-question="Where will the year land?"
+                  data-lens-answer="Connect volume, price, cost, headcount, and cash assumptions to a decision-ready outlook."
+                >Forecast</button>
+                <button
+                  id="decision-tab-explain"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="decision-lens-readout"
+                  tabindex="-1"
+                  data-lens-label="Performance lens"
+                  data-lens-question="Why did performance move?"
+                  data-lens-answer="Translate P&L, margin, mix, customer, and cost movements into a management explanation."
+                >Explain</button>
+                <button
+                  id="decision-tab-act"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="decision-lens-readout"
+                  tabindex="-1"
+                  data-lens-label="Action lens"
+                  data-lens-question="What needs an owner now?"
+                  data-lens-answer="Turn the financial signal into a clear action, accountable owner, timing, and control point."
+                >Act</button>
+              </div>
+              <div
+                class="decision-lens-readout"
+                id="decision-lens-readout"
+                role="tabpanel"
+                aria-labelledby="decision-tab-forecast"
+                aria-live="polite"
+              >
+                <span data-lens-readout-label>Forecast lens</span>
+                <strong data-lens-readout-question>Where will the year land?</strong>
+                <p data-lens-readout-answer>Connect volume, price, cost, headcount, and cash assumptions to a decision-ready outlook.</p>
+              </div>
             </div>
 
             <dl class="recruiter-facts">
@@ -258,11 +307,12 @@
       <span class="legacy-anchor" id="proof" aria-hidden="true"></span>
       <span class="legacy-anchor" id="decision-cases" aria-hidden="true"></span>
       <section class="home-section work-section" id="work" aria-labelledby="work-title">
+        <span class="section-folio" aria-hidden="true">01</span>
         <div class="home-shell">
           <div class="section-heading-row">
             <div>
-              <p class="section-label">Selected evidence</p>
-              <h2 id="work-title">Start with the work closest to your hiring question.</h2>
+              <p class="section-label">Proof for hiring teams</p>
+              <h2 id="work-title">Three finance questions I can help your team answer.</h2>
             </div>
             <p class="section-intro">
               Three short proof paths show business judgment, management reporting quality, and repeatable execution.
@@ -271,12 +321,13 @@
 
           <div class="flagship-grid">
             <article class="flagship-case flagship-case-featured">
+              <span class="case-folio" aria-hidden="true">01</span>
               <div class="featured-case-copy">
                 <div class="case-meta">
                   <span class="evidence-badge evidence-real">Real · Sanitized</span>
                   <span>Business partnering</span>
                 </div>
-                <h3>Branch performance diagnosis for leadership review</h3>
+                <h3>Where is branch and margin pressure forming?</h3>
                 <p>
                   Combined three years of operating data with interviews across 11 departments and three satellite
                   offices to structure branch issues, root causes, and management priorities for CFO and board review.
@@ -311,6 +362,7 @@
             </article>
 
             <article class="flagship-case visual-case">
+              <span class="case-folio" aria-hidden="true">02</span>
               <a
                 class="case-image-link"
                 href="showcase/powerbi/monthly-fpa-performance-pack/"
@@ -329,7 +381,7 @@
                   <span class="evidence-badge evidence-synthetic">Synthetic · Public-safe</span>
                   <span>Management reporting</span>
                 </div>
-                <h3>Monthly FP&amp;A Performance Pack</h3>
+                <h3>Where will the year land against plan?</h3>
                 <p>
                   Actual, budget, and forecast views connected to EBITDA drivers, margin, cash, commentary, and owner
                   actions for a monthly finance review.
@@ -352,6 +404,7 @@
             </article>
 
             <article class="flagship-case automation-case">
+              <span class="case-folio" aria-hidden="true">03</span>
               <div class="automation-visual" aria-label="Monthly reporting automation flow">
                 <div class="automation-topline">
                   <span>Monthly close workflow</span>
@@ -376,7 +429,7 @@
                   <span class="evidence-badge evidence-workflow">Real workflow · Synthetic sample</span>
                   <span>Finance automation</span>
                 </div>
-                <h3>Monthly reporting automation with visible controls</h3>
+                <h3>Which close work should repeat faster—with better control?</h3>
                 <p>
                   A Python-assisted flow for intake, validation, KPI calculation, insight drafting, and finance review—
                   designed to reduce repetitive preparation without hiding the control logic.
@@ -402,6 +455,7 @@
       </section>
 
       <section class="home-section value-section" id="value" aria-labelledby="value-title">
+        <span class="section-folio" aria-hidden="true">02</span>
         <div class="home-shell value-shell">
           <div class="value-heading">
             <p class="section-label section-label-light">What I bring</p>
@@ -438,6 +492,7 @@
       </section>
 
       <section class="home-section experience-section" id="experience" aria-labelledby="experience-title">
+        <span class="section-folio" aria-hidden="true">03</span>
         <div class="home-shell">
           <div class="section-heading-row experience-heading">
             <div>
@@ -536,6 +591,7 @@
       </section>
 
       <section class="home-section approach-section" id="approach" aria-labelledby="approach-title">
+        <span class="section-folio" aria-hidden="true">04</span>
         <div class="home-shell">
           <div class="section-heading-row">
             <div>
@@ -572,6 +628,7 @@
       <span class="legacy-anchor" id="bi-products" aria-hidden="true"></span>
       <span class="legacy-anchor" id="automation" aria-hidden="true"></span>
       <section class="home-section library-section" aria-labelledby="library-title">
+        <span class="section-folio" aria-hidden="true">05</span>
         <div class="home-shell">
           <div class="section-heading-row compact-heading">
             <div>
@@ -642,6 +699,10 @@
       </section>
     </main>
 
+    <a class="back-to-top" href="#top" aria-label="Back to top" data-back-to-top>
+      <span aria-hidden="true">↑</span>
+    </a>
+
     <footer class="home-footer">
       <div class="home-shell footer-inner">
         <div>
@@ -657,6 +718,6 @@
       </div>
     </footer>
 
-    <script src="home.js?v=portfolio-redesign-20260713"></script>
+    <script src="home.js?v=executive-motion-20260713-3"></script>
   </body>
 </html>
