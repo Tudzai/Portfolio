@@ -3,12 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Interactive case deck for the Predictive Early-Warning Collections Agent AABW 2026 project.">
-    <meta name="robots" content="noindex,follow">
-    <title>Predictive Early-Warning Collections Agent</title>
+    <title>Proactive and Effective Collections Agent | Interactive Deck</title>
+    <meta name="description" content="Explore an AI-powered, human-governed collections workflow—from predictive early warning to personalized treatment and continuous learning.">
+    <meta name="author" content="Truong Dinh Anh Tu">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Truong Dinh Anh Tu FP&amp;A Portfolio">
+    <meta property="og:url" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/">
+    <meta property="og:title" content="Proactive and Effective Collections Agent">
+    <meta property="og:description" content="Predict risk early, recommend the next-best action, and keep humans in control.">
+    <meta property="og:image" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260713-og">
+    <meta property="og:image:secure_url" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260713-og">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1672">
+    <meta property="og:image:height" content="941">
+    <meta property="og:image:alt" content="AI agent-powered collections workflow from predictive signals through human approval and continuous learning">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Proactive and Effective Collections Agent">
+    <meta name="twitter:description" content="Predict risk early, recommend the next-best action, and keep humans in control.">
+    <meta name="twitter:image" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260713-og">
+    <meta name="twitter:image:alt" content="AI agent-powered collections workflow from predictive signals through human approval and continuous learning">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg?v=collections-agent-deck-20260713">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
     <style>
         /* ===========================================
            CSS CUSTOM PROPERTIES (THEME)
@@ -16560,7 +16581,7 @@
                     </header>
 
                     <div class="demo-video-shell is-loading" id="demoVideoShell">
-                        <video id="collectionsDemoVideo" controls playsinline preload="metadata" aria-label="Proactive and Effective Collections Agent demonstration">
+                        <video id="collectionsDemoVideo" controls playsinline preload="auto" aria-label="Proactive and Effective Collections Agent demonstration">
                             <source src="demo/approvals-demo-40s-focusee-new-pull-hold-frame.mp4" type="video/mp4">
                             Your browser does not support MP4 video playback.
                         </video>
@@ -18197,6 +18218,8 @@
         <button type="button" id="nextSlide" aria-label="Next slide">&gt;</button>
     </nav>
     <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="edit-hotzone" aria-hidden="true"></div>
+    <button class="edit-toggle" id="editToggle" type="button" title="Edit mode">E</button>
 
     <script>
         /* ===========================================
@@ -18230,6 +18253,7 @@
                 this.setupBenefitsSequence();
                 this.setupRoadmapSequence();
                 this.setupQASequence();
+                this.restoreSavedText();
                 this.showSlide(this.getInitialSlideIndex(), { scenePosition: "initial" });
             }
 
@@ -19062,6 +19086,91 @@
                 return false;
             }
 
+            restoreSavedText() {
+                const saved = localStorage.getItem("collections-agent-deck-edits-v8");
+                if (!saved) return;
+                try {
+                    const edits = JSON.parse(saved);
+                    document.querySelectorAll("[data-editable]").forEach((node, index) => {
+                        const savedValue = edits[index];
+                        const isStaleOverviewClaim = node.classList.contains("intro-title-line")
+                            && /(predictive early-warning|10(?:&times;|&#215;|×|x)\s*more\s+cost-efficient)/i.test(savedValue || "");
+                        const isStaleSlideCount = node.classList.contains("corner-index")
+                            && /01\s*\/\s*05/.test(savedValue || "");
+                        if (savedValue && !isStaleOverviewClaim && !isStaleSlideCount) node.innerHTML = savedValue;
+                    });
+                } catch (error) {
+                    console.warn("Could not restore saved edits", error);
+                }
+            }
+        }
+
+        /* ===========================================
+           INLINE EDITOR
+           Enables post-draft text edits and persists them locally.
+           =========================================== */
+        class InlineEditor {
+            constructor() {
+                this.isActive = false;
+                this.toggle = document.getElementById("editToggle");
+                this.hotzone = document.querySelector(".edit-hotzone");
+                this.hideTimeout = null;
+                this.setupVisibility();
+                this.setupToggle();
+                this.setupSaving();
+            }
+
+            setupVisibility() {
+                this.hotzone.addEventListener("mouseenter", () => {
+                    clearTimeout(this.hideTimeout);
+                    this.toggle.classList.add("show");
+                });
+                this.hotzone.addEventListener("mouseleave", () => this.scheduleHide());
+                this.toggle.addEventListener("mouseenter", () => clearTimeout(this.hideTimeout));
+                this.toggle.addEventListener("mouseleave", () => this.scheduleHide());
+                this.hotzone.addEventListener("click", () => this.toggleEditMode());
+            }
+
+            setupToggle() {
+                this.toggle.addEventListener("click", () => this.toggleEditMode());
+                document.addEventListener("keydown", (event) => {
+                    if ((event.key === "e" || event.key === "E") && event.target.getAttribute("contenteditable") !== "true") {
+                        this.toggleEditMode();
+                    }
+                    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+                        event.preventDefault();
+                        this.save();
+                    }
+                });
+            }
+
+            setupSaving() {
+                document.querySelectorAll("[data-editable]").forEach((node) => {
+                    node.addEventListener("input", () => this.save());
+                });
+            }
+
+            scheduleHide() {
+                this.hideTimeout = setTimeout(() => {
+                    if (!this.isActive) this.toggle.classList.remove("show");
+                }, 400);
+            }
+
+            toggleEditMode() {
+                this.isActive = !this.isActive;
+                document.body.classList.toggle("editing", this.isActive);
+                this.toggle.classList.toggle("active", this.isActive);
+                this.toggle.classList.add("show");
+                document.querySelectorAll("[data-editable]").forEach((node) => {
+                    node.setAttribute("contenteditable", String(this.isActive));
+                    node.setAttribute("spellcheck", "false");
+                });
+            }
+
+            save() {
+                const edits = Array.from(document.querySelectorAll("[data-editable]")).map((node) => node.innerHTML);
+                localStorage.setItem("collections-agent-deck-edits-v8", JSON.stringify(edits));
+            }
         }
 
         /* ===========================================
@@ -19069,6 +19178,7 @@
            Starts the deck once the DOM is ready.
            =========================================== */
         const presentation = new SlidePresentation();
+        const editor = new InlineEditor();
         window.presentation = presentation;
     </script>
 </body>
