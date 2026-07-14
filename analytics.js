@@ -5,7 +5,7 @@
   const posthogApiHost = "https://us.i.posthog.com";
   const posthogUiHost = "https://us.posthog.com";
   const trackedHosts = new Set(["tudzai.github.io"]);
-  const schemaVersion = "2026-07-14.3";
+  const schemaVersion = "2026-07-14.4";
   const analyticsPreferenceKey = "portfolio-analytics-preference";
   const analyticsControlParameter = "portfolio_analytics";
   const bridgeMessageType = "portfolio-analytics-bridge-v1";
@@ -151,7 +151,7 @@
       pageType = "home";
       contentGroup = "home";
       contentSlug = "home";
-    } else if (fileName === "cv.html") {
+    } else if (fileName === "cv.html" || fileName === "cv-pdf.html") {
       pageType = "cv";
       contentGroup = "cv";
       contentSlug = "cv";
@@ -605,9 +605,12 @@
       const fileExtension = getFileExtension(url.pathname);
       const linkKind = getLinkKind(link, url, fileExtension);
       const ctaLocation = getCtaLocation(link);
-      const isCvPdf = url.pathname.toLowerCase().includes("truong-dinh-anh-tu-cv");
-      const opensCvPage = url.pathname.toLowerCase().endsWith("/cv.html");
-      if (isCvPdf) forceCvSessionRecording();
+      const destinationPath = url.pathname.toLowerCase();
+      const isCvPdf = destinationPath.includes("truong-dinh-anh-tu-cv");
+      const opensCvPage = destinationPath.endsWith("/cv.html");
+      const opensCvViewer = destinationPath.endsWith("/cv-pdf.html");
+      const isCvArtifact = isCvPdf || opensCvPage || opensCvViewer;
+      if (isCvArtifact) forceCvSessionRecording();
       const declaredTrackingElement = link.closest("[data-track-event], [data-blog-track-event]");
       const declaredEventName =
         declaredTrackingElement?.dataset?.trackEvent || declaredTrackingElement?.dataset?.blogTrackEvent || null;
@@ -621,9 +624,11 @@
         ? link.hasAttribute("download")
           ? "download_pdf_clicked"
           : "open_pdf_clicked"
-        : opensCvPage
-          ? "open_cv_page_clicked"
-          : null;
+        : opensCvViewer
+          ? "open_pdf_clicked"
+          : opensCvPage
+            ? "open_cv_page_clicked"
+            : null;
       const commonLinkProperties = {
         link_kind: linkKind,
         link_label: linkKind === "contact" ? null : getElementLabel(link),
@@ -636,9 +641,10 @@
         file_extension: fileExtension,
         has_download_attribute: link.hasAttribute("download"),
         is_cv_pdf: isCvPdf,
+        is_cv_viewer: opensCvViewer,
         contact_method: contactMethod,
         file_action: fileAction,
-        artifact_type: isCvPdf ? "cv" : fileExtension ? "portfolio_artifact" : null,
+        artifact_type: isCvArtifact ? "cv" : fileExtension ? "portfolio_artifact" : null,
         cv_action: cvAction,
         declared_event_name: declaredEventName,
       };
@@ -662,13 +668,9 @@
         });
       }
 
-      if (isCvPdf || opensCvPage) {
+      if (isCvArtifact) {
         capturePortfolioEvent("portfolio_cv_interaction", {
-          cv_action: isCvPdf
-            ? link.hasAttribute("download")
-              ? "download_pdf_clicked"
-              : "open_pdf_clicked"
-            : "open_cv_page_clicked",
+          cv_action: cvAction,
           cta_location: ctaLocation,
           opens_new_tab: link.target === "_blank",
         });

@@ -4485,7 +4485,7 @@ main > section {
   height: min(86vh, 980px);
   min-height: 680px;
   border: 0;
-  background: var(--surface-strong);
+  background: #111b2d;
 }
 
 .cv-viewer:focus-visible {

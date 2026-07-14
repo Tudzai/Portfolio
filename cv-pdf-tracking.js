@@ -7,6 +7,7 @@
   const viewerVersion = "6.1.200";
   const documentId = frame.dataset.cvDocumentId || "cv";
   const documentVersion = frame.dataset.cvDocumentVersion || "unknown";
+  const ctaLocation = frame.dataset.cvCtaLocation || "cv-pdf-viewer-section";
   const loadStartedAt = performance.now();
   const pageViewDelayMs = 1000;
   const dwellThresholds = [5, 15, 30];
@@ -43,7 +44,7 @@
       viewer_version: viewerVersion,
       document_id: documentId,
       document_version: documentVersion,
-      cta_location: "cv-pdf-viewer-section",
+      cta_location: ctaLocation,
       ...properties,
     });
   }

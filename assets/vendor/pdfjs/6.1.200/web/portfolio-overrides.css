@@ -1,5 +1,13 @@
 /* Portfolio read-only CV viewer overrides for Mozilla PDF.js 6.1.200. */
 
+:root {
+  --body-bg-color: #111b2d;
+}
+
+.pdfViewer .page {
+  box-shadow: 0 14px 36px rgb(0 0 0 / 0.38);
+}
+
 #editorModeButtons,
 #editorModeSeparator,
 #secondaryOpenFile,
@@ -12,4 +20,14 @@
 #viewerContainer:focus-visible {
   outline: 3px solid #20a08a;
   outline-offset: -3px;
+}
+
+@media screen and (forced-colors: active) {
+  :root {
+    --body-bg-color: Canvas;
+  }
+
+  .pdfViewer .page {
+    box-shadow: none;
+  }
 }
