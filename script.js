@@ -74,14 +74,8 @@ function getTrackedText(element) {
 }
 
 function trackPortfolioEvent(eventName, properties = {}) {
-  if (!window.posthog || typeof window.posthog.capture !== "function") return;
-
-  window.posthog.capture(eventName, {
-    page_path: window.location.pathname,
-    page_url: window.location.href,
-    page_title: document.title,
-    ...properties,
-  });
+  if (!window.portfolioAnalytics || typeof window.portfolioAnalytics.capture !== "function") return;
+  window.portfolioAnalytics.capture(eventName, properties);
 }
 
 document.querySelectorAll("[data-track-event]").forEach((element) => {
