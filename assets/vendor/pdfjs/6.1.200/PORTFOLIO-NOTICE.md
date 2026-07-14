@@ -12,5 +12,7 @@ Portfolio-specific changes:
 - Uses the official minified legacy API and worker builds from `pdfjs-dist@6.1.200`.
 - Disables embedded PDF scripting and annotation editing for this read-only CV viewer.
 - Hides local-file, editing, and bookmark controls.
+- Forces the viewer interface to English (`en-US`) for a consistent public experience.
+- Uses a dark Portfolio navy document stage while keeping the PDF pages and toolbar unchanged.
 - Marks rendered PDF pages with `ph-no-capture` so CV page pixels and text are blocked from PostHog Session Replay.
 - Omits source maps, debugger assets, the sample PDF, and the unused sandbox bundle.

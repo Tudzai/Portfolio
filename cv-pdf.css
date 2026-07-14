@@ -1,0 +1,61 @@
+:root {
+  color-scheme: light;
+  background: #111b2d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+.cv-pdf-shell {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+  overflow: hidden;
+  background: #111b2d;
+}
+
+.cv-pdf-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #111b2d;
+}
+
+.cv-pdf-frame:focus-visible {
+  outline: 3px solid #20a08a;
+  outline-offset: -3px;
+}
+
+.cv-pdf-fallback {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  margin: 0;
+  padding: 24px;
+  color: #ffffff;
+  font: 600 1rem/1.6 system-ui, sans-serif;
+  text-align: center;
+  background: #111b2d;
+}
+
+.cv-pdf-fallback a {
+  color: #67e8d1;
+}
+
+@media screen and (forced-colors: active) {
+  :root,
+  body,
+  .cv-pdf-frame,
+  .cv-pdf-fallback {
+    background: Canvas;
+  }
+}

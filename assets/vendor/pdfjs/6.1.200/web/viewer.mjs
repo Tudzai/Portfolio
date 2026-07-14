@@ -5475,7 +5475,7 @@ const defaultOptions = {
   },
   localeProperties: {
     value: {
-      lang: navigator.language || "en-US"
+      lang: "en-US"
     },
     kind: OptionKind.BROWSER
   },
