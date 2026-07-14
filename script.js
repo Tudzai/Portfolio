@@ -90,10 +90,47 @@ document.querySelectorAll("[data-track-event]").forEach((element) => {
 
 const blogPosts = [
   {
+    id: "aabw-2026-recap",
+    slug: "aabw-2026-recap",
+    status: "published",
+    featured: true,
+    publishedAt: "2026-07-14",
+    readMinutes: 9,
+    language: "en",
+    category: "Community / Product Building",
+    topics: ["Agentic AI", "Product", "Career"],
+    tags: ["AABW 2026", "First Hackathon", "Product Thinking", "HTML Slides", "Demo Storytelling"],
+    image: {
+      src: "aabw-2026-recap/assets/aabw-workshop-crowd.jpg",
+      width: 1276,
+      height: 956,
+      alt: {
+        vi: "Cộng đồng builder tập trung tại Agentic AI Build Week 2026 ở Thành phố Hồ Chí Minh",
+        en: "Builders gathering during Agentic AI Build Week 2026 in Ho Chi Minh City",
+      },
+    },
+    title: {
+      vi: "AABW 2026: Hackathon đầu tiên của tôi với vai trò non-technical builder",
+      en: "AABW 2026 Recap: My First Hackathon as a Non-Technical Builder",
+    },
+    summary: {
+      vi: "Từ business brief đến workflow, HTML pitch deck và demo: những gì tôi học được khi lần đầu tham gia hackathon mà không xuất phát từ kỹ thuật.",
+      en: "From business brief to workflow, HTML pitch deck, and demo: what I learned by building end to end without a traditional technical background.",
+    },
+    angle: {
+      vi: "Bài recap tiếng Anh · Product thinking · Community · Bài học thực tế.",
+      en: "First-person recap · Product thinking · Community · Practical lessons.",
+    },
+    meta: {
+      vi: "Bài viết tiếng Anh · 9 phút",
+      en: "AABW 2026 · 9 min read",
+    },
+  },
+  {
     id: "predictive-collections-agent",
     slug: "predictive-collections-agent",
     status: "published",
-    featured: true,
+    featured: false,
     publishedAt: "2026-07-13",
     readMinutes: 12,
     language: "en",
