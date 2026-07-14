@@ -5,7 +5,7 @@
   const posthogApiHost = "https://us.i.posthog.com";
   const posthogUiHost = "https://us.posthog.com";
   const trackedHosts = new Set(["tudzai.github.io"]);
-  const schemaVersion = "2026-07-13.2";
+  const schemaVersion = "2026-07-14.1";
   const analyticsPreferenceKey = "portfolio-analytics-preference";
   const analyticsControlParameter = "portfolio_analytics";
   const bridgeMessageType = "portfolio-analytics-bridge-v1";
@@ -348,6 +348,18 @@
 
   function beforeSendPostHogEvent(event) {
     if (!event || typeof event !== "object") return event;
+    if (typeof event.event === "string" && event.event.startsWith("$")) {
+      const sdkProperties = event.properties && typeof event.properties === "object" ? event.properties : null;
+      if (sdkProperties) {
+        ["$current_url", "$referrer", "$initial_current_url", "$initial_referrer"].forEach((key) => {
+          const value = sdkProperties[key];
+          if (typeof value === "string" && /^(?:https?:)?\/\//i.test(value)) {
+            sdkProperties[key] = safeUrl(value);
+          }
+        });
+      }
+      return event;
+    }
     const rawProperties = event.properties && typeof event.properties === "object" ? event.properties : {};
     const properties = sanitizePostHogPropertyTree(rawProperties);
     event.properties = {
@@ -404,7 +416,7 @@
   }
 
   function capturePortfolioEvent(eventName, properties = {}) {
-    if (typeof eventName !== "string" || !/^[A-Za-z0-9_$][A-Za-z0-9_$ .-]{0,79}$/.test(eventName)) return;
+    if (typeof eventName !== "string" || !/^[A-Za-z0-9_][A-Za-z0-9_$ .-]{0,79}$/.test(eventName)) return;
     const sanitizedProperties = sanitizeCustomProperties(properties);
 
     if (bridgeOnly) {
@@ -439,11 +451,16 @@
       if (!data || data.type !== bridgeMessageType || typeof data.event_name !== "string") return;
       const frame = Array.from(document.querySelectorAll("iframe")).find((candidate) => candidate.contentWindow === event.source);
       if (!frame) return;
+      let frameUrl;
       try {
-        if (new URL(frame.getAttribute("src") || "", window.location.href).origin !== window.location.origin) return;
+        frameUrl = new URL(frame.getAttribute("src") || "", window.location.href);
+        if (frameUrl.origin !== window.location.origin) return;
       } catch {
         return;
       }
+      const hasOpaqueSandboxOrigin = frame.hasAttribute("sandbox") && !frame.sandbox.contains("allow-same-origin");
+      const expectedOrigin = hasOpaqueSandboxOrigin ? "null" : frameUrl.origin;
+      if (event.origin !== expectedOrigin) return;
 
       capturePortfolioEvent(data.event_name, {
         ...sanitizeCustomProperties(data.properties),
@@ -539,6 +556,14 @@
   capturePortfolioEvent("portfolio_page_loaded", {
     referrer_url: safeUrl(document.referrer),
   });
+
+  if (pageContext.page_type === "cv") {
+    capturePortfolioEvent("portfolio_cv_viewed");
+  }
+
+  if (pageContext.page_type === "deck") {
+    capturePortfolioEvent("portfolio_deck_viewed");
+  }
 
   if (pageContext.page_type === "404") {
     capturePortfolioEvent("portfolio_404_viewed", {
@@ -836,8 +861,23 @@
     candidates.forEach((element) => observer.observe(element));
   }
 
+  function getOrderedSlides() {
+    const controllerSlides = Array.isArray(window.presentation?.slides) ? window.presentation.slides : [];
+    if (controllerSlides.length) return controllerSlides.filter((slide) => slide instanceof Element);
+
+    const domSlides = Array.from(document.querySelectorAll(".slide"));
+    const preferredOrder = [".intro-slide", ".journey-slide", ".bx-slide", ".upcoming-slide", ".rx-slide", ".qa-slide"];
+    const orderedSlides = preferredOrder
+      .map((selector) => document.querySelector(selector))
+      .filter((slide) => slide instanceof Element && domSlides.includes(slide));
+    domSlides.forEach((slide) => {
+      if (!orderedSlides.includes(slide)) orderedSlides.push(slide);
+    });
+    return orderedSlides;
+  }
+
   function setupSlideTracking() {
-    const slides = Array.from(document.querySelectorAll(".slide"));
+    const slides = getOrderedSlides();
     if (!slides.length || !("MutationObserver" in window)) return;
     let lastSlide = null;
     const captureActiveSlide = () => {
@@ -859,6 +899,144 @@
     const observer = new MutationObserver(captureActiveSlide);
     slides.forEach((slide) => observer.observe(slide, { attributes: true, attributeFilter: ["class", "hidden"] }));
     captureActiveSlide();
+  }
+
+  function setupDeckNavigationTracking() {
+    if (pageContext.page_type !== "deck") return;
+
+    let touchStartX = null;
+    let touchStartY = null;
+    let lastDeckSwipeAt = 0;
+
+    const getDeckNavigationState = () => {
+      const slides = getOrderedSlides();
+      const activeSlide = slides.find(
+        (slide) => slide.classList.contains("active") || slide.classList.contains("visible"),
+      );
+      const currentSlide = slides.indexOf(activeSlide);
+      if (!activeSlide || currentSlide < 0) return null;
+
+      const rawSceneIndex =
+        activeSlide.dataset.introScene ??
+        activeSlide.dataset.journeyScene ??
+        activeSlide.dataset.benefitScene ??
+        activeSlide.dataset.roadmapScene ??
+        activeSlide.dataset.qaScene ??
+        null;
+      const parsedSceneIndex = Number.parseInt(rawSceneIndex, 10);
+      const sceneIndex = Number.isFinite(parsedSceneIndex) ? parsedSceneIndex : null;
+
+      return {
+        slide_index: currentSlide + 1,
+        scene_index: Number.isFinite(sceneIndex) ? sceneIndex + 1 : null,
+        signature: `${currentSlide}:${Number.isFinite(sceneIndex) ? sceneIndex : "none"}`,
+      };
+    };
+
+    const queueDeckNavigationCapture = (controlType, controlId, direction) => {
+      const before = getDeckNavigationState();
+      if (!before) return;
+
+      window.setTimeout(() => {
+        const after = getDeckNavigationState();
+        if (!after || before.signature === after.signature) return;
+
+        recordInteraction();
+        capturePortfolioEvent("portfolio_deck_interacted", {
+          control_type: controlType,
+          control_id: controlId,
+          control_label: null,
+          selected_value: null,
+          navigation_direction: direction,
+          navigation_scope: before.slide_index === after.slide_index ? "scene" : "slide",
+          from_slide_index: before.slide_index,
+          to_slide_index: after.slide_index,
+          from_scene_index: before.scene_index,
+          to_scene_index: after.scene_index,
+          is_first_interaction: firstPreviewInteraction,
+        });
+        firstPreviewInteraction = false;
+      }, 0);
+    };
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (document.body.classList.contains("editing")) return;
+        const target = event.target instanceof Element ? event.target : null;
+        if (target?.closest("input, textarea, select, button, [contenteditable='true'], [role='button']")) return;
+
+        const isSpace = event.key === " " || event.key === "Spacebar" || event.code === "Space";
+        const forwardKeys = new Set(["ArrowRight", "ArrowDown", "PageDown"]);
+        const backwardKeys = new Set(["ArrowLeft", "ArrowUp", "PageUp"]);
+        let direction = null;
+        if (isSpace) direction = event.shiftKey ? "backward" : "forward";
+        else if (event.key === "Home") direction = "first";
+        else if (event.key === "End") direction = "last";
+        else if (forwardKeys.has(event.key)) direction = "forward";
+        else if (backwardKeys.has(event.key)) direction = "backward";
+        if (!direction) return;
+
+        const controlId = isSpace ? "Space" : event.key || event.code || "keyboard";
+        queueDeckNavigationCapture("keyboard", controlId, direction);
+      },
+      true,
+    );
+
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        if (Math.abs(event.deltaY) < 18) return;
+        queueDeckNavigationCapture("wheel", "wheel", event.deltaY > 0 ? "forward" : "backward");
+      },
+      { capture: true, passive: true },
+    );
+
+    window.addEventListener(
+      "touchstart",
+      (event) => {
+        const touch = event.changedTouches?.[0];
+        if (!touch) return;
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      },
+      { capture: true, passive: true },
+    );
+
+    window.addEventListener(
+      "touchend",
+      (event) => {
+        const touch = event.changedTouches?.[0];
+        if (!touch || !Number.isFinite(touchStartX) || !Number.isFinite(touchStartY)) return;
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+        touchStartX = null;
+        touchStartY = null;
+        if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+        lastDeckSwipeAt = Date.now();
+        queueDeckNavigationCapture("swipe", "horizontal-swipe", dx < 0 ? "forward" : "backward");
+      },
+      { capture: true, passive: true },
+    );
+
+    document.addEventListener(
+      "click",
+      (event) => {
+        if (Date.now() - lastDeckSwipeAt < 750 || document.body.classList.contains("editing")) return;
+        const target = event.target instanceof Element ? event.target : null;
+        const slide = target?.closest(".slide");
+        if (!slide) return;
+        if (
+          target.closest(
+            "a, button, input, select, textarea, video, audio, [role='button'], [contenteditable='true'], .deck-controls, .edit-toggle, .edit-hotzone",
+          )
+        ) {
+          return;
+        }
+        queueDeckNavigationCapture("slide_background", "slide-background", "forward");
+      },
+      true,
+    );
   }
 
   function setupEmbedTracking() {
@@ -994,6 +1172,7 @@
   function initializeDomTracking() {
     setupSectionTracking();
     setupSlideTracking();
+    setupDeckNavigationTracking();
     setupEmbedTracking();
     setupMediaTracking();
     updateScrollDepth();
