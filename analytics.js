@@ -5,7 +5,7 @@
   const posthogApiHost = "https://us.i.posthog.com";
   const posthogUiHost = "https://us.posthog.com";
   const trackedHosts = new Set(["tudzai.github.io"]);
-  const schemaVersion = "2026-07-14.2";
+  const schemaVersion = "2026-07-14.3";
   const analyticsPreferenceKey = "portfolio-analytics-preference";
   const analyticsControlParameter = "portfolio_analytics";
   const bridgeMessageType = "portfolio-analytics-bridge-v1";
@@ -1056,6 +1056,10 @@
   function setupEmbedTracking() {
     const embeds = Array.from(document.querySelectorAll("iframe, object, embed"));
     if (!embeds.length) return;
+    const getEmbedSource = (embed) =>
+      embed.matches("[data-cv-pdf-viewer]")
+        ? embed.getAttribute("data-cv-document-url") || embed.getAttribute("src") || embed.getAttribute("data")
+        : embed.getAttribute("src") || embed.getAttribute("data");
     const viewed = new WeakSet();
     const viewTimers = new WeakMap();
     const observer = "IntersectionObserver" in window
@@ -1069,8 +1073,8 @@
                   embed,
                   window.setTimeout(() => {
                     viewed.add(embed);
-                    const source = embed.getAttribute("src") || embed.getAttribute("data");
-                    const isPdf = String(source || "").toLowerCase().includes(".pdf");
+                    const source = getEmbedSource(embed);
+                    const isPdf = embed.matches("[data-cv-pdf-viewer]") || String(source || "").toLowerCase().includes(".pdf");
                     capturePortfolioEvent("portfolio_embed_viewed", {
                       embed_type: isPdf ? "pdf" : embed.tagName.toLowerCase(),
                       embed_title: embed.getAttribute("title") || embed.getAttribute("aria-label") || null,
@@ -1097,9 +1101,10 @@
 
     embeds.forEach((embed) => {
       const captureLoaded = () => {
-        const source = embed.getAttribute("src") || embed.getAttribute("data");
+        const source = getEmbedSource(embed);
+        const isPdf = embed.matches("[data-cv-pdf-viewer]") || String(source || "").toLowerCase().includes(".pdf");
         capturePortfolioEvent("portfolio_embed_loaded", {
-          embed_type: String(source || "").toLowerCase().includes(".pdf") ? "pdf" : embed.tagName.toLowerCase(),
+          embed_type: isPdf ? "pdf" : embed.tagName.toLowerCase(),
           embed_title: embed.getAttribute("title") || embed.getAttribute("aria-label") || null,
           destination_url: safeUrl(source),
         });

@@ -17,8 +17,8 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=at-orbit-harmony-20260620" />
-    <link rel="stylesheet" href="styles.css?v=decision-cockpit-dynamic-20260621" />
-    <script src="analytics.js?v=posthog-observability-20260714"></script>
+    <link rel="stylesheet" href="styles.css?v=cv-pdfjs-20260714" />
+    <script src="analytics.js?v=posthog-observability-20260714-3"></script>
   </head>
   <body class="detail-page cv-page">
     <header class="site-header is-scrolled" data-header>
@@ -68,14 +68,20 @@
       </section>
 
       <section class="cv-viewer-section" aria-label="CV document preview">
-        <object
+        <iframe
           class="cv-viewer"
-          data="assets/Truong-Dinh-Anh-Tu-CV-2026.pdf"
-          type="application/pdf"
-        >
+          data-cv-pdf-viewer
+          data-cv-document-id="cv"
+          data-cv-document-version="2026"
+          data-cv-document-url="assets/Truong-Dinh-Anh-Tu-CV-2026.pdf"
+          title="Truong Dinh Anh Tu CV PDF viewer"
+          src="assets/vendor/pdfjs/6.1.200/web/viewer.html?file=..%2F..%2F..%2F..%2FTruong-Dinh-Anh-Tu-CV-2026.pdf#page=1&amp;zoom=page-width"
+          allow="fullscreen"
+        ></iframe>
+        <noscript>
           <div class="cv-fallback">
             <p>
-              Your browser could not show the PDF preview here. You can still open it in a new tab or download it.
+              JavaScript is required for the interactive CV preview. You can still open it in a new tab or download it.
             </p>
             <div class="hero-actions">
               <a class="button primary" href="assets/Truong-Dinh-Anh-Tu-CV-2026.pdf" target="_blank" rel="noopener">
@@ -88,11 +94,12 @@
               </a>
             </div>
           </div>
-        </object>
+        </noscript>
       </section>
     </main>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="cv-pdf-tracking.js?v=pdfjs-observability-20260714"></script>
     <script src="script.js?v=hero-after-welcome-20260620"></script>
   </body>
 </html>

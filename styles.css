@@ -4488,6 +4488,11 @@ main > section {
   background: var(--surface-strong);
 }
 
+.cv-viewer:focus-visible {
+  outline: 3px solid var(--teal-strong);
+  outline-offset: -3px;
+}
+
 .cv-fallback {
   display: grid;
   gap: 18px;
