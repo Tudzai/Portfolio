@@ -5,7 +5,7 @@
   const posthogApiHost = "https://us.i.posthog.com";
   const posthogUiHost = "https://us.posthog.com";
   const trackedHosts = new Set(["tudzai.github.io"]);
-  const schemaVersion = "2026-07-14.1";
+  const schemaVersion = "2026-07-14.2";
   const analyticsPreferenceKey = "portfolio-analytics-preference";
   const analyticsControlParameter = "portfolio_analytics";
   const bridgeMessageType = "portfolio-analytics-bridge-v1";
@@ -375,6 +375,17 @@
     return request;
   }
 
+  function forceCvSessionRecording() {
+    if (bridgeOnly || analyticsPreference === "internal") return;
+    if (!window.posthog || typeof window.posthog.startSessionRecording !== "function") return;
+    window.posthog.startSessionRecording({
+      sampling: true,
+      linked_flag: true,
+      url_trigger: true,
+      event_trigger: true,
+    });
+  }
+
   if (!bridgeOnly) {
     if (window.posthog?.__loaded || window.posthog?.__SV) return;
 
@@ -413,6 +424,8 @@
       },
       before_send: beforeSendPostHogEvent,
     });
+
+    if (getPageContext().page_type === "cv") forceCvSessionRecording();
   }
 
   function capturePortfolioEvent(eventName, properties = {}) {
@@ -594,6 +607,7 @@
       const ctaLocation = getCtaLocation(link);
       const isCvPdf = url.pathname.toLowerCase().includes("truong-dinh-anh-tu-cv");
       const opensCvPage = url.pathname.toLowerCase().endsWith("/cv.html");
+      if (isCvPdf) forceCvSessionRecording();
       const declaredTrackingElement = link.closest("[data-track-event], [data-blog-track-event]");
       const declaredEventName =
         declaredTrackingElement?.dataset?.trackEvent || declaredTrackingElement?.dataset?.blogTrackEvent || null;
