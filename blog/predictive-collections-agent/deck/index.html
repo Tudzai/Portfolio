@@ -14,8 +14,8 @@
     <meta property="og:url" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/">
     <meta property="og:title" content="Proactive and Effective Collections Agent">
     <meta property="og:description" content="Predict risk early, recommend the next-best action, and keep humans in control.">
-    <meta property="og:image" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260713-og">
-    <meta property="og:image:secure_url" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260713-og">
+    <meta property="og:image" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260714-og2">
+    <meta property="og:image:secure_url" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260714-og2">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1672">
     <meta property="og:image:height" content="941">
@@ -23,9 +23,9 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Proactive and Effective Collections Agent">
     <meta name="twitter:description" content="Predict risk early, recommend the next-best action, and keep humans in control.">
-    <meta name="twitter:image" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260713-og">
+    <meta name="twitter:image" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png?v=20260714-og2">
     <meta name="twitter:image:alt" content="AI agent-powered collections workflow from predictive signals through human approval and continuous learning">
-    <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg?v=collections-agent-deck-20260713">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg?v=collections-agent-deck-20260714">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14888,13 +14888,72 @@
         .qa-single-caveat {
             position: absolute;
             left: 64px;
-            right: 64px;
+            right: 420px;
             bottom: 18px;
             color: #5b667a;
             font-size: 22px;
-            line-height: 1;
+            line-height: 1.2;
             font-weight: 680;
-            text-align: center;
+            text-align: left;
+        }
+
+        .qa-blog-return {
+            position: absolute;
+            right: 64px;
+            bottom: 12px;
+            z-index: 20;
+            min-width: 326px;
+            height: 68px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 0 24px;
+            border: 2px solid #0b4ec4;
+            border-radius: 8px;
+            background: #0b4ec4;
+            color: #ffffff;
+            text-decoration: none;
+            box-shadow: 0 12px 28px rgba(11, 78, 196, 0.2);
+            transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+        }
+
+        .qa-blog-return:hover,
+        .qa-blog-return:focus-visible {
+            transform: translateY(-3px);
+            background: #082f86;
+            box-shadow: 0 18px 34px rgba(11, 78, 196, 0.28);
+            outline: none;
+        }
+
+        .qa-blog-return-arrow {
+            flex: 0 0 auto;
+            font-family: var(--font-mono);
+            font-size: 28px;
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        .qa-blog-return-copy {
+            display: grid;
+            gap: 3px;
+        }
+
+        .qa-blog-return-copy small {
+            color: rgba(255, 255, 255, 0.72);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .qa-blog-return-copy strong {
+            color: #ffffff;
+            font-size: 20px;
+            line-height: 1;
+            font-weight: 850;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -15169,6 +15228,7 @@
                         <svg class="s2x-connector-layer" viewBox="0 0 1920 1080" aria-hidden="true">
                             <defs>
                                 <marker id="s2xTopArrow" viewBox="0 0 12 12" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+                                    <rect width="12" height="12" fill="#F4F3EE"></rect>
                                     <path d="M0 0 12 6 0 12Z" fill="#0d4fb3"></path>
                                 </marker>
                             </defs>
@@ -15424,6 +15484,7 @@
                         <svg class="s2x-loop-layer" viewBox="0 0 1920 1080" aria-hidden="true">
                             <defs>
                                 <marker id="s2xLoopArrow" viewBox="0 0 12 12" markerWidth="10" markerHeight="10" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+                                    <rect width="12" height="12" fill="#F4F3EE"></rect>
                                     <path d="M0 0 12 6 0 12Z" fill="#4d27b3"></path>
                                 </marker>
                             </defs>
@@ -18077,6 +18138,17 @@
                     </div>
 
                     <div class="qa-single-caveat">Illustrative base case. +VND 1.8B is additional cash/principal collected, not revenue; validate all estimates through a controlled pilot.</div>
+                    <a
+                        class="qa-blog-return qa-single-reveal"
+                        href="../"
+                        target="_top"
+                        aria-label="Back to the Predictive Collections Agent AABW blog post"
+                        data-track-event="aabw_deck_back_to_blog"
+                        style="--delay:920ms"
+                    >
+                        <span class="qa-blog-return-arrow" aria-hidden="true">&larr;</span>
+                        <span class="qa-blog-return-copy"><small>AABW build story</small><strong>Back to the blog post</strong></span>
+                    </a>
                 </div>
 
                 <div class="qa-stage qa-recap-stage" aria-label="Previous multi-scene Q and A recap" aria-hidden="true">
