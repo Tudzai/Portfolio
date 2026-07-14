@@ -643,6 +643,35 @@
   object-position: center;
 }
 
+/* Keep editorial notes visually separate from the photography. */
+.recap-photo,
+.atmosphere-strip figure,
+.community-gallery figure {
+  display: grid;
+  gap: 10px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.recap-photo img,
+.atmosphere-strip img,
+.community-gallery img {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.recap-photo figcaption,
+.atmosphere-strip figcaption,
+.community-gallery figcaption {
+  padding: 0 4px;
+  color: var(--muted);
+}
+
 .learning-list {
   display: grid;
   gap: 10px;
