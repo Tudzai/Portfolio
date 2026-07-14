@@ -1,0 +1,15 @@
+/* Portfolio read-only CV viewer overrides for Mozilla PDF.js 6.1.200. */
+
+#editorModeButtons,
+#editorModeSeparator,
+#secondaryOpenFile,
+#viewsManagerAddFileButton,
+#viewBookmark,
+#viewBookmarkSeparator {
+  display: none !important;
+}
+
+#viewerContainer:focus-visible {
+  outline: 3px solid #20a08a;
+  outline-offset: -3px;
+}
