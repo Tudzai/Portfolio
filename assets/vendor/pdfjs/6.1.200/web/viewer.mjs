@@ -18893,7 +18893,9 @@ class PDFPageView extends BasePDFPageView {
     this.drawLayer = null;
     this.detailView = null;
     const div = document.createElement("div");
-    div.className = "page ph-no-capture";
+    div.className = new URLSearchParams(window.location.search).get("portfolio_replay") === "canvas"
+      ? "page"
+      : "page ph-no-capture";
     div.setAttribute("data-page-number", this.id);
     div.setAttribute("role", "region");
     div.setAttribute("data-l10n-id", "pdfjs-page-landmark");

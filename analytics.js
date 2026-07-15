@@ -5,7 +5,7 @@
   const posthogApiHost = "https://us.i.posthog.com";
   const posthogUiHost = "https://us.posthog.com";
   const trackedHosts = new Set(["tudzai.github.io"]);
-  const schemaVersion = "2026-07-14.4";
+  const schemaVersion = "2026-07-15.5";
   const analyticsPreferenceKey = "portfolio-analytics-preference";
   const analyticsControlParameter = "portfolio_analytics";
   const bridgeMessageType = "portfolio-analytics-bridge-v1";
@@ -69,6 +69,7 @@
 
   const analyticsPreference = applyAnalyticsControlParameter();
   if (analyticsPreference === "off" || hasPrivacySignal()) return;
+  if (isPdfJsViewerFrame() && !isCvCanvasReplayFrame()) return;
 
   window.__portfolioAnalyticsLoaded = true;
 
@@ -77,6 +78,34 @@
       return window.self !== window.top;
     } catch {
       return true;
+    }
+  }
+
+  function isPdfJsViewerFrame() {
+    if (!isEmbeddedFrame()) return false;
+    try {
+      const path = window.location.pathname.toLowerCase();
+      return path.endsWith("/assets/vendor/pdfjs/6.1.200/web/viewer.html");
+    } catch {
+      return false;
+    }
+  }
+
+  function isCvCanvasReplayFrame() {
+    if (!isPdfJsViewerFrame()) return false;
+    try {
+      return new URLSearchParams(window.location.search).get("portfolio_replay") === "canvas";
+    } catch {
+      return false;
+    }
+  }
+
+  function isCvCanvasReplayPage() {
+    if (isEmbeddedFrame()) return false;
+    try {
+      return window.location.pathname.toLowerCase().endsWith("/cv-pdf.html");
+    } catch {
+      return false;
     }
   }
 
@@ -256,6 +285,8 @@
 
   const entryContext = getEntryContext();
   const likelyBot = Boolean(window.navigator.webdriver) || /(?:bot|crawler|spider|headless|lighthouse)/i.test(window.navigator.userAgent || "");
+  const cvCanvasReplayFrame = isCvCanvasReplayFrame();
+  const cvCanvasReplayPage = isCvCanvasReplayPage();
   const bridgeOnly = shouldBridgeToParent();
 
   function getCommonProperties() {
@@ -398,38 +429,54 @@
       person_profiles: "identified_only",
       capture_pageview: !isEmbeddedFrame(),
       capture_pageleave: !isEmbeddedFrame(),
-      autocapture: {
-        dom_event_allowlist: ["click", "change", "submit"],
-        element_allowlist: ["a", "button", "form", "input", "select", "textarea", "label"],
-        css_selector_ignorelist: [
-          ".ph-no-autocapture",
-          "[data-ph-no-autocapture]",
-          "[data-sensitive]",
-          "a[href^='mailto:']",
-          "a[href^='tel:']",
-        ],
-        element_attribute_ignorelist: ["value", "data-email", "data-phone", "data-sensitive"],
-        capture_copied_text: false,
-      },
-      capture_dead_clicks: true,
-      enable_heatmaps: true,
-      capture_exceptions: true,
+      autocapture: cvCanvasReplayFrame
+        ? false
+        : {
+            dom_event_allowlist: ["click", "change", "submit"],
+            element_allowlist: ["a", "button", "form", "input", "select", "textarea", "label"],
+            css_selector_ignorelist: [
+              ".ph-no-autocapture",
+              "[data-ph-no-autocapture]",
+              "[data-sensitive]",
+              "a[href^='mailto:']",
+              "a[href^='tel:']",
+            ],
+            element_attribute_ignorelist: ["value", "data-email", "data-phone", "data-sensitive"],
+            capture_copied_text: false,
+          },
+      capture_dead_clicks: !cvCanvasReplayFrame,
+      enable_heatmaps: !cvCanvasReplayFrame,
+      capture_exceptions: !cvCanvasReplayFrame,
       disable_surveys: true,
-      disable_session_recording: isEmbeddedFrame() || analyticsPreference === "internal",
+      disable_session_recording:
+        analyticsPreference === "internal" || cvCanvasReplayPage || (isEmbeddedFrame() && !cvCanvasReplayFrame),
       session_recording: {
         maskAllInputs: true,
         maskTextSelector: "*",
         maskTextFn: redactReplayText,
         maskCapturedNetworkRequestFn: redactRecordedRequest,
+        // Canvas pixels cannot be masked, so this stays scoped to the explicitly flagged standalone CV frame.
+        captureCanvas: cvCanvasReplayFrame
+          ? {
+              recordCanvas: true,
+              canvasFps: 1,
+              canvasQuality: "0.7",
+            }
+          : {
+              recordCanvas: false,
+            },
       },
       before_send: beforeSendPostHogEvent,
     });
 
-    if (getPageContext().page_type === "cv") forceCvSessionRecording();
+    if ((getPageContext().page_type === "cv" && !cvCanvasReplayPage) || cvCanvasReplayFrame) {
+      forceCvSessionRecording();
+    }
   }
 
   function capturePortfolioEvent(eventName, properties = {}) {
     if (typeof eventName !== "string" || !/^[A-Za-z0-9_][A-Za-z0-9_$ .-]{0,79}$/.test(eventName)) return;
+    if (cvCanvasReplayFrame) return;
     const sanitizedProperties = sanitizeCustomProperties(properties);
 
     if (bridgeOnly) {
