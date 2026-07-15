@@ -103,7 +103,8 @@
   function isCvCanvasReplayPage() {
     if (isEmbeddedFrame()) return false;
     try {
-      return window.location.pathname.toLowerCase().endsWith("/cv-pdf.html");
+      const path = window.location.pathname.toLowerCase();
+      return path.endsWith("/cv.html") || path.endsWith("/cv-pdf.html");
     } catch {
       return false;
     }
@@ -455,7 +456,7 @@
         maskTextSelector: "*",
         maskTextFn: redactReplayText,
         maskCapturedNetworkRequestFn: redactRecordedRequest,
-        // Canvas pixels cannot be masked, so this stays scoped to the explicitly flagged standalone CV frame.
+        // Canvas pixels cannot be masked, so this stays scoped to an explicitly flagged CV PDF.js frame.
         captureCanvas: cvCanvasReplayFrame
           ? {
               recordCanvas: true,
