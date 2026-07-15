@@ -29,17 +29,18 @@ See https://github.com/adobe-type-tools/cmap-resources
 
   <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self'; img-src 'self' blob: data:; media-src blob:; font-src 'self' data:; connect-src * blob: data:; base-uri 'none'; form-action 'none';"
+      content="default-src 'none'; script-src 'self' blob: 'wasm-unsafe-eval' https://us-assets.i.posthog.com; worker-src 'self' blob:; style-src 'self'; img-src 'self' blob: data:; media-src blob:; font-src 'self' data:; connect-src * blob: data:; base-uri 'none'; form-action 'none';"
     />
 
 <!-- This snippet is used in production (included from viewer.html) -->
 <link rel="resource" type="application/l10n" href="locale/locale.json" />
+<script src="../../../../../analytics.js?v=posthog-observability-20260715-5"></script>
 <script src="../build/pdf.mjs" type="module"></script>
 
     <link rel="stylesheet" href="viewer.css" />
     <link rel="stylesheet" href="portfolio-overrides.css?v=cv-polish-20260714" />
 
-  <script src="viewer.mjs?v=cv-polish-20260714" type="module"></script>
+  <script src="viewer.mjs?v=cv-canvas-replay-20260715" type="module"></script>
   </head>
 
   <body tabindex="0">

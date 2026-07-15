@@ -282,6 +282,27 @@
         if (!event.isTrusted) return;
         const target = event.target instanceof frameWindow.Element ? event.target : null;
         if (!target) return;
+        const annotationLink = target.closest(".annotationLayer a[href]");
+        if (annotationLink) {
+          let linkType = "external";
+          let destinationHost = null;
+          try {
+            const destination = new URL(annotationLink.getAttribute("href"), frameWindow.location.href);
+            destinationHost = destination.hostname || null;
+            if (destination.protocol === "mailto:") linkType = "email";
+            else if (destination.protocol === "tel:") linkType = "phone";
+            else if (destinationHost?.includes("linkedin.com")) linkType = "linkedin";
+            else if (destinationHost?.includes("github.com")) linkType = "github";
+            else if (destination.origin === frameWindow.location.origin) linkType = "portfolio";
+          } catch {
+            linkType = "unknown";
+          }
+          captureInteraction("link_clicked", {
+            link_type: linkType,
+            destination_host: destinationHost,
+            opens_new_tab: annotationLink.target === "_blank",
+          });
+        }
         const control = target.closest("button, a, .thumbnail");
         if (!control) return;
         const controlId = control.id || "";
@@ -347,18 +368,6 @@
     const viewerContainer = frameDocument.getElementById("viewerContainer");
     viewerContainer?.addEventListener("scroll", scheduleScrollProgressCapture, { passive: true });
 
-    const markPrivate = (root) => {
-      if (!(root instanceof frameWindow.Element)) return;
-      if (root.matches(".page")) root.classList.add("ph-no-capture");
-      root.querySelectorAll?.(".page").forEach((page) => page.classList.add("ph-no-capture"));
-    };
-    markPrivate(frameDocument.documentElement);
-    const viewer = frameDocument.getElementById("viewer");
-    if (viewer) {
-      new frameWindow.MutationObserver((mutations) => {
-        mutations.forEach((mutation) => mutation.addedNodes.forEach(markPrivate));
-      }).observe(viewer, { childList: true, subtree: true });
-    }
   }
 
   async function waitForApplication(frameWindow, timeoutMs = 20000) {
