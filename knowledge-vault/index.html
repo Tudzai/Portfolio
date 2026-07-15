@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="theme-color" content="#07111f" />
+    <meta
+      name="description"
+      content="A client-side encrypted personal knowledge vault belonging to Truong Dinh Anh Tu."
+    />
+    <title>Private Knowledge Vault | Truong Dinh Anh Tu</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+    <link rel="stylesheet" href="vault.css?v=20260715" />
+    <script src="vault-data.js?v=20260715" defer></script>
+    <script src="vault.js?v=20260715" defer></script>
+  </head>
+  <body class="is-locked">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="vault-ambient" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <header class="vault-header">
+      <a class="vault-brand" href="../" aria-label="Return to Truong Dinh Anh Tu's portfolio">
+        <span class="vault-brand__mark" aria-hidden="true">TU</span>
+        <span>
+          <strong>Private Knowledge</strong>
+          <small>Truong Dinh Anh Tu</small>
+        </span>
+      </a>
+      <div class="vault-header__status" aria-label="Vault security status">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span data-header-status>Locked</span>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="unlock-shell" data-unlock-view aria-labelledby="unlock-title">
+        <div class="unlock-intro">
+          <p class="vault-eyebrow"><span aria-hidden="true"></span> Encrypted workspace</p>
+          <h1 id="unlock-title">A quiet place for ideas worth keeping.</h1>
+          <p class="unlock-lede">
+            Personal frameworks, learning notes, decision patterns, and ideas—encrypted before they reach this public
+            portfolio.
+          </p>
+
+          <div class="security-proof" aria-label="Vault safeguards">
+            <div>
+              <span class="security-proof__icon" aria-hidden="true">01</span>
+              <p><strong>AES-256-GCM</strong><small>Authenticated content encryption</small></p>
+            </div>
+            <div>
+              <span class="security-proof__icon" aria-hidden="true">02</span>
+              <p><strong>Local decryption</strong><small>The password never leaves this browser</small></p>
+            </div>
+            <div>
+              <span class="security-proof__icon" aria-hidden="true">03</span>
+              <p><strong>Automatic lock</strong><small>Closes after 15 minutes of inactivity</small></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="unlock-card" data-unlock-card>
+          <div class="unlock-card__symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M7.5 10V7.5a4.5 4.5 0 0 1 9 0V10" />
+              <rect x="4.5" y="10" width="15" height="11" rx="3" />
+              <path d="M12 14.5v2.5" />
+            </svg>
+          </div>
+          <p class="unlock-card__kicker">Owner access</p>
+          <h2>Unlock the vault</h2>
+          <p class="unlock-card__copy">Enter the vault password to derive the decryption key on this device.</p>
+
+          <form class="unlock-form" data-unlock-form novalidate>
+            <input type="text" name="username" value="vault-owner" autocomplete="username" hidden />
+            <label for="vault-password">Vault password</label>
+            <div class="password-field">
+              <input
+                id="vault-password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                autocapitalize="none"
+                spellcheck="false"
+                required
+                data-password-input
+              />
+              <button type="button" data-password-toggle aria-label="Show password">Show</button>
+            </div>
+            <button class="unlock-button" type="submit" data-unlock-button>
+              <span>Unlock vault</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M14 7l5 5-5 5" />
+              </svg>
+            </button>
+            <p class="unlock-status" data-unlock-status aria-live="polite"></p>
+          </form>
+
+          <p class="local-only-note">
+            <span aria-hidden="true">●</span> No password, note, or search query is sent to a server.
+          </p>
+        </div>
+      </section>
+
+      <section class="vault-app" data-vault-view aria-labelledby="vault-title" hidden>
+        <div class="vault-app__topline">
+          <div>
+            <p class="vault-eyebrow"><span aria-hidden="true"></span> Decrypted locally</p>
+            <h1 id="vault-title" data-vault-title>Personal Knowledge Vault</h1>
+            <p class="vault-updated" data-vault-updated></p>
+          </div>
+          <button class="lock-button" type="button" data-lock-button>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4.5" y="10" width="15" height="11" rx="3" />
+              <path d="M8 10V7.5a4 4 0 0 1 7.6-1.7" />
+            </svg>
+            Lock vault
+          </button>
+        </div>
+
+        <div class="vault-dashboard">
+          <aside class="vault-sidebar" aria-label="Knowledge filters">
+            <div class="vault-summary">
+              <span class="vault-summary__label">Library</span>
+              <strong data-note-total>0 notes</strong>
+              <small>Private, searchable, reusable.</small>
+            </div>
+
+            <div class="category-panel">
+              <p>Categories</p>
+              <div class="category-list" data-category-list></div>
+            </div>
+
+            <div class="session-card">
+              <span class="session-card__dot" aria-hidden="true"></span>
+              <div>
+                <strong>Secure session</strong>
+                <small>Auto-locks after 15 minutes</small>
+              </div>
+            </div>
+          </aside>
+
+          <div class="vault-library">
+            <div class="library-toolbar">
+              <label class="search-field" for="vault-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5" />
+                  <path d="m16 16 4 4" />
+                </svg>
+                <span class="sr-only">Search knowledge</span>
+                <input
+                  id="vault-search"
+                  type="search"
+                  placeholder="Search ideas, tags, or notes"
+                  autocomplete="off"
+                  data-vault-search
+                />
+                <kbd>Ctrl K</kbd>
+              </label>
+              <p data-result-count aria-live="polite">0 results</p>
+            </div>
+
+            <div class="knowledge-layout">
+              <div class="note-list" data-note-list aria-label="Knowledge notes"></div>
+
+              <article class="note-reader" data-note-reader aria-live="polite">
+                <div class="note-reader__empty">
+                  <span aria-hidden="true">↗</span>
+                  <p>Select a note to begin reading.</p>
+                </div>
+              </article>
+            </div>
+
+            <div class="empty-results" data-empty-results hidden>
+              <span aria-hidden="true">⌕</span>
+              <h2>No matching notes</h2>
+              <p>Try a broader search or choose another category.</p>
+              <button type="button" data-clear-filters>Clear filters</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="vault-footer">
+      <span>Private knowledge vault</span>
+      <a href="../">Return to portfolio</a>
+    </footer>
+
+    <noscript>
+      <div class="noscript-message">JavaScript is required to decrypt this vault locally.</div>
+    </noscript>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "title": "Personal Knowledge Vault",
+  "owner": "Truong Dinh Anh Tu",
+  "updatedAt": "2026-07-15",
+  "notes": [
+    {
+      "id": "welcome-to-the-vault",
+      "title": "Welcome to your encrypted knowledge vault",
+      "category": "Vault Guide",
+      "summary": "A starting point for turning scattered learning into a private, searchable personal system.",
+      "content": [
+        "Use this space for reusable frameworks, lessons learned, reading notes, decision patterns, and ideas that are useful to your future self.",
+        "Write knowledge in private/knowledge.json, run the local encryption tool, and publish only vault-data.js. The public file contains ciphertext, salt, and an initialization vector—not the plaintext notes or password.",
+        "Keep credentials, recovery codes, client-confidential data, identity documents, and other high-impact secrets outside this static vault. Those belong in a dedicated password manager or a properly authenticated private service."
+      ],
+      "tags": ["knowledge management", "privacy", "workflow"],
+      "pinned": true,
+      "updatedAt": "2026-07-15",
+      "sourceLabel": "Local vault guide"
+    }
+  ]
+}
