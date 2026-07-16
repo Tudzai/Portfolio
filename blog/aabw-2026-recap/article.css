@@ -612,8 +612,10 @@
 
 .atmosphere-strip img {
   width: 100%;
-  height: 360px;
-  object-fit: cover;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
 }
 
 .atmosphere-strip figure:first-child img {
@@ -643,33 +645,104 @@
   object-position: center;
 }
 
-/* Keep editorial notes visually separate from the photography. */
+/* Standard editorial image card: full-width image with title and note below. */
 .recap-photo,
 .atmosphere-strip figure,
 .community-gallery figure {
   display: grid;
-  gap: 10px;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #0b0d12;
+  box-shadow: var(--shadow);
 }
 
 .recap-photo img,
 .atmosphere-strip img,
 .community-gallery img {
   display: block;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .recap-photo figcaption,
 .atmosphere-strip figcaption,
 .community-gallery figcaption {
-  padding: 0 4px;
-  color: var(--muted);
+  padding: 17px 19px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d7dde8;
+  background: #0b0d12;
+  font-size: 0.8rem;
+  line-height: 1.58;
+}
+
+.recap-photo figcaption strong,
+.recap-photo figcaption span,
+.atmosphere-strip figcaption strong,
+.atmosphere-strip figcaption span,
+.community-gallery figcaption strong,
+.community-gallery figcaption span {
+  display: block;
+}
+
+.recap-photo figcaption strong,
+.atmosphere-strip figcaption strong,
+.community-gallery figcaption strong {
+  color: #ffffff;
+  font-size: clamp(0.95rem, 1.7vw, 1.08rem);
+  line-height: 1.35;
+}
+
+.recap-photo figcaption span,
+.atmosphere-strip figcaption span,
+.community-gallery figcaption span {
+  margin-top: 7px;
+}
+
+/* Keep Tu and the active room in frame. */
+.community-gallery__event-selfie img {
+  object-position: center bottom;
+}
+
+/* Present the portrait meal photo at a page-friendly height without losing any of the scene. */
+.meal-photo-frame {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  height: clamp(460px, 58vw, 620px);
+  place-items: center;
+  overflow: hidden;
+  background: #15181e;
+}
+
+.meal-photo-frame::before {
+  position: absolute;
+  z-index: -2;
+  inset: -36px;
+  content: "";
+  background: url("assets/aabw-builder-break.jpg") center 44% / cover no-repeat;
+  filter: blur(26px) brightness(0.52) saturate(0.86);
+  transform: scale(1.08);
+}
+
+.meal-photo-frame::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(90deg, rgba(7, 9, 13, 0.38), transparent 28%, transparent 72%, rgba(7, 9, 13, 0.38));
+}
+
+.atmosphere-strip .meal-photo-frame img {
+  position: relative;
+  width: auto;
+  height: clamp(460px, 58vw, 620px);
+  max-width: none;
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 18px 52px rgba(0, 0, 0, 0.32);
 }
 
 .learning-list {
@@ -917,6 +990,22 @@
     height: auto;
     max-height: none;
     object-fit: contain;
+  }
+
+  .meal-photo-frame {
+    height: auto;
+  }
+
+  .meal-photo-frame::before,
+  .meal-photo-frame::after {
+    display: none;
+  }
+
+  .atmosphere-strip .meal-photo-frame img {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    box-shadow: none;
   }
 
   .venue-card--wide,
