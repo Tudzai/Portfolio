@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Public-safe Python automation case studies for FP&A monthly reporting and quick KPI file distribution using synthetic logistics finance data."
+      content="Watch and download public-safe Python automation demos for FP&A monthly reporting, variance analysis, and stakeholder file distribution using synthetic finance data."
     />
     <title>Python Automation Case Studies | Truong Dinh Anh Tu</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="fpa-monthly-reporting-demo/automation-demo.css" />
     <script src="../../analytics.js?v=posthog-observability-20260714"></script>
   </head>
   <body class="detail-page">
@@ -40,47 +41,102 @@
       <section class="detail-hero python-detail-hero">
         <p class="breadcrumb"><a href="../../index.html">Home</a> / Python Automation</p>
         <p class="eyebrow">Python Automation Hub</p>
-        <h1>Runnable FP&amp;A automation samples built to prove Python workflow ability.</h1>
+        <h1>Watch a complete FP&amp;A workflow, then download the files to run it yourself.</h1>
         <p>
           This hub shows how I use Python for recurring finance work: reading source files, validating data contracts,
-          calculating KPIs, writing outputs, and preparing stakeholder handoffs. Everything here uses synthetic files
-          and generic labels, so the logic is visible while company data stays private.
+          calculating KPIs, writing Excel and Word outputs, and preparing stakeholder handoffs. Everything here uses
+          synthetic files and generic labels, so the logic is visible while company data stays private.
         </p>
         <div class="detail-hero-grid">
-          <div class="metric-tile"><span>7</span><p>Python scripts</p></div>
-          <div class="metric-tile"><span>2</span><p>finance automation cases</p></div>
-          <div class="metric-tile"><span>6</span><p>synthetic sample inputs</p></div>
+          <div class="metric-tile"><span>8</span><p>inspectable Python scripts</p></div>
+          <div class="metric-tile"><span>3</span><p>finance automation cases</p></div>
+          <div class="metric-tile"><span>1</span><p>end-to-end video demo</p></div>
           <div class="metric-tile"><span>0</span><p>company records exposed</p></div>
         </div>
         <div class="python-review-strip" aria-label="Recommended review order">
           <div>
             <span>01</span>
-            <strong>Start with case page</strong>
-            <p>Understand the business problem and workflow.</p>
+            <strong>Watch the demo</strong>
+            <p>See raw Excel data become a finance review pack.</p>
           </div>
           <div>
             <span>02</span>
-            <strong>Open README</strong>
-            <p>See inputs, outputs, run steps, and QA checks.</p>
+            <strong>Download the package</strong>
+            <p>Get the input, script, dependencies, and instructions.</p>
           </div>
           <div>
             <span>03</span>
-            <strong>Inspect scripts</strong>
-            <p>Review pandas transformations and validation logic.</p>
+            <strong>Run the workflow</strong>
+            <p>Regenerate clean data, analysis, and the report.</p>
           </div>
           <div>
             <span>04</span>
-            <strong>Check sample data</strong>
-            <p>Confirm no confidential data is included.</p>
+            <strong>Inspect controls</strong>
+            <p>Review tie-outs, mappings, and the approval boundary.</p>
           </div>
+        </div>
+      </section>
+
+      <section class="detail-section automation-demo-feature">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Featured walkthrough</p>
+            <h2>Raw data in. Decision-ready outputs out.</h2>
+          </div>
+          <span class="process-pill">Video + runnable ZIP</span>
+        </div>
+        <div class="automation-demo-showcase">
+          <div class="automation-demo-player">
+            <video controls preload="metadata" playsinline aria-describedby="hub-demo-caption">
+              <source src="fpa-monthly-reporting-demo/assets/fpa-automation-demo.mp4" type="video/mp4" />
+              Your browser does not support embedded MP4 video. You can
+              <a href="fpa-monthly-reporting-demo/assets/fpa-automation-demo.mp4">open the video directly</a>.
+            </video>
+            <div class="automation-demo-caption" id="hub-demo-caption">
+              <span><i data-lucide="play"></i> Full workflow</span>
+              <p>Excel input &rarr; Python &rarr; clean data, variance analysis, and management report.</p>
+            </div>
+          </div>
+          <article class="automation-demo-summary">
+            <div class="automation-demo-badges">
+              <span>Synthetic data</span>
+              <span>4/4 controls pass</span>
+            </div>
+            <p class="case-label">Case 03 &middot; End-to-end monthly pack</p>
+            <h3>FP&amp;A Monthly Reporting Demo</h3>
+            <p>
+              One script standardizes 360 fictional transaction rows, calculates revenue and profit variances, builds
+              control checks, and drafts an action-oriented Word report.
+            </p>
+            <ul class="python-evidence-list">
+              <li><strong>Decision:</strong> isolate growth, margin, and EBITDA actions by region</li>
+              <li><strong>Proof:</strong> video, source code, synthetic input, and visible control logic</li>
+              <li><strong>Boundary:</strong> finance review remains required before distribution</li>
+            </ul>
+            <div class="product-actions">
+              <a
+                class="button primary"
+                href="fpa-monthly-reporting-demo/downloads/fpa-automation-demo-package.zip"
+                download
+                data-track-event="fpa automation package downloaded"
+              >
+                <i data-lucide="download"></i>
+                Download package
+              </a>
+              <a class="button quiet" href="fpa-monthly-reporting-demo/">
+                <i data-lucide="external-link"></i>
+                Open full case
+              </a>
+            </div>
+          </article>
         </div>
       </section>
 
       <section class="detail-section">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">Pick a workflow</p>
-            <h2>Two public cases mapped to real FP&amp;A automation problems.</h2>
+            <p class="section-kicker">More runnable workflows</p>
+            <h2>Two focused samples for recurring FP&amp;A handoffs.</h2>
           </div>
           <span class="process-pill">Source code + README + sample data</span>
         </div>
@@ -169,9 +225,10 @@
             <p class="section-kicker">Direct code index</p>
             <h2>Open the actual scripts from one place.</h2>
           </div>
-          <span class="process-pill">7 Python files</span>
+          <span class="process-pill">8 Python files</span>
         </div>
         <div class="code-link-grid">
+          <a class="code-link" href="fpa-monthly-reporting-demo/src/run_fpa_automation.py"><i data-lucide="workflow"></i><span>run_fpa_automation.py</span><small>Excel-to-Word monthly reporting workflow</small></a>
           <a class="code-link" href="monthly-reporting-pipeline/src/config.py"><i data-lucide="settings-2"></i><span>config.py</span><small>Monthly pipeline settings and mappings</small></a>
           <a class="code-link" href="monthly-reporting-pipeline/src/merge_monthly_reports.py"><i data-lucide="merge"></i><span>merge_monthly_reports.py</span><small>Read, validate, clean, and aggregate</small></a>
           <a class="code-link" href="monthly-reporting-pipeline/src/build_ratio_pack.py"><i data-lucide="target"></i><span>build_ratio_pack.py</span><small>Actual-vs-plan KPI calculations</small></a>
