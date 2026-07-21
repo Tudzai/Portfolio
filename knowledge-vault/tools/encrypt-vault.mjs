@@ -23,8 +23,61 @@ function toBase64(bytes) {
 
 function validateSource(value) {
   if (!value || typeof value !== "object") throw new Error("Knowledge source must be a JSON object.");
-  if (!Array.isArray(value.notes)) throw new Error("Knowledge source must include a notes array.");
+  if (Array.isArray(value.modules)) {
+    const sourceIds = new Set();
+    if (!Array.isArray(value.primarySources)) throw new Error("FinTech source must include primarySources.");
+    value.primarySources.forEach((source, index) => {
+      if (!source || typeof source !== "object") throw new Error(`Source ${index + 1} must be an object.`);
+      if (typeof source.id !== "string" || !source.id.trim()) throw new Error(`Source ${index + 1} requires an id.`);
+      if (sourceIds.has(source.id)) throw new Error(`Duplicate source id: ${source.id}`);
+      sourceIds.add(source.id);
+      if (typeof source.title !== "string" || !source.title.trim()) throw new Error(`Source ${source.id} requires a title.`);
+      if (typeof source.organization !== "string" || !source.organization.trim()) {
+        throw new Error(`Source ${source.id} requires an organization.`);
+      }
+      if (typeof source.publishedAt !== "string" || !source.publishedAt.trim()) {
+        throw new Error(`Source ${source.id} requires a publication or access date.`);
+      }
+    });
 
+    const moduleIds = new Set();
+    const lessonIds = new Set();
+    value.modules.forEach((module, moduleIndex) => {
+      if (!module || typeof module !== "object") throw new Error(`Module ${moduleIndex + 1} must be an object.`);
+      if (typeof module.id !== "string" || !module.id.trim()) throw new Error(`Module ${moduleIndex + 1} requires an id.`);
+      if (moduleIds.has(module.id)) throw new Error(`Duplicate module id: ${module.id}`);
+      moduleIds.add(module.id);
+      if (typeof module.title !== "string" || !module.title.trim()) throw new Error(`Module ${module.id} requires a title.`);
+      if (!Array.isArray(module.lessons) || module.lessons.length === 0) {
+        throw new Error(`Module ${module.id} requires at least one lesson.`);
+      }
+
+      module.lessons.forEach((lesson, lessonIndex) => {
+        if (!lesson || typeof lesson !== "object") throw new Error(`Lesson ${lessonIndex + 1} in ${module.id} must be an object.`);
+        if (typeof lesson.id !== "string" || !lesson.id.trim()) throw new Error(`Lesson ${lessonIndex + 1} in ${module.id} requires an id.`);
+        if (lessonIds.has(lesson.id)) throw new Error(`Duplicate lesson id: ${lesson.id}`);
+        lessonIds.add(lesson.id);
+        if (typeof lesson.title !== "string" || !lesson.title.trim()) throw new Error(`Lesson ${lesson.id} requires a title.`);
+        if (!new Set(["published", "planned"]).has(lesson.status)) {
+          throw new Error(`Lesson ${lesson.id} status must be published or planned.`);
+        }
+        if (lesson.status === "published") {
+          if (!Array.isArray(lesson.sections) || lesson.sections.length !== 11) {
+            throw new Error(`Published lesson ${lesson.id} must contain 11 content sections; references render as section 12.`);
+          }
+          if (!Array.isArray(lesson.references) || lesson.references.length < 3) {
+            throw new Error(`Published lesson ${lesson.id} requires at least three references.`);
+          }
+          lesson.references.forEach((sourceId) => {
+            if (!sourceIds.has(sourceId)) throw new Error(`Lesson ${lesson.id} references unknown source: ${sourceId}`);
+          });
+        }
+      });
+    });
+    return;
+  }
+
+  if (!Array.isArray(value.notes)) throw new Error("Knowledge source must include either modules or notes.");
   const ids = new Set();
   value.notes.forEach((note, index) => {
     if (!note || typeof note !== "object") throw new Error(`Note ${index + 1} must be an object.`);
@@ -85,4 +138,7 @@ const payload = {
 };
 
 await writeFile(outputPath, `window.__KNOWLEDGE_VAULT_DATA__ = ${JSON.stringify(payload, null, 2)};\n`, "utf8");
-console.log(`Encrypted ${source.notes.length} note${source.notes.length === 1 ? "" : "s"} into ${outputPath}`);
+const itemSummary = Array.isArray(source.modules)
+  ? `${source.modules.reduce((count, module) => count + module.lessons.length, 0)} lessons across ${source.modules.length} modules`
+  : `${source.notes.length} note${source.notes.length === 1 ? "" : "s"}`;
+console.log(`Encrypted ${itemSummary} into ${outputPath}`);
