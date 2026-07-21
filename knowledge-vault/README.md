@@ -8,6 +8,14 @@ library; existing personal notes remain available as a separate collection.
 The page is intentionally unlinked and marked `noindex`. The URL is not a security boundary: encrypted data remains
 publicly downloadable when the Portfolio site is deployed, so a strong unique password is essential.
 
+## Language contract
+
+- Interface chrome, navigation, controls, status messages, search, and collection framing use English.
+- Knowledge content remains in Vietnamese, including note and lesson prose, module and lesson titles, section headings,
+  terminology explanations, source metadata, and citations.
+- Important English industry terms may remain in the Vietnamese content when they are the standard terms used in
+  practice.
+
 ## Security boundary
 
 - `private/knowledge.json` is the local plaintext source and is ignored by Git.

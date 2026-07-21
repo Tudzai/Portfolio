@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi" data-theme="dark">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,28 +12,28 @@
     <meta name="theme-color" content="#0a1118" />
     <meta
       name="description"
-      content="Thư viện tri thức cá nhân được mã hóa, nơi FinTech và các lĩnh vực học tập khác được lưu theo từng bộ sưu tập."
+      content="An encrypted personal knowledge library for FinTech and every other subject I learn."
     />
-    <title>Thư viện tri thức | Private Knowledge Library</title>
+    <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260721-library" />
-    <script src="vault-data.js?v=20260721-library" defer></script>
-    <script src="vault.js?v=20260721-library" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260721-library-en" />
+    <script src="vault-data.js?v=20260721-library-en" defer></script>
+    <script src="vault.js?v=20260721-library-en" defer></script>
   </head>
   <body class="is-locked">
-    <a class="skip-link" href="#main-content">Bỏ qua đến nội dung chính</a>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <header class="site-header">
-      <a class="brand" href="../" aria-label="Trở về portfolio của Truong Dinh Anh Tu">
+      <a class="brand" href="../" aria-label="Back to Truong Dinh Anh Tu's portfolio">
         <span class="brand__mark" aria-hidden="true">KL</span>
         <span class="brand__copy">
           <strong>Knowledge Library</strong>
           <small>Private learning space</small>
         </span>
       </a>
-      <div class="security-status" aria-label="Trạng thái bảo mật">
+      <div class="security-status" aria-label="Security status">
         <span class="security-status__dot" aria-hidden="true"></span>
-        <span data-header-status>Đã khóa</span>
+        <span data-header-status>Locked</span>
       </div>
     </header>
 
@@ -41,27 +41,27 @@
       <section class="unlock-view" data-unlock-view aria-labelledby="unlock-title">
         <div class="unlock-intro">
           <p class="eyebrow"><span aria-hidden="true"></span> Encrypted learning space</p>
-          <h1 id="unlock-title">Một thư viện riêng cho những điều tôi đang học.</h1>
+          <h1 id="unlock-title">A private library for everything I am learning.</h1>
           <p class="unlock-intro__lede">
-            Ghi chú cũ được giữ nguyên. FinTech là một bộ sưu tập có lộ trình bên cạnh những lĩnh vực kiến thức khác sẽ
-            được bổ sung dần theo hành trình học tập.
+            Existing notes stay intact. FinTech is one structured collection, alongside other knowledge areas that
+            will grow with my learning journey.
           </p>
 
-          <div class="unlock-pillars" aria-label="Nguyên tắc của thư viện">
+          <div class="unlock-pillars" aria-label="Library principles">
             <article>
               <span>01</span>
               <h2>Decision-grade</h2>
-              <p>Phân biệt fact, practice, opinion, assumption và emerging trend.</p>
+              <p>Distinguishes facts, practices, opinions, assumptions, and emerging trends.</p>
             </article>
             <article>
               <span>02</span>
               <h2>Source-backed</h2>
-              <p>Ưu tiên cơ quan quản lý, ngân hàng trung ương và tổ chức chuẩn mực.</p>
+              <p>Prioritizes regulators, central banks, and authoritative institutions.</p>
             </article>
             <article>
               <span>03</span>
               <h2>Private by design</h2>
-              <p>Mật khẩu và nội dung giải mã không rời khỏi trình duyệt.</p>
+              <p>The password and decrypted content never leave this browser.</p>
             </article>
           </div>
         </div>
@@ -69,12 +69,12 @@
         <div class="unlock-card" data-unlock-card>
           <div class="unlock-card__icon" aria-hidden="true"><span></span></div>
           <p class="unlock-card__kicker">Owner access</p>
-          <h2>Mở thư viện tri thức</h2>
-          <p class="unlock-card__copy">Nhập mật khẩu để tạo khóa giải mã ngay trên thiết bị này.</p>
+          <h2>Open the knowledge library</h2>
+          <p class="unlock-card__copy">Enter the password to derive the decryption key on this device.</p>
 
           <form class="unlock-form" data-unlock-form novalidate>
             <input type="text" name="username" value="vault-owner" autocomplete="username" hidden />
-            <label for="vault-password">Mật khẩu vault</label>
+            <label for="vault-password">Library password</label>
             <div class="password-field">
               <input
                 id="vault-password"
@@ -86,47 +86,47 @@
                 required
                 data-password-input
               />
-              <button type="button" data-password-toggle aria-label="Hiện mật khẩu">Hiện</button>
+              <button type="button" data-password-toggle aria-label="Show password">Show</button>
             </div>
             <button class="primary-button" type="submit" data-unlock-button>
-              <span>Mở thư viện</span>
+              <span>Open library</span>
               <span aria-hidden="true">→</span>
             </button>
             <p class="unlock-status" data-unlock-status aria-live="polite"></p>
           </form>
 
-          <p class="local-note"><span aria-hidden="true">●</span> Không có mật khẩu, nội dung hay truy vấn tìm kiếm nào được gửi đi.</p>
+          <p class="local-note"><span aria-hidden="true">●</span> No password, content, or search query is ever sent away.</p>
         </div>
       </section>
 
       <section class="hub" data-vault-view hidden>
         <div class="hub-shell">
-          <aside class="curriculum" data-sidebar aria-label="Các bộ sưu tập kiến thức">
+          <aside class="curriculum" data-sidebar aria-label="Knowledge collections">
             <div class="curriculum__mobile-head">
-              <strong>Thư viện của tôi</strong>
-              <button type="button" class="icon-button" data-sidebar-close aria-label="Đóng thư viện">×</button>
+              <strong>My library</strong>
+              <button type="button" class="icon-button" data-sidebar-close aria-label="Close library">×</button>
             </div>
 
             <button class="domain-button" type="button" data-domain-home>
               <span class="domain-button__mark" aria-hidden="true">KL</span>
               <span>
                 <strong>Knowledge Library</strong>
-                <small data-curriculum-meta>Các bộ sưu tập</small>
+                <small data-curriculum-meta>Collections</small>
               </span>
               <span aria-hidden="true">⌂</span>
             </button>
 
             <div class="curriculum__scroll">
-              <nav class="module-list" data-module-list aria-label="Bộ sưu tập, module và nội dung đọc"></nav>
+              <nav class="module-list" data-module-list aria-label="Collections, modules, and reading items"></nav>
             </div>
 
             <div class="sidebar-foot">
               <div class="sidebar-foot__topline">
-                <span>Tiến độ khả dụng</span>
+                <span>Available progress</span>
                 <strong data-progress-label>0%</strong>
               </div>
               <div class="progress-track" aria-hidden="true"><span data-sidebar-progress></span></div>
-              <small data-progress-detail>0 / 0 mục đọc đã hoàn thành</small>
+              <small data-progress-detail>0 / 0 reading items completed</small>
             </div>
           </aside>
 
@@ -135,14 +135,14 @@
           <div class="workspace">
             <header class="workspace-bar">
               <div class="workspace-bar__left">
-                <button type="button" class="icon-button menu-button" data-sidebar-open aria-label="Mở thư viện">☰</button>
+                <button type="button" class="icon-button menu-button" data-sidebar-open aria-label="Open library">☰</button>
                 <label class="search-box" for="lesson-search">
                   <span aria-hidden="true">⌕</span>
-                  <span class="sr-only">Tìm bài học, ghi chú, khái niệm hoặc từ khóa</span>
+                  <span class="sr-only">Search lessons, notes, concepts, or keywords</span>
                   <input
                     id="lesson-search"
                     type="search"
-                    placeholder="Tìm bài học, ghi chú, khái niệm…"
+                    placeholder="Search lessons, notes, concepts…"
                     autocomplete="off"
                     data-search-input
                   />
@@ -151,15 +151,15 @@
               </div>
 
               <div class="workspace-actions">
-                <button type="button" class="text-button" data-theme-toggle aria-label="Chuyển giao diện sáng">
-                  <span aria-hidden="true">◐</span><span data-theme-label>Sáng</span>
+                <button type="button" class="text-button" data-theme-toggle aria-label="Switch to light mode">
+                  <span aria-hidden="true">◐</span><span data-theme-label>Light</span>
                 </button>
-                <button type="button" class="text-button text-button--danger" data-lock-button aria-label="Khóa thư viện">
-                  <span aria-hidden="true">↙</span><span>Khóa</span>
+                <button type="button" class="text-button text-button--danger" data-lock-button aria-label="Lock library">
+                  <span aria-hidden="true">↙</span><span>Lock</span>
                 </button>
               </div>
 
-              <div class="search-results" data-search-results hidden aria-label="Kết quả tìm kiếm"></div>
+              <div class="search-results" data-search-results hidden aria-label="Search results"></div>
             </header>
 
             <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
@@ -173,14 +173,14 @@
     </main>
 
     <footer class="public-footer">
-      <span>AES-256-GCM · Local decryption · Auto-lock 15 phút</span>
-      <a href="../">Trở về portfolio</a>
+      <span>AES-256-GCM · Local decryption · Auto-lock after 15 minutes</span>
+      <a href="../">Back to portfolio</a>
     </footer>
 
     <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
 
     <noscript>
-      <div class="noscript-message">JavaScript cần được bật để giải mã thư viện trên thiết bị.</div>
+      <div class="noscript-message">JavaScript must be enabled to decrypt the library on this device.</div>
     </noscript>
   </body>
 </html>

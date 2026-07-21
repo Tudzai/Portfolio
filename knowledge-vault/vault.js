@@ -228,7 +228,7 @@
   }
 
   function normalizeVaultData(value) {
-    if (!value || typeof value !== "object") throw new Error("Vault data không hợp lệ.");
+    if (!value || typeof value !== "object") throw new Error("Invalid library data.");
     if (!Array.isArray(value.modules)) {
       if (Array.isArray(value.notes)) {
         return normalizeVaultData({
@@ -244,7 +244,7 @@
           archivedVault: value,
         });
       }
-      throw new Error("Vault data phải có danh sách module.");
+      throw new Error("Library data must include a module list.");
     }
 
     const finTechSources = Array.isArray(value.primarySources) ? value.primarySources.map(normalizeSource) : [];
@@ -295,13 +295,13 @@
       allSources.push(...finTechSources);
     }
 
-    if (!collections.length) throw new Error("Thư viện phải có ít nhất một bộ sưu tập.");
+    if (!collections.length) throw new Error("The library must contain at least one collection.");
 
     const data = {
-      title: "Thư viện tri thức cá nhân",
+      title: "Personal Knowledge Library",
       owner: normalizeString(value.owner),
       updatedAt: normalizeString(value.updatedAt),
-      description: "Nơi lưu những kiến thức đã tích lũy theo từng lĩnh vực. FinTech là một bộ sưu tập trong thư viện và các chủ đề khác có thể được bổ sung dần.",
+      description: "A home for knowledge gathered across different subjects. FinTech is one collection, with more topics added over time.",
       collections,
       primarySources: allSources,
       modules: collections.flatMap((collection) => collection.modules),
@@ -309,7 +309,7 @@
 
     const ids = [];
     data.modules.forEach((module) => module.lessons.forEach((lesson) => ids.push(lesson.id)));
-    if (new Set(ids).size !== ids.length) throw new Error("Mỗi bài học phải có id duy nhất.");
+    if (new Set(ids).size !== ids.length) throw new Error("Every reading item must have a unique ID.");
     return data;
   }
 
@@ -337,7 +337,7 @@
 
   async function decryptVault(password) {
     const payload = window.__KNOWLEDGE_VAULT_DATA__;
-    if (!payload || payload.version !== 1) throw new Error("Không tìm thấy dữ liệu vault đã mã hóa.");
+    if (!payload || payload.version !== 1) throw new Error("Encrypted library data was not found.");
     const key = await deriveVaultKey(password, payload);
     const decrypted = await window.crypto.subtle.decrypt(
       {
@@ -353,10 +353,10 @@
   }
 
   function formatDate(value) {
-    if (!value) return "Không ghi ngày";
+    if (!value) return "Date unavailable";
     const parsed = new Date(`${value}T00:00:00`);
     if (Number.isNaN(parsed.getTime())) return value;
-    return new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }).format(parsed);
+    return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(parsed);
   }
 
   function loadCompleted() {
@@ -372,7 +372,7 @@
     try {
       window.localStorage.setItem(STORAGE_COMPLETED, JSON.stringify(Array.from(state.completed)));
     } catch {
-      showToast("Không thể lưu tiến độ trên thiết bị này.");
+      showToast("Progress could not be saved on this device.");
     }
   }
 
@@ -428,8 +428,8 @@
     const next = theme === "light" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f3f6f5" : "#0a1118");
-    themeLabel.textContent = next === "light" ? "Tối" : "Sáng";
-    themeToggle.setAttribute("aria-label", next === "light" ? "Chuyển giao diện tối" : "Chuyển giao diện sáng");
+    themeLabel.textContent = next === "light" ? "Dark" : "Light";
+    themeToggle.setAttribute("aria-label", next === "light" ? "Switch to dark mode" : "Switch to light mode");
     if (persist) {
       try {
         window.localStorage.setItem(STORAGE_THEME, next);
@@ -456,7 +456,7 @@
     const completed = Array.from(state.completed).filter((id) => validIds.has(id)).length;
     const percent = published.length ? Math.round((completed / published.length) * 100) : 0;
     progressLabel.textContent = `${percent}%`;
-    progressDetail.textContent = `${completed} / ${published.length} mục đọc khả dụng đã hoàn thành`;
+    progressDetail.textContent = `${completed} / ${published.length} available reading items completed`;
     sidebarProgress.style.width = `${percent}%`;
   }
 
@@ -495,8 +495,8 @@
         0,
       );
       collectionMeta.textContent = collection.kind === "notes"
-        ? `${collectionEntries} ghi chú được giữ nguyên`
-        : `${collection.modules.length} module · ${collectionLive} bài khả dụng`;
+        ? `${collectionEntries} preserved ${collectionEntries === 1 ? "note" : "notes"}`
+        : `${collection.modules.length} modules · ${collectionLive} available lessons`;
       collectionCopy.append(collectionTitle, collectionMeta);
       const collectionArrow = document.createElement("span");
       collectionArrow.setAttribute("aria-hidden", "true");
@@ -525,8 +525,8 @@
         const meta = document.createElement("small");
         const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
         meta.textContent = collection.kind === "notes"
-          ? `${module.lessons.length} ghi chú`
-          : `${module.lessons.length} bài${liveCount ? ` · ${liveCount} khả dụng` : " · sắp nghiên cứu"}`;
+          ? `${module.lessons.length} ${module.lessons.length === 1 ? "note" : "notes"}`
+          : `${module.lessons.length} lessons${liveCount ? ` · ${liveCount} available` : " · research pending"}`;
         copy.append(title, meta);
         const chevron = document.createElement("span");
         chevron.className = "module-chevron";
@@ -580,7 +580,7 @@
         citation.href = `#ref-${sourceId}`;
         citation.textContent = String(referenceIndex + 1);
         citation.title = `${source.organization}: ${source.title}`;
-        citation.setAttribute("aria-label", `Nguồn ${referenceIndex + 1}: ${source.title}`);
+        citation.setAttribute("aria-label", `Source ${referenceIndex + 1}: ${source.title}`);
         element.append(citation);
       } else {
         element.append(document.createTextNode(match[0]));
@@ -622,7 +622,7 @@
       const wrap = document.createElement("div");
       wrap.className = "content-block table-wrap";
       wrap.setAttribute("tabindex", "0");
-      wrap.setAttribute("aria-label", "Bảng so sánh có thể cuộn ngang");
+      wrap.setAttribute("aria-label", "Scrollable comparison table");
       const table = document.createElement("table");
       table.className = "content-table";
       const head = document.createElement("thead");
@@ -652,7 +652,7 @@
       const flow = document.createElement("div");
       flow.className = "content-block flow-diagram";
       flow.setAttribute("role", "img");
-      flow.setAttribute("aria-label", `Luồng gồm ${block.steps.length} bước`);
+      flow.setAttribute("aria-label", `Flow with ${block.steps.length} steps`);
       block.steps.forEach((step) => {
         const card = document.createElement("div");
         card.className = "flow-step";
@@ -677,7 +677,7 @@
     const breadcrumb = document.createElement("p");
     breadcrumb.className = "reader-breadcrumb";
     const domain = document.createElement("span");
-    domain.textContent = "Thư viện";
+    domain.textContent = "Library";
     const separator = document.createElement("span");
     separator.textContent = "/";
     const collectionName = document.createElement("span");
@@ -697,21 +697,21 @@
     const status = document.createElement("span");
     status.className = lesson.status === "published" ? "status-live" : "status-planned";
     status.textContent = collection.kind === "notes"
-      ? "Đã lưu"
+      ? "Saved"
       : lesson.status === "published"
-        ? "Đã kiểm chứng"
-        : "Chờ nghiên cứu";
+        ? "Verified"
+        : "Research pending";
     const level = document.createElement("span");
     level.textContent = module.level;
     meta.append(status, level);
     if (lesson.estimatedMinutes) {
       const duration = document.createElement("span");
-      duration.textContent = `${lesson.estimatedMinutes} phút đọc`;
+      duration.textContent = `${lesson.estimatedMinutes} min read`;
       meta.append(duration);
     }
     if (lesson.lastReviewed) {
       const reviewed = document.createElement("span");
-      reviewed.textContent = `Rà soát: ${formatDate(lesson.lastReviewed)}`;
+      reviewed.textContent = `Reviewed: ${formatDate(lesson.lastReviewed)}`;
       meta.append(reviewed);
     }
 
@@ -730,16 +730,16 @@
     const completeText = document.createElement("span");
     completeText.textContent = lesson.status === "published"
       ? state.completed.has(lesson.id)
-        ? "Đã hoàn thành"
-        : "Đánh dấu đã hoàn thành"
-      : "Chưa thể hoàn thành";
+        ? "Completed"
+        : "Mark as completed"
+      : "Not yet available";
     complete.append(check, completeText);
     const policy = document.createElement("button");
     policy.type = "button";
     policy.className = "source-policy-link";
     policy.dataset.showSources = "true";
     policy.dataset.collectionId = collection.id;
-    policy.textContent = collection.kind === "curriculum" ? "Phương pháp & nguồn chính thống" : "Về bộ sưu tập ghi chú";
+    policy.textContent = collection.kind === "curriculum" ? "Methodology & primary sources" : "About this notes collection";
     tools.append(complete, policy);
     hero.append(breadcrumb, title, deck, meta, tools);
     return hero;
@@ -781,7 +781,7 @@
         link.href = source.url;
         link.target = "_blank";
         link.rel = "noreferrer noopener";
-        link.textContent = "Mở nguồn ↗";
+        link.textContent = "Open source ↗";
         item.append(link);
       }
       list.append(item);
@@ -790,8 +790,8 @@
       const empty = document.createElement("p");
       empty.className = "content-paragraph";
       empty.textContent = collectionKind === "notes"
-        ? "Ghi chú này chưa có nguồn tham khảo được lưu."
-        : "Nguồn sẽ được bổ sung sau khi bài học hoàn tất nghiên cứu và kiểm chứng chéo.";
+        ? "No reference has been saved for this note."
+        : "References will be added after this lesson has been researched and cross-checked.";
       section.append(heading, empty);
       return section;
     }
@@ -806,10 +806,10 @@
     const next = entries[index + 1] || null;
     const nav = document.createElement("nav");
     nav.className = "lesson-nav";
-    nav.setAttribute("aria-label", "Điều hướng bài học trước và sau");
+    nav.setAttribute("aria-label", "Previous and next reading items");
     [
-      { label: "← Bài trước", entry: previous },
-      { label: "Bài tiếp theo →", entry: next },
+      { label: "← Previous", entry: previous },
+      { label: "Next →", entry: next },
     ].forEach(({ label, entry: target }) => {
       const button = document.createElement("button");
       button.type = "button";
@@ -818,7 +818,7 @@
       const small = document.createElement("small");
       small.textContent = label;
       const title = document.createElement("strong");
-      title.textContent = target ? target.lesson.title : "Không có bài";
+      title.textContent = target ? target.lesson.title : "No item";
       button.append(small, title);
       nav.append(button);
     });
@@ -856,10 +856,10 @@
     const template = document.createElement("section");
     template.className = "planned-template";
     const title = document.createElement("h2");
-    title.textContent = "Khung bài học đã sẵn sàng";
+    title.textContent = "Lesson framework ready";
     const description = document.createElement("p");
     description.textContent =
-      "Bài này chưa được xuất bản để tránh đưa kiến thức chưa được kiểm chứng vào thư viện. Khi được nghiên cứu, nội dung sẽ dùng cùng cấu trúc, citation inline và chuẩn nguồn như Module 1.";
+      "This lesson has not been published, keeping unverified knowledge out of the library. Once researched, it will follow the same structure, inline citation format, and source standard as Module 1.";
     const sections = document.createElement("div");
     sections.className = "planned-sections";
     SECTION_TITLES.forEach((sectionTitle, index) => {
@@ -926,7 +926,7 @@
   function renderHome() {
     state.selectedId = null;
     state.selectedCollectionId = null;
-    document.title = "Thư viện tri thức | Private Knowledge Library";
+    document.title = "Knowledge Library | Private Learning Space";
     lessonReader.replaceChildren();
     const all = allLessons();
     const live = publishedLessons();
@@ -935,18 +935,18 @@
       state.data.title,
       state.data.description,
       [
-        [state.data.collections.length, "bộ sưu tập kiến thức"],
-        [state.data.modules.length, "nhóm nội dung có cấu trúc"],
-        [all.length, "bài học và ghi chú"],
-        [live.length, "nội dung hiện có thể đọc"],
+        [state.data.collections.length, "knowledge collections"],
+        [state.data.modules.length, "structured content groups"],
+        [all.length, "lessons and notes"],
+        [live.length, "available reading items"],
       ],
     );
 
     const collections = document.createElement("section");
     collections.className = "home-section";
     collections.append(createHomeSectionHead(
-      "Các bộ sưu tập của tôi",
-      "Mỗi lĩnh vực có cấu trúc riêng. Nội dung cũ vẫn được giữ nguyên; FinTech là một trong các hướng học đang phát triển.",
+      "My collections",
+      "Each subject has its own structure. Existing knowledge stays intact, while FinTech is one of the learning areas growing over time.",
     ));
     const grid = document.createElement("div");
     grid.className = "collection-grid";
@@ -960,7 +960,7 @@
       const mark = document.createElement("span");
       mark.textContent = collection.mark;
       const type = document.createElement("span");
-      type.textContent = collection.kind === "notes" ? "Ghi chú cá nhân" : "Learning domain";
+      type.textContent = collection.kind === "notes" ? "Personal notes" : "Learning domain";
       top.append(mark, type);
       const title = document.createElement("h2");
       title.textContent = collection.title;
@@ -969,14 +969,14 @@
       const metrics = document.createElement("div");
       metrics.className = "collection-card__metrics";
       metrics.append(
-        Object.assign(document.createElement("span"), { textContent: `${collection.modules.length} nhóm` }),
-        Object.assign(document.createElement("span"), { textContent: `${entries.length} mục đọc` }),
-        Object.assign(document.createElement("span"), { textContent: `${liveCount} khả dụng` }),
+        Object.assign(document.createElement("span"), { textContent: `${collection.modules.length} groups` }),
+        Object.assign(document.createElement("span"), { textContent: `${entries.length} reading items` }),
+        Object.assign(document.createElement("span"), { textContent: `${liveCount} available` }),
       );
       const open = document.createElement("button");
       open.type = "button";
       open.dataset.openCollection = collection.id;
-      open.textContent = "Mở bộ sưu tập →";
+      open.textContent = "Open collection →";
       card.append(top, title, description, metrics, open);
       grid.append(card);
     });
@@ -990,7 +990,7 @@
     if (!collection) return;
     state.selectedId = null;
     state.selectedCollectionId = collection.id;
-    document.title = `${collection.title} | Thư viện tri thức`;
+    document.title = `${collection.title} | Knowledge Library`;
     lessonReader.replaceChildren();
     const entries = collection.modules.flatMap((module) => module.lessons);
     const live = entries.filter((lesson) => lesson.status === "published");
@@ -999,10 +999,10 @@
       collection.title,
       collection.description,
       [
-        [collection.modules.length, collection.kind === "notes" ? "nhóm ghi chú" : "module học"],
-        [entries.length, "mục đọc trong bộ sưu tập"],
-        [live.length, "nội dung hiện khả dụng"],
-        [collection.primarySources.length, "nguồn đã lưu"],
+        [collection.modules.length, collection.kind === "notes" ? "note groups" : "learning modules"],
+        [entries.length, "reading items in this collection"],
+        [live.length, "currently available"],
+        [collection.primarySources.length, "saved sources"],
       ],
     );
     const sections = [hero];
@@ -1011,8 +1011,8 @@
       const notes = document.createElement("section");
       notes.className = "home-section";
       notes.append(createHomeSectionHead(
-        "Ghi chú được giữ nguyên",
-        "Đây là nội dung từ thư viện trước. Bạn có thể đọc, tìm kiếm và đánh dấu hoàn thành như trước đây.",
+        "Preserved notes",
+        "This content comes from the previous library. You can keep reading, searching, and marking items as completed.",
       ));
       const noteGrid = document.createElement("div");
       noteGrid.className = "module-overview note-overview";
@@ -1023,9 +1023,9 @@
           const top = document.createElement("div");
           top.className = "module-card__top";
           const type = document.createElement("span");
-          type.textContent = "GHI CHÚ";
+          type.textContent = "NOTE";
           const date = document.createElement("span");
-          date.textContent = lesson.lastReviewed ? formatDate(lesson.lastReviewed) : "Đã lưu";
+          date.textContent = lesson.lastReviewed ? formatDate(lesson.lastReviewed) : "Saved";
           top.append(type, date);
           const title = document.createElement("h3");
           title.textContent = lesson.title;
@@ -1034,7 +1034,7 @@
           const open = document.createElement("button");
           open.type = "button";
           open.dataset.lessonId = lesson.id;
-          open.textContent = "Đọc ghi chú →";
+          open.textContent = "Read note →";
           card.append(top, title, summary, open);
           noteGrid.append(card);
         });
@@ -1046,8 +1046,8 @@
         const mental = document.createElement("section");
         mental.className = "home-section";
         mental.append(createHomeSectionHead(
-          "Mental model 7 lớp",
-          "Dùng cùng một khung để đọc mọi sản phẩm, công ty và mô hình FinTech.",
+          "Seven-layer mental model",
+          "Use one consistent framework to understand every FinTech product, company, and business model.",
         ));
         const mentalGrid = document.createElement("div");
         mentalGrid.className = "mental-model";
@@ -1067,8 +1067,8 @@
       const curriculum = document.createElement("section");
       curriculum.className = "home-section";
       curriculum.append(createHomeSectionHead(
-        "Curriculum từ beginner đến industry-level",
-        "Các bài chưa nghiên cứu được giữ ở trạng thái rõ ràng và chỉ xuất bản sau khi kiểm chứng nguồn.",
+        "Curriculum from beginner to industry level",
+        "Unresearched lessons remain clearly marked and are published only after their sources have been validated.",
       ));
       const moduleGrid = document.createElement("div");
       moduleGrid.className = "module-overview";
@@ -1080,7 +1080,7 @@
         const number = document.createElement("span");
         number.textContent = `MODULE ${module.number}`;
         const count = document.createElement("span");
-        count.textContent = `${module.lessons.length} bài`;
+        count.textContent = `${module.lessons.length} lessons`;
         top.append(number, count);
         const title = document.createElement("h3");
         title.textContent = module.title;
@@ -1089,7 +1089,7 @@
         const open = document.createElement("button");
         open.type = "button";
         open.dataset.openModule = module.id;
-        open.textContent = "Mở module →";
+        open.textContent = "Open module →";
         card.append(top, title, description, open);
         moduleGrid.append(card);
       });
@@ -1101,8 +1101,8 @@
         policy.className = "home-section";
         policy.id = "source-policy";
         policy.append(createHomeSectionHead(
-          "Chuẩn nghiên cứu & trích nguồn",
-          `Thông tin nhạy cảm theo thời gian được rà soát gần nhất: ${formatDate(collection.reviewedAt)}.`,
+          "Research & citation standard",
+          `Time-sensitive information was last reviewed on ${formatDate(collection.reviewedAt)}.`,
         ));
         const policyGrid = document.createElement("div");
         policyGrid.className = "policy-grid";
@@ -1125,8 +1125,8 @@
         sources.className = "home-section";
         sources.id = "primary-sources";
         sources.append(createHomeSectionHead(
-          "Nguồn chính thống dùng xuyên suốt",
-          "Mỗi bài vẫn có reference riêng và chỉ dùng nguồn phù hợp với claim cụ thể.",
+          "Primary sources used throughout",
+          "Each lesson still has its own references and uses only sources relevant to its specific claims.",
         ));
         const sourceGrid = document.createElement("div");
         sourceGrid.className = "source-library";
@@ -1146,7 +1146,7 @@
             link.href = source.url;
             link.target = "_blank";
             link.rel = "noreferrer noopener";
-            link.textContent = "Mở nguồn chính thức ↗";
+            link.textContent = "Open primary source ↗";
             card.append(link);
           }
           sourceGrid.append(card);
@@ -1188,15 +1188,15 @@
     const head = document.createElement("div");
     head.className = "search-results__head";
     const label = document.createElement("span");
-    label.textContent = `${matches.length} kết quả`;
+    label.textContent = `${matches.length} results`;
     const hint = document.createElement("span");
-    hint.textContent = "Esc để đóng";
+    hint.textContent = "Esc to close";
     head.append(label, hint);
     searchResults.append(head);
     if (!matches.length) {
       const empty = document.createElement("div");
       empty.className = "search-empty";
-      empty.textContent = "Không tìm thấy bài học, ghi chú hoặc khái niệm phù hợp.";
+      empty.textContent = "No matching lesson, note, or concept was found.";
       searchResults.append(empty);
     } else {
       matches.forEach(({ collection, module, lesson }) => {
@@ -1216,10 +1216,10 @@
         const status = document.createElement("span");
         status.className = "search-result__status";
         status.textContent = collection.kind === "notes"
-          ? "Đã lưu"
+          ? "Saved"
           : lesson.status === "published"
-            ? "Đã kiểm chứng"
-            : "Theo lộ trình";
+            ? "Verified"
+            : "Roadmap";
         button.append(number, copy, status);
         searchResults.append(button);
       });
@@ -1236,10 +1236,10 @@
     if (!entry || entry.lesson.status !== "published") return;
     if (state.completed.has(lessonId)) {
       state.completed.delete(lessonId);
-      showToast("Đã bỏ đánh dấu hoàn thành.");
+      showToast("Completion mark removed.");
     } else {
       state.completed.add(lessonId);
-      showToast("Đã lưu tiến độ trên thiết bị này.");
+      showToast("Progress saved on this device.");
     }
     saveCompleted();
     selectLesson(lessonId);
@@ -1277,9 +1277,9 @@
     document.body.classList.remove("sidebar-open");
     vaultView.hidden = true;
     unlockView.hidden = false;
-    headerStatus.textContent = "Đã khóa";
-    document.title = "Thư viện tri thức | Private Knowledge Library";
-    unlockStatus.textContent = auto ? "Vault đã tự khóa sau 15 phút không hoạt động." : "";
+    headerStatus.textContent = "Locked";
+    document.title = "Knowledge Library | Private Learning Space";
+    unlockStatus.textContent = auto ? "The library locked automatically after 15 minutes of inactivity." : "";
     unlockCard.classList.remove("is-error");
     passwordInput.focus();
   }
@@ -1288,12 +1288,12 @@
     event.preventDefault();
     const password = passwordInput.value;
     if (!password) {
-      unlockStatus.textContent = "Hãy nhập mật khẩu vault.";
+      unlockStatus.textContent = "Enter the library password.";
       passwordInput.focus();
       return;
     }
     unlockButton.disabled = true;
-    unlockButtonLabel.textContent = "Đang giải mã…";
+    unlockButtonLabel.textContent = "Decrypting…";
     unlockStatus.textContent = "";
     try {
       const data = await decryptVault(password);
@@ -1305,17 +1305,17 @@
       document.body.classList.remove("is-locked");
       unlockView.hidden = true;
       vaultView.hidden = false;
-      headerStatus.textContent = "Đã mở · giải mã cục bộ";
-      curriculumMeta.textContent = `${data.collections.length} bộ sưu tập · ${allLessons().length} mục đọc`;
+      headerStatus.textContent = "Open · locally decrypted";
+      curriculumMeta.textContent = `${data.collections.length} collections · ${allLessons().length} reading items`;
       renderHome();
       touchActivity();
       searchInput.focus({ preventScroll: true });
     } catch {
-      unlockStatus.textContent = "Không thể giải mã. Hãy kiểm tra mật khẩu và thử lại.";
+      unlockStatus.textContent = "Unable to decrypt. Check the password and try again.";
       passwordInput.select();
     } finally {
       unlockButton.disabled = false;
-      unlockButtonLabel.textContent = "Mở thư viện";
+      unlockButtonLabel.textContent = "Open library";
     }
   }
 
@@ -1323,8 +1323,8 @@
   passwordToggle?.addEventListener("click", () => {
     const reveal = passwordInput.type === "password";
     passwordInput.type = reveal ? "text" : "password";
-    passwordToggle.textContent = reveal ? "Ẩn" : "Hiện";
-    passwordToggle.setAttribute("aria-label", reveal ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    passwordToggle.textContent = reveal ? "Hide" : "Show";
+    passwordToggle.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
     passwordInput.focus();
   });
   lockButton?.addEventListener("click", () => lockVault(false));
