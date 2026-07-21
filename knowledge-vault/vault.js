@@ -1,7 +1,6 @@
 (() => {
   "use strict";
 
-  const AUTO_LOCK_MS = 15 * 60 * 1000;
   const VAULT_AAD = "knowledge-vault:v1";
   const STORAGE_COMPLETED = "fintech-domain:completed:v1";
   const STORAGE_THEME = "fintech-domain:theme:v1";
@@ -56,8 +55,6 @@
     openCollections: new Set(),
     openModules: new Set(),
     completed: new Set(),
-    autoLockTimer: null,
-    lastActivityAt: 0,
     toastTimer: null,
   };
 
@@ -1249,17 +1246,7 @@
     readingProgress.style.width = `${percent}%`;
   }
 
-  function touchActivity() {
-    if (document.body.classList.contains("is-locked")) return;
-    const now = Date.now();
-    if (now - state.lastActivityAt < 1000) return;
-    state.lastActivityAt = now;
-    window.clearTimeout(state.autoLockTimer);
-    state.autoLockTimer = window.setTimeout(() => lockVault(true), AUTO_LOCK_MS);
-  }
-
-  function lockVault(auto = false) {
-    window.clearTimeout(state.autoLockTimer);
+  function lockVault() {
     state.data = null;
     state.sourceMap = new Map();
     state.selectedId = null;
@@ -1278,7 +1265,7 @@
     unlockView.hidden = false;
     headerStatus.textContent = "Locked";
     document.title = "Knowledge Library | Private Learning Space";
-    unlockStatus.textContent = auto ? "The library locked automatically after 15 minutes of inactivity." : "";
+    unlockStatus.textContent = "";
     unlockCard.classList.remove("is-error");
     passwordInput.focus();
   }
@@ -1308,7 +1295,6 @@
       headerStatus.textContent = "Open · locally decrypted";
       curriculumMeta.textContent = `${data.collections.length} collections · ${allLessons().length} reading items`;
       renderHome();
-      touchActivity();
       searchInput.focus({ preventScroll: true });
     } catch {
       unlockStatus.textContent = "Unable to decrypt. Check the password and try again.";
@@ -1327,7 +1313,7 @@
     passwordToggle.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
     passwordInput.focus();
   });
-  lockButton?.addEventListener("click", () => lockVault(false));
+  lockButton?.addEventListener("click", lockVault);
   domainHomeButton?.addEventListener("click", () => {
     renderHome();
     closeSidebar();
@@ -1404,12 +1390,8 @@
   sidebarOpenButton?.addEventListener("click", openSidebar);
   sidebarCloseButton?.addEventListener("click", closeSidebar);
   sidebarScrim?.addEventListener("click", closeSidebar);
-  workspace?.addEventListener("scroll", () => {
-    updateReadingProgress();
-    touchActivity();
-  }, { passive: true });
+  workspace?.addEventListener("scroll", updateReadingProgress, { passive: true });
   document.addEventListener("keydown", (event) => {
-    touchActivity();
     if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === "k") {
       event.preventDefault();
       searchInput?.focus();
@@ -1417,15 +1399,6 @@
     if (event.key === "Escape") {
       closeSearch();
       closeSidebar();
-    }
-  });
-  ["pointerdown", "touchstart"].forEach((eventName) =>
-    document.addEventListener(eventName, touchActivity, { passive: true }),
-  );
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && !document.body.classList.contains("is-locked")) {
-      if (Date.now() - state.lastActivityAt >= AUTO_LOCK_MS) lockVault(true);
-      else touchActivity();
     }
   });
 

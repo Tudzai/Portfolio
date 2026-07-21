@@ -18,5 +18,5 @@
 1. Confirm the intended public files.
 2. Update UI or encryption tooling without reading private note content unless the owner explicitly requests a knowledge update.
 3. Regenerate `vault-data.js` through the encryption tool without echoing the password or plaintext.
-4. Test wrong-password rejection, correct-password decryption, search/filter behavior, manual lock, auto-lock logic, keyboard access, and mobile layout.
+4. Test wrong-password rejection, correct-password decryption, search/filter behavior, manual lock, reload cleanup, keyboard access, and mobile layout.
 5. Before staging, explicitly list files and confirm nothing under `private/` other than `.gitignore` is included.

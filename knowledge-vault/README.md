@@ -22,8 +22,9 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
 - `vault-data.js` is the only knowledge payload that may be committed. It contains ciphertext, salt, IV, and KDF
   settings—not plaintext or a password.
 - PBKDF2-HMAC-SHA256 uses 600,000 iterations; content encryption uses AES-256-GCM with authenticated additional data.
-- Decrypted content is kept only in browser memory. Manual lock and the 15-minute inactivity lock remove rendered
-  plaintext and in-memory curriculum references as far as practical in client-side JavaScript.
+- Decrypted content is kept only in browser memory. The library stays open until the owner uses the manual lock,
+  reloads or leaves the page, or closes the tab. Manual lock removes rendered plaintext and in-memory curriculum
+  references as far as practical in client-side JavaScript.
 - Theme and completed-lesson IDs may be stored on the current device. The password and decrypted lesson text are never
   stored in local or session storage.
 - The vault page has no analytics, third-party fonts, scripts, embeds, or network calls.
