@@ -36,9 +36,6 @@
   const domainHomeButton = document.querySelector("[data-domain-home]");
   const curriculumMeta = document.querySelector("[data-curriculum-meta]");
   const moduleList = document.querySelector("[data-module-list]");
-  const progressLabel = document.querySelector("[data-progress-label]");
-  const progressDetail = document.querySelector("[data-progress-detail]");
-  const sidebarProgress = document.querySelector("[data-sidebar-progress]");
   const searchInput = document.querySelector("[data-search-input]");
   const searchResults = document.querySelector("[data-search-results]");
   const themeToggle = document.querySelector("[data-theme-toggle]");
@@ -428,7 +425,7 @@
   function setTheme(theme, persist = true) {
     const next = theme === "light" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f3f6f5" : "#0a1118");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#eef2f0" : "#0a1118");
     themeLabel.textContent = next === "light" ? "Dark" : "Light";
     themeToggle.setAttribute("aria-label", next === "light" ? "Switch to dark mode" : "Switch to light mode");
     if (persist) {
@@ -449,16 +446,6 @@
     }
     const preferred = window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
     setTheme(stored || preferred, false);
-  }
-
-  function updateProgress() {
-    const published = publishedLessons();
-    const validIds = new Set(published.map(({ lesson }) => lesson.id));
-    const completed = Array.from(state.completed).filter((id) => validIds.has(id)).length;
-    const percent = published.length ? Math.round((completed / published.length) * 100) : 0;
-    progressLabel.textContent = `${percent}%`;
-    progressDetail.textContent = `${completed} / ${published.length} available reading items completed`;
-    sidebarProgress.style.width = `${percent}%`;
   }
 
   function closeSidebar() {
@@ -572,7 +559,6 @@
       collectionGroup.append(collectionButton, collectionBody);
       moduleList.append(collectionGroup);
     });
-    updateProgress();
   }
 
   function appendRichText(element, text, lesson) {

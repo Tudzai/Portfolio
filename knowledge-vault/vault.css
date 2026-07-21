@@ -29,24 +29,24 @@
 
 html[data-theme="light"] {
   color-scheme: light;
-  --bg: #f3f6f5;
-  --bg-elevated: #ffffff;
+  --bg: #eef2f0;
+  --bg-elevated: #fbfdfc;
   --surface: #ffffff;
-  --surface-soft: #f4f7f6;
-  --surface-strong: #eaf0ee;
-  --ink: #14211f;
-  --muted: #566965;
-  --soft: #7c8e89;
-  --line: #dbe5e1;
-  --line-strong: #c8d6d1;
-  --accent: #087f67;
-  --accent-soft: rgba(8, 127, 103, 0.09);
-  --blue: #276ca0;
-  --blue-soft: rgba(39, 108, 160, 0.08);
-  --amber: #95601e;
-  --amber-soft: rgba(149, 96, 30, 0.09);
-  --danger: #b73b49;
-  --shadow: 0 22px 60px rgba(32, 58, 50, 0.1);
+  --surface-soft: #e7eeeb;
+  --surface-strong: #dae5e1;
+  --ink: #0b1916;
+  --muted: #304842;
+  --soft: #4e645d;
+  --line: #bdcdc7;
+  --line-strong: #95aaa2;
+  --accent: #00644f;
+  --accent-soft: rgba(0, 100, 79, 0.12);
+  --blue: #135b8f;
+  --blue-soft: rgba(19, 91, 143, 0.11);
+  --amber: #76480d;
+  --amber-soft: rgba(118, 72, 13, 0.11);
+  --danger: #9d2837;
+  --shadow: 0 22px 60px rgba(22, 46, 39, 0.14);
 }
 
 * {
@@ -508,9 +508,8 @@ body:not(.is-locked) > .public-footer {
   grid-template-areas:
     "mobile-head"
     "library-home"
-    "curriculum-scroll"
-    "progress";
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+    "curriculum-scroll";
+  grid-template-rows: auto auto minmax(0, 1fr);
   min-width: 0;
   min-height: 0;
   height: 100%;
@@ -814,53 +813,6 @@ body:not(.is-locked) > .public-footer {
   background: var(--soft);
 }
 
-.sidebar-foot {
-  grid-area: progress;
-  margin: 0 14px 14px;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  background: var(--surface);
-}
-
-.sidebar-foot__topline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--soft);
-  font-size: 0.68rem;
-}
-
-.sidebar-foot__topline strong {
-  color: var(--accent);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-}
-
-.progress-track {
-  height: 4px;
-  margin-top: 10px;
-  overflow: hidden;
-  border-radius: 99px;
-  background: var(--line);
-}
-
-.progress-track span {
-  display: block;
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-  transition: width 220ms ease;
-}
-
-.sidebar-foot small {
-  display: block;
-  margin-top: 8px;
-  color: var(--soft);
-  font-size: 0.65rem;
-}
-
 .workspace {
   position: relative;
   min-width: 0;
@@ -882,6 +834,11 @@ body:not(.is-locked) > .public-footer {
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 91%, transparent);
   backdrop-filter: blur(18px);
+}
+
+html[data-theme="light"] .workspace-bar {
+  background: rgba(251, 253, 252, 0.98);
+  backdrop-filter: none;
 }
 
 .workspace-bar__left {
