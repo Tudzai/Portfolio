@@ -55,6 +55,7 @@
     data: null,
     sourceMap: new Map(),
     selectedId: null,
+    selectedCollectionId: null,
     openModules: new Set(),
     completed: new Set(),
     autoLockTimer: null,
@@ -156,10 +157,11 @@
     };
   }
 
-  function normalizeModule(module, index) {
+  function normalizeModule(module, index, collectionId = "fintech-domain") {
     const id = normalizeString(module?.id, `module-${index + 1}`);
     return {
       id,
+      collectionId,
       number: normalizeString(module?.number, String(index + 1).padStart(2, "0")),
       title: normalizeString(module?.title, `Module ${index + 1}`),
       level: normalizeString(module?.level, "Foundation"),
@@ -208,7 +210,7 @@
       owner: normalizeString(value.owner),
       updatedAt: normalizeString(value.updatedAt),
       reviewedAt: normalizeString(value.updatedAt),
-      description: "Kho ghi chú cũ đang được hiển thị bằng lớp tương thích. Hãy mã hóa lại curriculum FinTech để sử dụng giao diện đầy đủ.",
+      description: "Các ghi chú đã có trong phiên bản thư viện trước được giữ nguyên để tiếp tục đọc và tra cứu.",
       mentalModel: [],
       sourcePolicy: [],
       primarySources: legacySources,
@@ -228,25 +230,81 @@
   function normalizeVaultData(value) {
     if (!value || typeof value !== "object") throw new Error("Vault data không hợp lệ.");
     if (!Array.isArray(value.modules)) {
-      if (Array.isArray(value.notes)) return normalizeVaultData(legacyData(value));
+      if (Array.isArray(value.notes)) {
+        return normalizeVaultData({
+          title: "Knowledge Library",
+          owner: value.owner,
+          updatedAt: value.updatedAt,
+          reviewedAt: value.updatedAt,
+          description: "Thư viện tri thức cá nhân.",
+          mentalModel: [],
+          sourcePolicy: [],
+          primarySources: [],
+          modules: [],
+          archivedVault: value,
+        });
+      }
       throw new Error("Vault data phải có danh sách module.");
     }
 
+    const finTechSources = Array.isArray(value.primarySources) ? value.primarySources.map(normalizeSource) : [];
+    const finTechPolicy = Array.isArray(value.sourcePolicy)
+      ? value.sourcePolicy.map((item, index) => ({
+          title: normalizeString(item?.title, `Nguyên tắc ${index + 1}`),
+          description: normalizeString(item?.description),
+        }))
+      : [];
+    const collections = [];
+    const allSources = [];
+
+    if (value.archivedVault && Array.isArray(value.archivedVault.notes) && value.archivedVault.notes.length) {
+      const archived = legacyData(value.archivedVault);
+      const archivedSources = archived.primarySources.map(normalizeSource);
+      const archivedModules = archived.modules.map((module, index) => normalizeModule(module, index, "personal-notes"));
+      collections.push({
+        id: "personal-notes",
+        mark: "PN",
+        kind: "notes",
+        title: normalizeString(archived.title, "Ghi chú của tôi"),
+        description: archived.description,
+        updatedAt: normalizeString(archived.updatedAt),
+        reviewedAt: normalizeString(archived.reviewedAt),
+        mentalModel: [],
+        sourcePolicy: [],
+        primarySources: archivedSources,
+        modules: archivedModules,
+      });
+      allSources.push(...archivedSources);
+    }
+
+    if (value.modules.length) {
+      const finTechModules = value.modules.map((module, index) => normalizeModule(module, index, "fintech-domain"));
+      collections.push({
+        id: "fintech-domain",
+        mark: "FT",
+        kind: "curriculum",
+        title: normalizeString(value.title, "FinTech Domain"),
+        description: normalizeString(value.description),
+        updatedAt: normalizeString(value.updatedAt),
+        reviewedAt: normalizeString(value.reviewedAt),
+        mentalModel: normalizeStringArray(value.mentalModel),
+        sourcePolicy: finTechPolicy,
+        primarySources: finTechSources,
+        modules: finTechModules,
+      });
+      allSources.push(...finTechSources);
+    }
+
+    if (!collections.length) throw new Error("Thư viện phải có ít nhất một bộ sưu tập.");
+
     const data = {
-      title: normalizeString(value.title, "FinTech Domain"),
+      title: "Thư viện tri thức cá nhân",
       owner: normalizeString(value.owner),
       updatedAt: normalizeString(value.updatedAt),
-      reviewedAt: normalizeString(value.reviewedAt),
-      description: normalizeString(value.description),
-      mentalModel: normalizeStringArray(value.mentalModel),
-      sourcePolicy: Array.isArray(value.sourcePolicy)
-        ? value.sourcePolicy.map((item, index) => ({
-            title: normalizeString(item?.title, `Nguyên tắc ${index + 1}`),
-            description: normalizeString(item?.description),
-          }))
-        : [],
-      primarySources: Array.isArray(value.primarySources) ? value.primarySources.map(normalizeSource) : [],
-      modules: value.modules.map(normalizeModule),
+      description: "Nơi lưu những kiến thức đã tích lũy theo từng lĩnh vực. FinTech là một bộ sưu tập trong thư viện và các chủ đề khác có thể được bổ sung dần.",
+      collections,
+      primarySources: allSources,
+      modules: collections.flatMap((collection) => collection.modules),
     };
 
     const ids = [];
@@ -320,7 +378,9 @@
 
   function allLessons() {
     if (!state.data) return [];
-    return state.data.modules.flatMap((module) => module.lessons.map((lesson) => ({ module, lesson })));
+    return state.data.collections.flatMap((collection) =>
+      collection.modules.flatMap((module) => module.lessons.map((lesson) => ({ collection, module, lesson }))),
+    );
   }
 
   function publishedLessons() {
@@ -342,6 +402,7 @@
 
   function lessonSearchText(entry) {
     return [
+      entry.collection.title,
       entry.module.title,
       entry.lesson.title,
       entry.lesson.summary,
@@ -395,7 +456,7 @@
     const completed = Array.from(state.completed).filter((id) => validIds.has(id)).length;
     const percent = published.length ? Math.round((completed / published.length) * 100) : 0;
     progressLabel.textContent = `${percent}%`;
-    progressDetail.textContent = `${completed} / ${published.length} bài khả dụng đã hoàn thành`;
+    progressDetail.textContent = `${completed} / ${published.length} mục đọc khả dụng đã hoàn thành`;
     sidebarProgress.style.width = `${percent}%`;
   }
 
@@ -409,58 +470,97 @@
 
   function renderNavigation() {
     moduleList.replaceChildren();
-    state.data.modules.forEach((module) => {
-      const group = document.createElement("section");
-      group.className = "module-group";
+    state.data.collections.forEach((collection) => {
+      const collectionGroup = document.createElement("section");
+      collectionGroup.className = "collection-nav";
 
-      const toggle = document.createElement("button");
-      toggle.type = "button";
-      toggle.className = "module-toggle";
-      toggle.dataset.moduleId = module.id;
-      const expanded = state.openModules.has(module.id);
-      toggle.setAttribute("aria-expanded", String(expanded));
+      const collectionButton = document.createElement("button");
+      collectionButton.type = "button";
+      collectionButton.className = "collection-nav__head";
+      collectionButton.dataset.collectionId = collection.id;
+      if (collection.id === state.selectedCollectionId) {
+        collectionButton.classList.add("is-current");
+        collectionButton.setAttribute("aria-current", "page");
+      }
+      const mark = document.createElement("span");
+      mark.className = "collection-nav__mark";
+      mark.textContent = collection.mark;
+      const collectionCopy = document.createElement("span");
+      const collectionTitle = document.createElement("strong");
+      collectionTitle.textContent = collection.title;
+      const collectionMeta = document.createElement("small");
+      const collectionEntries = collection.modules.reduce((total, module) => total + module.lessons.length, 0);
+      const collectionLive = collection.modules.reduce(
+        (total, module) => total + module.lessons.filter((lesson) => lesson.status === "published").length,
+        0,
+      );
+      collectionMeta.textContent = collection.kind === "notes"
+        ? `${collectionEntries} ghi chú được giữ nguyên`
+        : `${collection.modules.length} module · ${collectionLive} bài khả dụng`;
+      collectionCopy.append(collectionTitle, collectionMeta);
+      const collectionArrow = document.createElement("span");
+      collectionArrow.setAttribute("aria-hidden", "true");
+      collectionArrow.textContent = "→";
+      collectionButton.append(mark, collectionCopy, collectionArrow);
+      collectionGroup.append(collectionButton);
 
-      const number = document.createElement("span");
-      number.className = "module-number";
-      number.textContent = module.number;
-      const copy = document.createElement("span");
-      copy.className = "module-toggle__copy";
-      const title = document.createElement("strong");
-      title.textContent = module.title;
-      const meta = document.createElement("small");
-      const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
-      meta.textContent = `${module.lessons.length} bài${liveCount ? ` · ${liveCount} khả dụng` : " · sắp nghiên cứu"}`;
-      copy.append(title, meta);
-      const chevron = document.createElement("span");
-      chevron.className = "module-chevron";
-      chevron.setAttribute("aria-hidden", "true");
-      chevron.textContent = "›";
-      toggle.append(number, copy, chevron);
+      collection.modules.forEach((module) => {
+        const group = document.createElement("section");
+        group.className = "module-group";
 
-      const lessons = document.createElement("div");
-      lessons.className = "lesson-list";
-      lessons.hidden = !expanded;
-      lessons.id = `lessons-${module.id}`;
-      toggle.setAttribute("aria-controls", lessons.id);
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "module-toggle";
+        toggle.dataset.moduleId = module.id;
+        const expanded = state.openModules.has(module.id);
+        toggle.setAttribute("aria-expanded", String(expanded));
 
-      module.lessons.forEach((lesson) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `lesson-link ${lesson.status === "planned" ? "is-planned" : ""} ${state.completed.has(lesson.id) ? "is-complete" : ""}`;
-        button.dataset.lessonId = lesson.id;
-        if (lesson.id === state.selectedId) button.setAttribute("aria-current", "page");
-        const label = document.createElement("span");
-        label.textContent = lesson.title;
-        const lessonState = document.createElement("span");
-        lessonState.className = "lesson-link__state";
-        lessonState.setAttribute("aria-hidden", "true");
-        lessonState.textContent = state.completed.has(lesson.id) ? "✓" : "";
-        button.append(label, lessonState);
-        lessons.append(button);
+        const number = document.createElement("span");
+        number.className = "module-number";
+        number.textContent = module.number;
+        const copy = document.createElement("span");
+        copy.className = "module-toggle__copy";
+        const title = document.createElement("strong");
+        title.textContent = module.title;
+        const meta = document.createElement("small");
+        const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
+        meta.textContent = collection.kind === "notes"
+          ? `${module.lessons.length} ghi chú`
+          : `${module.lessons.length} bài${liveCount ? ` · ${liveCount} khả dụng` : " · sắp nghiên cứu"}`;
+        copy.append(title, meta);
+        const chevron = document.createElement("span");
+        chevron.className = "module-chevron";
+        chevron.setAttribute("aria-hidden", "true");
+        chevron.textContent = "›";
+        toggle.append(number, copy, chevron);
+
+        const lessons = document.createElement("div");
+        lessons.className = "lesson-list";
+        lessons.hidden = !expanded;
+        lessons.id = `lessons-${module.id}`;
+        toggle.setAttribute("aria-controls", lessons.id);
+
+        module.lessons.forEach((lesson) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `lesson-link ${lesson.status === "planned" ? "is-planned" : ""} ${state.completed.has(lesson.id) ? "is-complete" : ""}`;
+          button.dataset.lessonId = lesson.id;
+          if (lesson.id === state.selectedId) button.setAttribute("aria-current", "page");
+          const label = document.createElement("span");
+          label.textContent = lesson.title;
+          const lessonState = document.createElement("span");
+          lessonState.className = "lesson-link__state";
+          lessonState.setAttribute("aria-hidden", "true");
+          lessonState.textContent = state.completed.has(lesson.id) ? "✓" : "";
+          button.append(label, lessonState);
+          lessons.append(button);
+        });
+
+        group.append(toggle, lessons);
+        collectionGroup.append(group);
       });
 
-      group.append(toggle, lessons);
-      moduleList.append(group);
+      moduleList.append(collectionGroup);
     });
     updateProgress();
   }
@@ -571,18 +671,22 @@
   }
 
   function createReaderHero(entry) {
-    const { module, lesson } = entry;
+    const { collection, module, lesson } = entry;
     const hero = document.createElement("header");
     hero.className = "reader-hero";
     const breadcrumb = document.createElement("p");
     breadcrumb.className = "reader-breadcrumb";
     const domain = document.createElement("span");
-    domain.textContent = "FinTech Domain";
+    domain.textContent = "Thư viện";
     const separator = document.createElement("span");
     separator.textContent = "/";
+    const collectionName = document.createElement("span");
+    collectionName.textContent = collection.title;
+    const secondSeparator = document.createElement("span");
+    secondSeparator.textContent = "/";
     const moduleName = document.createElement("span");
     moduleName.textContent = `${module.number}. ${module.title}`;
-    breadcrumb.append(domain, separator, moduleName);
+    breadcrumb.append(domain, separator, collectionName, secondSeparator, moduleName);
     const title = document.createElement("h1");
     title.textContent = lesson.title;
     const deck = document.createElement("p");
@@ -592,7 +696,11 @@
     meta.className = "reader-meta";
     const status = document.createElement("span");
     status.className = lesson.status === "published" ? "status-live" : "status-planned";
-    status.textContent = lesson.status === "published" ? "Đã kiểm chứng" : "Chờ nghiên cứu";
+    status.textContent = collection.kind === "notes"
+      ? "Đã lưu"
+      : lesson.status === "published"
+        ? "Đã kiểm chứng"
+        : "Chờ nghiên cứu";
     const level = document.createElement("span");
     level.textContent = module.level;
     meta.append(status, level);
@@ -630,22 +738,23 @@
     policy.type = "button";
     policy.className = "source-policy-link";
     policy.dataset.showSources = "true";
-    policy.textContent = "Phương pháp & nguồn chính thống";
+    policy.dataset.collectionId = collection.id;
+    policy.textContent = collection.kind === "curriculum" ? "Phương pháp & nguồn chính thống" : "Về bộ sưu tập ghi chú";
     tools.append(complete, policy);
     hero.append(breadcrumb, title, deck, meta, tools);
     return hero;
   }
 
-  function renderReferences(lesson) {
+  function renderReferences(lesson, collectionKind = "curriculum") {
     const section = document.createElement("section");
     section.className = "lesson-section";
     section.id = "section-references";
     const heading = document.createElement("div");
     heading.className = "section-heading";
     const number = document.createElement("span");
-    number.textContent = "12";
+    number.textContent = String(lesson.sections.length + 1).padStart(2, "0");
     const title = document.createElement("h2");
-    title.textContent = SECTION_TITLES[11];
+    title.textContent = "Nguồn tham khảo";
     heading.append(number, title);
     const list = document.createElement("ol");
     list.className = "reference-list";
@@ -680,7 +789,9 @@
     if (!list.children.length) {
       const empty = document.createElement("p");
       empty.className = "content-paragraph";
-      empty.textContent = "Nguồn sẽ được bổ sung sau khi bài học hoàn tất nghiên cứu và kiểm chứng chéo.";
+      empty.textContent = collectionKind === "notes"
+        ? "Ghi chú này chưa có nguồn tham khảo được lưu."
+        : "Nguồn sẽ được bổ sung sau khi bài học hoàn tất nghiên cứu và kiểm chứng chéo.";
       section.append(heading, empty);
       return section;
     }
@@ -689,7 +800,7 @@
   }
 
   function renderLessonNavigation(entry) {
-    const entries = allLessons();
+    const entries = allLessons().filter(({ collection }) => collection.id === entry.collection.id);
     const index = entries.findIndex(({ lesson }) => lesson.id === entry.lesson.id);
     const previous = entries[index - 1] || null;
     const next = entries[index + 1] || null;
@@ -734,7 +845,7 @@
       sectionData.blocks.forEach((block) => section.append(renderBlock(block, entry.lesson)));
       body.append(section);
     });
-    body.append(renderReferences(entry.lesson));
+    body.append(renderReferences(entry.lesson, entry.collection.kind));
     fragment.append(body, renderLessonNavigation(entry));
     return fragment;
   }
@@ -761,34 +872,10 @@
     return fragment;
   }
 
-  function renderHome() {
-    state.selectedId = null;
-    document.title = "FinTech Domain | Private Knowledge Hub";
-    lessonReader.replaceChildren();
-    const all = allLessons();
-    const live = publishedLessons();
-    const hero = document.createElement("section");
-    hero.className = "home-hero";
-    const copy = document.createElement("div");
-    const eyebrow = document.createElement("p");
-    eyebrow.className = "eyebrow";
-    const line = document.createElement("span");
-    line.setAttribute("aria-hidden", "true");
-    eyebrow.append(line, document.createTextNode("Personal learning library"));
-    const title = document.createElement("h1");
-    title.textContent = state.data.title;
-    const lede = document.createElement("p");
-    lede.className = "home-hero__lede";
-    lede.textContent = state.data.description;
-    copy.append(eyebrow, title, lede);
+  function createHomeStats(items) {
     const stats = document.createElement("div");
     stats.className = "home-stats";
-    [
-      [state.data.modules.length, "module từ nền tảng đến chuyên sâu"],
-      [all.length, "bài trong curriculum hoàn chỉnh"],
-      [live.length, "bài đã nghiên cứu và kiểm chứng"],
-      [state.data.primarySources.length, "nguồn chính thống nền tảng"],
-    ].forEach(([value, label]) => {
+    items.forEach(([value, label]) => {
       const card = document.createElement("div");
       const number = document.createElement("strong");
       number.textContent = String(value);
@@ -797,135 +884,289 @@
       card.append(number, text);
       stats.append(card);
     });
-    hero.append(copy, stats);
+    return stats;
+  }
 
-    const mental = document.createElement("section");
-    mental.className = "home-section";
-    const mentalHead = document.createElement("div");
-    mentalHead.className = "home-section__head";
-    const mentalTitle = document.createElement("h2");
-    mentalTitle.textContent = "Mental model 7 lớp";
-    const mentalCopy = document.createElement("p");
-    mentalCopy.textContent = "Dùng cùng một khung để đọc mọi sản phẩm, công ty và mô hình FinTech.";
-    mentalHead.append(mentalTitle, mentalCopy);
-    const mentalGrid = document.createElement("div");
-    mentalGrid.className = "mental-model";
-    state.data.mentalModel.forEach((item, index) => {
-      const card = document.createElement("article");
-      const number = document.createElement("span");
-      number.textContent = String(index + 1).padStart(2, "0");
-      const label = document.createElement("strong");
-      label.textContent = item;
-      card.append(number, label);
-      mentalGrid.append(card);
-    });
-    mental.append(mentalHead, mentalGrid);
+  function createHomeHero(eyebrowText, titleText, ledeText, stats) {
+    const hero = document.createElement("section");
+    hero.className = "home-hero";
+    const copy = document.createElement("div");
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "eyebrow";
+    const line = document.createElement("span");
+    line.setAttribute("aria-hidden", "true");
+    eyebrow.append(line, document.createTextNode(eyebrowText));
+    const title = document.createElement("h1");
+    title.textContent = titleText;
+    const lede = document.createElement("p");
+    lede.className = "home-hero__lede";
+    lede.textContent = ledeText;
+    copy.append(eyebrow, title, lede);
+    hero.append(copy, createHomeStats(stats));
+    return hero;
+  }
 
-    const curriculum = document.createElement("section");
-    curriculum.className = "home-section";
-    const curriculumHead = document.createElement("div");
-    curriculumHead.className = "home-section__head";
-    const curriculumTitle = document.createElement("h2");
-    curriculumTitle.textContent = "Curriculum từ beginner đến industry-level";
-    const curriculumCopy = document.createElement("p");
-    curriculumCopy.textContent = "Module có thể mở rộng ở sidebar. Các bài chưa nghiên cứu được giữ ở trạng thái rõ ràng.";
-    curriculumHead.append(curriculumTitle, curriculumCopy);
-    const moduleGrid = document.createElement("div");
-    moduleGrid.className = "module-overview";
-    state.data.modules.forEach((module) => {
-      const card = document.createElement("article");
-      card.className = "module-card";
-      const top = document.createElement("div");
-      top.className = "module-card__top";
-      const number = document.createElement("span");
-      number.textContent = `MODULE ${module.number}`;
-      const count = document.createElement("span");
-      count.textContent = `${module.lessons.length} bài`;
-      top.append(number, count);
-      const title = document.createElement("h3");
-      title.textContent = module.title;
-      const description = document.createElement("p");
-      description.textContent = module.description;
-      const open = document.createElement("button");
-      open.type = "button";
-      open.dataset.openModule = module.id;
-      open.textContent = "Mở module →";
-      card.append(top, title, description, open);
-      moduleGrid.append(card);
-    });
-    curriculum.append(curriculumHead, moduleGrid);
+  function createHomeSectionHead(titleText, copyText) {
+    const head = document.createElement("div");
+    head.className = "home-section__head";
+    const title = document.createElement("h2");
+    title.textContent = titleText;
+    const copy = document.createElement("p");
+    copy.textContent = copyText;
+    head.append(title, copy);
+    return head;
+  }
 
-    const policy = document.createElement("section");
-    policy.className = "home-section";
-    policy.id = "source-policy";
-    const policyHead = document.createElement("div");
-    policyHead.className = "home-section__head";
-    const policyTitle = document.createElement("h2");
-    policyTitle.textContent = "Chuẩn nghiên cứu & trích nguồn";
-    const policyCopy = document.createElement("p");
-    policyCopy.textContent = `Thông tin nhạy cảm theo thời gian được rà soát gần nhất: ${formatDate(state.data.reviewedAt)}.`;
-    policyHead.append(policyTitle, policyCopy);
-    const policyGrid = document.createElement("div");
-    policyGrid.className = "policy-grid";
-    state.data.sourcePolicy.forEach((item) => {
-      const card = document.createElement("article");
-      card.className = "policy-card";
-      const title = document.createElement("strong");
-      title.textContent = item.title;
-      const description = document.createElement("p");
-      description.textContent = item.description;
-      card.append(title, description);
-      policyGrid.append(card);
-    });
-    policy.append(policyHead, policyGrid);
-
-    const sources = document.createElement("section");
-    sources.className = "home-section";
-    sources.id = "primary-sources";
-    const sourceHead = document.createElement("div");
-    sourceHead.className = "home-section__head";
-    const sourceTitle = document.createElement("h2");
-    sourceTitle.textContent = "Nguồn chính thống dùng xuyên suốt";
-    const sourceCopy = document.createElement("p");
-    sourceCopy.textContent = "Danh sách nền; mỗi bài vẫn có reference riêng và chỉ dùng nguồn phù hợp với claim cụ thể.";
-    sourceHead.append(sourceTitle, sourceCopy);
-    const sourceGrid = document.createElement("div");
-    sourceGrid.className = "source-library";
-    state.data.primarySources.forEach((source) => {
-      const card = document.createElement("article");
-      card.className = "source-card";
-      const organization = document.createElement("p");
-      organization.className = "source-card__org";
-      organization.textContent = source.organization;
-      const title = document.createElement("h3");
-      title.textContent = source.title;
-      const scope = document.createElement("p");
-      scope.textContent = `${source.publishedAt} · ${source.scope}`;
-      card.append(organization, title, scope);
-      if (source.url) {
-        const link = document.createElement("a");
-        link.href = source.url;
-        link.target = "_blank";
-        link.rel = "noreferrer noopener";
-        link.textContent = "Mở nguồn chính thức ↗";
-        card.append(link);
-      }
-      sourceGrid.append(card);
-    });
-    sources.append(sourceHead, sourceGrid);
-
-    lessonReader.append(hero, mental, curriculum, policy, sources);
+  function finishHomeRender() {
     renderNavigation();
     workspace.scrollTo({ top: 0, behavior: "auto" });
     updateReadingProgress();
+  }
+
+  function renderHome() {
+    state.selectedId = null;
+    state.selectedCollectionId = null;
+    document.title = "Thư viện tri thức | Private Knowledge Library";
+    lessonReader.replaceChildren();
+    const all = allLessons();
+    const live = publishedLessons();
+    const hero = createHomeHero(
+      "Private learning library",
+      state.data.title,
+      state.data.description,
+      [
+        [state.data.collections.length, "bộ sưu tập kiến thức"],
+        [state.data.modules.length, "nhóm nội dung có cấu trúc"],
+        [all.length, "bài học và ghi chú"],
+        [live.length, "nội dung hiện có thể đọc"],
+      ],
+    );
+
+    const collections = document.createElement("section");
+    collections.className = "home-section";
+    collections.append(createHomeSectionHead(
+      "Các bộ sưu tập của tôi",
+      "Mỗi lĩnh vực có cấu trúc riêng. Nội dung cũ vẫn được giữ nguyên; FinTech là một trong các hướng học đang phát triển.",
+    ));
+    const grid = document.createElement("div");
+    grid.className = "collection-grid";
+    state.data.collections.forEach((collection) => {
+      const entries = collection.modules.flatMap((module) => module.lessons);
+      const liveCount = entries.filter((lesson) => lesson.status === "published").length;
+      const card = document.createElement("article");
+      card.className = "collection-card";
+      const top = document.createElement("div");
+      top.className = "collection-card__top";
+      const mark = document.createElement("span");
+      mark.textContent = collection.mark;
+      const type = document.createElement("span");
+      type.textContent = collection.kind === "notes" ? "Ghi chú cá nhân" : "Learning domain";
+      top.append(mark, type);
+      const title = document.createElement("h2");
+      title.textContent = collection.title;
+      const description = document.createElement("p");
+      description.textContent = collection.description;
+      const metrics = document.createElement("div");
+      metrics.className = "collection-card__metrics";
+      metrics.append(
+        Object.assign(document.createElement("span"), { textContent: `${collection.modules.length} nhóm` }),
+        Object.assign(document.createElement("span"), { textContent: `${entries.length} mục đọc` }),
+        Object.assign(document.createElement("span"), { textContent: `${liveCount} khả dụng` }),
+      );
+      const open = document.createElement("button");
+      open.type = "button";
+      open.dataset.openCollection = collection.id;
+      open.textContent = "Mở bộ sưu tập →";
+      card.append(top, title, description, metrics, open);
+      grid.append(card);
+    });
+    collections.append(grid);
+    lessonReader.append(hero, collections);
+    finishHomeRender();
+  }
+
+  function renderCollectionHome(collectionId) {
+    const collection = state.data.collections.find((item) => item.id === collectionId);
+    if (!collection) return;
+    state.selectedId = null;
+    state.selectedCollectionId = collection.id;
+    document.title = `${collection.title} | Thư viện tri thức`;
+    lessonReader.replaceChildren();
+    const entries = collection.modules.flatMap((module) => module.lessons);
+    const live = entries.filter((lesson) => lesson.status === "published");
+    const hero = createHomeHero(
+      collection.kind === "notes" ? "Personal notes collection" : "Structured learning domain",
+      collection.title,
+      collection.description,
+      [
+        [collection.modules.length, collection.kind === "notes" ? "nhóm ghi chú" : "module học"],
+        [entries.length, "mục đọc trong bộ sưu tập"],
+        [live.length, "nội dung hiện khả dụng"],
+        [collection.primarySources.length, "nguồn đã lưu"],
+      ],
+    );
+    const sections = [hero];
+
+    if (collection.kind === "notes") {
+      const notes = document.createElement("section");
+      notes.className = "home-section";
+      notes.append(createHomeSectionHead(
+        "Ghi chú được giữ nguyên",
+        "Đây là nội dung từ thư viện trước. Bạn có thể đọc, tìm kiếm và đánh dấu hoàn thành như trước đây.",
+      ));
+      const noteGrid = document.createElement("div");
+      noteGrid.className = "module-overview note-overview";
+      collection.modules.forEach((module) => {
+        module.lessons.forEach((lesson) => {
+          const card = document.createElement("article");
+          card.className = "module-card note-card";
+          const top = document.createElement("div");
+          top.className = "module-card__top";
+          const type = document.createElement("span");
+          type.textContent = "GHI CHÚ";
+          const date = document.createElement("span");
+          date.textContent = lesson.lastReviewed ? formatDate(lesson.lastReviewed) : "Đã lưu";
+          top.append(type, date);
+          const title = document.createElement("h3");
+          title.textContent = lesson.title;
+          const summary = document.createElement("p");
+          summary.textContent = lesson.summary;
+          const open = document.createElement("button");
+          open.type = "button";
+          open.dataset.lessonId = lesson.id;
+          open.textContent = "Đọc ghi chú →";
+          card.append(top, title, summary, open);
+          noteGrid.append(card);
+        });
+      });
+      notes.append(noteGrid);
+      sections.push(notes);
+    } else {
+      if (collection.mentalModel.length) {
+        const mental = document.createElement("section");
+        mental.className = "home-section";
+        mental.append(createHomeSectionHead(
+          "Mental model 7 lớp",
+          "Dùng cùng một khung để đọc mọi sản phẩm, công ty và mô hình FinTech.",
+        ));
+        const mentalGrid = document.createElement("div");
+        mentalGrid.className = "mental-model";
+        collection.mentalModel.forEach((item, index) => {
+          const card = document.createElement("article");
+          const number = document.createElement("span");
+          number.textContent = String(index + 1).padStart(2, "0");
+          const label = document.createElement("strong");
+          label.textContent = item;
+          card.append(number, label);
+          mentalGrid.append(card);
+        });
+        mental.append(mentalGrid);
+        sections.push(mental);
+      }
+
+      const curriculum = document.createElement("section");
+      curriculum.className = "home-section";
+      curriculum.append(createHomeSectionHead(
+        "Curriculum từ beginner đến industry-level",
+        "Các bài chưa nghiên cứu được giữ ở trạng thái rõ ràng và chỉ xuất bản sau khi kiểm chứng nguồn.",
+      ));
+      const moduleGrid = document.createElement("div");
+      moduleGrid.className = "module-overview";
+      collection.modules.forEach((module) => {
+        const card = document.createElement("article");
+        card.className = "module-card";
+        const top = document.createElement("div");
+        top.className = "module-card__top";
+        const number = document.createElement("span");
+        number.textContent = `MODULE ${module.number}`;
+        const count = document.createElement("span");
+        count.textContent = `${module.lessons.length} bài`;
+        top.append(number, count);
+        const title = document.createElement("h3");
+        title.textContent = module.title;
+        const description = document.createElement("p");
+        description.textContent = module.description;
+        const open = document.createElement("button");
+        open.type = "button";
+        open.dataset.openModule = module.id;
+        open.textContent = "Mở module →";
+        card.append(top, title, description, open);
+        moduleGrid.append(card);
+      });
+      curriculum.append(moduleGrid);
+      sections.push(curriculum);
+
+      if (collection.sourcePolicy.length) {
+        const policy = document.createElement("section");
+        policy.className = "home-section";
+        policy.id = "source-policy";
+        policy.append(createHomeSectionHead(
+          "Chuẩn nghiên cứu & trích nguồn",
+          `Thông tin nhạy cảm theo thời gian được rà soát gần nhất: ${formatDate(collection.reviewedAt)}.`,
+        ));
+        const policyGrid = document.createElement("div");
+        policyGrid.className = "policy-grid";
+        collection.sourcePolicy.forEach((item) => {
+          const card = document.createElement("article");
+          card.className = "policy-card";
+          const title = document.createElement("strong");
+          title.textContent = item.title;
+          const description = document.createElement("p");
+          description.textContent = item.description;
+          card.append(title, description);
+          policyGrid.append(card);
+        });
+        policy.append(policyGrid);
+        sections.push(policy);
+      }
+
+      if (collection.primarySources.length) {
+        const sources = document.createElement("section");
+        sources.className = "home-section";
+        sources.id = "primary-sources";
+        sources.append(createHomeSectionHead(
+          "Nguồn chính thống dùng xuyên suốt",
+          "Mỗi bài vẫn có reference riêng và chỉ dùng nguồn phù hợp với claim cụ thể.",
+        ));
+        const sourceGrid = document.createElement("div");
+        sourceGrid.className = "source-library";
+        collection.primarySources.forEach((source) => {
+          const card = document.createElement("article");
+          card.className = "source-card";
+          const organization = document.createElement("p");
+          organization.className = "source-card__org";
+          organization.textContent = source.organization;
+          const title = document.createElement("h3");
+          title.textContent = source.title;
+          const scope = document.createElement("p");
+          scope.textContent = `${source.publishedAt} · ${source.scope}`;
+          card.append(organization, title, scope);
+          if (source.url) {
+            const link = document.createElement("a");
+            link.href = source.url;
+            link.target = "_blank";
+            link.rel = "noreferrer noopener";
+            link.textContent = "Mở nguồn chính thức ↗";
+            card.append(link);
+          }
+          sourceGrid.append(card);
+        });
+        sources.append(sourceGrid);
+        sections.push(sources);
+      }
+    }
+
+    lessonReader.append(...sections);
+    finishHomeRender();
   }
 
   function selectLesson(lessonId) {
     const entry = allLessons().find(({ lesson }) => lesson.id === lessonId);
     if (!entry) return;
     state.selectedId = lessonId;
+    state.selectedCollectionId = entry.collection.id;
     state.openModules.add(entry.module.id);
-    document.title = `${entry.lesson.title} | FinTech Domain`;
+    document.title = `${entry.lesson.title} | ${entry.collection.title}`;
     lessonReader.replaceChildren(
       entry.lesson.status === "published" ? renderPublishedLesson(entry) : renderPlannedLesson(entry),
     );
@@ -955,10 +1196,10 @@
     if (!matches.length) {
       const empty = document.createElement("div");
       empty.className = "search-empty";
-      empty.textContent = "Không tìm thấy bài học hoặc khái niệm phù hợp.";
+      empty.textContent = "Không tìm thấy bài học, ghi chú hoặc khái niệm phù hợp.";
       searchResults.append(empty);
     } else {
-      matches.forEach(({ module, lesson }) => {
+      matches.forEach(({ collection, module, lesson }) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "search-result";
@@ -970,11 +1211,15 @@
         const title = document.createElement("strong");
         title.textContent = lesson.title;
         const moduleName = document.createElement("small");
-        moduleName.textContent = module.title;
+        moduleName.textContent = `${collection.title} · ${module.title}`;
         copy.append(title, moduleName);
         const status = document.createElement("span");
         status.className = "search-result__status";
-        status.textContent = lesson.status === "published" ? "Đã kiểm chứng" : "Theo lộ trình";
+        status.textContent = collection.kind === "notes"
+          ? "Đã lưu"
+          : lesson.status === "published"
+            ? "Đã kiểm chứng"
+            : "Theo lộ trình";
         button.append(number, copy, status);
         searchResults.append(button);
       });
@@ -1020,6 +1265,7 @@
     state.data = null;
     state.sourceMap = new Map();
     state.selectedId = null;
+    state.selectedCollectionId = null;
     state.openModules.clear();
     state.completed = new Set();
     lessonReader.replaceChildren();
@@ -1032,7 +1278,7 @@
     vaultView.hidden = true;
     unlockView.hidden = false;
     headerStatus.textContent = "Đã khóa";
-    document.title = "FinTech Domain | Private Knowledge Hub";
+    document.title = "Thư viện tri thức | Private Knowledge Library";
     unlockStatus.textContent = auto ? "Vault đã tự khóa sau 15 phút không hoạt động." : "";
     unlockCard.classList.remove("is-error");
     passwordInput.focus();
@@ -1060,7 +1306,7 @@
       unlockView.hidden = true;
       vaultView.hidden = false;
       headerStatus.textContent = "Đã mở · giải mã cục bộ";
-      curriculumMeta.textContent = `${data.modules.length} module · ${allLessons().length} bài`;
+      curriculumMeta.textContent = `${data.collections.length} bộ sưu tập · ${allLessons().length} mục đọc`;
       renderHome();
       touchActivity();
       searchInput.focus({ preventScroll: true });
@@ -1087,6 +1333,12 @@
     closeSidebar();
   });
   moduleList?.addEventListener("click", (event) => {
+    const collectionButton = event.target.closest("[data-collection-id]");
+    if (collectionButton) {
+      renderCollectionHome(collectionButton.dataset.collectionId);
+      closeSidebar();
+      return;
+    }
     const moduleToggle = event.target.closest("[data-module-id]");
     if (moduleToggle) {
       const id = moduleToggle.dataset.moduleId;
@@ -1099,6 +1351,11 @@
     if (lessonButton) selectLesson(lessonButton.dataset.lessonId);
   });
   lessonReader?.addEventListener("click", (event) => {
+    const collectionButton = event.target.closest("[data-open-collection]");
+    if (collectionButton) {
+      renderCollectionHome(collectionButton.dataset.openCollection);
+      return;
+    }
     const lessonButton = event.target.closest("[data-lesson-id]");
     if (lessonButton) {
       selectLesson(lessonButton.dataset.lessonId);
@@ -1119,8 +1376,9 @@
       }
       return;
     }
-    if (event.target.closest("[data-show-sources]")) {
-      renderHome();
+    const sourceButton = event.target.closest("[data-show-sources]");
+    if (sourceButton) {
+      renderCollectionHome(sourceButton.dataset.collectionId);
       window.requestAnimationFrame(() => document.querySelector("#source-policy")?.scrollIntoView({ behavior: "smooth" }));
     }
   });

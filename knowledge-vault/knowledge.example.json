@@ -4,6 +4,24 @@
   "updatedAt": "2026-07-21",
   "reviewedAt": "2026-07-21",
   "description": "A private, source-backed learning curriculum.",
+  "archivedVault": {
+    "title": "My existing notes",
+    "owner": "Vault owner",
+    "updatedAt": "2026-07-21",
+    "notes": [
+      {
+        "id": "existing-note-example",
+        "title": "Existing note title",
+        "category": "Personal learning",
+        "summary": "A note preserved from the previous library.",
+        "content": ["First paragraph.", "Second paragraph."],
+        "tags": ["example"],
+        "pinned": false,
+        "updatedAt": "2026-07-21",
+        "sourceLabel": "Optional source"
+      }
+    ]
+  },
   "mentalModel": [
     "Customer problem",
     "Financial product",

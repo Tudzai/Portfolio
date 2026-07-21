@@ -1,8 +1,9 @@
-# FinTech Domain — Private Knowledge Hub
+# Private Knowledge Library
 
 This folder is a private-reading layer inside the public Portfolio site. The browser derives an AES-256-GCM key from
-the owner password, decrypts `vault-data.js` locally, and renders the FinTech curriculum without sending the password,
-plaintext content, completion state, or search activity to a server.
+the owner password, decrypts `vault-data.js` locally, and renders a multi-domain personal library without sending the
+password, plaintext content, completion state, or search activity to a server. FinTech is one collection inside the
+library; existing personal notes remain available as a separate collection.
 
 The page is intentionally unlinked and marked `noindex`. The URL is not a security boundary: encrypted data remains
 publicly downloadable when the Portfolio site is deployed, so a strong unique password is essential.
@@ -26,19 +27,22 @@ employer-confidential information, or other high-impact secrets.
 
 The decrypted source contains:
 
-1. `mentalModel` — the seven-layer framework used across the curriculum;
-2. `sourcePolicy` — the research, cross-checking, classification, and time-sensitive review rules;
-3. `primarySources` — the authoritative source library;
-4. `modules` — the complete curriculum and nested lessons;
-5. lesson content — published lessons use 11 authored sections; the renderer adds section 12, references, from the
+1. `archivedVault` — the previous personal-note library, preserved and rendered as its own collection;
+2. `mentalModel` — the seven-layer framework used across the FinTech collection;
+3. `sourcePolicy` — the research, cross-checking, classification, and time-sensitive review rules;
+4. `primarySources` — the authoritative source library for FinTech;
+5. `modules` — the complete FinTech curriculum and nested lessons;
+6. lesson content — published lessons use 11 authored sections; the renderer adds section 12, references, from the
    lesson's source IDs.
 
-The first release contains a 12-module, 67-lesson curriculum. Only Module 1 is published. Other lessons remain
-`planned` until their content has been independently researched and cross-checked.
+The library currently contains the preserved personal-note collection plus a 12-module, 67-lesson FinTech collection.
+Only FinTech Module 1 is published. Other FinTech lessons remain `planned` until their content has been independently
+researched and cross-checked.
 
-## Add or edit FinTech knowledge
+## Add or edit library knowledge
 
-1. Edit `private/knowledge.json`. Keep every module, lesson, and source `id` unique.
+1. Edit `private/knowledge.json`. Keep every note, module, lesson, and source `id` unique. Preserve `archivedVault`
+   when adding or updating a structured domain so older notes remain available.
 2. For a planned lesson, use `"status": "planned"`; sections and references may be omitted.
 3. For a published lesson:
    - use `"status": "published"`;

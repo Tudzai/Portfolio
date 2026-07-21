@@ -21,6 +21,20 @@ function toBase64(bytes) {
   return Buffer.from(bytes).toString("base64");
 }
 
+function validateNotes(notes, label = "Note") {
+  if (!Array.isArray(notes)) throw new Error(`${label} collection must be an array.`);
+  const ids = new Set();
+  notes.forEach((note, index) => {
+    if (!note || typeof note !== "object") throw new Error(`${label} ${index + 1} must be an object.`);
+    if (typeof note.id !== "string" || !note.id.trim()) throw new Error(`${label} ${index + 1} requires an id.`);
+    if (ids.has(note.id)) throw new Error(`Duplicate ${label.toLowerCase()} id: ${note.id}`);
+    ids.add(note.id);
+    if (typeof note.title !== "string" || !note.title.trim()) throw new Error(`${label} ${note.id} requires a title.`);
+    if (!Array.isArray(note.content)) throw new Error(`${label} ${note.id} content must be an array of paragraphs.`);
+  });
+  return ids;
+}
+
 function validateSource(value) {
   if (!value || typeof value !== "object") throw new Error("Knowledge source must be a JSON object.");
   if (Array.isArray(value.modules)) {
@@ -74,19 +88,20 @@ function validateSource(value) {
         }
       });
     });
+    if (value.archivedVault !== undefined) {
+      if (!value.archivedVault || typeof value.archivedVault !== "object") {
+        throw new Error("archivedVault must be an object when provided.");
+      }
+      const archivedIds = validateNotes(value.archivedVault.notes, "Archived note");
+      archivedIds.forEach((id) => {
+        if (lessonIds.has(id)) throw new Error(`Archived note id conflicts with lesson id: ${id}`);
+      });
+    }
     return;
   }
 
   if (!Array.isArray(value.notes)) throw new Error("Knowledge source must include either modules or notes.");
-  const ids = new Set();
-  value.notes.forEach((note, index) => {
-    if (!note || typeof note !== "object") throw new Error(`Note ${index + 1} must be an object.`);
-    if (typeof note.id !== "string" || !note.id.trim()) throw new Error(`Note ${index + 1} requires an id.`);
-    if (ids.has(note.id)) throw new Error(`Duplicate note id: ${note.id}`);
-    ids.add(note.id);
-    if (typeof note.title !== "string" || !note.title.trim()) throw new Error(`Note ${note.id} requires a title.`);
-    if (!Array.isArray(note.content)) throw new Error(`Note ${note.id} content must be an array of paragraphs.`);
-  });
+  validateNotes(value.notes);
 }
 
 const sourceText = await readFile(inputPath, "utf8");
@@ -139,6 +154,6 @@ const payload = {
 
 await writeFile(outputPath, `window.__KNOWLEDGE_VAULT_DATA__ = ${JSON.stringify(payload, null, 2)};\n`, "utf8");
 const itemSummary = Array.isArray(source.modules)
-  ? `${source.modules.reduce((count, module) => count + module.lessons.length, 0)} lessons across ${source.modules.length} modules`
+  ? `${source.modules.reduce((count, module) => count + module.lessons.length, 0)} lessons across ${source.modules.length} modules and ${source.archivedVault?.notes?.length || 0} preserved notes`
   : `${source.notes.length} note${source.notes.length === 1 ? "" : "s"}`;
 console.log(`Encrypted ${itemSummary} into ${outputPath}`);
