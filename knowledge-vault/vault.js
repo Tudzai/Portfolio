@@ -56,6 +56,7 @@
     sourceMap: new Map(),
     selectedId: null,
     selectedCollectionId: null,
+    openCollections: new Set(),
     openModules: new Set(),
     completed: new Set(),
     autoLockTimer: null,
@@ -473,11 +474,13 @@
     state.data.collections.forEach((collection) => {
       const collectionGroup = document.createElement("section");
       collectionGroup.className = "collection-nav";
+      const collectionExpanded = state.openCollections.has(collection.id);
 
       const collectionButton = document.createElement("button");
       collectionButton.type = "button";
       collectionButton.className = "collection-nav__head";
       collectionButton.dataset.collectionId = collection.id;
+      collectionButton.setAttribute("aria-expanded", String(collectionExpanded));
       if (collection.id === state.selectedCollectionId) {
         collectionButton.classList.add("is-current");
         collectionButton.setAttribute("aria-current", "page");
@@ -499,10 +502,16 @@
         : `${collection.modules.length} modules · ${collectionLive} available lessons`;
       collectionCopy.append(collectionTitle, collectionMeta);
       const collectionArrow = document.createElement("span");
+      collectionArrow.className = "collection-nav__chevron";
       collectionArrow.setAttribute("aria-hidden", "true");
-      collectionArrow.textContent = "→";
+      collectionArrow.textContent = "›";
       collectionButton.append(mark, collectionCopy, collectionArrow);
-      collectionGroup.append(collectionButton);
+
+      const collectionBody = document.createElement("div");
+      collectionBody.className = "collection-nav__body";
+      collectionBody.id = `collection-${collection.id}`;
+      collectionBody.hidden = !collectionExpanded;
+      collectionButton.setAttribute("aria-controls", collectionBody.id);
 
       collection.modules.forEach((module) => {
         const group = document.createElement("section");
@@ -557,9 +566,10 @@
         });
 
         group.append(toggle, lessons);
-        collectionGroup.append(group);
+        collectionBody.append(group);
       });
 
+      collectionGroup.append(collectionButton, collectionBody);
       moduleList.append(collectionGroup);
     });
     updateProgress();
@@ -990,6 +1000,7 @@
     if (!collection) return;
     state.selectedId = null;
     state.selectedCollectionId = collection.id;
+    state.openCollections.add(collection.id);
     document.title = `${collection.title} | Knowledge Library`;
     lessonReader.replaceChildren();
     const entries = collection.modules.flatMap((module) => module.lessons);
@@ -1165,6 +1176,7 @@
     if (!entry) return;
     state.selectedId = lessonId;
     state.selectedCollectionId = entry.collection.id;
+    state.openCollections.add(entry.collection.id);
     state.openModules.add(entry.module.id);
     document.title = `${entry.lesson.title} | ${entry.collection.title}`;
     lessonReader.replaceChildren(
@@ -1266,6 +1278,7 @@
     state.sourceMap = new Map();
     state.selectedId = null;
     state.selectedCollectionId = null;
+    state.openCollections.clear();
     state.openModules.clear();
     state.completed = new Set();
     lessonReader.replaceChildren();
@@ -1300,7 +1313,8 @@
       state.data = data;
       state.sourceMap = new Map(data.primarySources.map((source) => [source.id, source]));
       state.completed = loadCompleted();
-      state.openModules = new Set(data.modules.slice(0, 1).map((module) => module.id));
+      state.openCollections = new Set();
+      state.openModules = new Set();
       passwordInput.value = "";
       document.body.classList.remove("is-locked");
       unlockView.hidden = true;
@@ -1335,8 +1349,15 @@
   moduleList?.addEventListener("click", (event) => {
     const collectionButton = event.target.closest("[data-collection-id]");
     if (collectionButton) {
-      renderCollectionHome(collectionButton.dataset.collectionId);
-      closeSidebar();
+      const id = collectionButton.dataset.collectionId;
+      if (state.openCollections.has(id)) {
+        state.openCollections.delete(id);
+        state.selectedCollectionId = id;
+        renderNavigation();
+      } else {
+        state.openCollections.add(id);
+        renderCollectionHome(id);
+      }
       return;
     }
     const moduleToggle = event.target.closest("[data-module-id]");
