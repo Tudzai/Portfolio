@@ -4,6 +4,11 @@
   const VAULT_AAD = "knowledge-vault:v1";
   const STORAGE_COMPLETED = "fintech-domain:completed:v1";
   const STORAGE_THEME = "fintech-domain:theme:v1";
+  const STORAGE_SIDEBAR_WIDTH = "knowledge-library:sidebar-width:v1";
+  const STORAGE_SIDEBAR_COLLAPSED = "knowledge-library:sidebar-collapsed:v1";
+  const SIDEBAR_MIN_WIDTH = 260;
+  const SIDEBAR_MAX_WIDTH = 460;
+  const SIDEBAR_DEFAULT_WIDTH = 328;
   const SECTION_TITLES = [
     "Mục tiêu của bài học",
     "Khái niệm chính",
@@ -41,6 +46,8 @@
   const themeLabel = document.querySelector("[data-theme-label]");
   const sidebarOpenButton = document.querySelector("[data-sidebar-open]");
   const sidebarCloseButton = document.querySelector("[data-sidebar-close]");
+  const sidebarCollapseButton = document.querySelector("[data-sidebar-collapse]");
+  const sidebarResizeHandle = document.querySelector("[data-sidebar-resize]");
   const sidebarScrim = document.querySelector("[data-sidebar-scrim]");
   const workspace = document.querySelector(".workspace");
   const readingProgress = document.querySelector("[data-reading-progress]");
@@ -55,6 +62,8 @@
     openCollections: new Set(),
     openModules: new Set(),
     completed: new Set(),
+    sidebarWidth: SIDEBAR_DEFAULT_WIDTH,
+    sidebarResize: null,
     toastTimer: null,
   };
 
@@ -445,12 +454,123 @@
     setTheme(stored || preferred, false);
   }
 
+  function isCompactSidebar() {
+    return window.matchMedia?.("(max-width: 960px)").matches ?? false;
+  }
+
+  function sidebarMaximumWidth() {
+    const viewportWidth = Number(window.innerWidth) || 1440;
+    return Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, Math.floor(viewportWidth * 0.44)));
+  }
+
+  function clampSidebarWidth(value) {
+    const numericValue = Number(value);
+    const width = Number.isFinite(numericValue) ? numericValue : SIDEBAR_DEFAULT_WIDTH;
+    return Math.round(Math.min(sidebarMaximumWidth(), Math.max(SIDEBAR_MIN_WIDTH, width)));
+  }
+
+  function setSidebarWidth(value, persist = true) {
+    state.sidebarWidth = clampSidebarWidth(value);
+    document.documentElement.style.setProperty("--sidebar-width", `${state.sidebarWidth}px`);
+    sidebarResizeHandle?.setAttribute("aria-valuenow", String(state.sidebarWidth));
+    sidebarResizeHandle?.setAttribute("aria-valuemax", String(sidebarMaximumWidth()));
+    if (persist) {
+      try {
+        window.localStorage.setItem(STORAGE_SIDEBAR_WIDTH, String(state.sidebarWidth));
+      } catch {
+        // The current width still applies when local storage is unavailable.
+      }
+    }
+  }
+
+  function syncSidebarToggle() {
+    const expanded = isCompactSidebar()
+      ? document.body.classList.contains("sidebar-open")
+      : !document.body.classList.contains("sidebar-collapsed");
+    sidebarOpenButton?.setAttribute("aria-expanded", String(expanded));
+  }
+
+  function setSidebarCollapsed(collapsed, persist = true) {
+    document.body.classList.toggle("sidebar-collapsed", Boolean(collapsed));
+    if (persist) {
+      try {
+        window.localStorage.setItem(STORAGE_SIDEBAR_COLLAPSED, collapsed ? "true" : "false");
+      } catch {
+        // The current collapsed state still applies when local storage is unavailable.
+      }
+    }
+    syncSidebarToggle();
+  }
+
+  function initializeSidebarLayout() {
+    let storedWidth = SIDEBAR_DEFAULT_WIDTH;
+    let storedCollapsed = false;
+    try {
+      storedWidth = Number(window.localStorage.getItem(STORAGE_SIDEBAR_WIDTH)) || SIDEBAR_DEFAULT_WIDTH;
+      storedCollapsed = window.localStorage.getItem(STORAGE_SIDEBAR_COLLAPSED) === "true";
+    } catch {
+      storedWidth = SIDEBAR_DEFAULT_WIDTH;
+    }
+    setSidebarWidth(storedWidth, false);
+    setSidebarCollapsed(storedCollapsed, false);
+  }
+
   function closeSidebar() {
     document.body.classList.remove("sidebar-open");
+    syncSidebarToggle();
   }
 
   function openSidebar() {
-    document.body.classList.add("sidebar-open");
+    if (isCompactSidebar()) {
+      document.body.classList.add("sidebar-open");
+      syncSidebarToggle();
+      return;
+    }
+    setSidebarCollapsed(false);
+  }
+
+  function collapseSidebar() {
+    if (isCompactSidebar()) {
+      closeSidebar();
+      return;
+    }
+    setSidebarCollapsed(true);
+  }
+
+  function startSidebarResize(event) {
+    if (isCompactSidebar() || event.button !== 0) return;
+    state.sidebarResize = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startWidth: state.sidebarWidth,
+    };
+    document.body.classList.add("is-resizing-sidebar");
+    sidebarResizeHandle?.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  }
+
+  function resizeSidebar(event) {
+    if (!state.sidebarResize || event.pointerId !== state.sidebarResize.pointerId) return;
+    setSidebarWidth(state.sidebarResize.startWidth + event.clientX - state.sidebarResize.startX, false);
+  }
+
+  function finishSidebarResize(event) {
+    if (!state.sidebarResize || event.pointerId !== state.sidebarResize.pointerId) return;
+    sidebarResizeHandle?.releasePointerCapture?.(event.pointerId);
+    state.sidebarResize = null;
+    document.body.classList.remove("is-resizing-sidebar");
+    setSidebarWidth(state.sidebarWidth);
+  }
+
+  function resizeSidebarWithKeyboard(event) {
+    let nextWidth = state.sidebarWidth;
+    if (event.key === "ArrowLeft") nextWidth -= 16;
+    else if (event.key === "ArrowRight") nextWidth += 16;
+    else if (event.key === "Home") nextWidth = SIDEBAR_MIN_WIDTH;
+    else if (event.key === "End") nextWidth = sidebarMaximumWidth();
+    else return;
+    event.preventDefault();
+    setSidebarWidth(nextWidth);
   }
 
   function renderNavigation() {
@@ -1261,6 +1381,8 @@
     passwordInput.value = "";
     document.body.classList.add("is-locked");
     document.body.classList.remove("sidebar-open");
+    document.body.classList.remove("is-resizing-sidebar");
+    state.sidebarResize = null;
     vaultView.hidden = true;
     unlockView.hidden = false;
     headerStatus.textContent = "Locked";
@@ -1389,7 +1511,17 @@
   });
   sidebarOpenButton?.addEventListener("click", openSidebar);
   sidebarCloseButton?.addEventListener("click", closeSidebar);
+  sidebarCollapseButton?.addEventListener("click", collapseSidebar);
   sidebarScrim?.addEventListener("click", closeSidebar);
+  sidebarResizeHandle?.addEventListener("pointerdown", startSidebarResize);
+  sidebarResizeHandle?.addEventListener("keydown", resizeSidebarWithKeyboard);
+  window.addEventListener("pointermove", resizeSidebar);
+  window.addEventListener("pointerup", finishSidebarResize);
+  window.addEventListener("pointercancel", finishSidebarResize);
+  window.addEventListener("resize", () => {
+    if (!isCompactSidebar()) setSidebarWidth(state.sidebarWidth, false);
+    syncSidebarToggle();
+  });
   workspace?.addEventListener("scroll", updateReadingProgress, { passive: true });
   document.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === "k") {
@@ -1402,5 +1534,6 @@
     }
   });
 
+  initializeSidebarLayout();
   initializeTheme();
 })();

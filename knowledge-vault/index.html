@@ -16,9 +16,9 @@
     />
     <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260721-library-manual-lock" />
-    <script src="vault-data.js?v=20260721-library-manual-lock" defer></script>
-    <script src="vault.js?v=20260721-library-manual-lock" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260722-library-sidebar" />
+    <script src="vault-data.js?v=20260722-library-sidebar" defer></script>
+    <script src="vault.js?v=20260722-library-sidebar" defer></script>
   </head>
   <body class="is-locked">
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -107,18 +107,41 @@
               <button type="button" class="icon-button" data-sidebar-close aria-label="Close library">×</button>
             </div>
 
-            <button class="domain-button" type="button" data-domain-home>
-              <span class="domain-button__mark" aria-hidden="true">KL</span>
-              <span>
-                <strong>Knowledge Library</strong>
-                <small data-curriculum-meta>Collections</small>
-              </span>
-              <span aria-hidden="true">⌂</span>
-            </button>
+            <div class="sidebar-home-row">
+              <button class="domain-button" type="button" data-domain-home>
+                <span class="domain-button__mark" aria-hidden="true">KL</span>
+                <span>
+                  <strong>Knowledge Library</strong>
+                  <small data-curriculum-meta>Collections</small>
+                </span>
+                <span aria-hidden="true">⌂</span>
+              </button>
+              <button
+                type="button"
+                class="sidebar-collapse-button"
+                data-sidebar-collapse
+                aria-label="Hide library navigation"
+                title="Hide sidebar"
+              >
+                <span aria-hidden="true">‹</span>
+              </button>
+            </div>
 
             <div class="curriculum__scroll">
               <nav class="module-list" data-module-list aria-label="Collections, modules, and reading items"></nav>
             </div>
+
+            <div
+              class="sidebar-resize-handle"
+              data-sidebar-resize
+              role="separator"
+              aria-label="Resize library navigation"
+              aria-orientation="vertical"
+              aria-valuemin="260"
+              aria-valuemax="460"
+              aria-valuenow="328"
+              tabindex="0"
+            ></div>
           </aside>
 
           <div class="sidebar-scrim" data-sidebar-scrim hidden></div>
@@ -126,7 +149,13 @@
           <div class="workspace">
             <header class="workspace-bar">
               <div class="workspace-bar__left">
-                <button type="button" class="icon-button menu-button" data-sidebar-open aria-label="Open library">☰</button>
+                <button
+                  type="button"
+                  class="icon-button menu-button"
+                  data-sidebar-open
+                  aria-label="Show library navigation"
+                  aria-expanded="true"
+                >☰</button>
                 <label class="search-box" for="lesson-search">
                   <span aria-hidden="true">⌕</span>
                   <span class="sr-only">Search lessons, notes, concepts, or keywords</span>

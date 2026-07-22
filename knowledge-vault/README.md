@@ -25,8 +25,8 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
 - Decrypted content is kept only in browser memory. The library stays open until the owner uses the manual lock,
   reloads or leaves the page, or closes the tab. Manual lock removes rendered plaintext and in-memory curriculum
   references as far as practical in client-side JavaScript.
-- Theme and completed-lesson IDs may be stored on the current device. The password and decrypted lesson text are never
-  stored in local or session storage.
+- Theme, sidebar width and visibility, and completed-lesson IDs may be stored on the current device. The password and
+  decrypted lesson text are never stored in local or session storage.
 - The vault page has no analytics, third-party fonts, scripts, embeds, or network calls.
 
 Do not use this vault for passwords, keys, recovery codes, identity documents, bank information, real customer data,
