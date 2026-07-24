@@ -98,6 +98,10 @@
       title: normalizeString(source?.title, "Nguồn chưa đặt tên"),
       organization: normalizeString(source?.organization, "Tổ chức chưa xác định"),
       publishedAt: normalizeString(source?.publishedAt, "Không nêu ngày"),
+      adoptedAt: normalizeString(source?.adoptedAt),
+      updatedAt: normalizeString(source?.updatedAt),
+      reviewedAt: normalizeString(source?.reviewedAt),
+      accessedAt: normalizeString(source?.accessedAt),
       url: safeExternalUrl(source?.url),
       scope: normalizeString(source?.scope),
       sourceType: normalizeString(source?.sourceType, "Nguồn chính thống"),
@@ -770,11 +774,11 @@
         const card = document.createElement("div");
         card.className = "flow-step";
         const label = document.createElement("span");
-        label.textContent = step.label;
+        appendRichText(label, step.label, lesson);
         const title = document.createElement("strong");
-        title.textContent = step.title;
+        appendRichText(title, step.title, lesson);
         const detail = document.createElement("small");
-        detail.textContent = step.detail;
+        appendRichText(detail, step.detail, lesson);
         card.append(label, title, detail);
         flow.append(card);
       });
@@ -852,7 +856,7 @@
     policy.className = "source-policy-link";
     policy.dataset.showSources = "true";
     policy.dataset.collectionId = collection.id;
-    policy.textContent = collection.kind === "curriculum" ? "Methodology & primary sources" : "About this notes collection";
+    policy.textContent = collection.kind === "curriculum" ? "Methodology & sources" : "About this notes collection";
     tools.append(complete, policy);
     hero.append(breadcrumb, title, deck, meta, tools);
     return hero;
@@ -886,7 +890,12 @@
       const organization = document.createElement("span");
       organization.textContent = source.organization;
       const date = document.createElement("small");
-      date.textContent = `${source.publishedAt} · ${source.sourceType}`;
+      const sourceDates = [`Published: ${source.publishedAt}`];
+      if (source.adoptedAt) sourceDates.push(`Adopted: ${source.adoptedAt}`);
+      if (source.updatedAt) sourceDates.push(`Updated: ${source.updatedAt}`);
+      if (source.reviewedAt) sourceDates.push(`Reviewed: ${source.reviewedAt}`);
+      if (source.accessedAt) sourceDates.push(`Accessed: ${source.accessedAt}`);
+      date.textContent = `${sourceDates.join(" · ")} · ${source.sourceType}`;
       copy.append(sourceTitle, organization, date);
       item.append(numberLabel, copy);
       if (source.url) {
@@ -1239,7 +1248,7 @@
         sources.className = "home-section";
         sources.id = "primary-sources";
         sources.append(createHomeSectionHead(
-          "Primary sources used throughout",
+          "Authoritative sources used throughout",
           "Each lesson still has its own references and uses only sources relevant to its specific claims.",
         ));
         const sourceGrid = document.createElement("div");
@@ -1253,14 +1262,17 @@
           const title = document.createElement("h3");
           title.textContent = source.title;
           const scope = document.createElement("p");
-          scope.textContent = `${source.publishedAt} · ${source.scope}`;
+          const sourceDate = source.updatedAt
+            ? `Published: ${source.publishedAt} · Updated: ${source.updatedAt}`
+            : `Published: ${source.publishedAt}`;
+          scope.textContent = `${sourceDate} · ${source.scope}`;
           card.append(organization, title, scope);
           if (source.url) {
             const link = document.createElement("a");
             link.href = source.url;
             link.target = "_blank";
             link.rel = "noreferrer noopener";
-            link.textContent = "Open primary source ↗";
+            link.textContent = "Open source ↗";
             card.append(link);
           }
           sourceGrid.append(card);

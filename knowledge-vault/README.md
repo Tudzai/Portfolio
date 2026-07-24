@@ -45,8 +45,9 @@ The decrypted source contains:
    lesson's source IDs.
 
 The library currently contains the preserved personal-note collection plus a 12-module, 67-lesson FinTech collection.
-Only FinTech Module 1 is published. Other FinTech lessons remain `planned` until their content has been independently
-researched and cross-checked.
+All 67 FinTech lessons are published with the 12-part lesson structure, inline citations, lesson-level references, and
+a recorded review date. Time-sensitive regulation, market practice, and emerging-trend lessons should be rechecked
+periodically against their linked authoritative sources.
 
 ## Add or edit library knowledge
 
@@ -59,6 +60,8 @@ researched and cross-checked.
    - provide at least three valid source IDs when sufficient reliable sources exist;
    - include `lastReviewed` for time-sensitive content;
    - use `[[source-id]]` inside text for inline citations.
+   - keep `publishedAt` for the original publication date; use `adoptedAt`, `updatedAt`, `reviewedAt`, or `accessedAt`
+     for those distinct dates instead of relabeling a later page update as publication.
 4. Run the encryption wrapper from the repository root:
 
    ```powershell
