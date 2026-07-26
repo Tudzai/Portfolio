@@ -1135,6 +1135,19 @@ button {
   font-weight: 600;
 }
 
+.case-evidence-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.case-evidence-note + .case-link {
+  margin-top: 16px;
+}
+
 .case-link {
   display: inline-flex;
   min-height: 46px;
@@ -2068,6 +2081,15 @@ footer a {
 
   .tag-list {
     gap: 6px;
+    margin-top: 12px;
+  }
+
+  .case-evidence-note {
+    margin-top: 8px;
+    font-size: 0.58rem;
+  }
+
+  .case-evidence-note + .case-link {
     margin-top: 12px;
   }
 
