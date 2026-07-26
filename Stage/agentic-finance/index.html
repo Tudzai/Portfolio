@@ -180,45 +180,71 @@
 
           <article id="case-automation" class="case-study case-study-reverse" data-reveal>
             <div class="case-media case-media-video">
-              <div class="automation-schematic" aria-hidden="true">
-                <div class="automation-terminal">
-                  <span>MONTHLY_REPORTING.PY</span>
-                  <b>PUBLIC-SAFE</b>
+              <video
+                id="automation-case-video"
+                class="case-video"
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                poster="../../showcase/python-automation/fpa-monthly-reporting-demo/assets/fpa-automation-highlight-poster.jpg"
+                data-playback-rate="1.8"
+                aria-label="Synthetic FP&A automation demo showing raw Excel data, a Python workflow, variance analysis, and control checks"
+              >
+                <source
+                  src="../../showcase/python-automation/fpa-monthly-reporting-demo/assets/fpa-automation-highlight.mp4"
+                  type="video/mp4"
+                />
+                Your browser does not support embedded video.
+              </video>
+
+              <div class="automation-video-hud" aria-hidden="true">
+                <div class="automation-video-topline">
+                  <span class="automation-video-state">
+                    <i></i>
+                    <span>Synthetic /</span>
+                    <span class="video-state-text">Ready</span>
+                  </span>
+                  <strong>1.8&times;</strong>
                 </div>
-                <div class="automation-flow">
-                  <div><b>01</b><strong>Ingest</strong><small>CSV</small></div>
+                <div class="automation-video-route">
+                  <span>Raw data</span>
                   <i>&rarr;</i>
-                  <div><b>02</b><strong>Map</strong><small>Rules</small></div>
+                  <span>Python</span>
                   <i>&rarr;</i>
-                  <div><b>03</b><strong>Build</strong><small>KPIs</small></div>
+                  <span>Variance</span>
                   <i>&rarr;</i>
-                  <div><b>04</b><strong>Compare</strong><small>Plan</small></div>
-                  <i>&rarr;</i>
-                  <div><b>05</b><strong>Brief</strong><small>Action</small></div>
-                </div>
-                <div class="automation-outputs">
-                  <span>monthly_summary.csv</span>
-                  <span>ratio_pack.csv</span>
-                  <span>insight_brief.md</span>
+                  <span>Controls</span>
                 </div>
               </div>
-              <span class="media-label">Clean-room Python case</span>
+
+              <span class="media-label">360 synthetic rows &middot; 3 outputs &middot; 4/4 checks</span>
+              <button
+                class="video-toggle"
+                type="button"
+                data-video-toggle="automation-case-video"
+                aria-label="Play automation demo"
+                aria-pressed="false"
+              >
+                <span class="video-toggle-icon" aria-hidden="true">&#9654;</span>
+                <span class="video-toggle-text">Play</span>
+              </button>
             </div>
             <div class="case-copy">
               <p class="case-number">02 / Finance automation</p>
-              <h3>5 steps. 3 outputs. 0 confidential values.</h3>
-              <p class="case-keywords">CSV / KPI ratios / Insight brief</p>
+              <h3>360 rows. 3 outputs. 4/4 checks.</h3>
+              <p class="case-keywords">Excel / Python / Management pack</p>
               <div class="case-fact">
-                <strong>5</strong>
-                <span><b>Pipeline steps</b><small>Ingest / Map / Summarize / Compare / Brief</small></span>
+                <strong>1.8&times;</strong>
+                <span><b>Live demo speed</b><small>Raw data &rarr; Python &rarr; Variance &rarr; Controls</small></span>
               </div>
               <ul class="tag-list" aria-label="Automation project skills">
-                <li>CSV</li>
+                <li>Excel</li>
                 <li>Python</li>
-                <li>Markdown</li>
+                <li>Word</li>
               </ul>
               <a class="case-link" href="../../showcase/python-automation/monthly-reporting-pipeline/">
-                Run the automation case <span aria-hidden="true">&nearr;</span>
+                Explore the automation logic <span aria-hidden="true">&nearr;</span>
               </a>
             </div>
           </article>
