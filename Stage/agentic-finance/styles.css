@@ -348,8 +348,9 @@ button {
 }
 
 .score-row {
+  --row-accent: var(--ink);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.42fr);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.56fr);
   gap: 32px;
   min-height: clamp(108px, 14vh, 144px);
   align-items: center;
@@ -373,34 +374,51 @@ button {
   color: var(--violet);
 }
 
+.score-automation {
+  --row-accent: var(--violet);
+}
+
 .score-agentic .score-skill {
   color: var(--pink);
 }
 
-.score-metric {
+.score-agentic {
+  --row-accent: var(--pink);
+}
+
+.score-results {
   display: grid;
-  grid-template-columns: auto 112px;
-  gap: 17px;
+  width: min(100%, 390px);
+  gap: 8px;
+  justify-self: end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.score-results li {
+  display: flex;
   align-items: center;
-  justify-content: end;
-}
-
-.score-metric b {
+  gap: 11px;
+  min-height: 24px;
+  color: var(--ink);
   font-family: var(--display);
-  font-size: clamp(3rem, 5vw, 5rem);
+  font-size: clamp(0.76rem, 0.95vw, 0.96rem);
   font-weight: 700;
-  letter-spacing: -0.07em;
-  line-height: 0.82;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  transition:
+    color 180ms ease,
+    transform 220ms var(--ease);
 }
 
-.score-metric small {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.45;
-  text-transform: uppercase;
+.score-results li::before {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: var(--row-accent);
+  content: "";
 }
 
 @media (hover: hover) {
@@ -412,6 +430,11 @@ button {
 
   .score-row:hover .score-skill {
     transform: translateX(8px);
+  }
+
+  .score-row:hover .score-results li {
+    color: var(--row-accent);
+    transform: translateX(-6px);
   }
 }
 
@@ -1259,7 +1282,7 @@ footer a {
 
 @media (max-width: 900px) {
   .score-row {
-    grid-template-columns: minmax(0, 1fr) 230px;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
   }
 
   .case-study,
@@ -1377,27 +1400,32 @@ footer a {
   }
 
   .score-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 16px;
-    min-height: 96px;
-    padding: 15px 10px;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    min-height: 0;
+    padding: 20px 10px 18px;
   }
 
   .score-skill {
     font-size: clamp(2.3rem, 10vw, 3.7rem);
   }
 
-  .score-metric {
-    grid-template-columns: auto 82px;
-    gap: 10px;
+  .score-results {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    justify-self: stretch;
   }
 
-  .score-metric b {
-    font-size: clamp(2.35rem, 9vw, 3.4rem);
+  .score-results li {
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    font-size: clamp(0.68rem, 2.1vw, 0.82rem);
   }
 
-  .score-metric small {
-    font-size: 0.55rem;
+  .score-results li:last-child {
+    grid-column: 1 / -1;
   }
 
   .hero-bottom {
@@ -1578,17 +1606,9 @@ footer a {
     font-size: clamp(2rem, 9.5vw, 2.85rem);
   }
 
-  .score-metric {
-    grid-template-columns: auto 68px;
-    gap: 8px;
-  }
-
-  .score-metric b {
-    font-size: clamp(2.1rem, 9vw, 2.8rem);
-  }
-
-  .score-metric small {
-    font-size: 0.5rem;
+  .score-results li {
+    padding-inline: 8px;
+    font-size: 0.66rem;
   }
 
   .hero-actions,
