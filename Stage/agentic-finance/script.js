@@ -21,15 +21,7 @@ function applyVideoRate(video) {
 
 function updateVideoUi(video) {
   const isPlaying = !video.paused && !video.ended;
-  const media = video.closest(".case-media-video");
-  const stateText = media?.querySelector(".video-state-text");
   const toggle = videoToggles.find((button) => button.dataset.videoToggle === video.id);
-
-  media?.classList.toggle("is-playing", isPlaying);
-
-  if (stateText) {
-    stateText.textContent = isPlaying ? "Running" : "Ready";
-  }
 
   if (toggle) {
     const icon = toggle.querySelector(".video-toggle-icon");
