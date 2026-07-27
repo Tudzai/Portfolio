@@ -46,21 +46,19 @@ The decrypted source contains:
 6. lesson content — a planned lesson may expose its roadmap outcome and source mapping; a published lesson uses 11
    authored sections and the renderer adds section 12 from the lesson's source IDs.
 
-The library currently contains the preserved personal-note collection, the fully published 12-module and 67-lesson
-FinTech curriculum, and beginner-first roadmaps for Finance, Breaking, and muscle recovery. The three new roadmaps
-remain explicitly `planned`: their scope and learning order are source-mapped, but they are not presented as completed
-lessons. Time-sensitive regulation, competition rules, medical guidance, and emerging practices must be rechecked
-periodically against their linked authoritative sources.
+The library currently contains the preserved personal-note collection plus fully published, beginner-first curricula
+for FinTech, Finance, Breaking, and muscle recovery. Time-sensitive regulation, competition rules, medical guidance,
+and emerging practices must be rechecked periodically against their linked authoritative sources.
 
 | Structured collection | Modules | Reading items | Saved sources | Status |
 |---|---:|---:|---:|---|
 | FinTech | 12 | 67 | Domain source library | Published |
-| Finance | 15 | 74 | 81 | Planned roadmap |
-| Breaking / Breakdance | 14 | 68 | 41 | Planned roadmap |
-| Muscle recovery | 15 | 60 | 56 | Planned roadmap |
+| Finance | 15 | 74 | 97 | Published |
+| Breaking / Breakdance | 14 | 68 | 41 | Published |
+| Muscle recovery | 15 | 60 | 56 | Published |
 
-The three new roadmaps therefore add 44 modules, 202 planned lessons, and 178 saved sources. Every planned lesson maps
-to at least three distinct sources; source mapping validates the roadmap scope, not the still-unwritten lesson prose.
+The three new curricula therefore add 44 modules, 202 published lessons, and 194 saved sources. Every lesson contains
+11 authored sections, renders its references as section 12, and maps to at least three distinct sources.
 
 ## Add or edit library knowledge
 
