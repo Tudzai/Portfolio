@@ -2,8 +2,8 @@
 
 This folder is a private-reading layer inside the public Portfolio site. The browser derives an AES-256-GCM key from
 the owner password, decrypts `vault-data.js` locally, and renders a multi-domain personal library without sending the
-password, plaintext content, completion state, or search activity to a server. FinTech is one collection inside the
-library; existing personal notes remain available as a separate collection.
+password, plaintext content, completion state, or search activity to a server. FinTech, Finance, Breaking, and muscle
+recovery are separate structured collections; existing personal notes remain available as their own collection.
 
 The page is intentionally unlinked and marked `noindex`. The URL is not a security boundary: encrypted data remains
 publicly downloadable when the Portfolio site is deployed, so a strong unique password is essential.
@@ -22,6 +22,8 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
 - `vault-data.js` is the only knowledge payload that may be committed. It contains ciphertext, salt, IV, and KDF
   settings—not plaintext or a password.
 - PBKDF2-HMAC-SHA256 uses 600,000 iterations; content encryption uses AES-256-GCM with authenticated additional data.
+- The encryption tool verifies a correct-key round trip and confirms that a deliberately wrong key is rejected before
+  it replaces the published ciphertext.
 - Decrypted content is kept only in browser memory. The library stays open until the owner uses the manual lock,
   reloads or leaves the page, or closes the tab. Manual lock removes rendered plaintext and in-memory curriculum
   references as far as practical in client-side JavaScript.
@@ -37,23 +39,36 @@ employer-confidential information, or other high-impact secrets.
 The decrypted source contains:
 
 1. `archivedVault` — the previous personal-note library, preserved and rendered as its own collection;
-2. `mentalModel` — the seven-layer framework used across the FinTech collection;
-3. `sourcePolicy` — the research, cross-checking, classification, and time-sensitive review rules;
-4. `primarySources` — the authoritative source library for FinTech;
-5. `modules` — the complete FinTech curriculum and nested lessons;
-6. lesson content — published lessons use 11 authored sections; the renderer adds section 12, references, from the
-   lesson's source IDs.
+2. `domains` — one object per structured knowledge area;
+3. domain metadata — a stable ID, short mark, title, description, review date, mental model, and source policy;
+4. `primarySources` — a source library owned by that domain;
+5. `modules` — the ordered beginner-to-advanced roadmap and its nested lessons;
+6. lesson content — a planned lesson may expose its roadmap outcome and source mapping; a published lesson uses 11
+   authored sections and the renderer adds section 12 from the lesson's source IDs.
 
-The library currently contains the preserved personal-note collection plus a 12-module, 67-lesson FinTech collection.
-All 67 FinTech lessons are published with the 12-part lesson structure, inline citations, lesson-level references, and
-a recorded review date. Time-sensitive regulation, market practice, and emerging-trend lessons should be rechecked
+The library currently contains the preserved personal-note collection, the fully published 12-module and 67-lesson
+FinTech curriculum, and beginner-first roadmaps for Finance, Breaking, and muscle recovery. The three new roadmaps
+remain explicitly `planned`: their scope and learning order are source-mapped, but they are not presented as completed
+lessons. Time-sensitive regulation, competition rules, medical guidance, and emerging practices must be rechecked
 periodically against their linked authoritative sources.
+
+| Structured collection | Modules | Reading items | Saved sources | Status |
+|---|---:|---:|---:|---|
+| FinTech | 12 | 67 | Domain source library | Published |
+| Finance | 15 | 74 | 81 | Planned roadmap |
+| Breaking / Breakdance | 14 | 68 | 41 | Planned roadmap |
+| Muscle recovery | 15 | 60 | 56 | Planned roadmap |
+
+The three new roadmaps therefore add 44 modules, 202 planned lessons, and 178 saved sources. Every planned lesson maps
+to at least three distinct sources; source mapping validates the roadmap scope, not the still-unwritten lesson prose.
 
 ## Add or edit library knowledge
 
 1. Edit `private/knowledge.json`. Keep every note, module, lesson, and source `id` unique. Preserve `archivedVault`
    when adding or updating a structured domain so older notes remain available.
-2. For a planned lesson, use `"status": "planned"`; sections and references may be omitted.
+2. For a planned lesson, use `"status": "planned"`; sections may be omitted. Every roadmap lesson must already map to
+   at least three distinct, valid source IDs so the planned scope can be audited without being mistaken
+   for a published lesson.
 3. For a published lesson:
    - use `"status": "published"`;
    - provide 11 content sections in the required lesson order;

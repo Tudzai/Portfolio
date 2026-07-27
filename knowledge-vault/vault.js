@@ -97,7 +97,7 @@
       id: normalizeString(source?.id, `source-${index + 1}`),
       title: normalizeString(source?.title, "Nguồn chưa đặt tên"),
       organization: normalizeString(source?.organization, "Tổ chức chưa xác định"),
-      publishedAt: normalizeString(source?.publishedAt, "Không nêu ngày"),
+      publishedAt: normalizeString(source?.publishedAt),
       adoptedAt: normalizeString(source?.adoptedAt),
       updatedAt: normalizeString(source?.updatedAt),
       reviewedAt: normalizeString(source?.reviewedAt),
@@ -106,6 +106,16 @@
       scope: normalizeString(source?.scope),
       sourceType: normalizeString(source?.sourceType, "Nguồn chính thống"),
     };
+  }
+
+  function sourceDateLabels(source) {
+    const labels = [];
+    if (source.publishedAt) labels.push(`Published: ${source.publishedAt}`);
+    if (source.adoptedAt) labels.push(`Adopted: ${source.adoptedAt}`);
+    if (source.updatedAt) labels.push(`Updated: ${source.updatedAt}`);
+    if (source.reviewedAt) labels.push(`Reviewed: ${source.reviewedAt}`);
+    if (source.accessedAt) labels.push(`Accessed: ${source.accessedAt}`);
+    return labels.length ? labels : ["Date not stated"];
   }
 
   function normalizeBlock(block) {
@@ -180,6 +190,35 @@
     };
   }
 
+  function normalizePolicy(value) {
+    return Array.isArray(value)
+      ? value.map((item, index) => ({
+          title: normalizeString(item?.title, `Nguyên tắc ${index + 1}`),
+          description: normalizeString(item?.description),
+        }))
+      : [];
+  }
+
+  function normalizeDomain(domain, index, libraryUpdatedAt) {
+    const id = normalizeString(domain?.id, `knowledge-domain-${index + 1}`);
+    const sources = Array.isArray(domain?.primarySources) ? domain.primarySources.map(normalizeSource) : [];
+    return {
+      id,
+      mark: normalizeString(domain?.mark, "KD").slice(0, 3).toUpperCase(),
+      kind: "curriculum",
+      title: normalizeString(domain?.title, `Knowledge domain ${index + 1}`),
+      description: normalizeString(domain?.description),
+      updatedAt: normalizeString(domain?.updatedAt, normalizeString(libraryUpdatedAt)),
+      reviewedAt: normalizeString(domain?.reviewedAt),
+      mentalModel: normalizeStringArray(domain?.mentalModel),
+      sourcePolicy: normalizePolicy(domain?.sourcePolicy),
+      primarySources: sources,
+      modules: Array.isArray(domain?.modules)
+        ? domain.modules.map((module, moduleIndex) => normalizeModule(module, moduleIndex, id))
+        : [],
+    };
+  }
+
   function legacyData(value) {
     const legacySources = [];
     const lessons = (value.notes || []).map((note, index) => {
@@ -237,31 +276,36 @@
 
   function normalizeVaultData(value) {
     if (!value || typeof value !== "object") throw new Error("Invalid library data.");
-    if (!Array.isArray(value.modules)) {
-      if (Array.isArray(value.notes)) {
-        return normalizeVaultData({
-          title: "Knowledge Library",
-          owner: value.owner,
-          updatedAt: value.updatedAt,
-          reviewedAt: value.updatedAt,
-          description: "Thư viện tri thức cá nhân.",
-          mentalModel: [],
-          sourcePolicy: [],
-          primarySources: [],
-          modules: [],
-          archivedVault: value,
-        });
-      }
-      throw new Error("Library data must include a module list.");
+    if (Array.isArray(value.notes) && !Array.isArray(value.modules) && !Array.isArray(value.domains)) {
+      return normalizeVaultData({
+        title: "Knowledge Library",
+        owner: value.owner,
+        updatedAt: value.updatedAt,
+        reviewedAt: value.updatedAt,
+        description: "Thư viện tri thức cá nhân.",
+        domains: [],
+        archivedVault: value,
+      });
     }
 
-    const finTechSources = Array.isArray(value.primarySources) ? value.primarySources.map(normalizeSource) : [];
-    const finTechPolicy = Array.isArray(value.sourcePolicy)
-      ? value.sourcePolicy.map((item, index) => ({
-          title: normalizeString(item?.title, `Nguyên tắc ${index + 1}`),
-          description: normalizeString(item?.description),
-        }))
-      : [];
+    const rawDomains = Array.isArray(value.domains)
+      ? value.domains
+      : Array.isArray(value.modules)
+        ? [
+            {
+              id: "fintech-domain",
+              mark: "FT",
+              title: value.title,
+              description: value.description,
+              updatedAt: value.updatedAt,
+              reviewedAt: value.reviewedAt,
+              mentalModel: value.mentalModel,
+              sourcePolicy: value.sourcePolicy,
+              primarySources: value.primarySources,
+              modules: value.modules,
+            },
+          ]
+        : [];
     const collections = [];
     const allSources = [];
 
@@ -285,35 +329,32 @@
       allSources.push(...archivedSources);
     }
 
-    if (value.modules.length) {
-      const finTechModules = value.modules.map((module, index) => normalizeModule(module, index, "fintech-domain"));
-      collections.push({
-        id: "fintech-domain",
-        mark: "FT",
-        kind: "curriculum",
-        title: normalizeString(value.title, "FinTech Domain"),
-        description: normalizeString(value.description),
-        updatedAt: normalizeString(value.updatedAt),
-        reviewedAt: normalizeString(value.reviewedAt),
-        mentalModel: normalizeStringArray(value.mentalModel),
-        sourcePolicy: finTechPolicy,
-        primarySources: finTechSources,
-        modules: finTechModules,
-      });
-      allSources.push(...finTechSources);
-    }
+    rawDomains.forEach((domain, index) => {
+      const normalized = normalizeDomain(domain, index, value.updatedAt);
+      if (!normalized.modules.length) return;
+      collections.push(normalized);
+      allSources.push(...normalized.primarySources);
+    });
 
     if (!collections.length) throw new Error("The library must contain at least one collection.");
 
     const data = {
-      title: "Personal Knowledge Library",
+      title: normalizeString(value.title, "Personal Knowledge Library"),
       owner: normalizeString(value.owner),
       updatedAt: normalizeString(value.updatedAt),
-      description: "A home for knowledge gathered across different subjects. FinTech is one collection, with more topics added over time.",
+      description: normalizeString(
+        value.description,
+        "A private, source-backed library for learning several knowledge domains from first principles.",
+      ),
       collections,
       primarySources: allSources,
       modules: collections.flatMap((collection) => collection.modules),
     };
+
+    const collectionIds = data.collections.map((collection) => collection.id);
+    if (new Set(collectionIds).size !== collectionIds.length) {
+      throw new Error("Every collection must have a unique ID.");
+    }
 
     const ids = [];
     data.modules.forEach((module) => module.lessons.forEach((lesson) => ids.push(lesson.id)));
@@ -641,9 +682,16 @@
         title.textContent = module.title;
         const meta = document.createElement("small");
         const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
+        const sourceMapped = module.lessons.every((lesson) => lesson.references.length >= 3);
         meta.textContent = collection.kind === "notes"
           ? `${module.lessons.length} ${module.lessons.length === 1 ? "note" : "notes"}`
-          : `${module.lessons.length} lessons${liveCount ? ` · ${liveCount} available` : " · research pending"}`;
+          : `${module.lessons.length} lessons${
+              liveCount
+                ? ` · ${liveCount} available`
+                : sourceMapped
+                  ? " · source-mapped roadmap"
+                  : " · lesson planning"
+            }`;
         copy.append(title, meta);
         const chevron = document.createElement("span");
         chevron.className = "module-chevron";
@@ -817,13 +865,15 @@
       ? "Saved"
       : lesson.status === "published"
         ? "Verified"
-        : "Research pending";
+        : "Full lesson pending";
     const level = document.createElement("span");
     level.textContent = module.level;
     meta.append(status, level);
     if (lesson.estimatedMinutes) {
       const duration = document.createElement("span");
-      duration.textContent = `${lesson.estimatedMinutes} min read`;
+      duration.textContent = lesson.status === "published"
+        ? `${lesson.estimatedMinutes} min read`
+        : `Target: ${lesson.estimatedMinutes} min lesson`;
       meta.append(duration);
     }
     if (lesson.lastReviewed) {
@@ -869,7 +919,8 @@
     const heading = document.createElement("div");
     heading.className = "section-heading";
     const number = document.createElement("span");
-    number.textContent = String(lesson.sections.length + 1).padStart(2, "0");
+    const referenceSectionNumber = lesson.status === "planned" ? SECTION_TITLES.length : lesson.sections.length + 1;
+    number.textContent = String(referenceSectionNumber).padStart(2, "0");
     const title = document.createElement("h2");
     title.textContent = "Nguồn tham khảo";
     heading.append(number, title);
@@ -890,12 +941,7 @@
       const organization = document.createElement("span");
       organization.textContent = source.organization;
       const date = document.createElement("small");
-      const sourceDates = [`Published: ${source.publishedAt}`];
-      if (source.adoptedAt) sourceDates.push(`Adopted: ${source.adoptedAt}`);
-      if (source.updatedAt) sourceDates.push(`Updated: ${source.updatedAt}`);
-      if (source.reviewedAt) sourceDates.push(`Reviewed: ${source.reviewedAt}`);
-      if (source.accessedAt) sourceDates.push(`Accessed: ${source.accessedAt}`);
-      date.textContent = `${sourceDates.join(" · ")} · ${source.sourceType}`;
+      date.textContent = `${sourceDateLabels(source).join(" · ")} · ${source.sourceType}`;
       copy.append(sourceTitle, organization, date);
       item.append(numberLabel, copy);
       if (source.url) {
@@ -975,22 +1021,27 @@
   function renderPlannedLesson(entry) {
     const fragment = document.createDocumentFragment();
     fragment.append(createReaderHero(entry));
+    const body = document.createElement("div");
+    body.className = "lesson-body";
     const template = document.createElement("section");
     template.className = "planned-template";
     const title = document.createElement("h2");
-    title.textContent = "Lesson framework ready";
+    title.textContent = "Roadmap topic — full lesson pending";
     const description = document.createElement("p");
-    description.textContent =
-      "This lesson has not been published, keeping unverified knowledge out of the library. Once researched, it will follow the same structure, inline citation format, and source standard as Module 1.";
+    description.textContent = entry.lesson.references.length >= 3
+      ? "This topic and its learning outcome have been mapped to multiple sources. The full lesson remains clearly unpublished until its claims, examples, and explanations complete the deeper review standard."
+      : "This topic is part of the learning path, but its source mapping and full lesson have not yet completed the review standard.";
     const sections = document.createElement("div");
     sections.className = "planned-sections";
-    SECTION_TITLES.forEach((sectionTitle, index) => {
+    SECTION_TITLES.slice(0, -1).forEach((sectionTitle, index) => {
       const row = document.createElement("span");
       row.textContent = `${String(index + 1).padStart(2, "0")} · ${sectionTitle}`;
       sections.append(row);
     });
     template.append(title, description, sections);
-    fragment.append(template, renderLessonNavigation(entry));
+    body.append(template);
+    if (entry.lesson.references.length) body.append(renderReferences(entry.lesson, entry.collection.kind));
+    fragment.append(body, renderLessonNavigation(entry));
     return fragment;
   }
 
@@ -1068,7 +1119,7 @@
     collections.className = "home-section";
     collections.append(createHomeSectionHead(
       "My collections",
-      "Each subject has its own structure. Existing knowledge stays intact, while FinTech is one of the learning areas growing over time.",
+      "Each subject has its own structure, source policy, and review cycle. Existing knowledge stays intact as new domains grow over time.",
     ));
     const grid = document.createElement("div");
     grid.className = "collection-grid";
@@ -1169,8 +1220,8 @@
         const mental = document.createElement("section");
         mental.className = "home-section";
         mental.append(createHomeSectionHead(
-          "Seven-layer mental model",
-          "Use one consistent framework to understand every FinTech product, company, and business model.",
+          "How to think about this domain",
+          "Use these lenses consistently to connect individual lessons and avoid memorizing isolated terms.",
         ));
         const mentalGrid = document.createElement("div");
         mentalGrid.className = "mental-model";
@@ -1190,8 +1241,8 @@
       const curriculum = document.createElement("section");
       curriculum.className = "home-section";
       curriculum.append(createHomeSectionHead(
-        "Curriculum from beginner to industry level",
-        "Unresearched lessons remain clearly marked and are published only after their sources have been validated.",
+        "Roadmap from beginner to applied understanding",
+        "Planned topics stay clearly marked until their complete lesson text passes the deeper claim and source review.",
       ));
       const moduleGrid = document.createElement("div");
       moduleGrid.className = "module-overview";
@@ -1248,8 +1299,8 @@
         sources.className = "home-section";
         sources.id = "primary-sources";
         sources.append(createHomeSectionHead(
-          "Authoritative sources used throughout",
-          "Each lesson still has its own references and uses only sources relevant to its specific claims.",
+          "Sources used throughout this roadmap",
+          "Each lesson has its own source mapping. Official and primary material is preferred, while useful secondary evidence is labeled by source type.",
         ));
         const sourceGrid = document.createElement("div");
         sourceGrid.className = "source-library";
@@ -1262,10 +1313,7 @@
           const title = document.createElement("h3");
           title.textContent = source.title;
           const scope = document.createElement("p");
-          const sourceDate = source.updatedAt
-            ? `Published: ${source.publishedAt} · Updated: ${source.updatedAt}`
-            : `Published: ${source.publishedAt}`;
-          scope.textContent = `${sourceDate} · ${source.scope}`;
+          scope.textContent = `${sourceDateLabels(source).join(" · ")} · ${source.scope}`;
           card.append(organization, title, scope);
           if (source.url) {
             const link = document.createElement("a");
@@ -1391,6 +1439,9 @@
     searchResults.replaceChildren();
     searchInput.value = "";
     passwordInput.value = "";
+    passwordInput.type = "password";
+    passwordToggle.textContent = "Show";
+    passwordToggle.setAttribute("aria-label", "Show password");
     document.body.classList.add("is-locked");
     document.body.classList.remove("sidebar-open");
     document.body.classList.remove("is-resizing-sidebar");
