@@ -82,6 +82,7 @@
           "title": "Module title",
           "level": "Beginner",
           "description": "What this module helps the reader understand.",
+          "evidenceOutcome": "The observable work product or decision evidence needed to demonstrate this module's capability.",
           "lessons": [
             {
               "id": "example-lesson-one",

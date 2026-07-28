@@ -1846,6 +1846,29 @@ html[data-theme="light"] .workspace-bar {
   line-height: 1.62;
 }
 
+.module-card__evidence {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0 16px;
+  padding: 10px 11px;
+  border-left: 2px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--accent-soft);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.module-card__evidence strong {
+  color: var(--accent);
+  font-size: 0.61rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.module-card__evidence span {
+  color: var(--muted);
+}
+
 .module-card button {
   align-self: flex-start;
   min-height: 34px;

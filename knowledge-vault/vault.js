@@ -184,6 +184,7 @@
       title: normalizeString(module?.title, `Module ${index + 1}`),
       level: normalizeString(module?.level, "Foundation"),
       description: normalizeString(module?.description),
+      evidenceOutcome: normalizeString(module?.evidenceOutcome),
       lessons: Array.isArray(module?.lessons)
         ? module.lessons.map((lesson, lessonIndex) => normalizeLesson(lesson, id, lessonIndex))
         : [],
@@ -1260,11 +1261,20 @@
         title.textContent = module.title;
         const description = document.createElement("p");
         description.textContent = module.description;
+        const evidence = document.createElement("div");
+        evidence.className = "module-card__evidence";
+        const evidenceLabel = document.createElement("strong");
+        evidenceLabel.textContent = "Evidence outcome";
+        const evidenceText = document.createElement("span");
+        evidenceText.textContent = module.evidenceOutcome;
+        evidence.append(evidenceLabel, evidenceText);
         const open = document.createElement("button");
         open.type = "button";
         open.dataset.openModule = module.id;
         open.textContent = "Open module →";
-        card.append(top, title, description, open);
+        card.append(top, title, description);
+        if (module.evidenceOutcome) card.append(evidence);
+        card.append(open);
         moduleGrid.append(card);
       });
       curriculum.append(moduleGrid);

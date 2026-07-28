@@ -2,8 +2,9 @@
 
 This folder is a private-reading layer inside the public Portfolio site. The browser derives an AES-256-GCM key from
 the owner password, decrypts `vault-data.js` locally, and renders a multi-domain personal library without sending the
-password, plaintext content, completion state, or search activity to a server. FinTech, Finance, Breaking, and muscle
-recovery are separate structured collections; existing personal notes remain available as their own collection.
+password, plaintext content, completion state, or search activity to a server. FinTech, Finance, Road to CFO,
+Breaking, and muscle recovery are separate structured collections; existing personal notes remain available as their
+own collection.
 
 The page is intentionally unlinked and marked `noindex`. The URL is not a security boundary: encrypted data remains
 publicly downloadable when the Portfolio site is deployed, so a strong unique password is essential.
@@ -43,27 +44,31 @@ The decrypted source contains:
 3. domain metadata — a stable ID, short mark, title, description, review date, mental model, and source policy;
 4. `primarySources` — a source library owned by that domain;
 5. `modules` — the ordered beginner-to-advanced roadmap and its nested lessons;
-6. lesson content — a planned lesson may expose its roadmap outcome and source mapping; a published lesson uses 11
+6. `evidenceOutcome` — an observable work product or decision artifact that demonstrates each module's capability;
+7. lesson content — a planned lesson may expose its roadmap outcome and source mapping; a published lesson uses 11
    authored sections and the renderer adds section 12 from the lesson's source IDs.
 
 The library currently contains the preserved personal-note collection plus fully published, beginner-first curricula
-for FinTech, Finance, Breaking, and muscle recovery. Time-sensitive regulation, competition rules, medical guidance,
-and emerging practices must be rechecked periodically against their linked authoritative sources.
+for FinTech, Finance, Road to CFO, Breaking, and muscle recovery. Time-sensitive regulation, competition rules,
+medical guidance, and emerging practices must be rechecked periodically against their linked authoritative sources.
 
 | Structured collection | Modules | Reading items | Saved sources | Status |
 |---|---:|---:|---:|---|
-| FinTech | 12 | 67 | Domain source library | Published |
+| FinTech | 12 | 67 | 179 | Published |
 | Finance | 15 | 74 | 97 | Published |
+| Road to CFO | 18 | 89 | 68 | Published |
 | Breaking / Breakdance | 14 | 68 | 41 | Published |
 | Muscle recovery | 15 | 60 | 56 | Published |
 
-The three new curricula therefore add 44 modules, 202 published lessons, and 194 saved sources. Every lesson contains
-11 authored sections, renders its references as section 12, and maps to at least three distinct sources.
+Across the five structured collections, the library now contains 74 modules, 358 published lessons, and 441 saved
+sources. Every lesson contains 11 authored sections, renders its references as section 12, and maps to at least three
+distinct sources.
 
 ## Add or edit library knowledge
 
 1. Edit `private/knowledge.json`. Keep every note, module, lesson, and source `id` unique. Preserve `archivedVault`
-   when adding or updating a structured domain so older notes remain available.
+   when adding or updating a structured domain so older notes remain available. Use `evidenceOutcome` when the roadmap
+   should show the observable work product or decision artifact expected from a module.
 2. For a planned lesson, use `"status": "planned"`; sections may be omitted. Every roadmap lesson must already map to
    at least three distinct, valid source IDs so the planned scope can be audited without being mistaken
    for a published lesson.
