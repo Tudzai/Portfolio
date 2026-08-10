@@ -1951,6 +1951,312 @@ body.portfolio-home-v2 :focus-visible {
   color: #fff;
 }
 
+.footer-signoff {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
+
+.footer-signoff > span {
+  min-width: 0;
+}
+
+.sulcata-vault-cta {
+  position: relative;
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 76px;
+  min-height: 46px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: #f0c68d;
+  cursor: pointer;
+  isolation: isolate;
+  transition:
+    border-color 180ms var(--ease-standard),
+    background 180ms var(--ease-standard),
+    transform 180ms var(--ease-out);
+}
+
+.sulcata-vault-cta:hover,
+.sulcata-vault-cta:focus-visible {
+  border-color: rgba(240, 198, 141, 0.28);
+  background: rgba(240, 198, 141, 0.07);
+  transform: translateY(-1px);
+}
+
+.sulcata-vault-cta:focus-visible {
+  outline: 3px solid rgba(93, 215, 199, 0.38);
+  outline-offset: 3px;
+}
+
+.sulcata-vault-cta__hint {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: calc(100% + 9px);
+  display: grid;
+  width: max-content;
+  max-width: 190px;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(5, 23, 36, 0.96);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(7px) scale(0.98);
+  transform-origin: right bottom;
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 220ms var(--ease-out);
+}
+
+.sulcata-vault-cta__hint::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 27px;
+  width: 9px;
+  height: 9px;
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(5, 23, 36, 0.96);
+  transform: translateY(-5px) rotate(45deg);
+}
+
+.sulcata-vault-cta__hint > span {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sulcata-vault-cta__hint strong {
+  color: #fff;
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+
+.sulcata-vault-cta:hover .sulcata-vault-cta__hint,
+.sulcata-vault-cta:focus-visible .sulcata-vault-cta__hint {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.sulcata-vault-cta__stage {
+  position: relative;
+  display: block;
+  width: 68px;
+  height: 38px;
+  overflow: hidden;
+}
+
+.sulcata {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 1px;
+  width: 64px;
+  height: auto;
+  overflow: visible;
+}
+
+.sulcata-shadow {
+  fill: rgba(0, 0, 0, 0.22);
+  transform-origin: 57px 49px;
+  animation: sulcata-shadow-breathe 1.4s ease-in-out infinite alternate;
+}
+
+.sulcata-figure {
+  transform-origin: 57px 49px;
+  animation: sulcata-amble 1.4s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.sulcata-tail,
+.sulcata-head path:first-child,
+.sulcata-leg path:first-child {
+  fill: #b98d58;
+  stroke: #e0bb83;
+  stroke-linejoin: round;
+  stroke-width: 1.25;
+}
+
+.sulcata-shell {
+  fill: #a96f3e;
+  stroke: #ebca92;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.sulcata-shell-rim,
+.sulcata-plate {
+  fill: none;
+  stroke: rgba(250, 222, 173, 0.62);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.2;
+}
+
+.sulcata-plate--top,
+.sulcata-plate--center {
+  fill: rgba(230, 177, 104, 0.16);
+}
+
+.sulcata-head {
+  transform-origin: 83px 34px;
+  animation: sulcata-look 2.8s ease-in-out infinite;
+}
+
+.sulcata-head circle {
+  fill: #071e2e;
+  stroke: #fff2d5;
+  stroke-width: 0.6;
+}
+
+.sulcata-mouth,
+.sulcata-claw {
+  fill: none;
+  stroke: #f4d7a7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1;
+}
+
+.sulcata-leg {
+  transform-box: fill-box;
+  transform-origin: center top;
+  animation: sulcata-step 1.4s ease-in-out infinite alternate;
+}
+
+.sulcata-leg--front-far,
+.sulcata-leg--back-near {
+  animation-direction: alternate-reverse;
+}
+
+.sulcata-leg--back-far,
+.sulcata-leg--front-far {
+  opacity: 0.72;
+}
+
+.sulcata-trail {
+  position: absolute;
+  z-index: 1;
+  bottom: 7px;
+  width: 5px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(240, 198, 141, 0.32);
+  opacity: 0;
+  transform: rotate(-18deg);
+  animation: sulcata-trail-fade 2.8s linear infinite;
+}
+
+.sulcata-trail::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: -4px;
+  width: 4px;
+  height: 3px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.sulcata-trail--one {
+  left: 5px;
+}
+
+.sulcata-trail--two {
+  left: 18px;
+  animation-delay: 0.7s;
+}
+
+.sulcata-trail--three {
+  left: 31px;
+  animation-delay: 1.4s;
+}
+
+.sulcata-vault-cta:hover .sulcata-figure,
+.sulcata-vault-cta:focus-visible .sulcata-figure,
+.sulcata-vault-cta:hover .sulcata-leg,
+.sulcata-vault-cta:focus-visible .sulcata-leg {
+  animation-duration: 0.82s;
+}
+
+@keyframes sulcata-amble {
+  0% {
+    transform: translate3d(-1px, 0, 0) rotate(-0.8deg);
+  }
+
+  100% {
+    transform: translate3d(1px, -1.4px, 0) rotate(0.8deg);
+  }
+}
+
+@keyframes sulcata-step {
+  0% {
+    transform: rotate(5deg) translateY(-0.4px);
+  }
+
+  100% {
+    transform: rotate(-7deg) translateY(0.6px);
+  }
+}
+
+@keyframes sulcata-look {
+  0%,
+  64%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+
+  76% {
+    transform: translateX(2px) rotate(-2deg);
+  }
+
+  88% {
+    transform: translateX(1px) rotate(1deg);
+  }
+}
+
+@keyframes sulcata-shadow-breathe {
+  from {
+    opacity: 0.66;
+    transform: scaleX(0.96);
+  }
+
+  to {
+    opacity: 0.42;
+    transform: scaleX(1.03);
+  }
+}
+
+@keyframes sulcata-trail-fade {
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateX(8px) rotate(-18deg);
+  }
+
+  38%,
+  68% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-5px) rotate(-18deg);
+  }
+}
+
 .back-to-top {
   position: fixed;
   z-index: 90;
@@ -2443,6 +2749,24 @@ body.portfolio-home-v2 :focus-visible {
     padding-bottom: 0;
   }
 
+  .footer-signoff {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .sulcata-vault-cta__hint {
+    right: auto;
+    left: 0;
+    transform-origin: left bottom;
+  }
+
+  .sulcata-vault-cta__hint::after {
+    right: auto;
+    left: 27px;
+  }
+
   .back-to-top {
     width: 44px;
     height: 44px;
@@ -2518,6 +2842,19 @@ body.portfolio-home-v2 :focus-visible {
   .library-card,
   .back-to-top {
     transform: none !important;
+  }
+
+  .sulcata-shadow,
+  .sulcata-figure,
+  .sulcata-head,
+  .sulcata-leg,
+  .sulcata-trail {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .sulcata-trail {
+    display: none;
   }
 }
 
