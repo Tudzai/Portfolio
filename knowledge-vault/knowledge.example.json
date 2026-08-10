@@ -1,22 +1,106 @@
 {
-  "title": "Personal Knowledge Vault",
-  "owner": "Truong Dinh Anh Tu",
-  "updatedAt": "2026-07-15",
-  "notes": [
+  "title": "Personal Knowledge Library",
+  "owner": "Vault owner",
+  "updatedAt": "2026-07-27",
+  "description": "A private, source-backed library for learning several domains from first principles.",
+  "archivedVault": {
+    "title": "My existing notes",
+    "owner": "Vault owner",
+    "updatedAt": "2026-07-27",
+    "notes": [
+      {
+        "id": "existing-note-example",
+        "title": "Existing note title",
+        "category": "Personal learning",
+        "summary": "A note preserved from the previous library.",
+        "content": ["First paragraph.", "Second paragraph."],
+        "tags": ["example"],
+        "pinned": false,
+        "updatedAt": "2026-07-27",
+        "sourceLabel": "Optional source"
+      }
+    ]
+  },
+  "domains": [
     {
-      "id": "welcome-to-the-vault",
-      "title": "Welcome to your encrypted knowledge vault",
-      "category": "Vault Guide",
-      "summary": "A starting point for turning scattered learning into a private, searchable personal system.",
-      "content": [
-        "Use this space for reusable frameworks, lessons learned, reading notes, decision patterns, and ideas that are useful to your future self.",
-        "Write knowledge in private/knowledge.json, run the local encryption tool, and publish only vault-data.js. The public file contains ciphertext, salt, and an initialization vector—not the plaintext notes or password.",
-        "Keep credentials, recovery codes, client-confidential data, identity documents, and other high-impact secrets outside this static vault. Those belong in a dedicated password manager or a properly authenticated private service."
+      "id": "domain-example",
+      "mark": "EX",
+      "title": "Domain title",
+      "updatedAt": "2026-07-27",
+      "reviewedAt": "2026-07-27",
+      "description": "A beginner-first learning curriculum.",
+      "mentalModel": [
+        "Start with the real-world question",
+        "Learn the few essential terms",
+        "Follow the system from input to outcome",
+        "Test understanding with a small practice task",
+        "Recheck claims that can change over time"
       ],
-      "tags": ["knowledge management", "privacy", "workflow"],
-      "pinned": true,
-      "updatedAt": "2026-07-15",
-      "sourceLabel": "Local vault guide"
+      "sourcePolicy": [
+        {
+          "title": "Primary source first",
+          "description": "Prefer official institutions, standards, and peer-reviewed evidence."
+        },
+        {
+          "title": "Cross-check important claims",
+          "description": "Map each researched lesson to at least three relevant sources."
+        }
+      ],
+      "primarySources": [
+        {
+          "id": "example-source-one",
+          "title": "Official source title one",
+          "organization": "Official organization one",
+          "publishedAt": "2026-01-01",
+          "url": "https://example.org/official-source-one",
+          "scope": "Claims this source can support.",
+          "sourceType": "Primary source"
+        },
+        {
+          "id": "example-source-two",
+          "title": "Official source title two",
+          "organization": "Official organization two",
+          "accessedAt": "2026-07-27",
+          "url": "https://example.org/official-source-two",
+          "scope": "A second perspective used for cross-checking.",
+          "sourceType": "Primary source"
+        },
+        {
+          "id": "example-source-three",
+          "title": "Evidence review title",
+          "organization": "Research organization",
+          "publishedAt": "2025-06-01",
+          "url": "https://example.org/evidence-review",
+          "scope": "A synthesis used to test the roadmap's assumptions.",
+          "sourceType": "Evidence review"
+        }
+      ],
+      "modules": [
+        {
+          "id": "example-module-one",
+          "number": "01",
+          "title": "Module title",
+          "level": "Beginner",
+          "description": "What this module helps the reader understand.",
+          "evidenceOutcome": "The observable work product or decision evidence needed to demonstrate this module's capability.",
+          "lessons": [
+            {
+              "id": "example-lesson-one",
+              "title": "Lesson title",
+              "summary": "Short lesson summary written for a beginner.",
+              "status": "planned",
+              "estimatedMinutes": 10,
+              "lastReviewed": "2026-07-27",
+              "keywords": ["keyword"],
+              "references": [
+                "example-source-one",
+                "example-source-two",
+                "example-source-three"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

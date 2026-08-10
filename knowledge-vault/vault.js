@@ -1,8 +1,28 @@
 (() => {
   "use strict";
 
-  const AUTO_LOCK_MS = 15 * 60 * 1000;
   const VAULT_AAD = "knowledge-vault:v1";
+  const STORAGE_COMPLETED = "fintech-domain:completed:v1";
+  const STORAGE_THEME = "fintech-domain:theme:v1";
+  const STORAGE_SIDEBAR_WIDTH = "knowledge-library:sidebar-width:v1";
+  const STORAGE_SIDEBAR_COLLAPSED = "knowledge-library:sidebar-collapsed:v1";
+  const SIDEBAR_MIN_WIDTH = 260;
+  const SIDEBAR_MAX_WIDTH = 460;
+  const SIDEBAR_DEFAULT_WIDTH = 328;
+  const SECTION_TITLES = [
+    "Mục tiêu của bài học",
+    "Khái niệm chính",
+    "Vì sao nội dung này quan trọng",
+    "Cách nó hoạt động",
+    "Các bên liên quan",
+    "Ví dụ thực tế đơn giản",
+    "Mô hình doanh thu hoặc tác động tài chính",
+    "Rủi ro và hạn chế",
+    "Sự khác biệt giữa các thị trường hoặc quy định",
+    "Các thuật ngữ cần nhớ",
+    "Tóm tắt bài học",
+    "Nguồn tham khảo",
+  ];
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
@@ -17,33 +37,40 @@
   const unlockStatus = document.querySelector("[data-unlock-status]");
   const headerStatus = document.querySelector("[data-header-status]");
   const lockButton = document.querySelector("[data-lock-button]");
-  const vaultTitle = document.querySelector("[data-vault-title]");
-  const vaultUpdated = document.querySelector("[data-vault-updated]");
-  const noteTotal = document.querySelector("[data-note-total]");
-  const categoryList = document.querySelector("[data-category-list]");
-  const searchInput = document.querySelector("[data-vault-search]");
-  const resultCount = document.querySelector("[data-result-count]");
-  const noteList = document.querySelector("[data-note-list]");
-  const noteReader = document.querySelector("[data-note-reader]");
-  const emptyResults = document.querySelector("[data-empty-results]");
-  const clearFiltersButton = document.querySelector("[data-clear-filters]");
+  const domainHomeButton = document.querySelector("[data-domain-home]");
+  const curriculumMeta = document.querySelector("[data-curriculum-meta]");
+  const moduleList = document.querySelector("[data-module-list]");
+  const searchInput = document.querySelector("[data-search-input]");
+  const searchResults = document.querySelector("[data-search-results]");
+  const themeToggle = document.querySelector("[data-theme-toggle]");
+  const themeLabel = document.querySelector("[data-theme-label]");
+  const sidebarOpenButton = document.querySelector("[data-sidebar-open]");
+  const sidebarCloseButton = document.querySelector("[data-sidebar-close]");
+  const sidebarCollapseButton = document.querySelector("[data-sidebar-collapse]");
+  const sidebarResizeHandle = document.querySelector("[data-sidebar-resize]");
+  const sidebarScrim = document.querySelector("[data-sidebar-scrim]");
+  const workspace = document.querySelector(".workspace");
+  const readingProgress = document.querySelector("[data-reading-progress]");
+  const lessonReader = document.querySelector("[data-lesson-reader]");
+  const toast = document.querySelector("[data-toast]");
 
   const state = {
     data: null,
-    notes: [],
-    category: "All",
-    query: "",
+    sourceMap: new Map(),
     selectedId: null,
-    autoLockTimer: null,
-    lastActivityAt: 0,
+    selectedCollectionId: null,
+    openCollections: new Set(),
+    openModules: new Set(),
+    completed: new Set(),
+    sidebarWidth: SIDEBAR_DEFAULT_WIDTH,
+    sidebarResize: null,
+    toastTimer: null,
   };
 
   function decodeBase64(value) {
     const binary = window.atob(value);
     const bytes = new Uint8Array(binary.length);
-    for (let index = 0; index < binary.length; index += 1) {
-      bytes[index] = binary.charCodeAt(index);
-    }
+    for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
     return bytes;
   }
 
@@ -51,47 +78,289 @@
     return typeof value === "string" ? value.trim() : fallback;
   }
 
-  function normalizeNote(note, index) {
-    const id = normalizeString(note?.id, `note-${index + 1}`);
-    const title = normalizeString(note?.title, "Untitled note");
-    const category = normalizeString(note?.category, "Uncategorized");
-    const summary = normalizeString(note?.summary);
-    const content = Array.isArray(note?.content)
-      ? note.content.map((paragraph) => normalizeString(paragraph)).filter(Boolean)
-      : [];
-    const tags = Array.isArray(note?.tags) ? note.tags.map((tag) => normalizeString(tag)).filter(Boolean) : [];
+  function normalizeStringArray(value) {
+    return Array.isArray(value) ? value.map((item) => normalizeString(item)).filter(Boolean) : [];
+  }
 
+  function safeExternalUrl(value) {
+    if (!value) return null;
+    try {
+      const url = new URL(value);
+      return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function normalizeSource(source, index) {
     return {
-      id,
-      title,
-      category,
-      summary,
-      content,
-      tags,
-      pinned: Boolean(note?.pinned),
-      updatedAt: normalizeString(note?.updatedAt),
-      sourceLabel: normalizeString(note?.sourceLabel),
-      sourceUrl: normalizeString(note?.sourceUrl),
+      id: normalizeString(source?.id, `source-${index + 1}`),
+      title: normalizeString(source?.title, "Nguồn chưa đặt tên"),
+      organization: normalizeString(source?.organization, "Tổ chức chưa xác định"),
+      publishedAt: normalizeString(source?.publishedAt),
+      adoptedAt: normalizeString(source?.adoptedAt),
+      updatedAt: normalizeString(source?.updatedAt),
+      reviewedAt: normalizeString(source?.reviewedAt),
+      accessedAt: normalizeString(source?.accessedAt),
+      url: safeExternalUrl(source?.url),
+      scope: normalizeString(source?.scope),
+      sourceType: normalizeString(source?.sourceType, "Nguồn chính thống"),
     };
   }
 
-  function normalizeVaultData(value) {
-    if (!value || typeof value !== "object" || !Array.isArray(value.notes)) {
-      throw new Error("Vault data is invalid.");
-    }
+  function sourceDateLabels(source) {
+    const labels = [];
+    if (source.publishedAt) labels.push(`Published: ${source.publishedAt}`);
+    if (source.adoptedAt) labels.push(`Adopted: ${source.adoptedAt}`);
+    if (source.updatedAt) labels.push(`Updated: ${source.updatedAt}`);
+    if (source.reviewedAt) labels.push(`Reviewed: ${source.reviewedAt}`);
+    if (source.accessedAt) labels.push(`Accessed: ${source.accessedAt}`);
+    return labels.length ? labels : ["Date not stated"];
+  }
 
-    const notes = value.notes.map(normalizeNote);
-    const uniqueIds = new Set(notes.map((note) => note.id));
-    if (uniqueIds.size !== notes.length) {
-      throw new Error("Vault note IDs must be unique.");
+  function normalizeBlock(block) {
+    if (!block || typeof block !== "object") return null;
+    const type = normalizeString(block.type);
+    if (type === "paragraph") return { type, text: normalizeString(block.text) };
+    if (type === "list") return { type, items: normalizeStringArray(block.items), ordered: Boolean(block.ordered) };
+    if (type === "callout") {
+      return {
+        type,
+        label: normalizeString(block.label, "Lưu ý"),
+        text: normalizeString(block.text),
+        tone: normalizeString(block.tone, "note"),
+      };
     }
+    if (type === "table") {
+      return {
+        type,
+        headers: normalizeStringArray(block.headers),
+        rows: Array.isArray(block.rows) ? block.rows.map((row) => normalizeStringArray(row)) : [],
+      };
+    }
+    if (type === "flow") {
+      return {
+        type,
+        steps: Array.isArray(block.steps)
+          ? block.steps.map((step, index) => ({
+              label: normalizeString(step?.label, `Bước ${index + 1}`),
+              title: normalizeString(step?.title),
+              detail: normalizeString(step?.detail),
+            }))
+          : [],
+      };
+    }
+    return null;
+  }
+
+  function normalizeLesson(lesson, moduleId, index) {
+    const sections = Array.isArray(lesson?.sections)
+      ? lesson.sections.map((section, sectionIndex) => ({
+          id: normalizeString(section?.id, `section-${sectionIndex + 1}`),
+          title: normalizeString(section?.title, SECTION_TITLES[sectionIndex] || `Phần ${sectionIndex + 1}`),
+          blocks: Array.isArray(section?.blocks) ? section.blocks.map(normalizeBlock).filter(Boolean) : [],
+        }))
+      : [];
+
+    return {
+      id: normalizeString(lesson?.id, `${moduleId}-lesson-${index + 1}`),
+      title: normalizeString(lesson?.title, `Bài ${index + 1}`),
+      summary: normalizeString(lesson?.summary, "Nội dung sẽ được nghiên cứu và bổ sung theo lộ trình."),
+      status: lesson?.status === "published" ? "published" : "planned",
+      estimatedMinutes: Number.isFinite(lesson?.estimatedMinutes) ? lesson.estimatedMinutes : null,
+      lastReviewed: normalizeString(lesson?.lastReviewed),
+      keywords: normalizeStringArray(lesson?.keywords),
+      sections,
+      references: normalizeStringArray(lesson?.references),
+    };
+  }
+
+  function normalizeModule(module, index, collectionId = "fintech-domain") {
+    const id = normalizeString(module?.id, `module-${index + 1}`);
+    return {
+      id,
+      collectionId,
+      number: normalizeString(module?.number, String(index + 1).padStart(2, "0")),
+      title: normalizeString(module?.title, `Module ${index + 1}`),
+      level: normalizeString(module?.level, "Foundation"),
+      description: normalizeString(module?.description),
+      evidenceOutcome: normalizeString(module?.evidenceOutcome),
+      lessons: Array.isArray(module?.lessons)
+        ? module.lessons.map((lesson, lessonIndex) => normalizeLesson(lesson, id, lessonIndex))
+        : [],
+    };
+  }
+
+  function normalizePolicy(value) {
+    return Array.isArray(value)
+      ? value.map((item, index) => ({
+          title: normalizeString(item?.title, `Nguyên tắc ${index + 1}`),
+          description: normalizeString(item?.description),
+        }))
+      : [];
+  }
+
+  function normalizeDomain(domain, index, libraryUpdatedAt) {
+    const id = normalizeString(domain?.id, `knowledge-domain-${index + 1}`);
+    const sources = Array.isArray(domain?.primarySources) ? domain.primarySources.map(normalizeSource) : [];
+    return {
+      id,
+      mark: normalizeString(domain?.mark, "KD").slice(0, 3).toUpperCase(),
+      kind: "curriculum",
+      title: normalizeString(domain?.title, `Knowledge domain ${index + 1}`),
+      description: normalizeString(domain?.description),
+      updatedAt: normalizeString(domain?.updatedAt, normalizeString(libraryUpdatedAt)),
+      reviewedAt: normalizeString(domain?.reviewedAt),
+      mentalModel: normalizeStringArray(domain?.mentalModel),
+      sourcePolicy: normalizePolicy(domain?.sourcePolicy),
+      primarySources: sources,
+      modules: Array.isArray(domain?.modules)
+        ? domain.modules.map((module, moduleIndex) => normalizeModule(module, moduleIndex, id))
+        : [],
+    };
+  }
+
+  function legacyData(value) {
+    const legacySources = [];
+    const lessons = (value.notes || []).map((note, index) => {
+      const sourceId = `legacy-source-${index + 1}`;
+      if (note.sourceLabel || note.sourceUrl) {
+        legacySources.push({
+          id: sourceId,
+          title: normalizeString(note.sourceLabel, "Nguồn ghi chú cũ"),
+          organization: "Kho ghi chú cá nhân",
+          publishedAt: normalizeString(note.updatedAt, "Không nêu ngày"),
+          url: note.sourceUrl,
+          scope: "Nguồn được chuyển đổi từ schema vault trước đây.",
+        });
+      }
+      return {
+        id: normalizeString(note.id, `legacy-note-${index + 1}`),
+        title: normalizeString(note.title, `Ghi chú ${index + 1}`),
+        summary: normalizeString(note.summary),
+        status: "published",
+        estimatedMinutes: null,
+        lastReviewed: normalizeString(note.updatedAt),
+        keywords: normalizeStringArray(note.tags),
+        sections: [
+          {
+            id: "legacy-content",
+            title: "Nội dung ghi chú",
+            blocks: (note.content || []).map((text) => ({ type: "paragraph", text })),
+          },
+        ],
+        references: legacySources.some((source) => source.id === sourceId) ? [sourceId] : [],
+      };
+    });
 
     return {
       title: normalizeString(value.title, "Personal Knowledge Vault"),
       owner: normalizeString(value.owner),
       updatedAt: normalizeString(value.updatedAt),
-      notes,
+      reviewedAt: normalizeString(value.updatedAt),
+      description: "Các ghi chú đã có trong phiên bản thư viện trước được giữ nguyên để tiếp tục đọc và tra cứu.",
+      mentalModel: [],
+      sourcePolicy: [],
+      primarySources: legacySources,
+      modules: [
+        {
+          id: "legacy-notes",
+          number: "00",
+          title: "Ghi chú hiện có",
+          level: "Legacy",
+          description: "Nội dung từ phiên bản Knowledge Vault trước.",
+          lessons,
+        },
+      ],
     };
+  }
+
+  function normalizeVaultData(value) {
+    if (!value || typeof value !== "object") throw new Error("Invalid library data.");
+    if (Array.isArray(value.notes) && !Array.isArray(value.modules) && !Array.isArray(value.domains)) {
+      return normalizeVaultData({
+        title: "Knowledge Library",
+        owner: value.owner,
+        updatedAt: value.updatedAt,
+        reviewedAt: value.updatedAt,
+        description: "Thư viện tri thức cá nhân.",
+        domains: [],
+        archivedVault: value,
+      });
+    }
+
+    const rawDomains = Array.isArray(value.domains)
+      ? value.domains
+      : Array.isArray(value.modules)
+        ? [
+            {
+              id: "fintech-domain",
+              mark: "FT",
+              title: value.title,
+              description: value.description,
+              updatedAt: value.updatedAt,
+              reviewedAt: value.reviewedAt,
+              mentalModel: value.mentalModel,
+              sourcePolicy: value.sourcePolicy,
+              primarySources: value.primarySources,
+              modules: value.modules,
+            },
+          ]
+        : [];
+    const collections = [];
+    const allSources = [];
+
+    if (value.archivedVault && Array.isArray(value.archivedVault.notes) && value.archivedVault.notes.length) {
+      const archived = legacyData(value.archivedVault);
+      const archivedSources = archived.primarySources.map(normalizeSource);
+      const archivedModules = archived.modules.map((module, index) => normalizeModule(module, index, "personal-notes"));
+      collections.push({
+        id: "personal-notes",
+        mark: "PN",
+        kind: "notes",
+        title: normalizeString(archived.title, "Ghi chú của tôi"),
+        description: archived.description,
+        updatedAt: normalizeString(archived.updatedAt),
+        reviewedAt: normalizeString(archived.reviewedAt),
+        mentalModel: [],
+        sourcePolicy: [],
+        primarySources: archivedSources,
+        modules: archivedModules,
+      });
+      allSources.push(...archivedSources);
+    }
+
+    rawDomains.forEach((domain, index) => {
+      const normalized = normalizeDomain(domain, index, value.updatedAt);
+      if (!normalized.modules.length) return;
+      collections.push(normalized);
+      allSources.push(...normalized.primarySources);
+    });
+
+    if (!collections.length) throw new Error("The library must contain at least one collection.");
+
+    const data = {
+      title: normalizeString(value.title, "Personal Knowledge Library"),
+      owner: normalizeString(value.owner),
+      updatedAt: normalizeString(value.updatedAt),
+      description: normalizeString(
+        value.description,
+        "A private, source-backed library for learning several knowledge domains from first principles.",
+      ),
+      collections,
+      primarySources: allSources,
+      modules: collections.flatMap((collection) => collection.modules),
+    };
+
+    const collectionIds = data.collections.map((collection) => collection.id);
+    if (new Set(collectionIds).size !== collectionIds.length) {
+      throw new Error("Every collection must have a unique ID.");
+    }
+
+    const ids = [];
+    data.modules.forEach((module) => module.lessons.forEach((lesson) => ids.push(lesson.id)));
+    if (new Set(ids).size !== ids.length) throw new Error("Every reading item must have a unique ID.");
+    return data;
   }
 
   async function deriveVaultKey(password, payload) {
@@ -102,7 +371,6 @@
       false,
       ["deriveKey"],
     );
-
     return window.crypto.subtle.deriveKey(
       {
         name: "PBKDF2",
@@ -119,10 +387,7 @@
 
   async function decryptVault(password) {
     const payload = window.__KNOWLEDGE_VAULT_DATA__;
-    if (!payload || payload.version !== 1) {
-      throw new Error("Encrypted vault data is unavailable.");
-    }
-
+    if (!payload || payload.version !== 1) throw new Error("Encrypted library data was not found.");
     const key = await deriveVaultKey(password, payload);
     const decrypted = await window.crypto.subtle.decrypt(
       {
@@ -134,378 +399,1214 @@
       key,
       decodeBase64(payload.ciphertext),
     );
-
     return normalizeVaultData(JSON.parse(decoder.decode(decrypted)));
   }
 
   function formatDate(value) {
-    if (!value) return "Date not recorded";
+    if (!value) return "Date unavailable";
     const parsed = new Date(`${value}T00:00:00`);
     if (Number.isNaN(parsed.getTime())) return value;
-    return new Intl.DateTimeFormat("en", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }).format(parsed);
+    return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(parsed);
   }
 
-  function safeExternalUrl(value) {
-    if (!value) return null;
+  function loadCompleted() {
     try {
-      const url = new URL(value);
-      return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+      const value = JSON.parse(window.localStorage.getItem(STORAGE_COMPLETED) || "[]");
+      return new Set(Array.isArray(value) ? value.filter((item) => typeof item === "string") : []);
     } catch {
-      return null;
+      return new Set();
     }
   }
 
-  function countLabel(count, noun) {
-    return `${count} ${noun}${count === 1 ? "" : "s"}`;
-  }
-
-  function filteredNotes() {
-    const normalizedQuery = state.query.toLocaleLowerCase();
-    return state.notes.filter((note) => {
-      const categoryMatches = state.category === "All" || note.category === state.category;
-      if (!categoryMatches) return false;
-      if (!normalizedQuery) return true;
-
-      const searchText = [note.title, note.category, note.summary, ...note.tags, ...note.content]
-        .join(" ")
-        .toLocaleLowerCase();
-      return searchText.includes(normalizedQuery);
-    });
-  }
-
-  function sortNotes(notes) {
-    return [...notes].sort((left, right) => {
-      if (left.pinned !== right.pinned) return left.pinned ? -1 : 1;
-      return right.updatedAt.localeCompare(left.updatedAt) || left.title.localeCompare(right.title);
-    });
-  }
-
-  function renderCategories() {
-    const counts = new Map();
-    state.notes.forEach((note) => counts.set(note.category, (counts.get(note.category) || 0) + 1));
-    const categories = ["All", ...Array.from(counts.keys()).sort((a, b) => a.localeCompare(b))];
-
-    categoryList.replaceChildren();
-    categories.forEach((category) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.dataset.category = category;
-      button.setAttribute("aria-pressed", String(state.category === category));
-
-      const label = document.createElement("span");
-      label.textContent = category;
-      const count = document.createElement("span");
-      count.textContent = String(category === "All" ? state.notes.length : counts.get(category));
-
-      button.append(label, count);
-      categoryList.append(button);
-    });
-  }
-
-  function createNoteCard(note) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "note-card";
-    button.dataset.noteId = note.id;
-    button.setAttribute("aria-pressed", String(note.id === state.selectedId));
-
-    const topLine = document.createElement("span");
-    topLine.className = "note-card__topline";
-    const category = document.createElement("span");
-    category.className = "note-card__category";
-    category.textContent = note.category;
-    topLine.append(category);
-
-    if (note.pinned) {
-      const pin = document.createElement("span");
-      pin.className = "note-card__pin";
-      pin.textContent = "Pinned";
-      topLine.append(pin);
+  function saveCompleted() {
+    try {
+      window.localStorage.setItem(STORAGE_COMPLETED, JSON.stringify(Array.from(state.completed)));
+    } catch {
+      showToast("Progress could not be saved on this device.");
     }
-
-    const title = document.createElement("h2");
-    title.textContent = note.title;
-    const summary = document.createElement("p");
-    summary.textContent = note.summary || note.content[0] || "No summary yet.";
-
-    button.append(topLine, title, summary);
-    return button;
   }
 
-  function renderReader(note) {
-    noteReader.replaceChildren();
-    if (!note) {
-      const empty = document.createElement("div");
-      empty.className = "note-reader__empty";
-      const icon = document.createElement("span");
-      icon.setAttribute("aria-hidden", "true");
-      icon.textContent = "↗";
-      const text = document.createElement("p");
-      text.textContent = "Select a note to begin reading.";
-      empty.append(icon, text);
-      noteReader.append(empty);
+  function allLessons() {
+    if (!state.data) return [];
+    return state.data.collections.flatMap((collection) =>
+      collection.modules.flatMap((module) => module.lessons.map((lesson) => ({ collection, module, lesson }))),
+    );
+  }
+
+  function publishedLessons() {
+    return allLessons().filter(({ lesson }) => lesson.status === "published");
+  }
+
+  function currentEntry() {
+    return allLessons().find(({ lesson }) => lesson.id === state.selectedId) || null;
+  }
+
+  function blockSearchText(block) {
+    if (block.type === "paragraph") return block.text;
+    if (block.type === "list") return block.items.join(" ");
+    if (block.type === "callout") return `${block.label} ${block.text}`;
+    if (block.type === "table") return [...block.headers, ...block.rows.flat()].join(" ");
+    if (block.type === "flow") return block.steps.map((step) => `${step.label} ${step.title} ${step.detail}`).join(" ");
+    return "";
+  }
+
+  function lessonSearchText(entry) {
+    return [
+      entry.collection.title,
+      entry.module.title,
+      entry.lesson.title,
+      entry.lesson.summary,
+      ...entry.lesson.keywords,
+      ...entry.lesson.sections.flatMap((section) => [section.title, ...section.blocks.map(blockSearchText)]),
+    ]
+      .join(" ")
+      .toLocaleLowerCase("vi");
+  }
+
+  function showToast(message) {
+    if (!toast) return;
+    window.clearTimeout(state.toastTimer);
+    toast.textContent = message;
+    toast.hidden = false;
+    state.toastTimer = window.setTimeout(() => {
+      toast.hidden = true;
+      toast.textContent = "";
+    }, 2600);
+  }
+
+  function setTheme(theme, persist = true) {
+    const next = theme === "light" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#eef2f0" : "#0a1118");
+    themeLabel.textContent = next === "light" ? "Dark" : "Light";
+    themeToggle.setAttribute("aria-label", next === "light" ? "Switch to dark mode" : "Switch to light mode");
+    if (persist) {
+      try {
+        window.localStorage.setItem(STORAGE_THEME, next);
+      } catch {
+        // Theme remains applied for the current session.
+      }
+    }
+  }
+
+  function initializeTheme() {
+    let stored = null;
+    try {
+      stored = window.localStorage.getItem(STORAGE_THEME);
+    } catch {
+      stored = null;
+    }
+    const preferred = window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    setTheme(stored || preferred, false);
+  }
+
+  function isCompactSidebar() {
+    return window.matchMedia?.("(max-width: 960px)").matches ?? false;
+  }
+
+  function sidebarMaximumWidth() {
+    const viewportWidth = Number(window.innerWidth) || 1440;
+    return Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, Math.floor(viewportWidth * 0.44)));
+  }
+
+  function clampSidebarWidth(value) {
+    const numericValue = Number(value);
+    const width = Number.isFinite(numericValue) ? numericValue : SIDEBAR_DEFAULT_WIDTH;
+    return Math.round(Math.min(sidebarMaximumWidth(), Math.max(SIDEBAR_MIN_WIDTH, width)));
+  }
+
+  function setSidebarWidth(value, persist = true) {
+    state.sidebarWidth = clampSidebarWidth(value);
+    document.documentElement.style.setProperty("--sidebar-width", `${state.sidebarWidth}px`);
+    sidebarResizeHandle?.setAttribute("aria-valuenow", String(state.sidebarWidth));
+    sidebarResizeHandle?.setAttribute("aria-valuemax", String(sidebarMaximumWidth()));
+    if (persist) {
+      try {
+        window.localStorage.setItem(STORAGE_SIDEBAR_WIDTH, String(state.sidebarWidth));
+      } catch {
+        // The current width still applies when local storage is unavailable.
+      }
+    }
+  }
+
+  function syncSidebarToggle() {
+    const expanded = isCompactSidebar()
+      ? document.body.classList.contains("sidebar-open")
+      : !document.body.classList.contains("sidebar-collapsed");
+    sidebarOpenButton?.setAttribute("aria-expanded", String(expanded));
+  }
+
+  function setSidebarCollapsed(collapsed, persist = true) {
+    document.body.classList.toggle("sidebar-collapsed", Boolean(collapsed));
+    if (persist) {
+      try {
+        window.localStorage.setItem(STORAGE_SIDEBAR_COLLAPSED, collapsed ? "true" : "false");
+      } catch {
+        // The current collapsed state still applies when local storage is unavailable.
+      }
+    }
+    syncSidebarToggle();
+  }
+
+  function initializeSidebarLayout() {
+    let storedWidth = SIDEBAR_DEFAULT_WIDTH;
+    let storedCollapsed = false;
+    try {
+      storedWidth = Number(window.localStorage.getItem(STORAGE_SIDEBAR_WIDTH)) || SIDEBAR_DEFAULT_WIDTH;
+      storedCollapsed = window.localStorage.getItem(STORAGE_SIDEBAR_COLLAPSED) === "true";
+    } catch {
+      storedWidth = SIDEBAR_DEFAULT_WIDTH;
+    }
+    setSidebarWidth(storedWidth, false);
+    setSidebarCollapsed(storedCollapsed, false);
+  }
+
+  function closeSidebar() {
+    document.body.classList.remove("sidebar-open");
+    syncSidebarToggle();
+  }
+
+  function openSidebar() {
+    if (isCompactSidebar()) {
+      document.body.classList.add("sidebar-open");
+      syncSidebarToggle();
       return;
     }
+    setSidebarCollapsed(false);
+  }
 
-    const category = document.createElement("p");
-    category.className = "reader-category";
-    category.textContent = note.category;
+  function collapseSidebar() {
+    if (isCompactSidebar()) {
+      closeSidebar();
+      return;
+    }
+    setSidebarCollapsed(true);
+  }
 
-    const title = document.createElement("h2");
-    title.textContent = note.title;
+  function startSidebarResize(event) {
+    if (isCompactSidebar() || event.button !== 0) return;
+    state.sidebarResize = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startWidth: state.sidebarWidth,
+    };
+    document.body.classList.add("is-resizing-sidebar");
+    sidebarResizeHandle?.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  }
 
-    const summary = document.createElement("p");
-    summary.className = "reader-summary";
-    summary.textContent = note.summary || "No summary recorded.";
+  function resizeSidebar(event) {
+    if (!state.sidebarResize || event.pointerId !== state.sidebarResize.pointerId) return;
+    setSidebarWidth(state.sidebarResize.startWidth + event.clientX - state.sidebarResize.startX, false);
+  }
 
-    const body = document.createElement("div");
-    body.className = "reader-body";
-    const paragraphs = note.content.length ? note.content : ["This note does not have any body content yet."];
-    paragraphs.forEach((paragraph) => {
-      const element = document.createElement("p");
-      element.textContent = paragraph;
-      body.append(element);
-    });
+  function finishSidebarResize(event) {
+    if (!state.sidebarResize || event.pointerId !== state.sidebarResize.pointerId) return;
+    sidebarResizeHandle?.releasePointerCapture?.(event.pointerId);
+    state.sidebarResize = null;
+    document.body.classList.remove("is-resizing-sidebar");
+    setSidebarWidth(state.sidebarWidth);
+  }
 
-    noteReader.append(category, title, summary, body);
+  function resizeSidebarWithKeyboard(event) {
+    let nextWidth = state.sidebarWidth;
+    if (event.key === "ArrowLeft") nextWidth -= 16;
+    else if (event.key === "ArrowRight") nextWidth += 16;
+    else if (event.key === "Home") nextWidth = SIDEBAR_MIN_WIDTH;
+    else if (event.key === "End") nextWidth = sidebarMaximumWidth();
+    else return;
+    event.preventDefault();
+    setSidebarWidth(nextWidth);
+  }
 
-    if (note.tags.length) {
-      const tags = document.createElement("div");
-      tags.className = "reader-tags";
-      tags.setAttribute("aria-label", "Note tags");
-      note.tags.forEach((tag) => {
-        const element = document.createElement("span");
-        element.textContent = tag;
-        tags.append(element);
+  function renderNavigation() {
+    moduleList.replaceChildren();
+    state.data.collections.forEach((collection) => {
+      const collectionGroup = document.createElement("section");
+      collectionGroup.className = "collection-nav";
+      const collectionExpanded = state.openCollections.has(collection.id);
+
+      const collectionButton = document.createElement("button");
+      collectionButton.type = "button";
+      collectionButton.className = "collection-nav__head";
+      collectionButton.dataset.collectionId = collection.id;
+      collectionButton.setAttribute("aria-expanded", String(collectionExpanded));
+      if (collection.id === state.selectedCollectionId) {
+        collectionButton.classList.add("is-current");
+        collectionButton.setAttribute("aria-current", "page");
+      }
+      const mark = document.createElement("span");
+      mark.className = "collection-nav__mark";
+      mark.textContent = collection.mark;
+      const collectionCopy = document.createElement("span");
+      const collectionTitle = document.createElement("strong");
+      collectionTitle.textContent = collection.title;
+      const collectionMeta = document.createElement("small");
+      const collectionEntries = collection.modules.reduce((total, module) => total + module.lessons.length, 0);
+      const collectionLive = collection.modules.reduce(
+        (total, module) => total + module.lessons.filter((lesson) => lesson.status === "published").length,
+        0,
+      );
+      collectionMeta.textContent = collection.kind === "notes"
+        ? `${collectionEntries} preserved ${collectionEntries === 1 ? "note" : "notes"}`
+        : `${collection.modules.length} modules · ${collectionLive} available lessons`;
+      collectionCopy.append(collectionTitle, collectionMeta);
+      const collectionArrow = document.createElement("span");
+      collectionArrow.className = "collection-nav__chevron";
+      collectionArrow.setAttribute("aria-hidden", "true");
+      collectionArrow.textContent = "›";
+      collectionButton.append(mark, collectionCopy, collectionArrow);
+
+      const collectionBody = document.createElement("div");
+      collectionBody.className = "collection-nav__body";
+      collectionBody.id = `collection-${collection.id}`;
+      collectionBody.hidden = !collectionExpanded;
+      collectionButton.setAttribute("aria-controls", collectionBody.id);
+
+      collection.modules.forEach((module) => {
+        const group = document.createElement("section");
+        group.className = "module-group";
+
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "module-toggle";
+        toggle.dataset.moduleId = module.id;
+        const expanded = state.openModules.has(module.id);
+        toggle.setAttribute("aria-expanded", String(expanded));
+
+        const number = document.createElement("span");
+        number.className = "module-number";
+        number.textContent = module.number;
+        const copy = document.createElement("span");
+        copy.className = "module-toggle__copy";
+        const title = document.createElement("strong");
+        title.textContent = module.title;
+        const meta = document.createElement("small");
+        const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
+        const sourceMapped = module.lessons.every((lesson) => lesson.references.length >= 3);
+        meta.textContent = collection.kind === "notes"
+          ? `${module.lessons.length} ${module.lessons.length === 1 ? "note" : "notes"}`
+          : `${module.lessons.length} lessons${
+              liveCount
+                ? ` · ${liveCount} available`
+                : sourceMapped
+                  ? " · source-mapped roadmap"
+                  : " · lesson planning"
+            }`;
+        copy.append(title, meta);
+        const chevron = document.createElement("span");
+        chevron.className = "module-chevron";
+        chevron.setAttribute("aria-hidden", "true");
+        chevron.textContent = "›";
+        toggle.append(number, copy, chevron);
+
+        const lessons = document.createElement("div");
+        lessons.className = "lesson-list";
+        lessons.hidden = !expanded;
+        lessons.id = `lessons-${module.id}`;
+        toggle.setAttribute("aria-controls", lessons.id);
+
+        module.lessons.forEach((lesson) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `lesson-link ${lesson.status === "planned" ? "is-planned" : ""} ${state.completed.has(lesson.id) ? "is-complete" : ""}`;
+          button.dataset.lessonId = lesson.id;
+          if (lesson.id === state.selectedId) button.setAttribute("aria-current", "page");
+          const label = document.createElement("span");
+          label.textContent = lesson.title;
+          const lessonState = document.createElement("span");
+          lessonState.className = "lesson-link__state";
+          lessonState.setAttribute("aria-hidden", "true");
+          lessonState.textContent = state.completed.has(lesson.id) ? "✓" : "";
+          button.append(label, lessonState);
+          lessons.append(button);
+        });
+
+        group.append(toggle, lessons);
+        collectionBody.append(group);
       });
-      noteReader.append(tags);
+
+      collectionGroup.append(collectionButton, collectionBody);
+      moduleList.append(collectionGroup);
+    });
+  }
+
+  function appendRichText(element, text, lesson) {
+    const pattern = /\[\[([a-z0-9-]+)\]\]/gi;
+    let cursor = 0;
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+      if (match.index > cursor) element.append(document.createTextNode(text.slice(cursor, match.index)));
+      const sourceId = match[1];
+      const source = state.sourceMap.get(sourceId);
+      const referenceIndex = lesson?.references.indexOf(sourceId) ?? -1;
+      if (source && referenceIndex >= 0) {
+        const citation = document.createElement("a");
+        citation.className = "inline-citation";
+        citation.href = `#ref-${sourceId}`;
+        citation.textContent = String(referenceIndex + 1);
+        citation.title = `${source.organization}: ${source.title}`;
+        citation.setAttribute("aria-label", `Source ${referenceIndex + 1}: ${source.title}`);
+        element.append(citation);
+      } else {
+        element.append(document.createTextNode(match[0]));
+      }
+      cursor = pattern.lastIndex;
+    }
+    if (cursor < text.length) element.append(document.createTextNode(text.slice(cursor)));
+  }
+
+  function renderBlock(block, lesson) {
+    if (block.type === "paragraph") {
+      const paragraph = document.createElement("p");
+      paragraph.className = "content-block content-paragraph";
+      appendRichText(paragraph, block.text, lesson);
+      return paragraph;
+    }
+    if (block.type === "list") {
+      const list = document.createElement(block.ordered ? "ol" : "ul");
+      list.className = "content-block content-list";
+      block.items.forEach((item) => {
+        const row = document.createElement("li");
+        appendRichText(row, item, lesson);
+        list.append(row);
+      });
+      return list;
+    }
+    if (block.type === "callout") {
+      const callout = document.createElement("aside");
+      callout.className = "content-block content-callout";
+      callout.dataset.tone = block.tone;
+      const label = document.createElement("strong");
+      label.textContent = block.label;
+      const paragraph = document.createElement("p");
+      appendRichText(paragraph, block.text, lesson);
+      callout.append(label, paragraph);
+      return callout;
+    }
+    if (block.type === "table") {
+      const wrap = document.createElement("div");
+      wrap.className = "content-block table-wrap";
+      wrap.setAttribute("tabindex", "0");
+      wrap.setAttribute("aria-label", "Scrollable comparison table");
+      const table = document.createElement("table");
+      table.className = "content-table";
+      const head = document.createElement("thead");
+      const headRow = document.createElement("tr");
+      block.headers.forEach((header) => {
+        const cell = document.createElement("th");
+        cell.scope = "col";
+        appendRichText(cell, header, lesson);
+        headRow.append(cell);
+      });
+      head.append(headRow);
+      const body = document.createElement("tbody");
+      block.rows.forEach((row) => {
+        const tableRow = document.createElement("tr");
+        row.forEach((value) => {
+          const cell = document.createElement("td");
+          appendRichText(cell, value, lesson);
+          tableRow.append(cell);
+        });
+        body.append(tableRow);
+      });
+      table.append(head, body);
+      wrap.append(table);
+      return wrap;
+    }
+    if (block.type === "flow") {
+      const flow = document.createElement("div");
+      flow.className = "content-block flow-diagram";
+      flow.setAttribute("role", "img");
+      flow.setAttribute("aria-label", `Flow with ${block.steps.length} steps`);
+      block.steps.forEach((step) => {
+        const card = document.createElement("div");
+        card.className = "flow-step";
+        const label = document.createElement("span");
+        appendRichText(label, step.label, lesson);
+        const title = document.createElement("strong");
+        appendRichText(title, step.title, lesson);
+        const detail = document.createElement("small");
+        appendRichText(detail, step.detail, lesson);
+        card.append(label, title, detail);
+        flow.append(card);
+      });
+      return flow;
+    }
+    return document.createDocumentFragment();
+  }
+
+  function createReaderHero(entry) {
+    const { collection, module, lesson } = entry;
+    const hero = document.createElement("header");
+    hero.className = "reader-hero";
+    const breadcrumb = document.createElement("p");
+    breadcrumb.className = "reader-breadcrumb";
+    const domain = document.createElement("span");
+    domain.textContent = "Library";
+    const separator = document.createElement("span");
+    separator.textContent = "/";
+    const collectionName = document.createElement("span");
+    collectionName.textContent = collection.title;
+    const secondSeparator = document.createElement("span");
+    secondSeparator.textContent = "/";
+    const moduleName = document.createElement("span");
+    moduleName.textContent = `${module.number}. ${module.title}`;
+    breadcrumb.append(domain, separator, collectionName, secondSeparator, moduleName);
+    const title = document.createElement("h1");
+    title.textContent = lesson.title;
+    const deck = document.createElement("p");
+    deck.className = "reader-deck";
+    deck.textContent = lesson.summary;
+    const meta = document.createElement("div");
+    meta.className = "reader-meta";
+    const status = document.createElement("span");
+    status.className = lesson.status === "published" ? "status-live" : "status-planned";
+    status.textContent = collection.kind === "notes"
+      ? "Saved"
+      : lesson.status === "published"
+        ? "Verified"
+        : "Full lesson pending";
+    const level = document.createElement("span");
+    level.textContent = module.level;
+    meta.append(status, level);
+    if (lesson.estimatedMinutes) {
+      const duration = document.createElement("span");
+      duration.textContent = lesson.status === "published"
+        ? `${lesson.estimatedMinutes} min read`
+        : `Target: ${lesson.estimatedMinutes} min lesson`;
+      meta.append(duration);
+    }
+    if (lesson.lastReviewed) {
+      const reviewed = document.createElement("span");
+      reviewed.textContent = `Reviewed: ${formatDate(lesson.lastReviewed)}`;
+      meta.append(reviewed);
     }
 
-    const footer = document.createElement("footer");
-    footer.className = "reader-footer";
-    const updated = document.createElement("span");
-    updated.textContent = `Updated ${formatDate(note.updatedAt)}`;
-    footer.append(updated);
+    const tools = document.createElement("div");
+    tools.className = "reader-tools";
+    const complete = document.createElement("button");
+    complete.type = "button";
+    complete.className = "complete-button";
+    complete.dataset.completeLesson = lesson.id;
+    complete.disabled = lesson.status !== "published";
+    complete.setAttribute("aria-pressed", String(state.completed.has(lesson.id)));
+    const check = document.createElement("span");
+    check.className = "complete-button__check";
+    check.setAttribute("aria-hidden", "true");
+    check.textContent = state.completed.has(lesson.id) ? "✓" : "";
+    const completeText = document.createElement("span");
+    completeText.textContent = lesson.status === "published"
+      ? state.completed.has(lesson.id)
+        ? "Completed"
+        : "Mark as completed"
+      : "Not yet available";
+    complete.append(check, completeText);
+    const policy = document.createElement("button");
+    policy.type = "button";
+    policy.className = "source-policy-link";
+    policy.dataset.showSources = "true";
+    policy.dataset.collectionId = collection.id;
+    policy.textContent = collection.kind === "curriculum" ? "Methodology & sources" : "About this notes collection";
+    tools.append(complete, policy);
+    hero.append(breadcrumb, title, deck, meta, tools);
+    return hero;
+  }
 
-    const sourceUrl = safeExternalUrl(note.sourceUrl);
-    if (sourceUrl) {
-      const source = document.createElement("a");
-      source.href = sourceUrl;
-      source.target = "_blank";
-      source.rel = "noreferrer noopener";
-      source.textContent = note.sourceLabel || "Open source";
-      footer.append(source);
-    } else if (note.sourceLabel) {
-      const source = document.createElement("span");
-      source.textContent = note.sourceLabel;
-      footer.append(source);
+  function renderReferences(lesson, collectionKind = "curriculum") {
+    const section = document.createElement("section");
+    section.className = "lesson-section";
+    section.id = "section-references";
+    const heading = document.createElement("div");
+    heading.className = "section-heading";
+    const number = document.createElement("span");
+    const referenceSectionNumber = lesson.status === "planned" ? SECTION_TITLES.length : lesson.sections.length + 1;
+    number.textContent = String(referenceSectionNumber).padStart(2, "0");
+    const title = document.createElement("h2");
+    title.textContent = "Nguồn tham khảo";
+    heading.append(number, title);
+    const list = document.createElement("ol");
+    list.className = "reference-list";
+    lesson.references.forEach((sourceId, index) => {
+      const source = state.sourceMap.get(sourceId);
+      if (!source) return;
+      const item = document.createElement("li");
+      item.className = "reference-item";
+      item.id = `ref-${sourceId}`;
+      const numberLabel = document.createElement("span");
+      numberLabel.className = "reference-item__number";
+      numberLabel.textContent = String(index + 1).padStart(2, "0");
+      const copy = document.createElement("div");
+      const sourceTitle = document.createElement("strong");
+      sourceTitle.textContent = source.title;
+      const organization = document.createElement("span");
+      organization.textContent = source.organization;
+      const date = document.createElement("small");
+      date.textContent = `${sourceDateLabels(source).join(" · ")} · ${source.sourceType}`;
+      copy.append(sourceTitle, organization, date);
+      item.append(numberLabel, copy);
+      if (source.url) {
+        const link = document.createElement("a");
+        link.href = source.url;
+        link.target = "_blank";
+        link.rel = "noreferrer noopener";
+        link.textContent = "Open source ↗";
+        item.append(link);
+      }
+      list.append(item);
+    });
+    if (!list.children.length) {
+      const empty = document.createElement("p");
+      empty.className = "content-paragraph";
+      empty.textContent = collectionKind === "notes"
+        ? "No reference has been saved for this note."
+        : "References will be added after this lesson has been researched and cross-checked.";
+      section.append(heading, empty);
+      return section;
     }
-
-    noteReader.append(footer);
+    section.append(heading, list);
+    return section;
   }
 
-  function renderLibrary({ preserveSelection = true } = {}) {
-    const notes = sortNotes(filteredNotes());
-    const selectedStillVisible = notes.some((note) => note.id === state.selectedId);
-    if (!preserveSelection || !selectedStillVisible) {
-      state.selectedId = notes[0]?.id || null;
-    }
-
-    noteList.replaceChildren();
-    notes.forEach((note) => noteList.append(createNoteCard(note)));
-
-    const selected = state.notes.find((note) => note.id === state.selectedId) || null;
-    renderReader(selected);
-    renderCategories();
-
-    const hasResults = notes.length > 0;
-    noteList.hidden = !hasResults;
-    noteReader.hidden = !hasResults;
-    emptyResults.hidden = hasResults;
-    resultCount.textContent = countLabel(notes.length, "result");
+  function renderLessonNavigation(entry) {
+    const entries = allLessons().filter(({ collection }) => collection.id === entry.collection.id);
+    const index = entries.findIndex(({ lesson }) => lesson.id === entry.lesson.id);
+    const previous = entries[index - 1] || null;
+    const next = entries[index + 1] || null;
+    const nav = document.createElement("nav");
+    nav.className = "lesson-nav";
+    nav.setAttribute("aria-label", "Previous and next reading items");
+    [
+      { label: "← Previous", entry: previous },
+      { label: "Next →", entry: next },
+    ].forEach(({ label, entry: target }) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.disabled = !target;
+      if (target) button.dataset.lessonId = target.lesson.id;
+      const small = document.createElement("small");
+      small.textContent = label;
+      const title = document.createElement("strong");
+      title.textContent = target ? target.lesson.title : "No item";
+      button.append(small, title);
+      nav.append(button);
+    });
+    return nav;
   }
 
-  function setBusy(isBusy) {
-    unlockButton.disabled = isBusy;
-    passwordInput.disabled = isBusy;
-    passwordToggle.disabled = isBusy;
-    if (unlockButtonLabel) unlockButtonLabel.textContent = isBusy ? "Decrypting…" : "Unlock vault";
+  function renderPublishedLesson(entry) {
+    const fragment = document.createDocumentFragment();
+    fragment.append(createReaderHero(entry));
+    const body = document.createElement("div");
+    body.className = "lesson-body";
+    entry.lesson.sections.forEach((sectionData, index) => {
+      const section = document.createElement("section");
+      section.className = "lesson-section";
+      section.id = `section-${sectionData.id}`;
+      const heading = document.createElement("div");
+      heading.className = "section-heading";
+      const number = document.createElement("span");
+      number.textContent = String(index + 1).padStart(2, "0");
+      const title = document.createElement("h2");
+      title.textContent = sectionData.title;
+      heading.append(number, title);
+      section.append(heading);
+      sectionData.blocks.forEach((block) => section.append(renderBlock(block, entry.lesson)));
+      body.append(section);
+    });
+    body.append(renderReferences(entry.lesson, entry.collection.kind));
+    fragment.append(body, renderLessonNavigation(entry));
+    return fragment;
   }
 
-  function scheduleAutoLock() {
-    window.clearTimeout(state.autoLockTimer);
-    if (!state.data) return;
-    state.lastActivityAt = Date.now();
-    state.autoLockTimer = window.setTimeout(() => lockVault("Vault locked after 15 minutes of inactivity."), AUTO_LOCK_MS);
+  function renderPlannedLesson(entry) {
+    const fragment = document.createDocumentFragment();
+    fragment.append(createReaderHero(entry));
+    const body = document.createElement("div");
+    body.className = "lesson-body";
+    const template = document.createElement("section");
+    template.className = "planned-template";
+    const title = document.createElement("h2");
+    title.textContent = "Roadmap topic — full lesson pending";
+    const description = document.createElement("p");
+    description.textContent = entry.lesson.references.length >= 3
+      ? "This topic and its learning outcome have been mapped to multiple sources. The full lesson remains clearly unpublished until its claims, examples, and explanations complete the deeper review standard."
+      : "This topic is part of the learning path, but its source mapping and full lesson have not yet completed the review standard.";
+    const sections = document.createElement("div");
+    sections.className = "planned-sections";
+    SECTION_TITLES.slice(0, -1).forEach((sectionTitle, index) => {
+      const row = document.createElement("span");
+      row.textContent = `${String(index + 1).padStart(2, "0")} · ${sectionTitle}`;
+      sections.append(row);
+    });
+    template.append(title, description, sections);
+    body.append(template);
+    if (entry.lesson.references.length) body.append(renderReferences(entry.lesson, entry.collection.kind));
+    fragment.append(body, renderLessonNavigation(entry));
+    return fragment;
   }
 
-  function showVault(data) {
-    state.data = data;
-    state.notes = data.notes;
-    state.category = "All";
-    state.query = "";
-    state.selectedId = sortNotes(data.notes)[0]?.id || null;
-
-    vaultTitle.textContent = data.title;
-    vaultUpdated.textContent = `Last knowledge update: ${formatDate(data.updatedAt)}`;
-    noteTotal.textContent = countLabel(data.notes.length, "note");
-    searchInput.value = "";
-    renderLibrary({ preserveSelection: true });
-
-    unlockView.hidden = true;
-    vaultView.hidden = false;
-    document.body.classList.remove("is-locked");
-    document.body.classList.add("is-unlocked");
-    headerStatus.textContent = "Unlocked locally";
-    document.title = `${data.title} | Private`;
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    scheduleAutoLock();
-    searchInput.focus({ preventScroll: true });
+  function createHomeStats(items) {
+    const stats = document.createElement("div");
+    stats.className = "home-stats";
+    items.forEach(([value, label]) => {
+      const card = document.createElement("div");
+      const number = document.createElement("strong");
+      number.textContent = String(value);
+      const text = document.createElement("span");
+      text.textContent = label;
+      card.append(number, text);
+      stats.append(card);
+    });
+    return stats;
   }
 
-  function clearDecryptedUi() {
-    noteList.replaceChildren();
-    categoryList.replaceChildren();
-    renderReader(null);
-    vaultTitle.textContent = "Personal Knowledge Vault";
-    vaultUpdated.textContent = "";
-    noteTotal.textContent = "0 notes";
-    resultCount.textContent = "0 results";
-    searchInput.value = "";
+  function createHomeHero(eyebrowText, titleText, ledeText, stats) {
+    const hero = document.createElement("section");
+    hero.className = "home-hero";
+    const copy = document.createElement("div");
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "eyebrow";
+    const line = document.createElement("span");
+    line.setAttribute("aria-hidden", "true");
+    eyebrow.append(line, document.createTextNode(eyebrowText));
+    const title = document.createElement("h1");
+    title.textContent = titleText;
+    const lede = document.createElement("p");
+    lede.className = "home-hero__lede";
+    lede.textContent = ledeText;
+    copy.append(eyebrow, title, lede);
+    hero.append(copy, createHomeStats(stats));
+    return hero;
   }
 
-  function lockVault(message = "Vault locked.") {
-    window.clearTimeout(state.autoLockTimer);
-    state.data = null;
-    state.notes = [];
-    state.category = "All";
-    state.query = "";
+  function createHomeSectionHead(titleText, copyText) {
+    const head = document.createElement("div");
+    head.className = "home-section__head";
+    const title = document.createElement("h2");
+    title.textContent = titleText;
+    const copy = document.createElement("p");
+    copy.textContent = copyText;
+    head.append(title, copy);
+    return head;
+  }
+
+  function finishHomeRender() {
+    renderNavigation();
+    workspace.scrollTo({ top: 0, behavior: "auto" });
+    updateReadingProgress();
+  }
+
+  function renderHome() {
     state.selectedId = null;
-    state.lastActivityAt = 0;
-    clearDecryptedUi();
+    state.selectedCollectionId = null;
+    document.title = "Knowledge Library | Private Learning Space";
+    lessonReader.replaceChildren();
+    const all = allLessons();
+    const live = publishedLessons();
+    const hero = createHomeHero(
+      "Private learning library",
+      state.data.title,
+      state.data.description,
+      [
+        [state.data.collections.length, "knowledge collections"],
+        [state.data.modules.length, "structured content groups"],
+        [all.length, "lessons and notes"],
+        [live.length, "available reading items"],
+      ],
+    );
 
-    vaultView.hidden = true;
-    unlockView.hidden = false;
-    document.body.classList.remove("is-unlocked");
-    document.body.classList.add("is-locked");
-    headerStatus.textContent = "Locked";
-    document.title = "Private Knowledge Vault | Truong Dinh Anh Tu";
+    const collections = document.createElement("section");
+    collections.className = "home-section";
+    collections.append(createHomeSectionHead(
+      "My collections",
+      "Each subject has its own structure, source policy, and review cycle. Existing knowledge stays intact as new domains grow over time.",
+    ));
+    const grid = document.createElement("div");
+    grid.className = "collection-grid";
+    state.data.collections.forEach((collection) => {
+      const entries = collection.modules.flatMap((module) => module.lessons);
+      const liveCount = entries.filter((lesson) => lesson.status === "published").length;
+      const card = document.createElement("article");
+      card.className = "collection-card";
+      const top = document.createElement("div");
+      top.className = "collection-card__top";
+      const mark = document.createElement("span");
+      mark.textContent = collection.mark;
+      const type = document.createElement("span");
+      type.textContent = collection.kind === "notes" ? "Personal notes" : "Learning domain";
+      top.append(mark, type);
+      const title = document.createElement("h2");
+      title.textContent = collection.title;
+      const description = document.createElement("p");
+      description.textContent = collection.description;
+      const metrics = document.createElement("div");
+      metrics.className = "collection-card__metrics";
+      metrics.append(
+        Object.assign(document.createElement("span"), { textContent: `${collection.modules.length} groups` }),
+        Object.assign(document.createElement("span"), { textContent: `${entries.length} reading items` }),
+        Object.assign(document.createElement("span"), { textContent: `${liveCount} available` }),
+      );
+      const open = document.createElement("button");
+      open.type = "button";
+      open.dataset.openCollection = collection.id;
+      open.textContent = "Open collection →";
+      card.append(top, title, description, metrics, open);
+      grid.append(card);
+    });
+    collections.append(grid);
+    lessonReader.append(hero, collections);
+    finishHomeRender();
+  }
+
+  function renderCollectionHome(collectionId) {
+    const collection = state.data.collections.find((item) => item.id === collectionId);
+    if (!collection) return;
+    state.selectedId = null;
+    state.selectedCollectionId = collection.id;
+    state.openCollections.add(collection.id);
+    document.title = `${collection.title} | Knowledge Library`;
+    lessonReader.replaceChildren();
+    const entries = collection.modules.flatMap((module) => module.lessons);
+    const live = entries.filter((lesson) => lesson.status === "published");
+    const hero = createHomeHero(
+      collection.kind === "notes" ? "Personal notes collection" : "Structured learning domain",
+      collection.title,
+      collection.description,
+      [
+        [collection.modules.length, collection.kind === "notes" ? "note groups" : "learning modules"],
+        [entries.length, "reading items in this collection"],
+        [live.length, "currently available"],
+        [collection.primarySources.length, "saved sources"],
+      ],
+    );
+    const sections = [hero];
+
+    if (collection.kind === "notes") {
+      const notes = document.createElement("section");
+      notes.className = "home-section";
+      notes.append(createHomeSectionHead(
+        "Preserved notes",
+        "This content comes from the previous library. You can keep reading, searching, and marking items as completed.",
+      ));
+      const noteGrid = document.createElement("div");
+      noteGrid.className = "module-overview note-overview";
+      collection.modules.forEach((module) => {
+        module.lessons.forEach((lesson) => {
+          const card = document.createElement("article");
+          card.className = "module-card note-card";
+          const top = document.createElement("div");
+          top.className = "module-card__top";
+          const type = document.createElement("span");
+          type.textContent = "NOTE";
+          const date = document.createElement("span");
+          date.textContent = lesson.lastReviewed ? formatDate(lesson.lastReviewed) : "Saved";
+          top.append(type, date);
+          const title = document.createElement("h3");
+          title.textContent = lesson.title;
+          const summary = document.createElement("p");
+          summary.textContent = lesson.summary;
+          const open = document.createElement("button");
+          open.type = "button";
+          open.dataset.lessonId = lesson.id;
+          open.textContent = "Read note →";
+          card.append(top, title, summary, open);
+          noteGrid.append(card);
+        });
+      });
+      notes.append(noteGrid);
+      sections.push(notes);
+    } else {
+      if (collection.mentalModel.length) {
+        const mental = document.createElement("section");
+        mental.className = "home-section";
+        mental.append(createHomeSectionHead(
+          "How to think about this domain",
+          "Use these lenses consistently to connect individual lessons and avoid memorizing isolated terms.",
+        ));
+        const mentalGrid = document.createElement("div");
+        mentalGrid.className = "mental-model";
+        collection.mentalModel.forEach((item, index) => {
+          const card = document.createElement("article");
+          const number = document.createElement("span");
+          number.textContent = String(index + 1).padStart(2, "0");
+          const label = document.createElement("strong");
+          label.textContent = item;
+          card.append(number, label);
+          mentalGrid.append(card);
+        });
+        mental.append(mentalGrid);
+        sections.push(mental);
+      }
+
+      const curriculum = document.createElement("section");
+      curriculum.className = "home-section";
+      curriculum.append(createHomeSectionHead(
+        "Roadmap from beginner to applied understanding",
+        "Planned topics stay clearly marked until their complete lesson text passes the deeper claim and source review.",
+      ));
+      const moduleGrid = document.createElement("div");
+      moduleGrid.className = "module-overview";
+      collection.modules.forEach((module) => {
+        const card = document.createElement("article");
+        card.className = "module-card";
+        const top = document.createElement("div");
+        top.className = "module-card__top";
+        const number = document.createElement("span");
+        number.textContent = `MODULE ${module.number}`;
+        const count = document.createElement("span");
+        count.textContent = `${module.lessons.length} lessons`;
+        top.append(number, count);
+        const title = document.createElement("h3");
+        title.textContent = module.title;
+        const description = document.createElement("p");
+        description.textContent = module.description;
+        const evidence = document.createElement("div");
+        evidence.className = "module-card__evidence";
+        const evidenceLabel = document.createElement("strong");
+        evidenceLabel.textContent = "Evidence outcome";
+        const evidenceText = document.createElement("span");
+        evidenceText.textContent = module.evidenceOutcome;
+        evidence.append(evidenceLabel, evidenceText);
+        const open = document.createElement("button");
+        open.type = "button";
+        open.dataset.openModule = module.id;
+        open.textContent = "Open module →";
+        card.append(top, title, description);
+        if (module.evidenceOutcome) card.append(evidence);
+        card.append(open);
+        moduleGrid.append(card);
+      });
+      curriculum.append(moduleGrid);
+      sections.push(curriculum);
+
+      if (collection.sourcePolicy.length) {
+        const policy = document.createElement("section");
+        policy.className = "home-section";
+        policy.id = "source-policy";
+        policy.append(createHomeSectionHead(
+          "Research & citation standard",
+          `Time-sensitive information was last reviewed on ${formatDate(collection.reviewedAt)}.`,
+        ));
+        const policyGrid = document.createElement("div");
+        policyGrid.className = "policy-grid";
+        collection.sourcePolicy.forEach((item) => {
+          const card = document.createElement("article");
+          card.className = "policy-card";
+          const title = document.createElement("strong");
+          title.textContent = item.title;
+          const description = document.createElement("p");
+          description.textContent = item.description;
+          card.append(title, description);
+          policyGrid.append(card);
+        });
+        policy.append(policyGrid);
+        sections.push(policy);
+      }
+
+      if (collection.primarySources.length) {
+        const sources = document.createElement("section");
+        sources.className = "home-section";
+        sources.id = "primary-sources";
+        sources.append(createHomeSectionHead(
+          "Sources used throughout this roadmap",
+          "Each lesson has its own source mapping. Official and primary material is preferred, while useful secondary evidence is labeled by source type.",
+        ));
+        const sourceGrid = document.createElement("div");
+        sourceGrid.className = "source-library";
+        collection.primarySources.forEach((source) => {
+          const card = document.createElement("article");
+          card.className = "source-card";
+          const organization = document.createElement("p");
+          organization.className = "source-card__org";
+          organization.textContent = source.organization;
+          const title = document.createElement("h3");
+          title.textContent = source.title;
+          const scope = document.createElement("p");
+          scope.textContent = `${sourceDateLabels(source).join(" · ")} · ${source.scope}`;
+          card.append(organization, title, scope);
+          if (source.url) {
+            const link = document.createElement("a");
+            link.href = source.url;
+            link.target = "_blank";
+            link.rel = "noreferrer noopener";
+            link.textContent = "Open source ↗";
+            card.append(link);
+          }
+          sourceGrid.append(card);
+        });
+        sources.append(sourceGrid);
+        sections.push(sources);
+      }
+    }
+
+    lessonReader.append(...sections);
+    finishHomeRender();
+  }
+
+  function selectLesson(lessonId) {
+    const entry = allLessons().find(({ lesson }) => lesson.id === lessonId);
+    if (!entry) return;
+    state.selectedId = lessonId;
+    state.selectedCollectionId = entry.collection.id;
+    state.openCollections.add(entry.collection.id);
+    state.openModules.add(entry.module.id);
+    document.title = `${entry.lesson.title} | ${entry.collection.title}`;
+    lessonReader.replaceChildren(
+      entry.lesson.status === "published" ? renderPublishedLesson(entry) : renderPlannedLesson(entry),
+    );
+    renderNavigation();
+    closeSidebar();
+    closeSearch();
+    workspace.scrollTo({ top: 0, behavior: "auto" });
+    updateReadingProgress();
+  }
+
+  function renderSearchResults(query) {
+    const normalized = query.trim().toLocaleLowerCase("vi");
+    searchResults.replaceChildren();
+    if (!normalized) {
+      searchResults.hidden = true;
+      return;
+    }
+    const matches = allLessons().filter((entry) => lessonSearchText(entry).includes(normalized)).slice(0, 12);
+    const head = document.createElement("div");
+    head.className = "search-results__head";
+    const label = document.createElement("span");
+    label.textContent = `${matches.length} results`;
+    const hint = document.createElement("span");
+    hint.textContent = "Esc to close";
+    head.append(label, hint);
+    searchResults.append(head);
+    if (!matches.length) {
+      const empty = document.createElement("div");
+      empty.className = "search-empty";
+      empty.textContent = "No matching lesson, note, or concept was found.";
+      searchResults.append(empty);
+    } else {
+      matches.forEach(({ collection, module, lesson }) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "search-result";
+        button.dataset.lessonId = lesson.id;
+        const number = document.createElement("span");
+        number.className = "search-result__number";
+        number.textContent = module.number;
+        const copy = document.createElement("span");
+        const title = document.createElement("strong");
+        title.textContent = lesson.title;
+        const moduleName = document.createElement("small");
+        moduleName.textContent = `${collection.title} · ${module.title}`;
+        copy.append(title, moduleName);
+        const status = document.createElement("span");
+        status.className = "search-result__status";
+        status.textContent = collection.kind === "notes"
+          ? "Saved"
+          : lesson.status === "published"
+            ? "Verified"
+            : "Roadmap";
+        button.append(number, copy, status);
+        searchResults.append(button);
+      });
+    }
+    searchResults.hidden = false;
+  }
+
+  function closeSearch() {
+    searchResults.hidden = true;
+  }
+
+  function toggleCompleted(lessonId) {
+    const entry = allLessons().find(({ lesson }) => lesson.id === lessonId);
+    if (!entry || entry.lesson.status !== "published") return;
+    if (state.completed.has(lessonId)) {
+      state.completed.delete(lessonId);
+      showToast("Completion mark removed.");
+    } else {
+      state.completed.add(lessonId);
+      showToast("Progress saved on this device.");
+    }
+    saveCompleted();
+    selectLesson(lessonId);
+  }
+
+  function updateReadingProgress() {
+    const available = workspace.scrollHeight - workspace.clientHeight;
+    const percent = available > 0 ? Math.min(100, Math.max(0, (workspace.scrollTop / available) * 100)) : 0;
+    readingProgress.style.width = `${percent}%`;
+  }
+
+  function lockVault() {
+    state.data = null;
+    state.sourceMap = new Map();
+    state.selectedId = null;
+    state.selectedCollectionId = null;
+    state.openCollections.clear();
+    state.openModules.clear();
+    state.completed = new Set();
+    lessonReader.replaceChildren();
+    moduleList.replaceChildren();
+    searchResults.replaceChildren();
+    searchInput.value = "";
     passwordInput.value = "";
     passwordInput.type = "password";
     passwordToggle.textContent = "Show";
     passwordToggle.setAttribute("aria-label", "Show password");
-    unlockStatus.textContent = message;
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    passwordInput.focus({ preventScroll: true });
-  }
-
-  async function handleUnlock(event) {
-    event.preventDefault();
+    document.body.classList.add("is-locked");
+    document.body.classList.remove("sidebar-open");
+    document.body.classList.remove("is-resizing-sidebar");
+    state.sidebarResize = null;
+    vaultView.hidden = true;
+    unlockView.hidden = false;
+    headerStatus.textContent = "Locked";
+    document.title = "Knowledge Library | Private Learning Space";
     unlockStatus.textContent = "";
     unlockCard.classList.remove("is-error");
+    passwordInput.focus();
+  }
 
+  async function unlockVault(event) {
+    event.preventDefault();
     const password = passwordInput.value;
     if (!password) {
-      unlockStatus.textContent = "Enter the vault password.";
+      unlockStatus.textContent = "Enter the library password.";
       passwordInput.focus();
       return;
     }
-
-    if (!window.crypto?.subtle) {
-      unlockStatus.textContent = "This browser does not support secure local decryption.";
-      return;
-    }
-
-    setBusy(true);
+    unlockButton.disabled = true;
+    unlockButtonLabel.textContent = "Decrypting…";
+    unlockStatus.textContent = "";
     try {
       const data = await decryptVault(password);
+      state.data = data;
+      state.sourceMap = new Map(data.primarySources.map((source) => [source.id, source]));
+      state.completed = loadCompleted();
+      state.openCollections = new Set();
+      state.openModules = new Set();
       passwordInput.value = "";
-      unlockStatus.textContent = "";
-      showVault(data);
+      document.body.classList.remove("is-locked");
+      unlockView.hidden = true;
+      vaultView.hidden = false;
+      headerStatus.textContent = "Open · locally decrypted";
+      curriculumMeta.textContent = `${data.collections.length} collections · ${allLessons().length} reading items`;
+      renderHome();
+      searchInput.focus({ preventScroll: true });
     } catch {
-      passwordInput.value = "";
-      unlockCard.classList.add("is-error");
-      unlockStatus.textContent = "Unable to unlock. Check the password and try again.";
-      passwordInput.focus();
+      unlockStatus.textContent = "Unable to decrypt. Check the password and try again.";
+      passwordInput.select();
     } finally {
-      setBusy(false);
+      unlockButton.disabled = false;
+      unlockButtonLabel.textContent = "Open library";
     }
   }
 
-  function handleActivity() {
-    if (!state.data) return;
-    scheduleAutoLock();
-  }
-
-  unlockForm.addEventListener("submit", handleUnlock);
-
-  passwordToggle.addEventListener("click", () => {
-    const isVisible = passwordInput.type === "text";
-    passwordInput.type = isVisible ? "password" : "text";
-    passwordToggle.textContent = isVisible ? "Show" : "Hide";
-    passwordToggle.setAttribute("aria-label", isVisible ? "Show password" : "Hide password");
+  unlockForm?.addEventListener("submit", unlockVault);
+  passwordToggle?.addEventListener("click", () => {
+    const reveal = passwordInput.type === "password";
+    passwordInput.type = reveal ? "text" : "password";
+    passwordToggle.textContent = reveal ? "Hide" : "Show";
+    passwordToggle.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
     passwordInput.focus();
   });
-
-  lockButton.addEventListener("click", () => lockVault("Vault locked manually."));
-
-  categoryList.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-category]");
-    if (!button) return;
-    state.category = button.dataset.category || "All";
-    renderLibrary({ preserveSelection: false });
-    scheduleAutoLock();
+  lockButton?.addEventListener("click", lockVault);
+  domainHomeButton?.addEventListener("click", () => {
+    renderHome();
+    closeSidebar();
   });
-
-  searchInput.addEventListener("input", () => {
-    state.query = searchInput.value.trim();
-    renderLibrary({ preserveSelection: false });
-    scheduleAutoLock();
+  moduleList?.addEventListener("click", (event) => {
+    const collectionButton = event.target.closest("[data-collection-id]");
+    if (collectionButton) {
+      const id = collectionButton.dataset.collectionId;
+      if (state.openCollections.has(id)) {
+        state.openCollections.delete(id);
+        state.selectedCollectionId = id;
+        renderNavigation();
+      } else {
+        state.openCollections.add(id);
+        renderCollectionHome(id);
+      }
+      return;
+    }
+    const moduleToggle = event.target.closest("[data-module-id]");
+    if (moduleToggle) {
+      const id = moduleToggle.dataset.moduleId;
+      if (state.openModules.has(id)) state.openModules.delete(id);
+      else state.openModules.add(id);
+      renderNavigation();
+      return;
+    }
+    const lessonButton = event.target.closest("[data-lesson-id]");
+    if (lessonButton) selectLesson(lessonButton.dataset.lessonId);
   });
-
-  noteList.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-note-id]");
-    if (!button) return;
-    state.selectedId = button.dataset.noteId;
-    renderLibrary({ preserveSelection: true });
-    scheduleAutoLock();
-    if (window.matchMedia("(max-width: 767px)").matches) {
-      noteReader.scrollIntoView({ behavior: "smooth", block: "start" });
+  lessonReader?.addEventListener("click", (event) => {
+    const collectionButton = event.target.closest("[data-open-collection]");
+    if (collectionButton) {
+      renderCollectionHome(collectionButton.dataset.openCollection);
+      return;
+    }
+    const lessonButton = event.target.closest("[data-lesson-id]");
+    if (lessonButton) {
+      selectLesson(lessonButton.dataset.lessonId);
+      return;
+    }
+    const completeButton = event.target.closest("[data-complete-lesson]");
+    if (completeButton) {
+      toggleCompleted(completeButton.dataset.completeLesson);
+      return;
+    }
+    const moduleButton = event.target.closest("[data-open-module]");
+    if (moduleButton) {
+      const module = state.data.modules.find((item) => item.id === moduleButton.dataset.openModule);
+      if (module) {
+        state.openModules.add(module.id);
+        renderNavigation();
+        if (module.lessons[0]) selectLesson(module.lessons[0].id);
+      }
+      return;
+    }
+    const sourceButton = event.target.closest("[data-show-sources]");
+    if (sourceButton) {
+      renderCollectionHome(sourceButton.dataset.collectionId);
+      window.requestAnimationFrame(() => document.querySelector("#source-policy")?.scrollIntoView({ behavior: "smooth" }));
     }
   });
-
-  clearFiltersButton.addEventListener("click", () => {
-    state.category = "All";
-    state.query = "";
-    searchInput.value = "";
-    renderLibrary({ preserveSelection: false });
-    searchInput.focus();
-    scheduleAutoLock();
+  searchInput?.addEventListener("input", () => renderSearchResults(searchInput.value));
+  searchInput?.addEventListener("focus", () => {
+    if (searchInput.value.trim()) renderSearchResults(searchInput.value);
   });
-
+  searchResults?.addEventListener("click", (event) => {
+    const result = event.target.closest("[data-lesson-id]");
+    if (result) selectLesson(result.dataset.lessonId);
+  });
+  themeToggle?.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    setTheme(next);
+  });
+  sidebarOpenButton?.addEventListener("click", openSidebar);
+  sidebarCloseButton?.addEventListener("click", closeSidebar);
+  sidebarCollapseButton?.addEventListener("click", collapseSidebar);
+  sidebarScrim?.addEventListener("click", closeSidebar);
+  sidebarResizeHandle?.addEventListener("pointerdown", startSidebarResize);
+  sidebarResizeHandle?.addEventListener("keydown", resizeSidebarWithKeyboard);
+  window.addEventListener("pointermove", resizeSidebar);
+  window.addEventListener("pointerup", finishSidebarResize);
+  window.addEventListener("pointercancel", finishSidebarResize);
+  window.addEventListener("resize", () => {
+    if (!isCompactSidebar()) setSidebarWidth(state.sidebarWidth, false);
+    syncSidebarToggle();
+  });
+  workspace?.addEventListener("scroll", updateReadingProgress, { passive: true });
   document.addEventListener("keydown", (event) => {
-    if (state.data && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === "k") {
       event.preventDefault();
-      searchInput.focus();
+      searchInput?.focus();
+    }
+    if (event.key === "Escape") {
+      closeSearch();
+      closeSidebar();
     }
   });
 
-  ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
-    document.addEventListener(eventName, handleActivity, { passive: true });
-  });
-
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && state.data && Date.now() - state.lastActivityAt >= AUTO_LOCK_MS) {
-      lockVault("Vault locked after 15 minutes of inactivity.");
-    }
-  });
-
-  if (!window.__KNOWLEDGE_VAULT_DATA__) {
-    unlockStatus.textContent = "Encrypted vault data is unavailable.";
-    unlockButton.disabled = true;
-  }
+  initializeSidebarLayout();
+  initializeTheme();
 })();

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,81 +9,72 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
-    <meta name="theme-color" content="#07111f" />
+    <meta name="theme-color" content="#0a1118" />
     <meta
       name="description"
-      content="A client-side encrypted personal knowledge vault belonging to Truong Dinh Anh Tu."
+      content="An encrypted personal knowledge library for FinTech, Finance, the Road to CFO, and other subjects I learn."
     />
-    <title>Private Knowledge Vault | Truong Dinh Anh Tu</title>
+    <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260715" />
-    <script src="vault-data.js?v=20260715" defer></script>
-    <script src="vault.js?v=20260715" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260727-road-to-cfo" />
+    <script src="vault-data.js?v=20260727-road-to-cfo" defer></script>
+    <script src="vault.js?v=20260727-road-to-cfo" defer></script>
   </head>
   <body class="is-locked">
-    <a class="skip-link" href="#main-content">Skip to content</a>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <div class="vault-ambient" aria-hidden="true">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
-    <header class="vault-header">
-      <a class="vault-brand" href="../" aria-label="Return to Truong Dinh Anh Tu's portfolio">
-        <span class="vault-brand__mark" aria-hidden="true">TU</span>
-        <span>
-          <strong>Private Knowledge</strong>
-          <small>Truong Dinh Anh Tu</small>
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="Back to Truong Dinh Anh Tu's portfolio">
+        <span class="brand__mark" aria-hidden="true">KL</span>
+        <span class="brand__copy">
+          <strong>Knowledge Library</strong>
+          <small>Private learning space</small>
         </span>
       </a>
-      <div class="vault-header__status" aria-label="Vault security status">
-        <span class="status-dot" aria-hidden="true"></span>
+      <div class="security-status" aria-label="Security status">
+        <span class="security-status__dot" aria-hidden="true"></span>
         <span data-header-status>Locked</span>
       </div>
     </header>
 
     <main id="main-content">
-      <section class="unlock-shell" data-unlock-view aria-labelledby="unlock-title">
+      <section class="unlock-view" data-unlock-view aria-labelledby="unlock-title">
         <div class="unlock-intro">
-          <p class="vault-eyebrow"><span aria-hidden="true"></span> Encrypted workspace</p>
-          <h1 id="unlock-title">A quiet place for ideas worth keeping.</h1>
-          <p class="unlock-lede">
-            Personal frameworks, learning notes, decision patterns, and ideas—encrypted before they reach this public
-            portfolio.
+          <p class="eyebrow"><span aria-hidden="true"></span> Encrypted learning space</p>
+          <h1 id="unlock-title">A private library for everything I am learning.</h1>
+          <p class="unlock-intro__lede">
+            Existing notes stay intact. FinTech, Finance, Road to CFO, Breaking, and muscle recovery each have a
+            structured, beginner-first learning path that can grow lesson by lesson.
           </p>
 
-          <div class="security-proof" aria-label="Vault safeguards">
-            <div>
-              <span class="security-proof__icon" aria-hidden="true">01</span>
-              <p><strong>AES-256-GCM</strong><small>Authenticated content encryption</small></p>
-            </div>
-            <div>
-              <span class="security-proof__icon" aria-hidden="true">02</span>
-              <p><strong>Local decryption</strong><small>The password never leaves this browser</small></p>
-            </div>
-            <div>
-              <span class="security-proof__icon" aria-hidden="true">03</span>
-              <p><strong>Automatic lock</strong><small>Closes after 15 minutes of inactivity</small></p>
-            </div>
+          <div class="unlock-pillars" aria-label="Library principles">
+            <article>
+              <span>01</span>
+              <h2>Decision-grade</h2>
+              <p>Distinguishes facts, practices, opinions, assumptions, and emerging trends.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h2>Source-backed</h2>
+              <p>Cross-checks official, professional, cultural, and peer-reviewed sources for each subject.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h2>Private by design</h2>
+              <p>The password and decrypted content never leave this browser.</p>
+            </article>
           </div>
         </div>
 
         <div class="unlock-card" data-unlock-card>
-          <div class="unlock-card__symbol" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img">
-              <path d="M7.5 10V7.5a4.5 4.5 0 0 1 9 0V10" />
-              <rect x="4.5" y="10" width="15" height="11" rx="3" />
-              <path d="M12 14.5v2.5" />
-            </svg>
-          </div>
+          <div class="unlock-card__icon" aria-hidden="true"><span></span></div>
           <p class="unlock-card__kicker">Owner access</p>
-          <h2>Unlock the vault</h2>
-          <p class="unlock-card__copy">Enter the vault password to derive the decryption key on this device.</p>
+          <h2>Open the knowledge library</h2>
+          <p class="unlock-card__copy">Enter the password to derive the decryption key on this device.</p>
 
           <form class="unlock-form" data-unlock-form novalidate>
             <input type="text" name="username" value="vault-owner" autocomplete="username" hidden />
-            <label for="vault-password">Vault password</label>
+            <label for="vault-password">Library password</label>
             <div class="password-field">
               <input
                 id="vault-password"
@@ -97,108 +88,119 @@
               />
               <button type="button" data-password-toggle aria-label="Show password">Show</button>
             </div>
-            <button class="unlock-button" type="submit" data-unlock-button>
-              <span>Unlock vault</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 12h14M14 7l5 5-5 5" />
-              </svg>
+            <button class="primary-button" type="submit" data-unlock-button>
+              <span>Open library</span>
+              <span aria-hidden="true">→</span>
             </button>
             <p class="unlock-status" data-unlock-status aria-live="polite"></p>
           </form>
 
-          <p class="local-only-note">
-            <span aria-hidden="true">●</span> No password, note, or search query is sent to a server.
-          </p>
+          <p class="local-note"><span aria-hidden="true">●</span> No password, content, or search query is ever sent away.</p>
         </div>
       </section>
 
-      <section class="vault-app" data-vault-view aria-labelledby="vault-title" hidden>
-        <div class="vault-app__topline">
-          <div>
-            <p class="vault-eyebrow"><span aria-hidden="true"></span> Decrypted locally</p>
-            <h1 id="vault-title" data-vault-title>Personal Knowledge Vault</h1>
-            <p class="vault-updated" data-vault-updated></p>
-          </div>
-          <button class="lock-button" type="button" data-lock-button>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4.5" y="10" width="15" height="11" rx="3" />
-              <path d="M8 10V7.5a4 4 0 0 1 7.6-1.7" />
-            </svg>
-            Lock vault
-          </button>
-        </div>
-
-        <div class="vault-dashboard">
-          <aside class="vault-sidebar" aria-label="Knowledge filters">
-            <div class="vault-summary">
-              <span class="vault-summary__label">Library</span>
-              <strong data-note-total>0 notes</strong>
-              <small>Private, searchable, reusable.</small>
+      <section class="hub" data-vault-view hidden>
+        <div class="hub-shell">
+          <aside class="curriculum" data-sidebar aria-label="Knowledge collections">
+            <div class="curriculum__mobile-head">
+              <strong>My library</strong>
+              <button type="button" class="icon-button" data-sidebar-close aria-label="Close library">×</button>
             </div>
 
-            <div class="category-panel">
-              <p>Categories</p>
-              <div class="category-list" data-category-list></div>
+            <div class="sidebar-home-row">
+              <button class="domain-button" type="button" data-domain-home>
+                <span class="domain-button__mark" aria-hidden="true">KL</span>
+                <span>
+                  <strong>Knowledge Library</strong>
+                  <small data-curriculum-meta>Collections</small>
+                </span>
+                <span aria-hidden="true">⌂</span>
+              </button>
+              <button
+                type="button"
+                class="sidebar-collapse-button"
+                data-sidebar-collapse
+                aria-label="Hide library navigation"
+                title="Hide sidebar"
+              >
+                <span aria-hidden="true">‹</span>
+              </button>
             </div>
 
-            <div class="session-card">
-              <span class="session-card__dot" aria-hidden="true"></span>
-              <div>
-                <strong>Secure session</strong>
-                <small>Auto-locks after 15 minutes</small>
-              </div>
+            <div class="curriculum__scroll">
+              <nav class="module-list" data-module-list aria-label="Collections, modules, and reading items"></nav>
             </div>
+
+            <div
+              class="sidebar-resize-handle"
+              data-sidebar-resize
+              role="separator"
+              aria-label="Resize library navigation"
+              aria-orientation="vertical"
+              aria-valuemin="260"
+              aria-valuemax="460"
+              aria-valuenow="328"
+              tabindex="0"
+            ></div>
           </aside>
 
-          <div class="vault-library">
-            <div class="library-toolbar">
-              <label class="search-field" for="vault-search">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="11" cy="11" r="6.5" />
-                  <path d="m16 16 4 4" />
-                </svg>
-                <span class="sr-only">Search knowledge</span>
-                <input
-                  id="vault-search"
-                  type="search"
-                  placeholder="Search ideas, tags, or notes"
-                  autocomplete="off"
-                  data-vault-search
-                />
-                <kbd>Ctrl K</kbd>
-              </label>
-              <p data-result-count aria-live="polite">0 results</p>
-            </div>
+          <div class="sidebar-scrim" data-sidebar-scrim hidden></div>
 
-            <div class="knowledge-layout">
-              <div class="note-list" data-note-list aria-label="Knowledge notes"></div>
+          <div class="workspace">
+            <header class="workspace-bar">
+              <div class="workspace-bar__left">
+                <button
+                  type="button"
+                  class="icon-button menu-button"
+                  data-sidebar-open
+                  aria-label="Show library navigation"
+                  aria-expanded="true"
+                >☰</button>
+                <label class="search-box" for="lesson-search">
+                  <span aria-hidden="true">⌕</span>
+                  <span class="sr-only">Search lessons, notes, concepts, or keywords</span>
+                  <input
+                    id="lesson-search"
+                    type="search"
+                    placeholder="Search lessons, notes, concepts…"
+                    autocomplete="off"
+                    data-search-input
+                  />
+                  <kbd>Ctrl K</kbd>
+                </label>
+              </div>
 
-              <article class="note-reader" data-note-reader aria-live="polite">
-                <div class="note-reader__empty">
-                  <span aria-hidden="true">↗</span>
-                  <p>Select a note to begin reading.</p>
-                </div>
-              </article>
-            </div>
+              <div class="workspace-actions">
+                <button type="button" class="text-button" data-theme-toggle aria-label="Switch to light mode">
+                  <span aria-hidden="true">◐</span><span data-theme-label>Light</span>
+                </button>
+                <button type="button" class="text-button text-button--danger" data-lock-button aria-label="Lock library">
+                  <span aria-hidden="true">↙</span><span>Lock</span>
+                </button>
+              </div>
 
-            <div class="empty-results" data-empty-results hidden>
-              <span aria-hidden="true">⌕</span>
-              <h2>No matching notes</h2>
-              <p>Try a broader search or choose another category.</p>
-              <button type="button" data-clear-filters>Clear filters</button>
+              <div class="search-results" data-search-results hidden aria-label="Search results"></div>
+            </header>
+
+            <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+
+            <div class="reader-wrap">
+              <article class="lesson-reader" data-lesson-reader aria-live="polite"></article>
             </div>
           </div>
         </div>
       </section>
     </main>
 
-    <footer class="vault-footer">
-      <span>Private knowledge vault</span>
-      <a href="../">Return to portfolio</a>
+    <footer class="public-footer">
+      <span>AES-256-GCM · Local decryption · Manual lock</span>
+      <a href="../">Back to portfolio</a>
     </footer>
 
+    <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
     <noscript>
-      <div class="noscript-message">JavaScript is required to decrypt this vault locally.</div>
+      <div class="noscript-message">JavaScript must be enabled to decrypt the library on this device.</div>
     </noscript>
   </body>
 </html>
