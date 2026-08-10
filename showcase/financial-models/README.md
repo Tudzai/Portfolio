@@ -77,4 +77,24 @@ The durable workbook rules live in:
 
 ## Current release
 
-- `TDAT-FM-CORE-001` — Three-Statement Model Starter, version `1.0.0`.
+Release date: `2026-07-13`.
+
+- 24 / 24 catalogue models are `Available`.
+- 1 existing flagship plus 23 newly released specialist templates.
+- 7 career families covering 41 finance role titles.
+- 9 finance decision domains.
+- 267 published workbook checks pass across the library (27 flagship + 240 new).
+- 207 sheets from the 23-model expansion were rendered during release QA.
+- Every public file is macro-free, has no external workbook links, uses synthetic worked data, and records its SHA-256 hash.
+
+Release families:
+
+- Core Statements: Three-Statement Model Starter.
+- Planning & Performance: Budget & Rolling Forecast, Working Capital Planner, Variance Bridge & Forecast Accuracy, Headcount & Compensation Plan, Pricing & Margin Waterfall.
+- Treasury & Capital: 13-Week Cash Flow, Debt & Covenant Model, FX Exposure & Hedge.
+- Valuation & Transactions: DCF Valuation, Trading Comparables, M&A Accretion / Dilution.
+- Investment & Portfolio: Capex / Business Case, LBO Returns Model.
+- Credit & Risk: Credit Underwriting / DSCR, ECL / Credit Stress Lite, Market Risk / Portfolio Stress.
+- Project & Real Assets: Project Finance Lite, Debt Sculpting & Waterfall.
+- SME & Startup: SME Integrated Forecast, SaaS Unit Economics.
+- Personal Finance: Personal Budget & Net Worth, Retirement Scenario Planner.
