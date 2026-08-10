@@ -1,0 +1,37 @@
+{
+  "name": "fpa-monthly-reporting-remotion",
+  "version": "1.0.0",
+  "description": "Recruiter-facing Remotion demo for the FP&A monthly reporting automation case.",
+  "repository": {},
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@remotion/cli": "4.0.504",
+    "@remotion/google-fonts": "4.0.504",
+    "@remotion/media": "4.0.504",
+    "@remotion/transitions": "4.0.504",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.504"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.504",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio --no-open",
+    "score": "node scripts/generate-process-score.mjs",
+    "render": "remotion render src/index.ts FpaAutomationDemo ../assets/fpa-monthly-reporting-remotion.mp4 --codec=h264 --crf=23 --audio-codec=aac --audio-bitrate=160k --concurrency=50%",
+    "poster": "remotion still src/index.ts FpaAutomationDemo ../assets/fpa-monthly-reporting-remotion-poster.jpg --frame=1900 --image-format=jpeg",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}
