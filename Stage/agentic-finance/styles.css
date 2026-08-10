@@ -124,6 +124,10 @@ button {
   color: var(--muted);
 }
 
+.case-number {
+  font-size: 0.875rem;
+}
+
 .button {
   display: inline-flex;
   min-height: 50px;
@@ -238,7 +242,7 @@ button {
 
 .brand-copy small {
   color: var(--muted);
-  font-size: 0.67rem;
+  font-size: 0.8rem;
 }
 
 .header-actions {
@@ -252,7 +256,7 @@ button {
   min-height: 44px;
   align-items: center;
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 600;
   transition: color 160ms ease;
 }
@@ -284,7 +288,7 @@ button {
   background: var(--ink);
   color: var(--white);
   cursor: pointer;
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
@@ -1823,7 +1827,7 @@ html.gsap-score-motion .score-destination {
 .timeline time {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.8rem;
   line-height: 1.6;
   white-space: nowrap;
 }

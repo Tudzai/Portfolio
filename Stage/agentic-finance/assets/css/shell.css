@@ -53,7 +53,7 @@
 .brand-copy small {
   color: var(--stage-muted);
   font-family: var(--stage-body);
-  font-size: 0.67rem;
+  font-size: 0.8rem;
 }
 
 .header-actions {
@@ -67,7 +67,7 @@
   min-height: 44px;
   align-items: center;
   color: var(--stage-muted);
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   transition: color 160ms ease;
@@ -100,7 +100,7 @@
   background: var(--stage-ink);
   color: var(--stage-white);
   cursor: pointer;
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
