@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta name="robots" content="index, follow">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Ecommerce Executive Performance Interactive Preview | Truong Dinh Anh Tu</title>
@@ -64,10 +65,68 @@
         th, td { padding: 9px 7px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
+      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
+      <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body>
-    <main class="dashboard">
+  <body data-stage-family="powerbi" data-stage-template="dashboard-preview">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header stage-shell-header" data-stage-shell data-header>
+      <div class="page-shell header-inner stage-shell-inner">
+        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
+          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true">TA</span>
+          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>FP&amp;A &times; AI</small></span>
+        </a>
+        <div class="header-actions stage-shell-actions">
+          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
+            aria-controls="primary-navigation" aria-label="Open capabilities menu">
+            <span>Capabilities</span><i aria-hidden="true"></i>
+          </button>
+          <a class="header-link" href="../../../index.html#experience">Experience</a>
+          <a class="header-link" href="../../../index.html#contact">Contact</a>
+          <a class="header-link" href="../../../blog/index.html">Blog</a>
+          <a class="nav-cv" href="../../../cv.html">View CV</a>
+        </div>
+        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
+          <p class="nav-panel-label">Capabilities</p>
+          <div class="capability-nav stage-shell-capabilities">
+            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
+            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
+          </div>
+          <div class="nav-utility-links stage-shell-utilities">
+            <a href="../../../index.html#demo">Demo</a>
+            <a href="../../../index.html#experience">Experience</a>
+            <a href="../../../index.html#contact">Contact</a>
+            <a href="../../../blog/index.html">Blog</a>
+            <a href="../../../cv.html">View CV</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <div id="main-content" tabindex="-1"></div>
+    <main class="dashboard" data-stage-content>
+      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
+        <div class="stage-route-identity">
+          <span class="stage-route-index">03</span>
+          <span class="stage-route-label">BI / Interactive Preview</span>
+        </div>
+        <ol class="stage-route-flow" aria-label="Page flow">
+          <li>Signal</li>
+          <li>Insight</li>
+          <li>Action</li>
+        </ol>
+        <p class="stage-route-evidence">Synthetic interactive evidence</p>
+        <a class="stage-route-link" href="index.html">
+          Project page<span aria-hidden="true">&nearr;</span>
+        </a>
+      </section>
       <header class="topbar">
         <div>
           <p class="eyebrow">Interactive Power BI-style preview / Project 03</p>
@@ -148,23 +207,16 @@
       </section>
       <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
     </main>
-    <script>
-      const drilldownRows = [[["Commercial decision","Push profitable categories with strong repeat purchase.","Category mix","Medium"],["Metric owner","Refresh GMV every close cycle.","$48.2M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","74% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","18.6%","Low"]],[["Ops decision","Prioritize refund root-cause by category.","Refund leakage","High"],["Metric owner","Refresh gross margin % every close cycle.","18.6%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","74% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","1.24M","High"]],[["Finance decision","Refresh margin waterfall for executive review.","Repeat buyers","Medium"],["Metric owner","Refresh orders every close cycle.","1.24M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","74% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","2.1%","Low"]]];
-      const actionSummary = [{"owner":"Commercial","action":"Push profitable categories with strong repeat purchase."},{"owner":"Ops","action":"Prioritize refund root-cause by category."},{"owner":"Finance","action":"Refresh margin waterfall for executive review."}];
-      const tbody = document.querySelector('#drilldown-body');
-      const tabs = Array.from(document.querySelectorAll('.tab'));
-      function renderTab(index) {
-        const rows = drilldownRows[index] || drilldownRows[0] || [];
-        tbody.innerHTML = rows.map(function(row) {
-          return '<tr><td>' + row[0] + '</td><td>' + row[1] + '</td><td>' + row[2] + '</td><td>' + row[3] + '</td></tr>';
-        }).join('');
-        tabs.forEach(function(tab, tabIndex) { tab.classList.toggle('active', tabIndex === index); });
-      }
-      tabs.forEach(function(tab) {
-        tab.addEventListener('click', function() { renderTab(Number(tab.dataset.tab)); });
-      });
-      renderTab(0);
-      window.previewActions = actionSummary;
-    </script>
+
+    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
+      <div class="page-shell stage-shell-footer-inner">
+        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
+        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
+          <span aria-hidden="true">&uarr;</span>
+        </a>
+      </div>
+    </footer>
+      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
+    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
   </body>
 </html>

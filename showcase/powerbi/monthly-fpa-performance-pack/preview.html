@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta name="robots" content="index, follow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Monthly FP&A Performance Pack Dashboard</title>
@@ -162,10 +163,68 @@
       h1 { font-size: 28px; }
     }
   </style>
-<script src="../../../analytics.js?v=posthog-observability-20260713"></script>
-</head>
-<body>
-  <main class="shell">
+      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
+      <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
+  </head>
+<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header stage-shell-header" data-stage-shell data-header>
+      <div class="page-shell header-inner stage-shell-inner">
+        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
+          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true">TA</span>
+          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>FP&amp;A &times; AI</small></span>
+        </a>
+        <div class="header-actions stage-shell-actions">
+          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
+            aria-controls="primary-navigation" aria-label="Open capabilities menu">
+            <span>Capabilities</span><i aria-hidden="true"></i>
+          </button>
+          <a class="header-link" href="../../../index.html#experience">Experience</a>
+          <a class="header-link" href="../../../index.html#contact">Contact</a>
+          <a class="header-link" href="../../../blog/index.html">Blog</a>
+          <a class="nav-cv" href="../../../cv.html">View CV</a>
+        </div>
+        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
+          <p class="nav-panel-label">Capabilities</p>
+          <div class="capability-nav stage-shell-capabilities">
+            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
+            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
+          </div>
+          <div class="nav-utility-links stage-shell-utilities">
+            <a href="../../../index.html#demo">Demo</a>
+            <a href="../../../index.html#experience">Experience</a>
+            <a href="../../../index.html#contact">Contact</a>
+            <a href="../../../blog/index.html">Blog</a>
+            <a href="../../../cv.html">View CV</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <div id="main-content" tabindex="-1"></div>
+    <main class="shell" data-stage-content>
+      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
+        <div class="stage-route-identity">
+          <span class="stage-route-index">03</span>
+          <span class="stage-route-label">BI / Interactive Preview</span>
+        </div>
+        <ol class="stage-route-flow" aria-label="Page flow">
+          <li>Signal</li>
+          <li>Insight</li>
+          <li>Action</li>
+        </ol>
+        <p class="stage-route-evidence">Synthetic interactive evidence</p>
+        <a class="stage-route-link" href="index.html">
+          Project page<span aria-hidden="true">&nearr;</span>
+        </a>
+      </section>
     <section class="topbar">
       <div>
         <h1>Monthly FP&A Performance Pack</h1>
@@ -451,58 +510,15 @@
     </section>
   </main>
 
-  <script>
-    const DATA = {"Business Unit": [{"name": "Freight Forwarding", "actualRevenue": 157933478.25999996, "budgetRevenue": 165076188.23000005, "forecastRevenue": 159908526.7999999, "revenueVariance": -7142709.970000088, "grossMarginPct": 0.2382060772958247, "actualEbitda": 14428662.740000004, "ebitdaVariance": -3524453.5800000075, "orders": 8342.0}, {"name": "Contract Logistics", "actualRevenue": 65866108.25999998, "budgetRevenue": 75110836.36000003, "forecastRevenue": 72383557.5, "revenueVariance": -9244728.100000046, "grossMarginPct": 0.3453653633247165, "actualEbitda": 9480969.259999994, "ebitdaVariance": -2682552.980000006, "orders": 3468.0}, {"name": "E-commerce Fulfillment", "actualRevenue": 70219717.37999998, "budgetRevenue": 73964321.62000003, "forecastRevenue": 71481684.34, "revenueVariance": -3744604.2400000542, "grossMarginPct": 0.2753825787329024, "actualEbitda": 4152485.8500000015, "ebitdaVariance": -1534586.9699999988, "orders": 3718.0}, {"name": "Customs Brokerage", "actualRevenue": 39115513.73999999, "budgetRevenue": 41406925.32000001, "forecastRevenue": 40061686.710000016, "revenueVariance": -2291411.5800000206, "grossMarginPct": 0.4253361835047704, "actualEbitda": 9528606.049999997, "ebitdaVariance": -1302180.9100000039, "orders": 2042.0}], "Product": [{"name": "Warehousing", "actualRevenue": 40355686.66, "budgetRevenue": 46024211.28000001, "forecastRevenue": 44329773.56, "revenueVariance": -5668524.620000012, "grossMarginPct": 0.32599999997125567, "actualEbitda": 5246239.289999998, "ebitdaVariance": -1565343.9600000046, "orders": 2185.0}, {"name": "Ocean Freight", "actualRevenue": 69234384.60000002, "budgetRevenue": 70911410.37, "forecastRevenue": 68966073.27999999, "revenueVariance": -1677025.769999981, "grossMarginPct": 0.2659999999480026, "actualEbitda": 9000469.989999998, "ebitdaVariance": -1494418.7500000056, "orders": 3621.0}, {"name": "Air Freight", "actualRevenue": 55034007.70000001, "budgetRevenue": 58440123.42999999, "forecastRevenue": 56221001.72000001, "revenueVariance": -3406115.729999982, "grossMarginPct": 0.22600000017807167, "actualEbitda": 4182584.6000000006, "ebitdaVariance": -1310787.0100000016, "orders": 2958.0}, {"name": "Value Added Services", "actualRevenue": 25510421.6, "budgetRevenue": 29086625.079999994, "forecastRevenue": 28053783.939999998, "revenueVariance": -3576203.479999993, "grossMarginPct": 0.3760000015052672, "actualEbitda": 4234729.97, "ebitdaVariance": -1117209.0200000005, "orders": 1283.0}, {"name": "Fulfillment", "actualRevenue": 39506194.09999999, "budgetRevenue": 41427119.67000001, "forecastRevenue": 40137070.760000005, "revenueVariance": -1920925.5700000226, "grossMarginPct": 0.3059999988710632, "actualEbitda": 4029631.78, "ebitdaVariance": -941622.5800000005, "orders": 2118.0}, {"name": "Customs Clearance", "actualRevenue": 23093593.13, "budgetRevenue": 24510027.400000002, "forecastRevenue": 23734121.810000002, "revenueVariance": -1416434.2700000033, "grossMarginPct": 0.41099999972156787, "actualEbitda": 5426994.4, "ebitdaVariance": -774042.5199999996, "orders": 1195.0}, {"name": "Road Freight", "actualRevenue": 33665085.95999999, "budgetRevenue": 35724654.43, "forecastRevenue": 34721451.800000004, "revenueVariance": -2059568.4700000063, "grossMarginPct": 0.20100000006059698, "actualEbitda": 1245608.1499999997, "ebitdaVariance": -719247.8200000005, "orders": 1763.0}, {"name": "Last Mile", "actualRevenue": 30713523.280000012, "budgetRevenue": 32537201.95000001, "forecastRevenue": 31344613.58000001, "revenueVariance": -1823678.669999998, "grossMarginPct": 0.23600000019274892, "actualEbitda": 122854.06999999999, "ebitdaVariance": -592964.3900000002, "orders": 1600.0}, {"name": "Trade Compliance", "actualRevenue": 16021920.610000001, "budgetRevenue": 16896897.92, "forecastRevenue": 16327564.900000004, "revenueVariance": -874977.3100000005, "grossMarginPct": 0.44599999799899137, "actualEbitda": 4101611.6500000004, "ebitdaVariance": -528138.3900000006, "orders": 847.0}], "Region": [{"name": "South", "actualRevenue": 114938724.85, "budgetRevenue": 121300217.46, "forecastRevenue": 116541100.77999997, "revenueVariance": -6361492.609999999, "grossMarginPct": 0.28913269268795105, "actualEbitda": 12992290.170000006, "ebitdaVariance": -2928622.1699999906, "orders": 6026.0}, {"name": "North", "actualRevenue": 86775716.50999998, "budgetRevenue": 93134131.46, "forecastRevenue": 90244373.01000005, "revenueVariance": -6358414.950000018, "grossMarginPct": 0.289183039210148, "actualEbitda": 9781249.609999996, "ebitdaVariance": -2407985.2200000007, "orders": 4609.0}, {"name": "Overseas", "actualRevenue": 72632407.28, "budgetRevenue": 78138965.32000004, "forecastRevenue": 75911509.39000003, "revenueVariance": -5506558.040000036, "grossMarginPct": 0.2890427906246865, "actualEbitda": 8182510.840000004, "ebitdaVariance": -2050392.060000006, "orders": 3849.0}, {"name": "Central", "actualRevenue": 58787968.99999997, "budgetRevenue": 62984957.29000001, "forecastRevenue": 61138472.169999994, "revenueVariance": -4196988.290000036, "grossMarginPct": 0.2895598381702896, "actualEbitda": 6634673.279999999, "ebitdaVariance": -1656774.990000002, "orders": 3086.0}], "Customer": [{"name": "Long Tail Customers", "actualRevenue": 41378219.65999999, "budgetRevenue": 44086209.27, "forecastRevenue": 42809955.760000005, "revenueVariance": -2707989.6100000143, "grossMarginPct": 0.28926543549602307, "actualEbitda": 4671948.96, "ebitdaVariance": -1095331.000000001, "orders": 2173.0}, {"name": "Aster Retail Group", "actualRevenue": 39264789.13, "budgetRevenue": 41851494.469999984, "forecastRevenue": 40690378.470000006, "revenueVariance": -2586705.339999981, "grossMarginPct": 0.2888732921103045, "actualEbitda": 4419232.850000002, "ebitdaVariance": -1076102.5999999968, "orders": 2117.0}, {"name": "Bluewave Electronics", "actualRevenue": 36271075.7, "budgetRevenue": 38953129.64, "forecastRevenue": 37243932.11000001, "revenueVariance": -2682053.9399999976, "grossMarginPct": 0.2900516683600866, "actualEbitda": 4113569.0200000005, "ebitdaVariance": -994602.7599999998, "orders": 1895.0}, {"name": "Cobalt Manufacturing", "actualRevenue": 32141135.64, "budgetRevenue": 34364213.51999999, "forecastRevenue": 32864325.609999996, "revenueVariance": -2223077.879999988, "grossMarginPct": 0.2894019509511021, "actualEbitda": 3633658.120000001, "ebitdaVariance": -872521.9799999986, "orders": 1675.0}, {"name": "Delta Pharma", "actualRevenue": 30506514.979999997, "budgetRevenue": 32431879.769999992, "forecastRevenue": 31112524.159999993, "revenueVariance": -1925364.7899999954, "grossMarginPct": 0.2887304107261877, "actualEbitda": 3426230.1699999995, "ebitdaVariance": -839825.0800000005, "orders": 1658.0}, {"name": "Evergreen Foods", "actualRevenue": 27924451.2, "budgetRevenue": 29992030.849999998, "forecastRevenue": 28942694.32999999, "revenueVariance": -2067579.6499999985, "grossMarginPct": 0.2894188710143747, "actualEbitda": 3153760.510000001, "ebitdaVariance": -779138.3499999978, "orders": 1503.0}, {"name": "Futura Apparel", "actualRevenue": 25641531.470000006, "budgetRevenue": 27483342.880000006, "forecastRevenue": 26574831.820000004, "revenueVariance": -1841811.4100000001, "grossMarginPct": 0.2890240993862134, "actualEbitda": 2886296.0199999996, "ebitdaVariance": -705466.6200000015, "orders": 1363.0}, {"name": "GreenMart Online", "actualRevenue": 24670227.83, "budgetRevenue": 26120342.639999993, "forecastRevenue": 25661776.100000005, "revenueVariance": -1450114.809999995, "grossMarginPct": 0.2892998313262841, "actualEbitda": 2791596.95, "ebitdaVariance": -647848.1499999999, "orders": 1292.0}, {"name": "Helio Auto Parts", "actualRevenue": 22426090.760000005, "budgetRevenue": 24032865.210000005, "forecastRevenue": 23568292.06, "revenueVariance": -1606774.4499999993, "grossMarginPct": 0.2889411466914084, "actualEbitda": 2524739.8700000006, "ebitdaVariance": -630592.3499999996, "orders": 1168.0}, {"name": "Indigo Home", "actualRevenue": 20789500.71, "budgetRevenue": 22390277.190000005, "forecastRevenue": 21552783.77, "revenueVariance": -1600776.4800000042, "grossMarginPct": 0.2889547158345392, "actualEbitda": 2338048.7800000003, "ebitdaVariance": -589427.7599999998, "orders": 1078.0}, {"name": "Jade Coffee", "actualRevenue": 16864489.4, "budgetRevenue": 17704421.61, "forecastRevenue": 17238115.32, "revenueVariance": -839932.2100000009, "grossMarginPct": 0.28879876671510735, "actualEbitda": 1902696.4399999997, "ebitdaVariance": -421392.0000000007, "orders": 862.0}, {"name": "Kite Cosmetics", "actualRevenue": 15256791.159999998, "budgetRevenue": 16148064.48, "forecastRevenue": 15575845.839999996, "revenueVariance": -891273.3200000022, "grossMarginPct": 0.28927855429856986, "actualEbitda": 1728946.21, "ebitdaVariance": -391525.79000000004, "orders": 786.0}]};
-    const tabs = document.getElementById("tabs");
-    const tbody = document.getElementById("drilldown-body");
-    const heading = document.getElementById("dimension-heading");
-
-    function formatM(value) {
-      return (value / 1000000).toLocaleString(undefined, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + "M";
-    }
-
-    function formatPct(value) {
-      return (value * 100).toLocaleString(undefined, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + "%";
-    }
-
-    function classFor(value) {
-      if (Math.abs(value) < 1e-9) return "neutral";
-      return value > 0 ? "good" : "bad";
-    }
-
-    function render(level) {
-      heading.textContent = level;
-      tbody.innerHTML = DATA[level].map(row => `
-        <tr>
-          <td>${row.name}</td>
-          <td class="num">${formatM(row.actualRevenue)}</td>
-          <td class="num">${formatM(row.budgetRevenue)}</td>
-          <td class="num">${formatM(row.forecastRevenue)}</td>
-          <td class="num ${classFor(row.revenueVariance)}">${formatM(row.revenueVariance)}</td>
-          <td class="num">${formatPct(row.grossMarginPct)}</td>
-          <td class="num">${formatM(row.actualEbitda)}</td>
-          <td class="num ${classFor(row.ebitdaVariance)}">${formatM(row.ebitdaVariance)}</td>
-          <td class="num">${Math.round(row.orders).toLocaleString()}</td>
-        </tr>
-      `).join("");
-      [...tabs.querySelectorAll("button")].forEach(button => {
-        const isActive = button.dataset.level === level;
-        button.classList.toggle("active", isActive);
-        button.setAttribute("aria-pressed", String(isActive));
-      });
-    }
-
-    Object.keys(DATA).forEach((level, idx) => {
-      const button = document.createElement("button");
-      button.className = "tab" + (idx === 0 ? " active" : "");
-      button.type = "button";
-      button.dataset.level = level;
-      button.setAttribute("aria-pressed", String(idx === 0));
-      button.textContent = level;
-      button.addEventListener("click", () => render(level));
-      tabs.appendChild(button);
-    });
-    render("Business Unit");
-  </script>
-</body>
+    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
+      <div class="page-shell stage-shell-footer-inner">
+        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
+        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
+          <span aria-hidden="true">&uarr;</span>
+        </a>
+      </div>
+    </footer>
+      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
+    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+  </body>
 </html>

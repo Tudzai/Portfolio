@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta name="robots" content="index, follow">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
@@ -50,7 +51,6 @@
     <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg?v=at-orbit-harmony-20260620" />
     <link rel="stylesheet" href="../../styles.css?v=blog-ux-20260713" />
     <link rel="stylesheet" href="article.css?v=meal-photo-frame-v2-20260716" />
-    <script src="../../analytics.js?v=posthog-observability-20260713"></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -67,45 +67,71 @@
         "image": "https://tudzai.github.io/Portfolio/blog/aabw-2026-recap/assets/aabw-workshop-crowd.jpg"
       }
     </script>
+      <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/article.css?v=routes-20260810-hybrid1">
+      <script src="../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body class="detail-page aabw-article-page aabw-recap-page">
-    <header class="site-header is-scrolled" data-header>
-      <a class="brand" href="../../index.html#top" aria-label="Go to homepage">
-        <span class="brand-mark">AT</span>
-        <span>Truong Dinh Anh Tu</span>
-      </a>
-      <nav class="desktop-nav" aria-label="Primary navigation">
-        <a href="../../index.html#decision-cases">Decision Cases</a>
-        <a href="../../index.html#bi-products">BI Products</a>
-        <a href="../../index.html#automation">Automation</a>
-        <a href="../../index.html#work">Experience</a>
-        <a href="../" aria-current="page">Blog</a>
-        <a href="../../index.html#contact">Contact</a>
-      </nav>
-      <div class="header-actions">
-        <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
-          <i data-lucide="sun-moon"></i>
-        </button>
-        <button class="icon-button mobile-menu-button" type="button" data-menu-toggle aria-label="Open menu" title="Menu">
-          <i data-lucide="menu"></i>
-        </button>
+  <body class="detail-page aabw-article-page aabw-recap-page" data-stage-family="blog" data-stage-template="article">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header stage-shell-header" data-stage-shell data-header>
+      <div class="page-shell header-inner stage-shell-inner">
+        <a class="brand stage-shell-brand" href="../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
+          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true">TA</span>
+          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>FP&amp;A &times; AI</small></span>
+        </a>
+        <div class="header-actions stage-shell-actions">
+          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
+            aria-controls="primary-navigation" aria-label="Open capabilities menu">
+            <span>Capabilities</span><i aria-hidden="true"></i>
+          </button>
+          <a class="header-link" href="../../index.html#experience">Experience</a>
+          <a class="header-link" href="../../index.html#contact">Contact</a>
+          <a class="header-link" href="../index.html">Blog</a>
+          <a class="nav-cv" href="../../cv.html">View CV</a>
+        </div>
+        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
+          <p class="nav-panel-label">Capabilities</p>
+          <div class="capability-nav stage-shell-capabilities">
+            <a href="../../showcase/fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../showcase/python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../showcase/powerbi/index.html"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../showcase/financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
+          </div>
+          <div class="nav-utility-links stage-shell-utilities">
+            <a href="../../index.html#demo">Demo</a>
+            <a href="../../index.html#experience">Experience</a>
+            <a href="../../index.html#contact">Contact</a>
+            <a href="../index.html">Blog</a>
+            <a href="../../cv.html">View CV</a>
+          </div>
+        </nav>
       </div>
-      <div class="article-progress" aria-hidden="true"><span data-article-progress></span></div>
     </header>
-
-    <nav class="mobile-nav" data-mobile-nav aria-label="Mobile navigation">
-      <a href="../../index.html#decision-cases">Decision Cases</a>
-      <a href="../../index.html#bi-products">BI Products</a>
-      <a href="../../index.html#automation">Automation</a>
-      <a href="../../index.html#work">Experience</a>
-      <a href="../" aria-current="page">Blog</a>
-      <a href="../../index.html#contact">Contact</a>
-    </nav>
-
-    <main class="page-shell blog-page">
+    <div id="main-content" tabindex="-1"></div>
+    <main class="page-shell blog-page" data-stage-content>
+      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
+        <div class="stage-route-identity">
+          <span class="stage-route-index">05</span>
+          <span class="stage-route-label">Blog / Article</span>
+        </div>
+        <ol class="stage-route-flow" aria-label="Page flow">
+          <li>Idea</li>
+          <li>Evidence</li>
+          <li>Takeaway</li>
+        </ol>
+        <p class="stage-route-evidence">Editorial analysis</p>
+        <a class="stage-route-link" href="../index.html">
+          All articles<span aria-hidden="true">&nearr;</span>
+        </a>
+      </section>
       <article>
         <header class="detail-hero recap-hero" aria-labelledby="article-title">
-          <p class="breadcrumb"><a href="../">Blog</a> / AABW 2026 Recap</p>
+          <p class="breadcrumb"><a href="../index.html">Blog</a> / AABW 2026 Recap</p>
           <div class="recap-hero-grid">
             <div class="recap-hero-copy">
               <p class="eyebrow">Agentic AI Build Week 2026 · First-person recap</p>
@@ -130,11 +156,11 @@
                 <span>Demo Storytelling</span>
               </div>
               <div class="recap-hero-actions">
-                <a class="button primary" href="../../collections-agent/" target="_blank" rel="noreferrer">
+                <a class="button primary" href="../../collections-agent" target="_blank" rel="noreferrer">
                   <i data-lucide="presentation"></i>
                   Open the pitch deck
                 </a>
-                <a class="button quiet" href="../predictive-collections-agent/">
+                <a class="button quiet" href="../predictive-collections-agent/index.html">
                   <i data-lucide="workflow"></i>
                   Read the product case
                 </a>
@@ -357,7 +383,7 @@
                 />
                 <figcaption>
                   <span>The final workflow connected prediction, treatment, human approval, customer outreach, and controlled learning.</span>
-                  <a href="../../collections-agent/" target="_blank" rel="noreferrer">Explore the pitch deck ↗</a>
+                  <a href="../../collections-agent" target="_blank" rel="noreferrer">Explore the pitch deck ↗</a>
                 </figcaption>
               </figure>
             </section>
@@ -597,11 +623,11 @@
                   clarity that someone can act on it.
                 </p>
                 <div class="article-end-actions">
-                  <a class="button primary" href="../../collections-agent/" target="_blank" rel="noreferrer">
+                  <a class="button primary" href="../../collections-agent" target="_blank" rel="noreferrer">
                     <i data-lucide="presentation"></i>
                     View the pitch deck
                   </a>
-                  <a class="button quiet" href="../predictive-collections-agent/">
+                  <a class="button quiet" href="../predictive-collections-agent/index.html">
                     <i data-lucide="book-open"></i>
                     Read the full case study
                   </a>
@@ -626,12 +652,15 @@
       </article>
     </main>
 
-    <footer class="site-footer">
-      <span>Truong Dinh Anh Tu</span>
-      <span>Commercial FP&amp;A Analyst &middot; Ho Chi Minh City</span>
+    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
+      <div class="page-shell stage-shell-footer-inner">
+        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
+        <a class="back-to-top stage-back-to-top" href="../../index.html#hero" aria-label="Back to top" tabindex="-1">
+          <span aria-hidden="true">&uarr;</span>
+        </a>
+      </div>
     </footer>
-
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="../../script.js?v=aabw-recap-20260714"></script>
+      <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
+    <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
   </body>
 </html>

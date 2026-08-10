@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta name="robots" content="index, follow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Project 18 - ESG Carbon Finance</title>
@@ -624,9 +625,51 @@
       .methodology { margin-left: 16px; margin-right: 16px; }
     }
   </style>
-<script src="../../../analytics.js?v=posthog-observability-20260713"></script>
-</head>
-<body>
+      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
+      <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
+  </head>
+<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header stage-shell-header" data-stage-shell data-header>
+      <div class="page-shell header-inner stage-shell-inner">
+        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
+          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true">TA</span>
+          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>FP&amp;A &times; AI</small></span>
+        </a>
+        <div class="header-actions stage-shell-actions">
+          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
+            aria-controls="primary-navigation" aria-label="Open capabilities menu">
+            <span>Capabilities</span><i aria-hidden="true"></i>
+          </button>
+          <a class="header-link" href="../../../index.html#experience">Experience</a>
+          <a class="header-link" href="../../../index.html#contact">Contact</a>
+          <a class="header-link" href="../../../blog/index.html">Blog</a>
+          <a class="nav-cv" href="../../../cv.html">View CV</a>
+        </div>
+        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
+          <p class="nav-panel-label">Capabilities</p>
+          <div class="capability-nav stage-shell-capabilities">
+            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
+            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
+          </div>
+          <div class="nav-utility-links stage-shell-utilities">
+            <a href="../../../index.html#demo">Demo</a>
+            <a href="../../../index.html#experience">Experience</a>
+            <a href="../../../index.html#contact">Contact</a>
+            <a href="../../../blog/index.html">Blog</a>
+            <a href="../../../cv.html">View CV</a>
+          </div>
+        </nav>
+      </div>
+    </header>
   <div class="dashboard">
     <header class="hero">
       <div class="brand">P18 ESG</div>
@@ -713,8 +756,23 @@
         </div>
       </div>
     </section>
-
-    <main class="canvas">
+    <div id="main-content" tabindex="-1"></div>
+    <main class="canvas" data-stage-content>
+      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
+        <div class="stage-route-identity">
+          <span class="stage-route-index">03</span>
+          <span class="stage-route-label">BI / Interactive Preview</span>
+        </div>
+        <ol class="stage-route-flow" aria-label="Page flow">
+          <li>Signal</li>
+          <li>Insight</li>
+          <li>Action</li>
+        </ol>
+        <p class="stage-route-evidence">Synthetic interactive evidence</p>
+        <a class="stage-route-link" href="index.html">
+          Project page<span aria-hidden="true">&nearr;</span>
+        </a>
+      </section>
       <section class="dashboard-page active" id="overview">
         <div class="kpi-grid" id="kpiGrid"></div>
         <div class="chart-grid">
@@ -824,471 +882,15 @@
       </section>
     </main>
 
-    <nav class="report-tabs" aria-label="Power BI page tabs">
-      <div class="device-box" aria-hidden="true"><span class="monitor-icon"></span><span class="phone-icon"></span></div>
-      <button class="report-tab active" type="button" data-page="overview">ESG Finance Overview</button>
-      <button class="report-tab" type="button" data-page="supplier">Emissions &amp; Supplier Intensity</button>
-      <button class="report-tab" type="button" data-page="abatement">Carbon Scenario &amp; Abatement ROI</button>
-      <button class="report-tab" type="button" data-page="risk">Risk &amp; Action Control Tower</button>
-      <div class="add-box" aria-hidden="true">+</div>
-    </nav>
-
-    <footer class="methodology">
-      <strong>Methodology / source note:</strong> Static HTML dashboard built from synthetic ESG finance data for portfolio demonstration. The layout mirrors the final PBIX overview: header lens, top slicers, four KPI cards, scenario chart, and dynamic TableEx-style action tables without publishing PBIX internals or raw source files.
+    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
+      <div class="page-shell stage-shell-footer-inner">
+        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
+        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
+          <span aria-hidden="true">&uarr;</span>
+        </a>
+      </div>
     </footer>
-  </div>
-
-  <script>
-    const COLORS = {
-      teal: "#63a89a",
-      tealDark: "#2b8073",
-      green: "#173a2c",
-      amber: "#e5a668",
-      lime: "#bddf72",
-      blue: "#5a82f0",
-      indigo: "#2d3199",
-      muted: "#7b8580",
-      line: "#e2e8e4"
-    };
-
-    const DATA = {
-      months: [
-        ["2024-01", 25264.6], ["2024-02", 29718.2], ["2024-03", 26563.5], ["2024-04", 26124.0],
-        ["2024-05", 26439.6], ["2024-06", 35493.6], ["2024-07", 28140.0], ["2024-08", 27076.9],
-        ["2024-09", 22383.7], ["2024-10", 20833.4], ["2024-11", 20905.1], ["2024-12", 24760.6],
-        ["2025-01", 23268.2], ["2025-02", 20874.2], ["2025-03", 22783.7], ["2025-04", 26348.9],
-        ["2025-05", 25207.5], ["2025-06", 29561.5], ["2025-07", 26469.6], ["2025-08", 23990.6],
-        ["2025-09", 20485.5], ["2025-10", 21257.6], ["2025-11", 23770.6], ["2025-12", 22931.9],
-        ["2026-01", 21351.2], ["2026-02", 24042.9], ["2026-03", 24722.0], ["2026-04", 26714.8],
-        ["2026-05", 21968.6]
-      ],
-      executive: [
-        { bu: "Manufacturing", region: "APAC", scopeMix: "Scope 1", tco2e: 264162.9 },
-        { bu: "Logistics", region: "APAC", scopeMix: "Scope 3", tco2e: 229034.9 },
-        { bu: "Logistics", region: "EMEA", scopeMix: "Scope 3", tco2e: 128428.4 },
-        { bu: "Retail Operations", region: "Americas", scopeMix: "Scope 2", tco2e: 71888.8 },
-        { bu: "Corporate", region: "EMEA", scopeMix: "Scope 3", tco2e: 13317.9 },
-        { bu: "Corporate", region: "Americas", scopeMix: "Scope 1", tco2e: 12619.7 }
-      ],
-      scope: [
-        { scope: "Scope 3", tco2e: 371560.6 },
-        { scope: "Scope 1", tco2e: 260249.3 },
-        { scope: "Scope 2", tco2e: 87642.7 }
-      ],
-      suppliers: [
-        { supplier: "Quantum Parts", region: "APAC", risk: "High", target: "No verified target", intensity: 2058, emissions: 44600 },
-        { supplier: "Nova Textiles", region: "EMEA", risk: "High", target: "Renewable PPA", intensity: 1926, emissions: 38900 },
-        { supplier: "GreenPulse Freight", region: "APAC", risk: "High", target: "Supplier target", intensity: 1854, emissions: 36200 },
-        { supplier: "Pacific Cold Chain", region: "Americas", risk: "High", target: "Renewable PPA", intensity: 1770, emissions: 34400 },
-        { supplier: "EastGrid Energy", region: "EMEA", risk: "Medium", target: "No verified target", intensity: 1688, emissions: 29900 },
-        { supplier: "Willow Office Supply", region: "APAC", risk: "Medium", target: "SBTi committed", intensity: 1284, emissions: 18100 }
-      ],
-      abatement: [
-        { initiative: "Green travel policy", bu: "Corporate", scope: "Scope 3", status: "Implemented", capex: 620000, reduction: 1150, roi: 0.375, macc: -75.2 },
-        { initiative: "LED and controls retrofit", bu: "Retail Operations", scope: "Scope 2", status: "Implemented", capex: 1100000, reduction: 2500, roi: 0.323, macc: -29.1 },
-        { initiative: "Packaging lightweighting", bu: "Retail Operations", scope: "Scope 3", status: "In flight", capex: 2450000, reduction: 3900, roi: 0.311, macc: -15.4 },
-        { initiative: "Heat recovery at Hai Phong", bu: "Manufacturing", scope: "Scope 1", status: "In flight", capex: 3400000, reduction: 5400, roi: 0.302, macc: -10.1 },
-        { initiative: "Solar PPA expansion", bu: "Manufacturing", scope: "Scope 2", status: "Committed", capex: 4800000, reduction: 9200, roi: 0.314, macc: 0.6 },
-        { initiative: "Modal shift to rail", bu: "Logistics", scope: "Scope 3", status: "Planned", capex: 2200000, reduction: 4700, roi: 0.276, macc: 27.5 }
-      ]
-    };
-
-    const PAGE_TITLES = {
-      overview: "ESG Finance Overview",
-      supplier: "Emissions & Supplier Intensity",
-      abatement: "Carbon Scenario & Abatement ROI",
-      risk: "Risk & Action Control Tower"
-    };
-
-    const totalEmissions = DATA.executive.reduce((sum, row) => sum + row.tco2e, 0);
-    let activePage = "overview";
-
-    function qs(selector, root = document) { return root.querySelector(selector); }
-    function qsa(selector, root = document) { return Array.from(root.querySelectorAll(selector)); }
-    function money(value) { return "$" + value.toFixed(1) + "M"; }
-    function kfmt(value) { return value >= 1000 ? (value / 1000).toFixed(1) + "K" : value.toFixed(0); }
-    function mf(value) { return (value / 1000000).toFixed(2) + "M"; }
-    function yearOf(month) { return month.slice(0, 4); }
-
-    function filters() {
-      const year = qs("#yearFilter").value;
-      const region = qs("#regionFilter").value;
-      const bu = qs("#businessFilter").value;
-      const scope = qs("#scopeFilter").value;
-      const priceChoice = qs("#priceFilter").value;
-      const price = priceChoice === "All" ? 50 : Number(priceChoice);
-      return { year, region, bu, scope, priceChoice, price };
-    }
-
-    function selectedExecutiveRows(f) {
-      return DATA.executive.filter(row => {
-        const regionMatch = f.region === "All" || row.region === f.region;
-        const buMatch = f.bu === "All" || row.bu === f.bu;
-        return regionMatch && buMatch;
-      });
-    }
-
-    function yearFactor(f) {
-      if (f.year === "All") return 1;
-      const yearTotal = DATA.months.filter(row => yearOf(row[0]) === f.year).reduce((sum, row) => sum + row[1], 0);
-      const allTotal = DATA.months.reduce((sum, row) => sum + row[1], 0);
-      return yearTotal / allTotal;
-    }
-
-    function scopeFactor(f) {
-      if (f.scope === "All") return 1;
-      const row = DATA.scope.find(item => item.scope === f.scope);
-      return row ? row.tco2e / totalEmissions : 1;
-    }
-
-    function rowFactor(f) {
-      const selected = selectedExecutiveRows(f).reduce((sum, row) => sum + row.tco2e, 0);
-      return selected / totalEmissions;
-    }
-
-    function filteredMonths(f) {
-      const scale = rowFactor(f) * scopeFactor(f);
-      return DATA.months
-        .filter(row => f.year === "All" || yearOf(row[0]) === f.year)
-        .map(row => ({ month: row[0], emissions: row[1] * scale, cost: row[1] * scale * f.price / 1000000 }));
-    }
-
-    function currentTotals(f) {
-      const total = totalEmissions * rowFactor(f) * scopeFactor(f) * yearFactor(f);
-      return { emissions: total, cost: total * f.price / 1000000 };
-    }
-
-    function linePoints(rows, key, width, height, margin, maxValue) {
-      const last = Math.max(rows.length - 1, 1);
-      return rows.map((row, index) => {
-        const x = margin.left + index * ((width - margin.left - margin.right) / last);
-        const y = height - margin.bottom - (row[key] / maxValue) * (height - margin.top - margin.bottom);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(" ");
-    }
-
-    function renderSpark(svg, rows, key, color) {
-      const width = 150;
-      const height = 78;
-      const margin = { left: 10, right: 10, top: 10, bottom: 12 };
-      const values = rows.map(row => row[key]);
-      const max = Math.max(...values);
-      const min = Math.min(...values);
-      const spread = Math.max(max - min, 1);
-      const last = Math.max(rows.length - 1, 1);
-      const points = rows.map((row, index) => {
-        const x = margin.left + index * ((width - margin.left - margin.right) / last);
-        const y = height - margin.bottom - ((row[key] - min) / spread) * (height - margin.top - margin.bottom);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      });
-      const area = `${margin.left},${height - margin.bottom} ${points.join(" ")} ${width - margin.right},${height - margin.bottom}`;
-      const lastPoint = points[points.length - 1].split(",").map(Number);
-      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-      svg.innerHTML = `
-        <polygon points="${area}" fill="${color}" opacity="0.14"></polygon>
-        <polyline points="${points.join(" ")}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        <circle cx="${lastPoint[0]}" cy="${lastPoint[1]}" r="5" fill="${color}" stroke="#f3f7f5" stroke-width="3"></circle>
-      `;
-    }
-
-    function renderKpis(f) {
-      const months = filteredMonths(f);
-      const current = months[months.length - 1] || { emissions: 0, cost: 0 };
-      const previous = months[months.length - 2] || current;
-      const delta = previous.emissions ? (current.emissions - previous.emissions) / previous.emissions : 0;
-      const intensityFactor = f.scope === "Scope 2" ? 0.78 : f.scope === "Scope 3" ? 1.08 : f.scope === "Scope 1" ? 1.02 : 1;
-      const intensity = 106.2 * intensityFactor;
-      const prevIntensity = 132.3 * intensityFactor;
-      const intensityDelta = prevIntensity ? (intensity - prevIntensity) / prevIntensity : 0;
-      const kpis = [
-        { key: "total", title: "Total emissions", value: kfmt(current.emissions), prev: kfmt(previous.emissions), delta, spark: "emissions", color: COLORS.teal, cls: "" },
-        { key: "cost", title: "Carbon cost", value: money(current.cost), prev: money(previous.cost), delta, spark: "cost", color: COLORS.amber, cls: "cost" },
-        { key: "intensity", title: "Intensity", value: intensity.toFixed(1), prev: prevIntensity.toFixed(1), delta: intensityDelta, spark: "emissions", color: COLORS.lime, cls: "intensity" },
-        { key: "latest", title: "Latest month", value: kfmt(current.emissions), prev: kfmt(previous.emissions), delta, spark: "emissions", color: "#8faa80", cls: "latest" }
-      ];
-
-      qs("#kpiGrid").innerHTML = kpis.map((kpi, index) => `
-        <article class="kpi-card ${kpi.cls}">
-          <div class="accent"></div>
-          <p class="kpi-title">${kpi.title}</p>
-          <strong class="kpi-value">${kpi.value}</strong>
-          <div class="spark-box"><svg id="spark${index}" aria-hidden="true"></svg></div>
-          <div class="kpi-meta">
-            <div class="meta-pill"><span>Prev</span>${kpi.prev}</div>
-            <div class="meta-pill ${kpi.delta <= 0 ? "good" : "bad"}"><span>Delta</span>${(kpi.delta * 100).toFixed(1)}%</div>
-          </div>
-        </article>
-      `).join("");
-
-      kpis.forEach((kpi, index) => renderSpark(qs(`#spark${index}`), months, kpi.spark, kpi.color));
-    }
-
-    function renderMonthlyChart(f) {
-      const rows = filteredMonths(f);
-      const svg = qs("#monthlyChart");
-      const width = 760;
-      const height = 220;
-      const margin = { left: 52, right: 20, top: 18, bottom: 34 };
-      const maxEmission = Math.max(...rows.map(row => row.emissions), 1) * 1.12;
-      const maxCost = Math.max(...rows.map(row => row.cost), 1) * 1.12;
-      const emissionPoints = linePoints(rows, "emissions", width, height, margin, maxEmission);
-      const costRows = rows.map(row => ({ ...row, costScaled: (row.cost / maxCost) * maxEmission }));
-      const costPoints = linePoints(costRows, "costScaled", width, height, margin, maxEmission);
-      const ticks = [0, 0.5, 1].map(value => {
-        const y = height - margin.bottom - value * (height - margin.top - margin.bottom);
-        const label = Math.round(maxEmission * value / 1000) + "K";
-        return `<line x1="${margin.left}" x2="${width - margin.right}" y1="${y}" y2="${y}" stroke="${COLORS.line}" stroke-width="1"></line><text x="8" y="${y + 4}" fill="${COLORS.muted}" font-size="12">${label}</text>`;
-      }).join("");
-      const labels = rows.filter((_, index) => index % Math.max(1, Math.ceil(rows.length / 5)) === 0 || index === rows.length - 1).map((row, index, arr) => {
-        const rowIndex = rows.indexOf(row);
-        const x = margin.left + rowIndex * ((width - margin.left - margin.right) / Math.max(rows.length - 1, 1));
-        const anchor = index === arr.length - 1 ? "end" : "middle";
-        return `<text x="${x}" y="${height - 8}" fill="${COLORS.muted}" font-size="12" text-anchor="${anchor}">${row.month.replace("20", "").replace("-", "-")}</text>`;
-      }).join("");
-      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-      svg.innerHTML = `
-        ${ticks}
-        <polyline points="${emissionPoints}" fill="none" stroke="${COLORS.blue}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        <polyline points="${costPoints}" fill="none" stroke="${COLORS.indigo}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        ${labels}
-      `;
-    }
-
-    function renderBars(svgId, rows, options = {}) {
-      const svg = qs(svgId);
-      const width = options.width || 520;
-      const height = options.height || 220;
-      const margin = { left: options.left || 110, right: 64, top: 22, bottom: 34 };
-      const valueKey = options.valueKey || "value";
-      const labelKey = options.labelKey || "label";
-      const max = Math.max(...rows.map(row => Math.abs(row[valueKey])), 1);
-      const rowHeight = (height - margin.top - margin.bottom) / Math.max(rows.length, 1);
-      const barHeight = Math.min(32, rowHeight * 0.64);
-      const color = options.color || COLORS.green;
-      const labels = rows.map((row, index) => {
-        const y = margin.top + index * rowHeight + (rowHeight - barHeight) / 2;
-        const barWidth = Math.max(5, (Math.abs(row[valueKey]) / max) * (width - margin.left - margin.right));
-        const valueLabel = options.format ? options.format(row[valueKey]) : row[valueKey].toLocaleString();
-        return `
-          <text x="${margin.left - 12}" y="${y + barHeight * 0.65}" fill="${COLORS.muted}" font-size="13" text-anchor="end">${row[labelKey]}</text>
-          <rect x="${margin.left}" y="${y}" width="${barWidth}" height="${barHeight}" rx="1" fill="${row.color || color}"></rect>
-          <text x="${Math.min(width - 4, margin.left + barWidth + 10)}" y="${y + barHeight * 0.65}" fill="${COLORS.muted}" font-size="13">${valueLabel}</text>
-        `;
-      }).join("");
-      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-      svg.innerHTML = `
-        ${labels}
-        <text x="${margin.left}" y="${height - 5}" fill="${COLORS.muted}" font-size="12">0M</text>
-        <text x="${width - margin.right}" y="${height - 5}" fill="${COLORS.muted}" font-size="12" text-anchor="end">${options.maxLabel || ""}</text>
-      `;
-    }
-
-    function groupBy(rows, key) {
-      const out = new Map();
-      rows.forEach(row => out.set(row[key], (out.get(row[key]) || 0) + row.tco2e));
-      return Array.from(out, ([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value);
-    }
-
-    function renderOverviewCharts(f) {
-      renderMonthlyChart(f);
-      const scopeScale = rowFactor(f) * yearFactor(f);
-      const scopeRows = DATA.scope
-        .filter(row => f.scope === "All" || row.scope === f.scope)
-        .map(row => ({ label: row.scope, value: row.tco2e * scopeScale }))
-        .sort((a, b) => b.value - a.value);
-      renderBars("#scopeChart", scopeRows, { valueKey: "value", labelKey: "label", color: COLORS.teal, format: mf, maxLabel: "0.4M" });
-
-      const businessRows = groupBy(selectedExecutiveRows(f), "bu")
-        .map(row => ({ ...row, value: row.value * scopeFactor(f) * yearFactor(f) }));
-      renderBars("#businessChart", businessRows, { valueKey: "value", labelKey: "label", color: COLORS.green, format: mf, maxLabel: "0.4M", left: 130 });
-      renderScenarioChart(f);
-    }
-
-    function actionFor(cost) {
-      if (cost >= 10) return { label: "Prioritize", cls: "" };
-      if (cost >= 3) return { label: "Monitor", cls: "monitor" };
-      return { label: "Watch", cls: "watch" };
-    }
-
-    function renderExecutiveTable(f) {
-      const scale = scopeFactor(f) * yearFactor(f);
-      const rows = selectedExecutiveRows(f)
-        .map(row => ({ ...row, tco2e: row.tco2e * scale, cost: row.tco2e * scale * f.price / 1000000 }))
-        .sort((a, b) => b.tco2e - a.tco2e)
-        .slice(0, 4);
-      qs("#execTopLabel").textContent = "Top " + rows.length;
-      const maxT = Math.max(...rows.map(row => row.tco2e), 1);
-      const maxC = Math.max(...rows.map(row => row.cost), 1);
-      qs("#executiveTable").innerHTML = renderTable(["Business Unit", "Region", "tCO2e", "Cost", "Action"], rows.map(row => {
-        const action = actionFor(row.cost);
-        return [
-          `<div class="cell-strong">${row.bu}</div>`,
-          row.region,
-          barCell(row.tco2e, maxT, kfmt(row.tco2e)),
-          barCell(row.cost, maxC, money(row.cost)),
-          `<span class="action-pill ${action.cls}">${action.label}</span>`
-        ];
-      }));
-    }
-
-    function barCell(value, max, label) {
-      const pct = Math.max(4, value / max * 100);
-      return `<div class="bar-cell"><div class="mini-track"><div class="mini-bar" style="width:${pct.toFixed(0)}%"></div></div><strong>${label}</strong></div>`;
-    }
-
-    function renderTable(headers, rows) {
-      if (!rows.length) {
-        return `<table><tbody><tr><td>No rows under current filters</td></tr></tbody></table>`;
-      }
-      return `
-        <table>
-          <thead><tr>${headers.map(header => `<th>${header}</th>`).join("")}</tr></thead>
-          <tbody>${rows.map(cells => `<tr>${cells.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>
-        </table>
-      `;
-    }
-
-    function renderScenarioChart(f) {
-      const total = totalEmissions * rowFactor(f) * scopeFactor(f) * yearFactor(f);
-      const rows = [
-        { label: "Stress price shock", value: total * 140 / 1000000, color: COLORS.amber },
-        { label: "Regulatory convergence", value: total * 90 / 1000000, color: COLORS.amber },
-        { label: "Base internal price", value: total * 50 / 1000000, color: COLORS.amber }
-      ];
-      renderBars("#scenarioChart", rows, { valueKey: "value", labelKey: "label", color: COLORS.amber, format: money, maxLabel: "$100M", left: 170 });
-    }
-
-    function renderSupplierPage(f) {
-      const rows = DATA.suppliers
-        .filter(row => f.region === "All" || row.region === f.region)
-        .sort((a, b) => b.intensity - a.intensity)
-        .slice(0, 5);
-      qs("#supplierTopLabel").textContent = "Top " + rows.length;
-      const max = Math.max(...rows.map(row => row.intensity), 1);
-      qs("#supplierTable").innerHTML = renderTable(["Supplier", "Risk", "Target", "Intensity"], rows.map(row => [
-        `<div class="cell-strong">${row.supplier}</div>`,
-        row.risk,
-        row.target,
-        barCell(row.intensity, max, row.intensity.toLocaleString())
-      ]));
-      renderBars("#supplierChart", rows.map(row => ({ label: row.supplier, value: row.intensity, color: row.risk === "High" ? "#b66a59" : COLORS.teal })), {
-        valueKey: "value",
-        labelKey: "label",
-        color: COLORS.teal,
-        format: value => value.toLocaleString(),
-        maxLabel: "2.1K",
-        left: 160
-      });
-    }
-
-    function renderAbatementPage(f) {
-      const rows = DATA.abatement
-        .filter(row => (f.scope === "All" || row.scope === f.scope) && (f.bu === "All" || row.bu === f.bu))
-        .sort((a, b) => b.roi - a.roi)
-        .slice(0, 4);
-      qs("#abatementTopLabel").textContent = "Top " + rows.length;
-      const maxCapex = Math.max(...rows.map(row => row.capex), 1);
-      qs("#abatementTable").innerHTML = renderTable(["Initiative", "Status", "Scope", "Capex", "ROI"], rows.map(row => [
-        `<div class="cell-strong">${row.initiative}</div>`,
-        row.status,
-        row.scope,
-        barCell(row.capex, maxCapex, "$" + (row.capex / 1000000).toFixed(1) + "M"),
-        (row.roi * 100).toFixed(1) + "%"
-      ]));
-      renderBars("#abatementChart", rows.map(row => ({ label: row.initiative, value: row.macc, color: row.macc < 0 ? COLORS.teal : COLORS.amber })), {
-        valueKey: "value",
-        labelKey: "label",
-        color: COLORS.teal,
-        format: value => "$" + value.toFixed(0) + "/t",
-        maxLabel: "$28/t",
-        left: 180
-      });
-    }
-
-    function renderRiskPage(f) {
-      const rows = DATA.suppliers
-        .filter(row => f.region === "All" || row.region === f.region)
-        .sort((a, b) => (b.risk === "High") - (a.risk === "High") || b.intensity - a.intensity)
-        .slice(0, 5);
-      qs("#riskTopLabel").textContent = "Top " + rows.length;
-      const max = Math.max(...rows.map(row => row.intensity), 1);
-      qs("#riskTable").innerHTML = renderTable(["Supplier", "Risk", "Target", "Intensity"], rows.map(row => [
-        `<div class="cell-strong">${row.supplier}</div>`,
-        row.risk,
-        row.target,
-        barCell(row.intensity, max, row.intensity.toLocaleString())
-      ]));
-
-      const grouped = new Map();
-      rows.forEach(row => grouped.set(row.target, (grouped.get(row.target) || 0) + row.emissions));
-      const targetRows = Array.from(grouped, ([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value);
-      renderBars("#riskChart", targetRows, { valueKey: "value", labelKey: "label", color: COLORS.amber, format: value => kfmt(value), maxLabel: "80K", left: 170 });
-
-      const totals = currentTotals(f);
-      qs("#guardrailTable").innerHTML = renderTable(["Guardrail", "Value"], [
-        ["Supplier data quality", "82.0%"],
-        ["Suppliers without target", rows.filter(row => row.target === "No verified target").length.toString()],
-        ["Selected carbon cost", money(totals.cost)],
-        ["Secured reduction", "33.8K tCO2e"]
-      ]);
-    }
-
-    function updateLens(f) {
-      const totals = currentTotals(f);
-      qs("#lensCurrent").textContent = `${f.year === "All" ? "All Years" : f.year} | ${f.region === "All" ? "All Regions" : f.region}`;
-      qs("#lensScope").textContent = `${f.bu === "All" ? "All BU" : f.bu} | ${f.scope === "All" ? "All Scopes" : f.scope} | ${f.priceChoice === "All" ? "All Prices" : "$" + f.price + "/t"}`;
-      qs("#lensCost").textContent = money(totals.cost);
-      qs("#lensPrice").textContent = "$" + f.price + "/t";
-    }
-
-    function setPage(page) {
-      activePage = page;
-      qsa(".nav-btn,.report-tab").forEach(button => button.classList.toggle("active", button.dataset.page === page));
-      qsa(".dashboard-page").forEach(section => section.classList.toggle("active", section.id === page));
-      qs("#pageTitle").textContent = PAGE_TITLES[page];
-      render();
-    }
-
-    function render() {
-      const f = filters();
-      updateLens(f);
-      renderKpis(f);
-      renderOverviewCharts(f);
-      renderExecutiveTable(f);
-      renderSupplierPage(f);
-      renderAbatementPage(f);
-      renderRiskPage(f);
-      updateQaState();
-    }
-
-    function updateQaState() {
-      const overflowCandidates = qsa(".lens-panel,.nav-btn,.slicer,.kpi-card,.chart-card,.table-card,.report-tab");
-      const visibleOverflow = overflowCandidates.filter(el => {
-        const style = window.getComputedStyle(el);
-        const canScroll = /(auto|scroll)/.test(style.overflow + style.overflowX + style.overflowY);
-        return canScroll && (el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1);
-      }).map(el => el.className || el.tagName);
-      window.__dashboardQa = {
-        activePage,
-        slicers: qsa(".slicer").length,
-        navigationButtons: qsa(".nav-btn").length,
-        bottomTabs: qsa(".report-tab").length,
-        visibleKpiCards: qsa(".dashboard-page.active .kpi-card").length,
-        visibleTables: qsa(".dashboard-page.active table").length,
-        visibleCharts: qsa(".dashboard-page.active svg").length,
-        visibleOverflow
-      };
-    }
-
-    qsa("[data-page]").forEach(button => {
-      button.addEventListener("click", () => setPage(button.dataset.page));
-    });
-
-    qsa("select").forEach(select => {
-      select.addEventListener("change", render);
-    });
-
-    render();
-  </script>
-</body>
+      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
+    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+  </body>
 </html>

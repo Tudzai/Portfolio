@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta name="robots" content="index, follow">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Retention Cohort LTV | Truong Dinh Anh Tu</title>
@@ -44,11 +45,69 @@
         iframe { height: 900px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
+      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/case.css?v=routes-20260810-hybrid1">
+      <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body>
-    <main class="shell">
-      <a class="back" href="../">Back to Power BI hub</a>
+  <body data-stage-family="powerbi" data-stage-template="case">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header stage-shell-header" data-stage-shell data-header>
+      <div class="page-shell header-inner stage-shell-inner">
+        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
+          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true">TA</span>
+          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>FP&amp;A &times; AI</small></span>
+        </a>
+        <div class="header-actions stage-shell-actions">
+          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
+            aria-controls="primary-navigation" aria-label="Open capabilities menu">
+            <span>Capabilities</span><i aria-hidden="true"></i>
+          </button>
+          <a class="header-link" href="../../../index.html#experience">Experience</a>
+          <a class="header-link" href="../../../index.html#contact">Contact</a>
+          <a class="header-link" href="../../../blog/index.html">Blog</a>
+          <a class="nav-cv" href="../../../cv.html">View CV</a>
+        </div>
+        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
+          <p class="nav-panel-label">Capabilities</p>
+          <div class="capability-nav stage-shell-capabilities">
+            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
+            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
+          </div>
+          <div class="nav-utility-links stage-shell-utilities">
+            <a href="../../../index.html#demo">Demo</a>
+            <a href="../../../index.html#experience">Experience</a>
+            <a href="../../../index.html#contact">Contact</a>
+            <a href="../../../blog/index.html">Blog</a>
+            <a href="../../../cv.html">View CV</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <div id="main-content" tabindex="-1"></div>
+    <main class="shell" data-stage-content>
+      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
+        <div class="stage-route-identity">
+          <span class="stage-route-index">03</span>
+          <span class="stage-route-label">BI / Decision Product</span>
+        </div>
+        <ol class="stage-route-flow" aria-label="Page flow">
+          <li>Signal</li>
+          <li>Insight</li>
+          <li>Decision</li>
+        </ol>
+        <p class="stage-route-evidence">Interactive public-safe preview</p>
+        <a class="stage-route-link" href="../index.html">
+          BI dashboards<span aria-hidden="true">&nearr;</span>
+        </a>
+      </section>
+      <a class="back" href="../index.html">Back to Power BI hub</a>
       <section class="hero">
         <p class="kicker">Power BI Customer lifecycle</p>
         <h1>Retention Cohort LTV</h1>
@@ -87,21 +146,16 @@
       </section>
       <p class="note">This portfolio preview uses synthetic or anonymized data to demonstrate FP&amp;A reporting logic without exposing company-confidential information.</p>
     </main>
-    <script>
-      const previewFrame = document.querySelector('iframe');
-      function resizePreviewFrame() {
-        if (!previewFrame) return;
-        try {
-          const doc = previewFrame.contentDocument || (previewFrame.contentWindow && previewFrame.contentWindow.document);
-          if (!doc) return;
-          const height = Math.max(780, doc.documentElement ? doc.documentElement.scrollHeight : 0, doc.body ? doc.body.scrollHeight : 0);
-          previewFrame.style.height = (height + 12) + 'px';
-        } catch (error) {
-          previewFrame.style.height = '900px';
-        }
-      }
-      previewFrame && previewFrame.addEventListener('load', function () { resizePreviewFrame(); setTimeout(resizePreviewFrame, 250); });
-      window.addEventListener('resize', resizePreviewFrame);
-    </script>
+
+    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
+      <div class="page-shell stage-shell-footer-inner">
+        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
+        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
+          <span aria-hidden="true">&uarr;</span>
+        </a>
+      </div>
+    </footer>
+      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
+    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
   </body>
 </html>

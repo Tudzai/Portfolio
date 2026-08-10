@@ -114,6 +114,8 @@ test("accepts exactly the recruiter-facing HTML route boundary", () => {
   assert.equal(isScopedHtmlRoute("Stage/agentic-finance/index.html"), false);
   assert.equal(isScopedHtmlRoute("knowledge-vault/index.html"), false);
   assert.equal(isScopedHtmlRoute("collections-agent/index.html"), false);
+  assert.equal(isScopedHtmlRoute("cv-pdf.html"), false);
+  assert.equal(isScopedHtmlRoute("assets/vendor/pdfjs/6.1.200/web/viewer.html"), false);
   assert.equal(isScopedHtmlRoute("scripts/tests/fixtures/agentic-finance/legacy-shell.html"), false);
   assert.equal(isScopedHtmlRoute("showcase/python-automation/fpa-monthly-reporting-demo/remotion/node_modules/vite/index.html"), false);
 });

@@ -226,6 +226,41 @@ body[data-stage-template="homepage"] footer a {
   font-weight: 600;
 }
 
+.stage-back-to-top {
+  position: fixed;
+  z-index: 120;
+  right: clamp(16px, 2.5vw, 34px);
+  bottom: clamp(16px, 2.5vw, 34px);
+  display: grid;
+  visibility: hidden;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  transform: translateY(14px) scale(0.94);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: var(--stage-ink);
+  color: var(--stage-white);
+  box-shadow: var(--stage-shadow-card);
+  opacity: 0;
+  pointer-events: none;
+  text-decoration: none;
+  transition: transform 180ms var(--stage-ease), opacity 180ms ease, visibility 180ms;
+}
+
+.stage-back-to-top.is-visible {
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.stage-back-to-top:hover,
+.stage-back-to-top:focus-visible {
+  transform: translateY(-2px) scale(1.03);
+  background: var(--stage-violet-dark);
+}
+
 @media (hover: hover) {
   .capability-nav a:hover {
     transform: translateY(-2px);
