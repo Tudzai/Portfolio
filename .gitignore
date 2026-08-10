@@ -1,15 +1,43 @@
-tmp/
-BI/
-Project 6/
-Project 7/
+# Local source workspaces. These are not part of the public GitHub Pages site.
+/BI/
+/Project 6/
+/Project 7/
 /Stage/
+
+# Scratch, generated output, browser QA, and local dependencies.
+/tmp/
+/output/
+/outputs/
+node_modules/
+.venv/
+playwright-report/
+test-results/
+/.playwright-cli/
+docs/qa/generated/
+__pycache__/
+*.pyc
+*.log
+*.tmp
+
+# Power BI source artifacts must never be published from this repository.
 *.pbix
 *.pbit
+
+# Local CV drafts and review renders. The canonical public CV has no suffix after 2026.
 assets/Truong-Dinh-Anh-Tu-CV-2026-*.docx
 assets/Truong-Dinh-Anh-Tu-CV-2026-*.pdf
+assets/*-qa/
+assets/qa-*/
 assets/_review_render/
 assets/_cv_render*/
 assets/_cv_original_render/
+
+# Generated Python outputs; source code and synthetic sample data remain trackable.
 showcase/python-automation/**/output/
-__pycache__/
-*.pyc
+
+# Local environment and operating-system files.
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
