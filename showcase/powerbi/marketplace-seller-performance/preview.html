@@ -64,7 +64,7 @@
         th, td { padding: 9px 7px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-session-replay-20260702"></script>
+    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
   </head>
   <body>
     <main class="dashboard">
@@ -72,24 +72,24 @@
         <div>
           <p class="eyebrow">Interactive Power BI-style preview / Project 07</p>
           <h1>Marketplace Seller Performance</h1>
-          <p class="subtitle">Seller performance dashboard ranking GMV, fulfillment, cancellation, rating, stock risk, and growth actions. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
+          <p class="subtitle">Seller performance dashboard connecting GMV movement, fulfillment, cancellation, stock availability, and account-manager actions. This HTML preview keeps the recruiter-facing decision story visible without requiring Power BI Service access.</p>
         </div>
         <div class="filters" aria-label="Demo filter chips">
-          <span class="chip">Period: QTD</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scenario: Base</span>
+          <span class="chip">Period: 2026-05</span><span class="chip">Platform: All</span><span class="chip">Tier: All</span><span class="chip">Search: All</span>
         </div>
       </header>
       <section class="kpi-grid" aria-label="KPI summary">
-          <article class="kpi"><span>active sellers</span><strong>2,840</strong><em>+3.8% vs plan</em></article>
-          <article class="kpi"><span>fulfillment SLA</span><strong>96.1%</strong><em>needs recovery</em></article>
-          <article class="kpi"><span>cancel rate</span><strong>3.8%</strong><em>+2.1 pts vs LY</em></article>
-          <article class="kpi"><span>GMV growth pool</span><strong>$3.1M</strong><em>2 risk flag(s)</em></article>
-          <article class="kpi"><span>driver health score</span><strong>76%</strong><em>weighted from dashboard levers</em></article>
-          <article class="kpi"><span>owner actions</span><strong>3</strong><em>decision queue ready</em></article>
+          <article class="kpi"><span>seller GMV</span><strong>$211.3K</strong><em>+2.8% vs Apr</em></article>
+          <article class="kpi"><span>fulfillment SLA</span><strong>97.7%</strong><em>+0.7 pts vs target</em></article>
+          <article class="kpi"><span>cancel rate</span><strong>8.3%</strong><em>+0.3 pts vs guardrail</em></article>
+          <article class="kpi"><span>stock availability</span><strong>91.3%</strong><em>-0.7 pts vs target</em></article>
+          <article class="kpi"><span>watch sellers</span><strong>43</strong><em>needs account follow-up</em></article>
+          <article class="kpi"><span>owner queues</span><strong>5</strong><em>decision queue ready</em></article>
       </section>
       <section class="layout">
         <article class="panel">
           <span class="panel-label">Trend and forecast call</span>
-          <h2>active sellers versus operating plan</h2>
+          <h2>Seller GMV versus prior month</h2>
           <div class="chart-wrap">
             <svg class="chart-svg" viewBox="0 0 760 300" role="img" aria-label="Actual and plan trend chart" xmlns="http://www.w3.org/2000/svg">
               <rect width="760" height="300" rx="10" fill="#fbfcfa"/>
@@ -107,30 +107,30 @@
         <article class="panel">
           <span class="panel-label">Driver heatmap</span>
           <h2>What is moving the decision?</h2>
-          <div class="driver-list"><div class="driver-row"><span>Top sellers</span><div class="bar"><i style="width:86%"></i></div><strong>86%</strong></div>
-              <div class="driver-row"><span>Fulfillment</span><div class="bar"><i style="width:80%"></i></div><strong>80%</strong></div>
-              <div class="driver-row"><span>Stock health</span><div class="bar"><i style="width:64%"></i></div><strong>64%</strong></div>
-              <div class="driver-row"><span>Rating</span><div class="bar"><i style="width:72%"></i></div><strong>72%</strong></div></div>
-          <div class="driver-cards"><article class="driver-card "><span>Positive driver</span><strong>Top seller expansion</strong><em>+$1.4M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>Cancellation risk</strong><em>-$0.3M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>Stockout pressure</strong><em>-$0.6M</em></article></div>
+          <div class="driver-list"><div class="driver-row"><span>Fulfillment</span><div class="bar"><i style="width:98%"></i></div><strong>98%</strong></div>
+              <div class="driver-row"><span>Stock availability</span><div class="bar"><i style="width:91%"></i></div><strong>91%</strong></div>
+              <div class="driver-row"><span>Watch sellers</span><div class="bar"><i style="width:36%"></i></div><strong>36%</strong></div>
+              <div class="driver-row"><span>Rating</span><div class="bar"><i style="width:83%"></i></div><strong>83%</strong></div></div>
+          <div class="driver-cards"><article class="driver-card "><span>Positive driver</span><strong>GMV momentum</strong><em>+2.8%</em></article>
+              <article class="driver-card risk"><span>Risk driver</span><strong>Cancellation pressure</strong><em>+0.3 pts</em></article>
+              <article class="driver-card risk"><span>Risk driver</span><strong>Watch sellers</strong><em>43</em></article></div>
         </article>
       </section>
       <section class="layout full">
         <article class="panel">
           <span class="panel-label">Scenario table</span>
           <h2>Decision scenarios</h2>
-          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>2,840</td><td>96.1%</td><td>72%</td><td>Current run-rate</td></tr>
-                <tr><td>Base case</td><td>+227%</td><td>96.1%</td><td>82%</td><td>Commit forecast</td></tr>
-                <tr><td>Upside</td><td>+398%</td><td>3.8%</td><td>88%</td><td>Scale winners</td></tr>
-                <tr><td>Risk case</td><td>-142%</td><td>$3.1M</td><td>60%</td><td>Protect downside</td></tr></tbody></table>
+          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Current month</td><td>$211.3K GMV</td><td>8.3% cancel</td><td>81%</td><td>Run-rate call</td></tr>
+                <tr><td>Fulfillment target</td><td>97.7% SLA</td><td>+0.7 pts</td><td>85%</td><td>Protect service quality</td></tr>
+                <tr><td>Cancellation guardrail</td><td>8.3% cancel</td><td>+0.3 pts</td><td>76%</td><td>Root-cause watch list</td></tr>
+                <tr><td>Seller watchlist</td><td>43 sellers</td><td>5 owner queues</td><td>72%</td><td>Assign account actions</td></tr></tbody></table>
         </article>
         <article class="panel">
           <span class="panel-label">Bridge and ownership</span>
           <h2>Variance to action bridge</h2>
-          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Top seller expansion</td><td class="good">+$1.4M</td><td>Protect momentum</td><td>Marketplace</td></tr>
-                <tr><td>Cancellation risk</td><td class="bad">-$0.3M</td><td>Recovery required</td><td>Operations</td></tr>
-                <tr><td>Stockout pressure</td><td class="bad">-$0.6M</td><td>Recovery required</td><td>Finance</td></tr></tbody></table>
+          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>GMV momentum</td><td class="good">+2.8%</td><td>Protect momentum</td><td>Marketplace</td></tr>
+                <tr><td>Cancellation pressure</td><td class="bad">+0.3 pts</td><td>Recovery required</td><td>Operations</td></tr>
+                <tr><td>Stock availability gap</td><td class="bad">-0.7 pts</td><td>Recovery required</td><td>Account managers</td></tr></tbody></table>
         </article>
       </section>
       <section class="panel full">
@@ -138,19 +138,19 @@
         <h2>Owner action queue</h2>
         <div class="tabs"><button class="tab active" type="button" data-tab="0">Marketplace</button>
               <button class="tab" type="button" data-tab="1">Operations</button>
-              <button class="tab" type="button" data-tab="2">Finance</button></div>
+              <button class="tab" type="button" data-tab="2">Account managers</button></div>
         <table aria-label="Drilldown table"><thead><tr><th>View</th><th>Action</th><th>Metric / driver</th><th>Priority</th></tr></thead><tbody id="drilldown-body"></tbody></table>
       </section>
       <section class="commentary full" aria-label="Executive commentary">
-        <article><strong>So what</strong><p>active sellers is the headline signal, but the decision depends on whether the driver movement is structural or temporary.</p></article>
-        <article><strong>Now what</strong><p>Prioritize seller enablement for high-GMV accounts.</p></article>
+        <article><strong>So what</strong><p>GMV is still expanding, but cancellation and stock availability are close enough to guardrails to require owner follow-up.</p></article>
+        <article><strong>Now what</strong><p>Protect GMV momentum while working the 43-seller watchlist across account-manager queues.</p></article>
         <article><strong>Governance</strong><p>Bridge signs, scenario totals, and owner actions are reconciled before the pack is used in a management review.</p></article>
       </section>
       <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
     </main>
     <script>
-      const drilldownRows = [[["Marketplace decision","Prioritize seller enablement for high-GMV accounts.","Top seller expansion","Medium"],["Metric owner","Refresh active sellers every close cycle.","2,840","Medium"],["Finance check","Validate bridge tie-out before management pack release.","76% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","96.1%","Low"]],[["Operations decision","Resolve stockout and cancellation root causes.","Cancellation risk","High"],["Metric owner","Refresh fulfillment SLA every close cycle.","96.1%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","76% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","3.8%","High"]],[["Finance decision","Quantify margin from seller quality actions.","Stockout pressure","High"],["Metric owner","Refresh cancel rate every close cycle.","3.8%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","76% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$3.1M","High"]]];
-      const actionSummary = [{"owner":"Marketplace","action":"Prioritize seller enablement for high-GMV accounts."},{"owner":"Operations","action":"Resolve stockout and cancellation root causes."},{"owner":"Finance","action":"Quantify margin from seller quality actions."}];
+      const drilldownRows = [[["Marketplace decision","Protect GMV momentum in top seller accounts.","+2.8% GMV","Medium"],["Metric owner","Refresh seller GMV every close cycle.","$211.3K","Medium"],["Finance check","Confirm watchlist impact before management pack release.","43 sellers","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","119 sellers","Low"]],[["Operations decision","Reduce cancellation pressure above the 8.0% guardrail.","8.3% cancel","High"],["Metric owner","Refresh fulfillment SLA every close cycle.","97.7%","Medium"],["Finance check","Validate guardrail and stock availability movement.","91.3% stock","Medium"],["Next follow-up","Assign root-cause owners for cancellation reasons.","+0.3 pts","High"]],[["Account manager decision","Work the seller watchlist across owner queues.","5 queues","High"],["Metric owner","Refresh seller action queue after close.","43 sellers","Medium"],["Finance check","Validate action status before the pack is shared.","Synthetic source","Medium"],["Next follow-up","Quantify recovered GMV from seller quality actions.","$211.3K","High"]]];
+      const actionSummary = [{"owner":"Marketplace","action":"Protect GMV momentum in top seller accounts."},{"owner":"Operations","action":"Reduce cancellation pressure above the 8.0% guardrail."},{"owner":"Account managers","action":"Work the 43-seller watchlist across 5 owner queues."}];
       const tbody = document.querySelector('#drilldown-body');
       const tabs = Array.from(document.querySelectorAll('.tab'));
       function renderTab(index) {

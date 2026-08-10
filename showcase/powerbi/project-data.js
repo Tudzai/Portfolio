@@ -65,11 +65,11 @@ window.powerBiProjectDetails = [
     folder: "Project 07 - Marketplace Seller Performance",
     title: "Marketplace Seller Performance",
     lens: "Marketplace operations",
-    summary: "Seller performance dashboard ranking GMV, fulfillment, cancellation, rating, stock risk, and growth actions.",
-    metrics: [["2,840", "active sellers"], ["96.1%", "fulfillment SLA"], ["3.8%", "cancel rate"], ["$3.1M", "GMV growth pool"]],
-    bars: [["Top sellers", 86], ["Fulfillment", 80], ["Stock health", 64], ["Rating", 72]],
-    drivers: [["Top seller expansion", "+$1.4M", false], ["Cancellation risk", "-$0.3M", true], ["Stockout pressure", "-$0.6M", true]],
-    actions: [["Marketplace", "Prioritize seller enablement for high-GMV accounts."], ["Operations", "Resolve stockout and cancellation root causes."], ["Finance", "Quantify margin from seller quality actions."]]
+    summary: "Seller performance dashboard connecting GMV movement, fulfillment, cancellation, stock availability, and account-manager actions.",
+    metrics: [["119", "active sellers"], ["97.7%", "fulfillment SLA"], ["8.3%", "cancel rate"], ["$211.3K", "seller GMV"]],
+    bars: [["Fulfillment", 98], ["Stock availability", 91], ["Watch sellers", 36], ["Rating", 83]],
+    drivers: [["GMV momentum", "+2.8%", false], ["Cancellation pressure", "+0.3 pts", true], ["Watch sellers", "43", true]],
+    actions: [["Marketplace", "Protect GMV momentum in top seller accounts."], ["Operations", "Reduce cancellation pressure above the 8.0% guardrail."], ["Account managers", "Work the 43-seller watchlist across 5 owner queues."]]
   },
   {
     no: "08",
@@ -77,23 +77,23 @@ window.powerBiProjectDetails = [
     folder: "Project 08 - Digital Payments Profitability",
     title: "Digital Payments Profitability",
     lens: "Payments profitability",
-    summary: "Payments profitability dashboard linking merchant mix, transaction drivers, margin scenarios, and fee economics.",
-    metrics: [["$92.5M", "TPV"], ["1.28%", "take rate"], ["38%", "gross margin %"], ["$0.09", "unit profit"]],
-    bars: [["TPV", 90], ["Take rate", 63], ["Cost to serve", 58], ["Merchant mix", 70]],
-    drivers: [["Enterprise TPV", "+$2.2M", false], ["Processing cost", "-$0.7M", true], ["Fee optimization", "+$0.4M", false]],
-    actions: [["Commercial", "Review low-fee enterprise contracts."], ["Finance", "Model fee tiers by merchant segment."], ["Ops", "Track processing cost exceptions."]]
+    summary: "Digital payments FP&A dashboard rebuilt as a management pack: GMV, revenue, contribution margin, take rate, risk leakage, and scenario CM uplift.",
+    metrics: [["$41.4M", "GMV"], ["$540.3K", "revenue"], ["$201.9K", "contribution margin"], ["1.31%", "take rate"]],
+    bars: [["GMV", 82], ["Revenue", 72], ["CM", 67], ["Take rate", 65]],
+    drivers: [["GMV MoM", "+1.0%", false], ["Refund rate", "2.19%", true], ["Scenario CM uplift", "+$40.4K", false]],
+    actions: [["Commercial", "Review low-fee, high-volume merchant contracts."], ["Finance", "Use bridge and scenario CM to set pricing guardrails."], ["Risk / Ops", "Work refund and chargeback leakage watchlist."]]
   },
   {
     no: "09",
     slug: "bnpl-credit-risk-provision",
     folder: "Project 09 - BNPL Credit Risk Provision",
     title: "BNPL Credit Risk Provision",
-    lens: "Credit risk",
-    summary: "Credit-risk provision dashboard for loan book trend, delinquency, collections SLA, and provision pressure.",
-    metrics: [["$41.6M", "loan book"], ["6.7%", "30+ DPD"], ["2.9%", "loss rate"], ["$1.1M", "ECL provision gap"]],
-    bars: [["Current", 82], ["1-30 DPD", 54], ["31-60 DPD", 31], ["60+ DPD", 18]],
-    drivers: [["Vintage mix", "-$0.5M", true], ["Collections lift", "+$0.3M", false], ["Merchant cohort", "-$0.2M", true]],
-    actions: [["Risk", "Tighten exposure for weak merchant cohorts."], ["Collections", "Focus accounts before 60+ DPD migration."], ["Finance", "Update provision sensitivity for CFO review."]]
+    lens: "Credit risk command center",
+    summary: "BNPL credit-risk command center upgraded with Current Lens, native KPI cards with sparklines, delinquency/vintage diagnostics, collections owner queues, and provision governance.",
+    metrics: [["$1.6M", "current loan book"], ["25.0%", "30+ DPD"], ["65.9%", "approval rate"], ["$20.2K", "provision held"]],
+    bars: [["Current", 9], ["1-29 DPD", 65], ["30-59 DPD", 14], ["60+ DPD", 11]],
+    drivers: [["Vintage pressure", "-$18.4K ECL", true], ["Approval discipline", "65.9%", false], ["Provision cover", "+$1.8K buffer", false]],
+    actions: [["Risk", "Tighten weak merchant cohorts and monitor the Current Lens risk signal."], ["Collections", "Prioritize accounts before 60+ DPD migration by queue owner."], ["Finance", "Refresh provision sensitivity and coverage before CFO review."]]
   },
   {
     no: "10",
@@ -101,11 +101,11 @@ window.powerBiProjectDetails = [
     folder: "Project 10 - AML Fraud Monitoring",
     title: "AML Fraud Monitoring",
     lens: "Risk operations",
-    summary: "Fraud monitoring view surfacing suspicious patterns, case backlog, rule performance, and AML actions.",
-    metrics: [["12,480", "alerts"], ["91%", "SLA cleared"], ["3.2%", "false positives"], ["$0.8M", "exposure flagged"]],
-    bars: [["Rule hits", 74], ["Case SLA", 83], ["False positives", 58], ["Exposure", 66]],
-    drivers: [["New pattern cluster", "-$0.4M", true], ["Rule tuning", "+9 pts", false], ["Backlog aging", "-6 pts", true]],
-    actions: [["Risk Ops", "Escalate high-exposure clusters."], ["Analytics", "Tune rules with high false-positive rate."], ["Compliance", "Track SLA aging by owner."]]
+    summary: "AML command center connecting alert exposure, suspicious-case conversion, case SLA, rule precision, false positives, and accountable governance actions.",
+    metrics: [["6,611", "alerts"], ["66.1%", "SLA compliance"], ["35.4%", "false positives"], ["$420.1M", "alert exposure"]],
+    bars: [["Alert rate", 18.4], ["SLA compliance", 66.1], ["Rule precision", 64.6], ["False positives", 35.4]],
+    drivers: [["Alert-to-case conversion", "53.8%", false], ["Overdue backlog", "1,207 cases", true], ["Average case age", "2.4 days", false]],
+    actions: [["Risk Ops", "Prioritize high-exposure alert clusters and overdue investigations."], ["Rule Governance", "Tune high-volume rules where false positives dilute precision."], ["Compliance", "Track queue ownership, SLA recovery, and approved rule changes."]]
   },
   {
     no: "11",
@@ -113,11 +113,11 @@ window.powerBiProjectDetails = [
     folder: "Project 11 - Neobank Growth Retention LTV",
     title: "Neobank Growth Retention LTV",
     lens: "Neobank growth",
-    summary: "Growth and retention pack tying onboarding funnel, cohorts, churn, marketing ROI, and LTV to profitable growth.",
-    metrics: [["520K", "funded accounts"], ["72%", "M2 active"], ["2.7x", "LTV/CAC"], ["8.8%", "monthly churn"]],
-    bars: [["Onboarded", 88], ["Funded", 69], ["Active", 60], ["Retained", 52]],
-    drivers: [["Funding activation", "+5.4 pts", false], ["Dormant churn", "-3.1 pts", true], ["Channel quality", "+0.6x", false]],
-    actions: [["Growth", "Fund users earlier in onboarding."], ["CRM", "Reduce churn in first 60 days."], ["Finance", "Tie channel budget to LTV/CAC."]]
+    summary: "Three-page growth economics pack connecting acquisition scale, onboarding conversion, mature-cohort retention, churn, payback, and LTV to accountable actions.",
+    metrics: [["9.5K", "new users"], ["19.3K", "active users"], ["1.9K", "funded accounts"], ["2.1x", "LTV/CAC"]],
+    bars: [["KYC completion", 63], ["Activation", 38], ["Funded", 20], ["M3 retained", 89]],
+    drivers: [["M3 cohort retention", "88.7%", false], ["Paid type economics", "1.0x LTV/CAC", true], ["Lifecycle email economics", "6.2x LTV/CAC", false]],
+    actions: [["Growth", "Scale partner and referral lanes inside conversion guardrails."], ["Retention", "Work the 1,235-user risk queue by expected retained value."], ["Finance", "Hold paid budget until CAC, payback, and ROI gates recover."]]
   },
   {
     no: "12",
@@ -126,10 +126,10 @@ window.powerBiProjectDetails = [
     title: "WealthTech AUM Client Retention",
     lens: "Wealth analytics",
     summary: "AUM retention dashboard combining portfolio mix, client risk, suitability, and retention actions.",
-    metrics: [["$1.8B", "AUM"], ["94.2%", "client retention"], ["7.6%", "outflow risk"], ["$46M", "at-risk AUM"]],
-    bars: [["AUM", 89], ["Retention", 84], ["Suitability", 72], ["Outflow risk", 39]],
-    drivers: [["Advisor coverage", "+$18M", false], ["Market drawdown", "-$11M", true], ["Suitability gap", "-$7M", true]],
-    actions: [["Advisory", "Contact high-AUM at-risk clients."], ["Risk", "Resolve suitability exceptions."], ["Finance", "Track fee revenue exposure."]]
+    metrics: [["$811.1M", "AUM"], ["$2.9M", "net new money"], ["181", "rebalance-needed clients"], ["$4.9M", "churn-risk AUM"]],
+    bars: [["AUM", 89], ["Net flow", 42], ["Suitability", 59], ["Churn risk", 18]],
+    drivers: [["Market effect", "+$17.0M", false], ["Outflows", "-$25.3M", true], ["Rebalance queue", "181 clients", true]],
+    actions: [["Advisory", "Prioritize retained-AUM action queue for HNW/UHNW clients."], ["Risk", "Resolve suitability and rebalance exceptions before outflows accelerate."], ["Finance", "Track latest-month AUM roll-forward, NNM, and churn-risk exposure."]]
   },
   {
     no: "13",
@@ -148,12 +148,12 @@ window.powerBiProjectDetails = [
     slug: "treasury-working-capital",
     folder: "Project 14 - Treasury Working Capital",
     title: "Treasury Working Capital",
-    lens: "Treasury and cash",
-    summary: "Treasury view prioritizing AR, DSO, cash runway, FX exposure, liquidity, and collection actions.",
-    metrics: [["$24.7M", "cash balance"], ["51", "DSO days"], ["$6.2M", "overdue AR"], ["14.8", "cash runway months"]],
-    bars: [["Cash", 77], ["AR quality", 58], ["DSO", 48], ["Collections", 68]],
-    drivers: [["Overdue AR", "-$1.6M", true], ["Supplier terms", "+$0.7M", false], ["FX exposure", "-$0.4M", true]],
-    actions: [["Treasury", "Prioritize top overdue customers."], ["Commercial", "Escalate collection promises by owner."], ["Finance", "Refresh cash runway under downside case."]]
+    lens: "Treasury command center",
+    summary: "Treasury working-capital cockpit linking liquidity, runway, AR/AP execution, FX exposure, forecast accuracy, risk ownership, and action queues.",
+    metrics: [["$92.5M", "available liquidity"], ["$82.3M", "liquidity headroom"], ["263.9 wks", "cash runway"], ["66.0%", "overdue AR"]],
+    bars: [["Liquidity", 92], ["Headroom", 82], ["AR pressure", 66], ["FX hedge gap", 55]],
+    drivers: [["13W net flow", "-$3.8M", true], ["AP due 14d", "$4.6M", true], ["Open risks", "61", true]],
+    actions: [["Treasury", "Protect headroom and sequence payments against the 13-week cash view."], ["Collections", "Work overdue AR by customer risk and owner queue."], ["Finance", "Refresh FX, forecast error, and runway calls before CFO review."]]
   },
   {
     no: "15",
@@ -161,11 +161,11 @@ window.powerBiProjectDetails = [
     folder: "Project 15 - SaaS CFO Metrics",
     title: "SaaS CFO Metrics",
     lens: "CFO metrics",
-    summary: "CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health.",
-    metrics: [["$18.4M", "ARR"], ["112%", "NRR"], ["14", "CAC payback months"], ["7.1%", "logo churn"]],
-    bars: [["ARR", 80], ["NRR", 75], ["CAC payback", 56], ["Churn", 42]],
-    drivers: [["Expansion ARR", "+$1.1M", false], ["SMB churn", "-$0.4M", true], ["Sales efficiency", "+0.2x", false]],
-    actions: [["Sales", "Prioritize expansion in healthy cohorts."], ["CS", "Target SMB churn accounts."], ["Finance", "Connect ARR bridge to board forecast."]]
+    summary: "CFO metrics pack upgraded with native composite KPI cards, integrated sparklines, dynamic Current Lens, and board-ready ARR/retention/efficiency views.",
+    metrics: [["$25.3M", "ARR"], ["99.5%", "NRR"], ["1.2", "CAC payback months"], ["2.9%", "logo churn"]],
+    bars: [["ARR", 86], ["NRR", 70], ["CAC payback", 92], ["Churn", 29]],
+    drivers: [["Expansion ARR", "+$673.7K", false], ["Net New ARR", "-$24.8K", true], ["Forecast accuracy", "99.9%", false]],
+    actions: [["Sales", "Protect expansion in healthy cohorts."], ["CS", "Work the renewal-risk account queue."], ["Finance", "Use the Current Lens, KPI sparklines, and forecast/cash signals for board review."]]
   },
   {
     no: "16",

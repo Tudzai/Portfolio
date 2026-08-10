@@ -44,7 +44,7 @@
         iframe { height: 900px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-session-replay-20260702"></script>
+    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
   </head>
   <body>
     <main class="shell">
@@ -52,21 +52,40 @@
       <section class="hero">
         <p class="kicker">Power BI Risk operations</p>
         <h1>AML Fraud Monitoring</h1>
-        <p class="lead">Fraud monitoring view surfacing suspicious patterns, case backlog, rule performance, and AML actions. The preview frames the dashboard as an FP&amp;A decision product: what moved, why it moved, owner action, and the metric guardrail to monitor next.</p>
+        <p class="lead">AML command-center dashboard for monitoring suspicious activity, alert throughput, case SLA, rule precision, false positives, and governance actions. The upgraded preview emphasizes control-room scanning, owner accountability, and filter-driven risk triage.</p>
         <div class="preview"><svg viewBox="0 0 720 390" role="img" aria-label="AML Fraud Monitoring dashboard mockup" xmlns="http://www.w3.org/2000/svg">
-    <rect width="720" height="390" rx="18" fill="#ffffff"/>
-    <rect x="0" y="0" width="720" height="54" rx="18" fill="#17201d"/>
-    <text x="28" y="34" fill="#ffffff" font-size="16" font-weight="800">AML Fraud Monitoring</text>
-    <text x="590" y="34" fill="#badbd8" font-size="12" font-weight="800">Project 10</text>
-    <rect x="28" y="74" width="300" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
-    <g><text x="34" y="85" fill="#43514d" font-size="13" font-weight="700">Rule hits</text><rect x="160" y="70" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="70" width="303" height="16" rx="8" fill="#215c7a"/><text x="606" y="84" fill="#17201d" font-size="12" font-weight="800">74%</text></g><g><text x="34" y="121" fill="#43514d" font-size="13" font-weight="700">Case SLA</text><rect x="160" y="106" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="106" width="340" height="16" rx="8" fill="#a35c3f"/><text x="606" y="120" fill="#17201d" font-size="12" font-weight="800">83%</text></g><g><text x="34" y="157" fill="#43514d" font-size="13" font-weight="700">False positives</text><rect x="160" y="142" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="142" width="238" height="16" rx="8" fill="#5f7132"/><text x="606" y="156" fill="#17201d" font-size="12" font-weight="800">58%</text></g><g><text x="34" y="193" fill="#43514d" font-size="13" font-weight="700">Exposure</text><rect x="160" y="178" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="178" width="271" height="16" rx="8" fill="#215c7a"/><text x="606" y="192" fill="#17201d" font-size="12" font-weight="800">66%</text></g>
-    <rect x="356" y="74" width="336" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
-    <polyline points="36.0,138.7 232.0,34.0 428.0,226.0 624.0,130.0" fill="none" stroke="#215c7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(330 52) scale(.5 .72)"/>
-    <polyline points="36.0,138.7 232.0,34.0 428.0,226.0 624.0,130.0" fill="none" stroke="#a35c3f" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 7" transform="translate(330 82) scale(.5 .55)" opacity=".85"/>
-    <text x="382" y="116" fill="#17201d" font-size="34" font-weight="900">12,480</text>
-    <text x="382" y="142" fill="#5f6d68" font-size="13" font-weight="700">alerts</text>
-    <rect x="28" y="326" width="664" height="36" rx="8" fill="#eef4f1"/>
-    <text x="48" y="349" fill="#17201d" font-size="13" font-weight="800">Interactive preview includes KPI cards, driver bridge, scenario table, and owner actions.</text>
+    <rect width="720" height="390" fill="#07131d"/>
+    <rect x="0" y="0" width="720" height="58" fill="#0b1c27"/>
+    <rect x="0" y="0" width="7" height="58" fill="#2dd4bf"/>
+    <text x="24" y="27" fill="#2dd4bf" font-size="9" font-weight="800">AML CONTROL ROOM</text>
+    <text x="24" y="46" fill="#f1f5f9" font-size="16" font-weight="800">Fraud &amp; Compliance Overview</text>
+    <g fill="#142532" stroke="#2b4150">
+      <rect x="24" y="74" width="102" height="72" rx="4"/><rect x="138" y="74" width="102" height="72" rx="4"/>
+      <rect x="252" y="74" width="102" height="72" rx="4"/><rect x="366" y="74" width="102" height="72" rx="4"/>
+      <rect x="480" y="74" width="102" height="72" rx="4"/><rect x="594" y="74" width="102" height="72" rx="4"/>
+    </g>
+    <g font-family="Arial, sans-serif" font-weight="700">
+      <text x="34" y="94" fill="#9fb2c1" font-size="8">TRANSACTIONS</text><text x="34" y="123" fill="#5ea8ff" font-size="21">36K</text>
+      <text x="148" y="94" fill="#9fb2c1" font-size="8">ALERT EXPOSURE</text><text x="148" y="123" fill="#f2b84b" font-size="21">$420M</text>
+      <text x="262" y="94" fill="#9fb2c1" font-size="8">ALERTS</text><text x="262" y="123" fill="#f2b84b" font-size="21">6,611</text>
+      <text x="376" y="94" fill="#9fb2c1" font-size="8">SUSPICIOUS</text><text x="376" y="123" fill="#ff626d" font-size="21">2,894</text>
+      <text x="490" y="94" fill="#9fb2c1" font-size="8">FALSE POSITIVES</text><text x="490" y="123" fill="#f2b84b" font-size="21">35.4%</text>
+      <text x="604" y="94" fill="#9fb2c1" font-size="8">OVERDUE</text><text x="604" y="123" fill="#ff626d" font-size="21">1,207</text>
+    </g>
+    <rect x="24" y="162" width="430" height="202" rx="5" fill="#101f2a" stroke="#2b4150"/>
+    <text x="40" y="186" fill="#f2b84b" font-size="13" font-weight="800">Alert and Case Trend</text>
+    <text x="40" y="203" fill="#9fb2c1" font-size="8">Monthly monitoring load and investigation escalation</text>
+    <g stroke="#263947" stroke-width="1"><line x1="42" y1="230" x2="436" y2="230"/><line x1="42" y1="277" x2="436" y2="277"/><line x1="42" y1="324" x2="436" y2="324"/></g>
+    <g fill="#1d8cf8"><rect x="52" y="285" width="14" height="39"/><rect x="78" y="274" width="14" height="50"/><rect x="104" y="247" width="14" height="77"/><rect x="130" y="261" width="14" height="63"/><rect x="156" y="240" width="14" height="84"/><rect x="182" y="266" width="14" height="58"/><rect x="208" y="263" width="14" height="61"/><rect x="234" y="255" width="14" height="69"/><rect x="260" y="235" width="14" height="89"/><rect x="286" y="252" width="14" height="72"/><rect x="312" y="244" width="14" height="80"/><rect x="338" y="249" width="14" height="75"/><rect x="364" y="229" width="14" height="95"/><rect x="390" y="239" width="14" height="85"/></g>
+    <polyline points="59,307 85,300 111,282 137,293 163,278 189,296 215,290 241,294 267,271 293,280 319,279 345,284 371,265 397,274" fill="none" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="468" y="162" width="228" height="202" rx="5" fill="#f8fafc" stroke="#d5dee5"/>
+    <text x="484" y="186" fill="#0f5267" font-size="13" font-weight="800">Priority Rule Action Queue</text>
+    <text x="484" y="203" fill="#64748b" font-size="8">Owner, precision, and exposure</text>
+    <g font-size="8" font-family="Arial, sans-serif"><text x="484" y="230" fill="#0f5267" font-weight="700">RULE / OWNER</text><text x="650" y="230" fill="#0f5267" font-weight="700" text-anchor="end">ACTION</text>
+      <line x1="484" y1="238" x2="680" y2="238" stroke="#d5dee5"/><text x="484" y="255" fill="#17201d">Cash Intensive / Branch Risk</text><text x="680" y="255" fill="#b45309" text-anchor="end">TUNE</text>
+      <line x1="484" y1="265" x2="680" y2="265" stroke="#e2e8f0"/><text x="484" y="282" fill="#17201d">High Velocity / Payments</text><text x="680" y="282" fill="#b91c1c" text-anchor="end">TRIAGE</text>
+      <line x1="484" y1="292" x2="680" y2="292" stroke="#e2e8f0"/><text x="484" y="309" fill="#17201d">Watchlist / Sanctions</text><text x="680" y="309" fill="#b91c1c" text-anchor="end">ESCALATE</text>
+      <line x1="484" y1="319" x2="680" y2="319" stroke="#e2e8f0"/><text x="484" y="338" fill="#475569">Rule precision</text><text x="680" y="338" fill="#0f766e" font-weight="800" text-anchor="end">64.6%</text></g>
   </svg></div>
         <div class="actions">
           <a class="button" href="preview.html">Open interactive HTML preview</a>
@@ -81,9 +100,9 @@
         <iframe src="preview.html" title="AML Fraud Monitoring interactive preview"></iframe>
       </section>
       <section class="grid" aria-label="Project proof points">
-        <article class="card"><strong>Executive question</strong><p>Which KPI is off plan, which driver explains the gap, and which owner should take the next action?</p></article>
-        <article class="card"><strong>Finance logic</strong><p>12,480 alerts, 91% SLA cleared, and 2 risk driver(s) are linked into a decision bridge.</p></article>
-        <article class="card"><strong>Metric definitions / QA checks</strong><p>Scenario totals, bridge math, driver signs, and action ownership are checked before publishing; all values use portfolio-safe synthetic data.</p></article>
+        <article class="card"><strong>Executive question</strong><p>Where are suspicious patterns, overdue cases, and false positives creating the highest AML operating risk?</p></article>
+        <article class="card"><strong>Control logic</strong><p>6,611 alerts, 66.1% SLA compliance, 35.4% false positives, and $420.1M alert exposure connect triage, case, owner, and governance views.</p></article>
+        <article class="card"><strong>Metric definitions / QA checks</strong><p>Alert status, SLA aging, false-positive rate, rule tuning, and public-safe synthetic data checks are reviewed before publishing.</p></article>
       </section>
       <p class="note">This portfolio preview uses synthetic or anonymized data to demonstrate FP&amp;A reporting logic without exposing company-confidential information.</p>
     </main>

@@ -64,7 +64,7 @@
         th, td { padding: 9px 7px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-session-replay-20260702"></script>
+    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
   </head>
   <body>
     <main class="dashboard">
@@ -72,18 +72,18 @@
         <div>
           <p class="eyebrow">Interactive Power BI-style preview / Project 15</p>
           <h1>SaaS CFO Metrics</h1>
-          <p class="subtitle">CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
+          <p class="subtitle">CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health. This HTML version mirrors the upgraded PBIX story: composite KPI cards, sparkline trends, Current Lens context, and owner actions without requiring Power BI Service access.</p>
         </div>
         <div class="filters" aria-label="Demo filter chips">
-          <span class="chip">Period: QTD</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scenario: Base</span>
+          <span class="chip">Year: All</span><span class="chip">Segment: All</span><span class="chip">Motion: All</span><span class="chip">Region: All</span>
         </div>
       </header>
       <section class="kpi-grid" aria-label="KPI summary">
-          <article class="kpi"><span>ARR</span><strong>$18.4M</strong><em>+3.8% vs plan</em></article>
-          <article class="kpi"><span>NRR</span><strong>112%</strong><em>needs recovery</em></article>
-          <article class="kpi"><span>CAC payback months</span><strong>14</strong><em>+2.1 pts vs LY</em></article>
-          <article class="kpi"><span>logo churn</span><strong>7.1%</strong><em>1 risk flag(s)</em></article>
-          <article class="kpi"><span>driver health score</span><strong>63%</strong><em>weighted from dashboard levers</em></article>
+          <article class="kpi"><span>ARR</span><strong>$25.3M</strong><em>latest May 2026 close</em></article>
+          <article class="kpi"><span>NRR</span><strong>99.5%</strong><em>watch expansion gap</em></article>
+          <article class="kpi"><span>CAC payback months</span><strong>1.2</strong><em>efficient acquisition</em></article>
+          <article class="kpi"><span>logo churn</span><strong>2.9%</strong><em>risk contained</em></article>
+          <article class="kpi"><span>forecast accuracy</span><strong>99.9%</strong><em>board lens ready</em></article>
           <article class="kpi"><span>owner actions</span><strong>3</strong><em>decision queue ready</em></article>
       </section>
       <section class="layout">
@@ -107,30 +107,30 @@
         <article class="panel">
           <span class="panel-label">Driver heatmap</span>
           <h2>What is moving the decision?</h2>
-          <div class="driver-list"><div class="driver-row"><span>ARR</span><div class="bar"><i style="width:80%"></i></div><strong>80%</strong></div>
-              <div class="driver-row"><span>NRR</span><div class="bar"><i style="width:75%"></i></div><strong>75%</strong></div>
-              <div class="driver-row"><span>CAC payback</span><div class="bar"><i style="width:56%"></i></div><strong>56%</strong></div>
-              <div class="driver-row"><span>Churn</span><div class="bar"><i style="width:42%"></i></div><strong>42%</strong></div></div>
-          <div class="driver-cards"><article class="driver-card "><span>Positive driver</span><strong>Expansion ARR</strong><em>+$1.1M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>SMB churn</strong><em>-$0.4M</em></article>
-              <article class="driver-card "><span>Positive driver</span><strong>Sales efficiency</strong><em>+0.2x</em></article></div>
+          <div class="driver-list"><div class="driver-row"><span>ARR</span><div class="bar"><i style="width:86%"></i></div><strong>86%</strong></div>
+              <div class="driver-row"><span>NRR</span><div class="bar"><i style="width:70%"></i></div><strong>70%</strong></div>
+              <div class="driver-row"><span>CAC payback</span><div class="bar"><i style="width:92%"></i></div><strong>92%</strong></div>
+              <div class="driver-row"><span>Churn</span><div class="bar"><i style="width:29%"></i></div><strong>29%</strong></div></div>
+          <div class="driver-cards"><article class="driver-card "><span>Positive driver</span><strong>Expansion ARR</strong><em>+$673.7K</em></article>
+              <article class="driver-card risk"><span>Risk driver</span><strong>Net New ARR</strong><em>-$24.8K</em></article>
+              <article class="driver-card "><span>Positive driver</span><strong>Forecast accuracy</strong><em>99.9%</em></article></div>
         </article>
       </section>
       <section class="layout full">
         <article class="panel">
           <span class="panel-label">Scenario table</span>
           <h2>Decision scenarios</h2>
-          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>$18.4M</td><td>112%</td><td>62%</td><td>Current run-rate</td></tr>
-                <tr><td>Base case</td><td>$19.1M</td><td>112%</td><td>69%</td><td>Commit forecast</td></tr>
-                <tr><td>Upside</td><td>$20.1M</td><td>14</td><td>75%</td><td>Scale winners</td></tr>
-                <tr><td>Risk case</td><td>$17.7M</td><td>7.1%</td><td>48%</td><td>Protect downside</td></tr></tbody></table>
+          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>$25.3M</td><td>99.5% NRR</td><td>82%</td><td>Current run-rate</td></tr>
+                <tr><td>Base case</td><td>$26.0M</td><td>96.8% GRR</td><td>76%</td><td>Commit forecast</td></tr>
+                <tr><td>Upside</td><td>$27.1M</td><td>1.2 payback</td><td>80%</td><td>Scale winners</td></tr>
+                <tr><td>Risk case</td><td>$24.1M</td><td>2.9% churn</td><td>56%</td><td>Protect downside</td></tr></tbody></table>
         </article>
         <article class="panel">
           <span class="panel-label">Bridge and ownership</span>
           <h2>Variance to action bridge</h2>
-          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Expansion ARR</td><td class="good">+$1.1M</td><td>Protect momentum</td><td>Sales</td></tr>
-                <tr><td>SMB churn</td><td class="bad">-$0.4M</td><td>Recovery required</td><td>CS</td></tr>
-                <tr><td>Sales efficiency</td><td class="good">+$0.2M</td><td>Protect momentum</td><td>Finance</td></tr></tbody></table>
+          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Expansion ARR</td><td class="good">+$673.7K</td><td>Protect momentum</td><td>Sales</td></tr>
+                <tr><td>Net New ARR</td><td class="bad">-$24.8K</td><td>Recovery required</td><td>CS</td></tr>
+                <tr><td>Forecast accuracy</td><td class="good">99.9%</td><td>Board lens ready</td><td>Finance</td></tr></tbody></table>
         </article>
       </section>
       <section class="panel full">
@@ -143,14 +143,14 @@
       </section>
       <section class="commentary full" aria-label="Executive commentary">
         <article><strong>So what</strong><p>ARR is the headline signal, but the decision depends on whether the driver movement is structural or temporary.</p></article>
-        <article><strong>Now what</strong><p>Prioritize expansion in healthy cohorts.</p></article>
+        <article><strong>Now what</strong><p>Protect expansion momentum, work the renewal-risk queue, and keep forecast/cash signals tied to the board lens.</p></article>
         <article><strong>Governance</strong><p>Bridge signs, scenario totals, and owner actions are reconciled before the pack is used in a management review.</p></article>
       </section>
       <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
     </main>
     <script>
-      const drilldownRows = [[["Sales decision","Prioritize expansion in healthy cohorts.","Expansion ARR","Medium"],["Metric owner","Refresh ARR every close cycle.","$18.4M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","63% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","112%","Low"]],[["CS decision","Target SMB churn accounts.","SMB churn","High"],["Metric owner","Refresh NRR every close cycle.","112%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","63% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","14","High"]],[["Finance decision","Connect ARR bridge to board forecast.","Sales efficiency","Medium"],["Metric owner","Refresh CAC payback months every close cycle.","14","Medium"],["Finance check","Validate bridge tie-out before management pack release.","63% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","7.1%","Low"]]];
-      const actionSummary = [{"owner":"Sales","action":"Prioritize expansion in healthy cohorts."},{"owner":"CS","action":"Target SMB churn accounts."},{"owner":"Finance","action":"Connect ARR bridge to board forecast."}];
+      const drilldownRows = [[["Sales decision","Protect expansion in healthy cohorts.","Expansion ARR","Medium"],["Metric owner","Refresh ARR every close cycle.","$25.3M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","Forecast 99.9%","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","99.5% NRR","Medium"]],[["CS decision","Work the renewal-risk account queue.","Net New ARR","High"],["Metric owner","Refresh NRR every close cycle.","99.5%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","2.9% churn","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","96.8% GRR","Medium"]],[["Finance decision","Connect forecast and cash signals to board lens.","Forecast accuracy","Medium"],["Metric owner","Refresh CAC payback months every close cycle.","1.2","Medium"],["Finance check","Validate bridge tie-out before management pack release.","99.9% forecast","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$25.3M ARR","Medium"]]];
+      const actionSummary = [{"owner":"Sales","action":"Protect expansion in healthy cohorts."},{"owner":"CS","action":"Work the renewal-risk account queue."},{"owner":"Finance","action":"Connect forecast and cash signals to board lens."}];
       const tbody = document.querySelector('#drilldown-body');
       const tabs = Array.from(document.querySelectorAll('.tab'));
       function renderTab(index) {

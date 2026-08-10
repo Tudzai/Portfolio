@@ -44,29 +44,29 @@
         iframe { height: 900px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-session-replay-20260702"></script>
+    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
   </head>
   <body>
     <main class="shell">
       <a class="back" href="../">Back to Power BI hub</a>
       <section class="hero">
-        <p class="kicker">Power BI Treasury and cash</p>
+        <p class="kicker">Power BI Treasury command center</p>
         <h1>Treasury Working Capital</h1>
-        <p class="lead">Treasury view prioritizing AR, DSO, cash runway, FX exposure, liquidity, and collection actions. The preview frames the dashboard as an FP&amp;A decision product: what moved, why it moved, owner action, and the metric guardrail to monitor next.</p>
+        <p class="lead">Treasury working-capital cockpit linking liquidity, runway, AR/AP execution, FX exposure, forecast accuracy, risk ownership, and action queues. The preview frames the dashboard as an FP&amp;A decision product: what moved, why it moved, owner action, and the metric guardrail to monitor next.</p>
         <div class="preview"><svg viewBox="0 0 720 390" role="img" aria-label="Treasury Working Capital dashboard mockup" xmlns="http://www.w3.org/2000/svg">
     <rect width="720" height="390" rx="18" fill="#ffffff"/>
     <rect x="0" y="0" width="720" height="54" rx="18" fill="#17201d"/>
     <text x="28" y="34" fill="#ffffff" font-size="16" font-weight="800">Treasury Working Capital</text>
     <text x="590" y="34" fill="#badbd8" font-size="12" font-weight="800">Project 14</text>
     <rect x="28" y="74" width="300" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
-    <g><text x="34" y="85" fill="#43514d" font-size="13" font-weight="700">Cash</text><rect x="160" y="70" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="70" width="316" height="16" rx="8" fill="#6b6f2d"/><text x="606" y="84" fill="#17201d" font-size="12" font-weight="800">77%</text></g><g><text x="34" y="121" fill="#43514d" font-size="13" font-weight="700">AR quality</text><rect x="160" y="106" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="106" width="238" height="16" rx="8" fill="#b4654a"/><text x="606" y="120" fill="#17201d" font-size="12" font-weight="800">58%</text></g><g><text x="34" y="157" fill="#43514d" font-size="13" font-weight="700">DSO</text><rect x="160" y="142" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="142" width="197" height="16" rx="8" fill="#1f6c87"/><text x="606" y="156" fill="#17201d" font-size="12" font-weight="800">48%</text></g><g><text x="34" y="193" fill="#43514d" font-size="13" font-weight="700">Collections</text><rect x="160" y="178" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="178" width="279" height="16" rx="8" fill="#6b6f2d"/><text x="606" y="192" fill="#17201d" font-size="12" font-weight="800">68%</text></g>
+    <g><text x="34" y="85" fill="#43514d" font-size="13" font-weight="700">Liquidity</text><rect x="160" y="70" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="70" width="396" height="16" rx="8" fill="#6b6f2d"/><text x="606" y="84" fill="#17201d" font-size="12" font-weight="800">92%</text></g><g><text x="34" y="121" fill="#43514d" font-size="13" font-weight="700">Headroom</text><rect x="160" y="106" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="106" width="353" height="16" rx="8" fill="#1f6c87"/><text x="606" y="120" fill="#17201d" font-size="12" font-weight="800">82%</text></g><g><text x="34" y="157" fill="#43514d" font-size="13" font-weight="700">AR pressure</text><rect x="160" y="142" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="142" width="284" height="16" rx="8" fill="#b4654a"/><text x="606" y="156" fill="#17201d" font-size="12" font-weight="800">66%</text></g><g><text x="34" y="193" fill="#43514d" font-size="13" font-weight="700">FX hedge gap</text><rect x="160" y="178" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="178" width="237" height="16" rx="8" fill="#6b6f2d"/><text x="606" y="192" fill="#17201d" font-size="12" font-weight="800">55%</text></g>
     <rect x="356" y="74" width="336" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
     <polyline points="36.0,34.0 232.0,167.6 428.0,226.0 624.0,34.0" fill="none" stroke="#6b6f2d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(330 52) scale(.5 .72)"/>
     <polyline points="36.0,34.0 232.0,167.6 428.0,226.0 624.0,34.0" fill="none" stroke="#b4654a" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 7" transform="translate(330 82) scale(.5 .55)" opacity=".85"/>
-    <text x="382" y="116" fill="#17201d" font-size="34" font-weight="900">$24.7M</text>
-    <text x="382" y="142" fill="#5f6d68" font-size="13" font-weight="700">cash balance</text>
+    <text x="382" y="116" fill="#17201d" font-size="34" font-weight="900">$92.5M</text>
+    <text x="382" y="142" fill="#5f6d68" font-size="13" font-weight="700">available liquidity</text>
     <rect x="28" y="326" width="664" height="36" rx="8" fill="#eef4f1"/>
-    <text x="48" y="349" fill="#17201d" font-size="13" font-weight="800">Interactive preview includes KPI cards, driver bridge, scenario table, and owner actions.</text>
+    <text x="48" y="349" fill="#17201d" font-size="13" font-weight="800">Interactive preview includes liquidity KPIs, AR/AP execution, FX risk, and owner actions.</text>
   </svg></div>
         <div class="actions">
           <a class="button" href="preview.html">Open interactive HTML preview</a>
@@ -82,7 +82,7 @@
       </section>
       <section class="grid" aria-label="Project proof points">
         <article class="card"><strong>Executive question</strong><p>Which KPI is off plan, which driver explains the gap, and which owner should take the next action?</p></article>
-        <article class="card"><strong>Finance logic</strong><p>$24.7M cash balance, 51 DSO days, and 2 risk driver(s) are linked into a decision bridge.</p></article>
+        <article class="card"><strong>Finance logic</strong><p>$92.5M available liquidity, $82.3M headroom, 263.9 weeks of Base-case runway, and overdue AR pressure are linked into a decision bridge.</p></article>
         <article class="card"><strong>Metric definitions / QA checks</strong><p>Scenario totals, bridge math, driver signs, and action ownership are checked before publishing; all values use portfolio-safe synthetic data.</p></article>
       </section>
       <p class="note">This portfolio preview uses synthetic or anonymized data to demonstrate FP&amp;A reporting logic without exposing company-confidential information.</p>

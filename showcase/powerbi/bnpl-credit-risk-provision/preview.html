@@ -64,7 +64,7 @@
         th, td { padding: 9px 7px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-session-replay-20260702"></script>
+    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
   </head>
   <body>
     <main class="dashboard">
@@ -72,24 +72,24 @@
         <div>
           <p class="eyebrow">Interactive Power BI-style preview / Project 09</p>
           <h1>BNPL Credit Risk Provision</h1>
-          <p class="subtitle">Credit-risk provision dashboard for loan book trend, delinquency, collections SLA, and provision pressure. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
+          <p class="subtitle">BNPL credit-risk command center for loan book trend, delinquency, vintage pressure, collections ownership, and provision coverage. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
         </div>
         <div class="filters" aria-label="Demo filter chips">
-          <span class="chip">Period: QTD</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scenario: Base</span>
+          <span class="chip">Month: May 2026</span><span class="chip">Product: All</span><span class="chip">Risk band: All</span><span class="chip">Scenario: Base</span>
         </div>
       </header>
       <section class="kpi-grid" aria-label="KPI summary">
-          <article class="kpi"><span>loan book</span><strong>$41.6M</strong><em>+3.8% vs plan</em></article>
-          <article class="kpi"><span>30+ DPD</span><strong>6.7%</strong><em>needs recovery</em></article>
-          <article class="kpi"><span>loss rate</span><strong>2.9%</strong><em>+2.1 pts vs LY</em></article>
-          <article class="kpi"><span>ECL provision gap</span><strong>$1.1M</strong><em>2 risk flag(s)</em></article>
-          <article class="kpi"><span>driver health score</span><strong>46%</strong><em>weighted from dashboard levers</em></article>
+          <article class="kpi"><span>current loan book</span><strong>$1.6M</strong><em>latest synthetic snapshot</em></article>
+          <article class="kpi"><span>30+ DPD</span><strong>25.0%</strong><em>risk tightening</em></article>
+          <article class="kpi"><span>NPL rate</span><strong>3.0%</strong><em>watch migration</em></article>
+          <article class="kpi"><span>provision held</span><strong>$20.2K</strong><em>covers expected loss</em></article>
+          <article class="kpi"><span>approval rate</span><strong>65.9%</strong><em>policy discipline</em></article>
           <article class="kpi"><span>owner actions</span><strong>3</strong><em>decision queue ready</em></article>
       </section>
       <section class="layout">
         <article class="panel">
           <span class="panel-label">Trend and forecast call</span>
-          <h2>loan book versus operating plan</h2>
+          <h2>current loan book versus risk trend</h2>
           <div class="chart-wrap">
             <svg class="chart-svg" viewBox="0 0 760 300" role="img" aria-label="Actual and plan trend chart" xmlns="http://www.w3.org/2000/svg">
               <rect width="760" height="300" rx="10" fill="#fbfcfa"/>
@@ -107,30 +107,30 @@
         <article class="panel">
           <span class="panel-label">Driver heatmap</span>
           <h2>What is moving the decision?</h2>
-          <div class="driver-list"><div class="driver-row"><span>Current</span><div class="bar"><i style="width:82%"></i></div><strong>82%</strong></div>
-              <div class="driver-row"><span>1-30 DPD</span><div class="bar"><i style="width:54%"></i></div><strong>54%</strong></div>
-              <div class="driver-row"><span>31-60 DPD</span><div class="bar"><i style="width:31%"></i></div><strong>31%</strong></div>
-              <div class="driver-row"><span>60+ DPD</span><div class="bar"><i style="width:18%"></i></div><strong>18%</strong></div></div>
-          <div class="driver-cards"><article class="driver-card risk"><span>Risk driver</span><strong>Vintage mix</strong><em>-$0.5M</em></article>
-              <article class="driver-card "><span>Positive driver</span><strong>Collections lift</strong><em>+$0.3M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>Merchant cohort</strong><em>-$0.2M</em></article></div>
+          <div class="driver-list"><div class="driver-row"><span>Current</span><div class="bar"><i style="width:9%"></i></div><strong>9%</strong></div>
+              <div class="driver-row"><span>1-29 DPD</span><div class="bar"><i style="width:65%"></i></div><strong>65%</strong></div>
+              <div class="driver-row"><span>30-59 DPD</span><div class="bar"><i style="width:14%"></i></div><strong>14%</strong></div>
+              <div class="driver-row"><span>60+ DPD</span><div class="bar"><i style="width:11%"></i></div><strong>11%</strong></div></div>
+          <div class="driver-cards"><article class="driver-card risk"><span>Risk driver</span><strong>Vintage pressure</strong><em>-$18.4K ECL</em></article>
+              <article class="driver-card "><span>Policy driver</span><strong>Approval discipline</strong><em>65.9%</em></article>
+              <article class="driver-card "><span>Finance driver</span><strong>Provision cover</strong><em>+$1.8K buffer</em></article></div>
         </article>
       </section>
       <section class="layout full">
         <article class="panel">
           <span class="panel-label">Scenario table</span>
           <h2>Decision scenarios</h2>
-          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>$41.6M</td><td>6.7%</td><td>62%</td><td>Current run-rate</td></tr>
-                <tr><td>Base case</td><td>$43.3M</td><td>6.7%</td><td>52%</td><td>Commit forecast</td></tr>
-                <tr><td>Upside</td><td>$45.3M</td><td>2.9%</td><td>58%</td><td>Scale winners</td></tr>
-                <tr><td>Risk case</td><td>$39.9M</td><td>$1.1M</td><td>48%</td><td>Protect downside</td></tr></tbody></table>
+          <table aria-label="Scenario table"><thead><tr><th>Scenario</th><th>Primary value</th><th>Guardrail</th><th>Confidence</th><th>Decision use</th></tr></thead><tbody><tr><td>Actual</td><td>$1.6M</td><td>25.0% 30+ DPD</td><td>62%</td><td>Current risk lens</td></tr>
+                <tr><td>Base case</td><td>$700.0K</td><td>Provision forecast</td><td>52%</td><td>Commit forecast</td></tr>
+                <tr><td>Upside</td><td>65.9%</td><td>Approval discipline</td><td>58%</td><td>Scale quality approvals</td></tr>
+                <tr><td>Risk case</td><td>$18.4K</td><td>Expected loss</td><td>48%</td><td>Protect downside</td></tr></tbody></table>
         </article>
         <article class="panel">
           <span class="panel-label">Bridge and ownership</span>
           <h2>Variance to action bridge</h2>
-          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Vintage mix</td><td class="bad">-$0.5M</td><td>Recovery required</td><td>Risk</td></tr>
-                <tr><td>Collections lift</td><td class="good">+$0.3M</td><td>Protect momentum</td><td>Collections</td></tr>
-                <tr><td>Merchant cohort</td><td class="bad">-$0.2M</td><td>Recovery required</td><td>Finance</td></tr></tbody></table>
+          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>Vintage pressure</td><td class="bad">-$18.4K ECL</td><td>Risk tightening</td><td>Risk</td></tr>
+                <tr><td>Approval discipline</td><td class="good">65.9%</td><td>Protect quality growth</td><td>Risk</td></tr>
+                <tr><td>Provision coverage</td><td class="good">+$1.8K</td><td>Coverage above ECL</td><td>Finance</td></tr></tbody></table>
         </article>
       </section>
       <section class="panel full">
@@ -142,15 +142,15 @@
         <table aria-label="Drilldown table"><thead><tr><th>View</th><th>Action</th><th>Metric / driver</th><th>Priority</th></tr></thead><tbody id="drilldown-body"></tbody></table>
       </section>
       <section class="commentary full" aria-label="Executive commentary">
-        <article><strong>So what</strong><p>loan book is the headline signal, but the decision depends on whether the driver movement is structural or temporary.</p></article>
-        <article><strong>Now what</strong><p>Tighten exposure for weak merchant cohorts.</p></article>
+        <article><strong>So what</strong><p>The current lens says risk is tightening: 30+ DPD is elevated even though provision coverage is currently above expected loss.</p></article>
+        <article><strong>Now what</strong><p>Tighten weak merchant cohorts and move pre-60 DPD queues into owner follow-up before migration worsens.</p></article>
         <article><strong>Governance</strong><p>Bridge signs, scenario totals, and owner actions are reconciled before the pack is used in a management review.</p></article>
       </section>
       <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
     </main>
     <script>
-      const drilldownRows = [[["Risk decision","Tighten exposure for weak merchant cohorts.","Vintage mix","High"],["Metric owner","Refresh loan book every close cycle.","$41.6M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","46% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","6.7%","High"]],[["Collections decision","Focus accounts before 60+ DPD migration.","Collections lift","Medium"],["Metric owner","Refresh 30+ DPD every close cycle.","6.7%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","46% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","2.9%","Low"]],[["Finance decision","Update provision sensitivity for CFO review.","Merchant cohort","High"],["Metric owner","Refresh loss rate every close cycle.","2.9%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","46% health","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$1.1M","High"]]];
-      const actionSummary = [{"owner":"Risk","action":"Tighten exposure for weak merchant cohorts."},{"owner":"Collections","action":"Focus accounts before 60+ DPD migration."},{"owner":"Finance","action":"Update provision sensitivity for CFO review."}];
+      const drilldownRows = [[["Risk decision","Tighten weak merchant cohorts and monitor the Current Lens signal.","Vintage pressure","High"],["Metric owner","Refresh current loan book every close cycle.","$1.6M","Medium"],["Finance check","Validate bridge tie-out before management pack release.","25.0% 30+ DPD","High"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$18.4K ECL","High"]],[["Collections decision","Prioritize accounts before 60+ DPD migration by queue owner.","Pre-60 migration","High"],["Metric owner","Refresh 30+ DPD every close cycle.","25.0%","Medium"],["Finance check","Validate bridge tie-out before management pack release.","3.0% NPL","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","11% 60+ DPD","High"]],[["Finance decision","Refresh provision sensitivity and coverage before CFO review.","Provision cover","High"],["Metric owner","Refresh expected loss every close cycle.","$18.4K","Medium"],["Finance check","Validate bridge tie-out before management pack release.","$20.2K held","Medium"],["Next follow-up","Bring owner comment and quantified impact into the next review.","$700.0K base forecast","High"]]];
+      const actionSummary = [{"owner":"Risk","action":"Tighten weak merchant cohorts and monitor the Current Lens risk signal."},{"owner":"Collections","action":"Prioritize accounts before 60+ DPD migration by queue owner."},{"owner":"Finance","action":"Refresh provision sensitivity and coverage before CFO review."}];
       const tbody = document.querySelector('#drilldown-body');
       const tabs = Array.from(document.querySelectorAll('.tab'));
       function renderTab(index) {

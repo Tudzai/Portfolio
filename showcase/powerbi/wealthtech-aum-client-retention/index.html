@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WealthTech AUM Client Retention | Truong Dinh Anh Tu</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2317201d'/%3E%3Cpath d='M8 21l5-8 4 5 6-10' stroke='%230d7b7b' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
     <style>
       :root {
         --bg: #f6f7f4;
@@ -44,7 +45,7 @@
         iframe { height: 900px; }
       }
     </style>
-    <script src="../../../analytics.js?v=posthog-session-replay-20260702"></script>
+    <script src="../../../analytics.js?v=posthog-observability-20260713"></script>
   </head>
   <body>
     <main class="shell">
@@ -59,11 +60,11 @@
     <text x="28" y="34" fill="#ffffff" font-size="16" font-weight="800">WealthTech AUM Client Retention</text>
     <text x="590" y="34" fill="#badbd8" font-size="12" font-weight="800">Project 12</text>
     <rect x="28" y="74" width="300" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
-    <g><text x="34" y="85" fill="#43514d" font-size="13" font-weight="700">AUM</text><rect x="160" y="70" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="70" width="365" height="16" rx="8" fill="#0d7b7b"/><text x="606" y="84" fill="#17201d" font-size="12" font-weight="800">89%</text></g><g><text x="34" y="121" fill="#43514d" font-size="13" font-weight="700">Retention</text><rect x="160" y="106" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="106" width="344" height="16" rx="8" fill="#c98128"/><text x="606" y="120" fill="#17201d" font-size="12" font-weight="800">84%</text></g><g><text x="34" y="157" fill="#43514d" font-size="13" font-weight="700">Suitability</text><rect x="160" y="142" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="142" width="295" height="16" rx="8" fill="#315e66"/><text x="606" y="156" fill="#17201d" font-size="12" font-weight="800">72%</text></g><g><text x="34" y="193" fill="#43514d" font-size="13" font-weight="700">Outflow risk</text><rect x="160" y="178" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="178" width="160" height="16" rx="8" fill="#0d7b7b"/><text x="606" y="192" fill="#17201d" font-size="12" font-weight="800">39%</text></g>
+    <g><text x="34" y="85" fill="#43514d" font-size="13" font-weight="700">AUM</text><rect x="160" y="70" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="70" width="365" height="16" rx="8" fill="#0d7b7b"/><text x="606" y="84" fill="#17201d" font-size="12" font-weight="800">$811M</text></g><g><text x="34" y="121" fill="#43514d" font-size="13" font-weight="700">Net flow</text><rect x="160" y="106" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="106" width="185" height="16" rx="8" fill="#c98128"/><text x="606" y="120" fill="#17201d" font-size="12" font-weight="800">$2.9M</text></g><g><text x="34" y="157" fill="#43514d" font-size="13" font-weight="700">Rebalance</text><rect x="160" y="142" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="142" width="255" height="16" rx="8" fill="#315e66"/><text x="606" y="156" fill="#17201d" font-size="12" font-weight="800">181</text></g><g><text x="34" y="193" fill="#43514d" font-size="13" font-weight="700">Churn risk</text><rect x="160" y="178" width="430" height="16" rx="8" fill="#e8ede8"/><rect x="160" y="178" width="82" height="16" rx="8" fill="#0d7b7b"/><text x="606" y="192" fill="#17201d" font-size="12" font-weight="800">$4.9M</text></g>
     <rect x="356" y="74" width="336" height="228" rx="10" fill="#f6f7f4" stroke="#d9dfda"/>
     <polyline points="36.0,34.0 232.0,43.4 428.0,85.5 624.0,226.0" fill="none" stroke="#0d7b7b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(330 52) scale(.5 .72)"/>
     <polyline points="36.0,34.0 232.0,43.4 428.0,85.5 624.0,226.0" fill="none" stroke="#c98128" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 7" transform="translate(330 82) scale(.5 .55)" opacity=".85"/>
-    <text x="382" y="116" fill="#17201d" font-size="34" font-weight="900">$1.8B</text>
+    <text x="382" y="116" fill="#17201d" font-size="34" font-weight="900">$811M</text>
     <text x="382" y="142" fill="#5f6d68" font-size="13" font-weight="700">AUM</text>
     <rect x="28" y="326" width="664" height="36" rx="8" fill="#eef4f1"/>
     <text x="48" y="349" fill="#17201d" font-size="13" font-weight="800">Interactive preview includes KPI cards, driver bridge, scenario table, and owner actions.</text>
@@ -82,7 +83,7 @@
       </section>
       <section class="grid" aria-label="Project proof points">
         <article class="card"><strong>Executive question</strong><p>Which KPI is off plan, which driver explains the gap, and which owner should take the next action?</p></article>
-        <article class="card"><strong>Finance logic</strong><p>$1.8B AUM, 94.2% client retention, and 2 risk driver(s) are linked into a decision bridge.</p></article>
+        <article class="card"><strong>Finance logic</strong><p>$811.1M AUM, $2.9M net new money, $4.9M churn-risk AUM, and 181 rebalance-needed clients are linked into the decision view.</p></article>
         <article class="card"><strong>Metric definitions / QA checks</strong><p>Scenario totals, bridge math, driver signs, and action ownership are checked before publishing; all values use portfolio-safe synthetic data.</p></article>
       </section>
       <p class="note">This portfolio preview uses synthetic or anonymized data to demonstrate FP&amp;A reporting logic without exposing company-confidential information.</p>
