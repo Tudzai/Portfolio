@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="How I designed a predictive early-warning collections agent with explainable recommendations, human controls, and an evidence-first finance case for AABW 2026."
+    />
+    <title>Designing a Predictive Early-Warning Collections Agent | Blog</title>
+    <link rel="canonical" href="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Truong Dinh Anh Tu FP&amp;A Portfolio" />
+    <meta property="og:url" content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/" />
+    <meta property="og:title" content="Designing a Predictive Collections Agent That Acts Before a Payment Is Missed" />
+    <meta
+      property="og:description"
+      content="From reactive dunning to a governed decision loop: early warning, next-best action, human approval, and measurable finance outcomes."
+    />
+    <meta
+      property="og:image"
+      content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png"
+    />
+    <meta property="article:published_time" content="2026-07-13T08:00:00+07:00" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Designing a Predictive Collections Agent That Acts Before a Payment Is Missed" />
+    <meta
+      name="twitter:description"
+      content="A finance-led AABW build story about early warning, next-best action, human approval, and controlled learning."
+    />
+    <meta
+      name="twitter:image"
+      content="https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="../../../../assets/favicon.svg?v=at-orbit-harmony-20260620" />
+    <link rel="stylesheet" href="../../../../styles.css?v=blog-ux-20260713" />
+    <link rel="stylesheet" href="../../../../blog/predictive-collections-agent/article.css?v=blog-ux-20260713" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Designing a Predictive Collections Agent That Acts Before a Payment Is Missed",
+        "description": "How I designed a predictive early-warning collections agent with explainable recommendations, human controls, and an evidence-first finance case for AABW 2026.",
+        "datePublished": "2026-07-13",
+        "dateModified": "2026-07-13",
+        "author": {
+          "@type": "Person",
+          "name": "Truong Dinh Anh Tu"
+        },
+        "mainEntityOfPage": "https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/",
+        "image": "https://tudzai.github.io/Portfolio/blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png"
+      }
+    </script>
+      <link rel="stylesheet" data-agentic-stage href="../../assets/css/tokens.css">
+    <link rel="stylesheet" data-agentic-stage href="../../assets/css/base.css">
+    <link rel="stylesheet" data-agentic-stage href="../../assets/css/shell.css">
+    <link rel="stylesheet" data-agentic-stage href="../../assets/css/components.css">
+    <link rel="stylesheet" data-agentic-stage href="../../assets/css/templates.css">
+    <link rel="stylesheet" data-agentic-stage href="../../assets/css/templates/article.css">
+  </head>
+  <body class="detail-page aabw-article-page" data-stage-family="blog" data-stage-template="article">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header stage-shell-header" data-stage-shell data-header>
+      <div class="page-shell header-inner stage-shell-inner">
+        <a class="brand stage-shell-brand" href="../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
+          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true">TA</span>
+          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>FP&amp;A &times; AI</small></span>
+        </a>
+        <div class="header-actions stage-shell-actions">
+          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
+            aria-controls="primary-navigation" aria-label="Open capabilities menu">
+            <span>Capabilities</span><i aria-hidden="true"></i>
+          </button>
+          <a class="header-link" href="../../index.html#experience">Experience</a>
+          <a class="header-link" href="../../index.html#contact">Contact</a>
+          <a class="nav-cv" href="../../cv.html">View CV</a>
+        </div>
+        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
+          <p class="nav-panel-label">Capabilities</p>
+          <div class="capability-nav stage-shell-capabilities">
+            <a href="../../showcase/fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../showcase/python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../showcase/powerbi/index.html"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../showcase/financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
+            <a href="../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
+          </div>
+          <div class="nav-utility-links stage-shell-utilities">
+            <a href="../../index.html#demo">Demo</a>
+            <a href="../../index.html#experience">Experience</a>
+            <a href="../../index.html#contact">Contact</a>
+            <a href="../../cv.html">View CV</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <div id="main-content" tabindex="-1"></div>
+    <main class="page-shell blog-page" data-stage-content>
+      <article>
+        <header class="detail-hero" aria-labelledby="article-title">
+          <p class="breadcrumb"><a href="../index.html">Blog</a> / Predictive Collections Agent</p>
+          <div class="article-hero-copy">
+            <p class="eyebrow">Agentic AI Build Week 2026 · Financial Services II</p>
+            <h1 id="article-title">Designing a Predictive Collections Agent That Acts Before a Payment Is Missed</h1>
+            <p class="article-lede">
+              How I reframed collections as a cash, customer, and governance problem—and designed an agentic decision
+              loop that detects risk early, recommends the next best action, keeps humans accountable, and learns only
+              through controlled approval.
+            </p>
+            <div class="article-meta" aria-label="Article details">
+              <span class="blog-status-badge is-published">Published</span>
+              <span><i data-lucide="calendar-days"></i> July 13, 2026</span>
+              <span><i data-lucide="clock-3"></i> 12 min read</span>
+              <span><i data-lucide="map-pin"></i> Ho Chi Minh City</span>
+            </div>
+            <div class="product-tags" aria-label="Article tags">
+              <span>Agentic AI</span>
+              <span>Credit Risk</span>
+              <span>Collections</span>
+              <span>Working Capital</span>
+              <span>Human-in-the-Loop</span>
+              <span>AABW 2026</span>
+            </div>
+          </div>
+        </header>
+
+        <section class="article-summary" aria-labelledby="article-summary-title">
+          <div class="article-summary-heading">
+            <p class="section-kicker">Article at a glance</p>
+            <h2 id="article-summary-title">One decision loop, three design principles.</h2>
+          </div>
+          <div class="article-summary-grid">
+            <article>
+              <span>01</span>
+              <strong>Predict before the due date</strong>
+              <p>Move from reactive dunning to a 7–14 day early-warning window.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <strong>Recommend, then require approval</strong>
+              <p>Separate scoring, treatment, outreach, and learning into auditable decisions.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <strong>Prove value with a control group</strong>
+              <p>Measure cure uplift, cost-to-collect, cash timing, and customer guardrails.</p>
+            </article>
+          </div>
+          <div class="article-summary-actions">
+            <a class="button primary" href="deck/index.html" target="_blank" rel="noreferrer">
+              <i data-lucide="presentation"></i>
+              Open the 6-slide case
+            </a>
+            <a class="button quiet" href="#workflow-title">
+              <i data-lucide="route"></i>
+              Jump to the workflow
+            </a>
+          </div>
+        </section>
+
+        <div class="article-reading-layout">
+          <aside class="article-toc-card" aria-labelledby="article-toc-title">
+            <p class="section-kicker">Reading guide</p>
+            <h2 id="article-toc-title">On this page</h2>
+            <nav data-article-toc aria-label="Article sections"></nav>
+          </aside>
+
+          <div class="article-reading-main">
+            <details class="article-mobile-toc">
+              <summary>On this page <span>10 sections</span></summary>
+              <nav data-article-toc aria-label="Article sections"></nav>
+            </details>
+
+        <section class="detail-section article-section" aria-labelledby="opening-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">The reframing</p>
+            <h2 id="opening-title">Collections usually starts after the problem has already happened.</h2>
+          </div>
+          <div class="article-copy">
+            <p>
+              A missed payment creates an obvious signal, but it is also a late one. By the time a traditional
+              collections workflow reacts, the institution is managing arrears instead of preventing them. The
+              customer may receive the same reminder sequence as everyone else, while collectors spend time sorting
+              cases that could have been prioritised earlier.
+            </p>
+            <p>
+              During <strong>Agentic AI Build Week 2026</strong>, the challenge was to move that decision upstream:
+              identify likely missed payments <strong>7–14 days before the due date</strong>, explain the risk drivers,
+              and recommend a channel and message treatment that fits the borrower’s situation.
+            </p>
+          </div>
+
+          <blockquote class="article-quote">
+            The design question was not “How do we automate more messages?” It was “How do we intervene earlier,
+            more selectively, and with more accountability?”
+          </blockquote>
+
+          <div class="official-brief" aria-labelledby="official-brief-title">
+            <div class="official-brief-heading">
+              <div>
+                <p class="section-kicker">Official brief · readable version</p>
+                <h3 id="official-brief-title">The source requirements, transcribed as accessible HTML.</h3>
+              </div>
+              <a
+                class="blog-text-link"
+                href="https://aitalent.genaifund.ai/tracks/financial-services-ii/predictive-collections-agent"
+                target="_blank"
+                rel="noreferrer"
+              >Open source <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="official-brief-grid">
+              <article>
+                <span>Problem statement</span>
+                <p>
+                  Collections is largely reactive, with standard dunning after missed payments instead of early risk
+                  detection and outreach tailored to the borrower’s situation.
+                </p>
+              </article>
+              <article>
+                <span>Build direction</span>
+                <p>
+                  Score a mock portfolio, flag likely missed payments 7–14 days early, explain the risk drivers, and
+                  recommend channel and message treatments.
+                </p>
+              </article>
+              <article>
+                <span>Data and controls</span>
+                <p>
+                  Use repayment history, balances, transactions, behavioural signals, past outcomes, and treatment
+                  history—with mock data, explainable outputs, and human sign-off before new treatments go live.
+                </p>
+              </article>
+            </div>
+          </div>
+
+          <figure class="article-figure source-evidence source-evidence--800">
+            <a class="source-evidence-link" href="../../../../blog/predictive-collections-agent/assets/challenge-problem-statement.png" target="_blank">
+              <img
+                src="../../../../blog/predictive-collections-agent/assets/challenge-problem-statement.png"
+                alt="Official AABW Predictive Collections Agent challenge title and problem statement"
+                width="800"
+                height="540"
+                decoding="async"
+              />
+            </a>
+            <figcaption>
+              <span>Official AABW challenge brief: Predictive early-warning and personalised collections agent.</span>
+              <a href="../../../../blog/predictive-collections-agent/assets/challenge-problem-statement.png" target="_blank">Open original PNG</a>
+            </figcaption>
+          </figure>
+
+          <div class="challenge-targets" aria-label="Challenge targets">
+            <article class="target-card">
+              <strong>7–14 days</strong>
+              <span>Flag likely missed payments before the due date, while there is still time to change the outcome.</span>
+            </article>
+            <article class="target-card">
+              <strong>≥60%</strong>
+              <span>Identify at least 60% of accounts that will miss a payment in the early-warning window.</span>
+            </article>
+            <article class="target-card">
+              <strong>Cure uplift</strong>
+              <span>Demonstrate an improvement against a control group—not just activity or message volume.</span>
+            </article>
+            <article class="target-card">
+              <strong>Lower cost</strong>
+              <span>Replace blanket outreach with targeted recommendations and more deliberate human effort.</span>
+            </article>
+          </div>
+
+          <div class="evidence-grid">
+            <figure class="article-figure source-evidence source-evidence--800">
+              <a class="source-evidence-link" href="../../../../blog/predictive-collections-agent/assets/challenge-build-outcomes.png" target="_blank">
+                <img
+                  src="../../../../blog/predictive-collections-agent/assets/challenge-build-outcomes.png"
+                  alt="AABW challenge build direction and expected outcomes"
+                  width="800"
+                  height="540"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <figcaption>
+                <span>Build direction and expected outcomes from the official brief.</span>
+                <a href="../../../../blog/predictive-collections-agent/assets/challenge-build-outcomes.png" target="_blank">Open original PNG</a>
+              </figcaption>
+            </figure>
+            <figure class="article-figure source-evidence source-evidence--800">
+              <a class="source-evidence-link" href="../../../../blog/predictive-collections-agent/assets/challenge-data-and-stack.png" target="_blank">
+                <img
+                  src="../../../../blog/predictive-collections-agent/assets/challenge-data-and-stack.png"
+                  alt="AABW challenge expected outcomes and data notes"
+                  width="800"
+                  height="540"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <figcaption>
+                <span>Mock data, explainable outputs, and human sign-off were explicit requirements.</span>
+                <a href="../../../../blog/predictive-collections-agent/assets/challenge-data-and-stack.png" target="_blank">Open original PNG</a>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="deck-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">Interactive case deck</p>
+            <h2 id="deck-title">Explore the full story—from workflow to economics and roadmap.</h2>
+            <p>
+              Use the arrow controls, keyboard arrows, or space bar inside the deck. The presentation contains six
+              chapters: the problem, target workflow, business case, product demo, roadmap, and executive Q&amp;A.
+            </p>
+          </div>
+
+          <div class="deck-panel">
+            <div class="deck-panel-head">
+              <div>
+                <h3>Predictive Early-Warning Collections Agent</h3>
+                <p>A finance-led product concept with explainable risk, next-best action, and two human approval gates.</p>
+              </div>
+              <span class="process-pill">6 slides · Interactive</span>
+            </div>
+            <div class="deck-frame">
+              <iframe
+                src="deck/index.html"
+                title="Interactive Predictive Early-Warning Collections Agent presentation"
+                loading="lazy"
+                sandbox="allow-scripts allow-top-navigation-by-user-activation"
+              ></iframe>
+            </div>
+            <a class="deck-mobile-poster" href="deck/index.html" target="_blank" rel="noreferrer">
+              <img
+                src="../../../../blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png"
+                alt="Preview of the Predictive Collections Agent workflow deck"
+                width="1672"
+                height="941"
+                loading="lazy"
+                decoding="async"
+              />
+              <span><i data-lucide="presentation"></i> Open the interactive deck</span>
+            </a>
+            <div class="deck-actions">
+              <p>
+                The embedded deck is optimised for desktop. On a phone—or if reduced motion is enabled—open the full
+                presentation for the clearest experience.
+              </p>
+              <a class="button primary" href="deck/index.html" target="_blank" rel="noreferrer" data-track-event="aabw_deck_open">
+                <i data-lucide="presentation"></i>
+                Open presentation
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="workflow-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">The operating model</p>
+            <h2 id="workflow-title">I designed a governed decision loop—not one oversized AI agent.</h2>
+            <p>
+              Prediction, treatment, language generation, approval, execution, and learning are separate decisions.
+              That separation makes the workflow easier to explain, test, audit, and improve.
+            </p>
+          </div>
+
+          <figure class="article-figure">
+            <img
+              src="../../../../blog/predictive-collections-agent/deck/assets/workflow-ai-agent-ver69.png"
+              alt="AI agent-powered collections workflow from customer signals through risk scoring, treatment, human approval, outreach and learning"
+              width="1672"
+              height="941"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption><span>The target workflow: early warning, recommendation, accountable action, and controlled learning.</span></figcaption>
+          </figure>
+
+          <div class="workflow-grid">
+            <article class="workflow-card" style="--step-color: #1479ff">
+              <span class="workflow-step">01 · Detect</span>
+              <h3>Bring the signals together</h3>
+              <p>
+                Profile, repayment history, balances, transactions, behaviour, and prior collections outcomes form a
+                daily early-warning view.
+              </p>
+            </article>
+            <article class="workflow-card" style="--step-color: #0f9f8f">
+              <span class="workflow-step">02 · Explain</span>
+              <h3>Score risk and show the reason</h3>
+              <p>
+                A risk matrix and Risk Agent flag likely misses, assign a risk band, and expose reviewer-friendly
+                reason codes instead of a black-box score.
+              </p>
+            </article>
+            <article class="workflow-card" style="--step-color: #c88922">
+              <span class="workflow-step">03 · Recommend</span>
+              <h3>Select the next best action</h3>
+              <p>
+                A treatment matrix and Treatment Agent recommend channel, timing, tone, and route based on risk,
+                customer context, policy, and past outcomes.
+              </p>
+            </article>
+            <article class="workflow-card" style="--step-color: #8b5cf6">
+              <span class="workflow-step">04 · Draft</span>
+              <h3>Generate the proposal package</h3>
+              <p>
+                The Message Agent prepares customer-facing language together with the treatment rationale, channel,
+                timing, and escalation conditions.
+              </p>
+            </article>
+            <article class="workflow-card" style="--step-color: #e85d24">
+              <span class="workflow-step">05 · Approve</span>
+              <h3>Keep a human before action</h3>
+              <p>
+                A reviewer can approve, edit, reject, or escalate. Hardship, legal, sensitive, or high-risk cases can
+                be routed away from automated contact.
+              </p>
+            </article>
+            <article class="workflow-card" style="--step-color: #1479ff">
+              <span class="workflow-step">06 · Learn</span>
+              <h3>Measure outcomes, then govern change</h3>
+              <p>
+                Paid, cured, missed, response, cost, and complaint outcomes feed the next cycle—but matrix changes go
+                live only after a second human impact review.
+              </p>
+            </article>
+          </div>
+
+          <div class="control-callout">
+            <strong>AI recommends. Humans approve. Outcomes tune the next cycle.</strong>
+            <p>
+              The first approval gate protects customer-facing action. The second protects the learning loop.
+              Human-in-the-loop is therefore not a disclaimer at the end of the design; it is part of the system architecture.
+            </p>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="account-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">One illustrative account</p>
+            <h2 id="account-title">Personalisation should change the decision—not just insert a customer name.</h2>
+          </div>
+          <div class="article-copy">
+            <p>
+              In the synthetic demo, account <strong>C-10482</strong> receives a high-risk score because its repayment
+              pattern has weakened and its balance has spiked. A field visit is not permitted. The system therefore
+              avoids an aggressive default path and proposes a softer pre-due-date reminder with a secure payment link.
+            </p>
+          </div>
+
+          <div class="account-card">
+            <div class="account-score">
+              <div>
+                <strong>78</strong>
+                <span>High risk · illustrative</span>
+              </div>
+            </div>
+            <div class="account-details">
+              <h3>The recommendation package</h3>
+              <p>
+                The treatment is contextual, explainable, and reversible before anything reaches the customer.
+              </p>
+              <ul class="decision-list">
+                <li><strong>Why flagged</strong><span>Late-payment pattern and an unusual balance increase.</span></li>
+                <li><strong>First action</strong><span>Supportive SMS reminder before the due date with a payment link.</span></li>
+                <li><strong>Back-up</strong><span>Email or app notification if the first channel is ineffective.</span></li>
+                <li><strong>Escalation</strong><span>Route to a human after no response or when the case becomes sensitive.</span></li>
+                <li><strong>Control</strong><span>Reviewer approval is required before outreach.</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="economics-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">The finance case</p>
+            <h2 id="economics-title">A useful AI concept should survive a CFO conversation.</h2>
+            <p>
+              I built an illustrative steady-state model to show where value could come from: lower blanket-contact
+              volume, better prioritisation of human effort, earlier cash recovery, and more portfolio capacity for the
+              same operating budget.
+            </p>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <strong>38%</strong>
+              <h3>Lower recurring cost</h3>
+              <p>Modelled monthly cost falls from VND 1.014B to VND 625M, a VND 389M saving.</p>
+            </article>
+            <article class="metric-card">
+              <strong>1.6×</strong>
+              <h3>Account capacity</h3>
+              <p>The same monthly budget supports approximately 162K accounts instead of 100K.</p>
+            </article>
+            <article class="metric-card">
+              <strong>+1.8B</strong>
+              <h3>VND monthly cash</h3>
+              <p>Illustrative additional principal collected under a +10 percentage-point cure assumption.</p>
+            </article>
+            <article class="metric-card">
+              <strong>~4 mo</strong>
+              <h3>Simple payback</h3>
+              <p>Steady-state model using a VND 1.5B one-time implementation assumption.</p>
+            </article>
+          </div>
+
+          <div class="assumption-banner">
+            <strong>Important:</strong> these figures are modelled scenarios, not achieved production results. The
+            VND 1.8B is recovered principal and cash—not revenue—and should not be double-counted as P&amp;L benefit.
+            Cure uplift, customer outcomes, operating capacity, and AI cost must all be validated in a controlled pilot.
+          </div>
+
+          <div class="article-copy spaced-copy">
+            <p>
+              The model also changes the people story. The equivalent capacity of 13 FTE is framed as workload that can
+              be redeployed or avoided as the portfolio grows—not as a layoff claim. Good automation economics should
+              explain where capacity goes, not treat people as a balancing figure.
+            </p>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="pilot-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">The proof plan</p>
+            <h2 id="pilot-title">The right next step is a controlled pilot—not a full rollout.</h2>
+            <p>
+              A promising workflow still has to prove prediction quality, incremental treatment value, customer safety,
+              and sustainable unit economics. I would use a representative cohort and a control group, then scale only
+              after both value and guardrails are demonstrated.
+            </p>
+          </div>
+
+          <div class="pilot-grid">
+            <article class="pilot-card">
+              <h3>Prediction quality</h3>
+              <ul>
+                <li>Missed-payment capture 7–14 days early</li>
+                <li>Precision and false-positive rate</li>
+                <li>Reason-code stability and drift</li>
+              </ul>
+            </article>
+            <article class="pilot-card">
+              <h3>Incremental treatment value</h3>
+              <ul>
+                <li>Cure-rate uplift versus control</li>
+                <li>Days paid earlier and principal protected</li>
+                <li>Channel and treatment effectiveness</li>
+              </ul>
+            </article>
+            <article class="pilot-card">
+              <h3>Economics</h3>
+              <ul>
+                <li>Cost-to-collect per cured account</li>
+                <li>Collector capacity and approval time</li>
+                <li>Model, message, and infrastructure cost</li>
+              </ul>
+            </article>
+            <article class="pilot-card">
+              <h3>Customer guardrails</h3>
+              <ul>
+                <li>Complaints, opt-outs, and contact pressure</li>
+                <li>Hardship and vulnerability routing</li>
+                <li>Policy exceptions and prohibited channels</li>
+              </ul>
+            </article>
+            <article class="pilot-card">
+              <h3>Human accountability</h3>
+              <ul>
+                <li>Approve, edit, reject, and escalation rates</li>
+                <li>Reviewer agreement with risk explanations</li>
+                <li>Audit completeness and decision traceability</li>
+              </ul>
+            </article>
+            <article class="pilot-card">
+              <h3>Scale readiness</h3>
+              <ul>
+                <li>Daily scoring reliability and data quality</li>
+                <li>Channel, core-system, and CRM integration</li>
+                <li>Monitoring, rollback, and change governance</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="roadmap-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">From concept to capability</p>
+            <h2 id="roadmap-title">Every phase ends with a decision gate.</h2>
+            <p>
+              The roadmap keeps ambition high without presenting a hackathon concept as a finished production system.
+              What becomes reusable is more than a model: it is agent intelligence, governance controls, integration
+              components, validated matrices, and a delivery playbook.
+            </p>
+          </div>
+
+          <div class="roadmap-line" aria-label="Product roadmap">
+            <article class="roadmap-stage">
+              <span>Now</span>
+              <h3>Concept PoC</h3>
+              <p>Workflow, mock data, target KPIs, HITL concept, and demonstration.</p>
+            </article>
+            <article class="roadmap-stage">
+              <span>0–6 months</span>
+              <h3>Institution fit</h3>
+              <p>Data readiness, policy fit, risk/treatment matrices, and technical architecture.</p>
+            </article>
+            <article class="roadmap-stage">
+              <span>6–9 months</span>
+              <h3>Controlled pilot</h3>
+              <p>Shadow mode, control cohort, measurable uplift, and guardrail validation.</p>
+            </article>
+            <article class="roadmap-stage">
+              <span>9–15 months</span>
+              <h3>Production product</h3>
+              <p>Reliable integrations, MLOps/LLMOps, monitoring, security, and rollback.</p>
+            </article>
+            <article class="roadmap-stage">
+              <span>15–30 months</span>
+              <h3>Repeatable offering</h3>
+              <p>Configurable modules, APIs, multi-portfolio governance, and deployment playbooks.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="perks-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">AABW perks and build stack</p>
+            <h2 id="perks-title">Program support mattered when it removed a real build constraint.</h2>
+            <p>
+              The AABW portal offered 30 partner perks. I distinguish what I activated and used from what was simply
+              available. Credits accelerated experimentation; they did not replace financial judgment, governance
+              choices, or accountability for the final story.
+            </p>
+          </div>
+
+          <figure class="article-figure source-evidence source-evidence--1030">
+            <a class="source-evidence-link" href="../../../../blog/predictive-collections-agent/assets/aabw-used-perks.png" target="_blank">
+              <img
+                src="../../../../blog/predictive-collections-agent/assets/aabw-used-perks.png"
+                alt="AABW perk cards for AWS credits and OpenAI credits plus ChatGPT Plus"
+                width="1030"
+                height="520"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <figcaption>
+              <span>The relevant AABW credit cards shown in the participant portal in July 2026.</span>
+              <a href="../../../../blog/predictive-collections-agent/assets/aabw-used-perks.png" target="_blank">Open original PNG</a>
+            </figcaption>
+          </figure>
+
+          <div class="perks-grid">
+            <article class="perk-card">
+              <span class="perk-status">Applied &amp; used</span>
+              <h3>AWS credits</h3>
+              <span class="perk-value">US$1,000</span>
+              <p>
+                I used the AWS path to set up an AgentCore CLI project and a Bedrock AgentCore harness with a Claude
+                Sonnet model. This tested the deployment architecture; the public dashboard remains a safe mock-data PoC.
+              </p>
+            </article>
+            <article class="perk-card">
+              <span class="perk-status">Applied &amp; used</span>
+              <h3>OpenAI credits + ChatGPT Plus</h3>
+              <span class="perk-value">US$150 + 3 months</span>
+              <p>
+                I used AI assistance for rapid research synthesis, decision-flow iteration, coding support, narrative
+                refinement, and QA—while keeping the risk logic, finance assumptions, and governance decisions explicit.
+              </p>
+            </article>
+            <article class="perk-card">
+              <span class="perk-status available">Available · deployment-ready</span>
+              <h3>Netlify monthly credits</h3>
+              <span class="perk-value">300 credits / month</span>
+              <p>
+                The final React/Vite prototype includes a Netlify build configuration and SPA redirect. I treat Netlify
+                as a delivery path, not as part of the agent’s decision logic, and do not claim the credit was consumed.
+              </p>
+            </article>
+          </div>
+
+          <div class="stack-grid">
+            <article class="stack-card">
+              <h3>Decision and evidence layer</h3>
+              <ul>
+                <li>Synthetic portfolio and feature data</li>
+                <li>Explainable risk matrix and test cases</li>
+                <li>Treatment logic and approval workflow</li>
+                <li>Illustrative finance model and roadmap</li>
+              </ul>
+            </article>
+            <article class="stack-card">
+              <h3>Prototype experience</h3>
+              <ul>
+                <li>React 19, TypeScript, and Vite</li>
+                <li>TanStack Router and Recharts</li>
+                <li>Human approval, portfolio, and outcome views</li>
+                <li>Mock data only; no production customer records</li>
+              </ul>
+            </article>
+            <article class="stack-card">
+              <h3>Agent and delivery path</h3>
+              <ul>
+                <li>Amazon Bedrock AgentCore harness experiment</li>
+                <li>HTML, CSS, JavaScript, SVG, and MP4 case deck</li>
+                <li>Netlify-ready static prototype configuration</li>
+                <li>Controlled pilot before any live outreach</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="source-note">
+            The official challenge recommended a broader stack—including Amazon Bedrock, Bedrock AgentCore, Strands
+            Agents, A2A, MCP, AWS data services, Python, and React/Next.js. My PoC was deliberately narrower: prove the
+            decision workflow, controls, economics, and user experience first; expand the architecture only when the
+            evidence justifies it.
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="lessons-title">
+          <div class="article-section-heading">
+            <p class="section-kicker">What I learned</p>
+            <h2 id="lessons-title">The strongest part of an agent is often the operating model around it.</h2>
+          </div>
+          <div class="article-copy">
+            <p>
+              This build reinforced four lessons. First, a single prompt is not an operating model: scoring,
+              recommendation, messaging, approval, and learning need separate responsibilities. Second, explainability
+              is useful only when it helps a reviewer make a better decision. Third, economics become credible when
+              assumptions are visible and cash is not confused with revenue. Finally, “human-in-the-loop” is meaningful
+              only when people have clear authority to approve, edit, reject, escalate, and stop the system.
+            </p>
+            <p>
+              That is why I describe this project as a <strong>governed finance decision product</strong>, not an
+              autonomous collections bot. The LLM is one component. The value comes from the full loop: better timing,
+              better treatment, accountable action, measurable outcomes, and controlled change.
+            </p>
+          </div>
+        </section>
+
+        <section class="detail-section article-section" aria-labelledby="closing-title">
+          <div class="article-end-card">
+            <h2 id="closing-title">Technology should improve the decision without removing judgment.</h2>
+            <p>
+              This project sits at the intersection of working capital, credit operations, customer experience,
+              financial modelling, and responsible AI. The next milestone is not “more autonomy.” It is better evidence:
+              a controlled pilot that proves whether early warning and personalised treatment create incremental value
+              while protecting the customer and the institution.
+            </p>
+            <div class="article-end-actions">
+              <a class="button primary" href="deck/index.html" target="_blank" rel="noreferrer">
+                <i data-lucide="presentation"></i>
+                View the case deck
+              </a>
+              <a class="button quiet" href="../index.html">
+                <i data-lucide="arrow-left"></i>
+                Back to Blog
+              </a>
+              <a class="button quiet" href="../../index.html#contact">
+                <i data-lucide="messages-square"></i>
+                Discuss the project
+              </a>
+            </div>
+          </div>
+
+          <div class="source-note">
+            Sources and scope: official
+            <a
+              href="https://aitalent.genaifund.ai/tracks/financial-services-ii/predictive-collections-agent"
+              target="_blank"
+              rel="noreferrer"
+            >AABW challenge brief</a>, participant perk portal accessed July 2026, and public-safe project artifacts.
+            All customer records and outcome figures shown here are synthetic or illustrative. No production customer
+            data or credentials are published.
+          </div>
+        </section>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="../../../../script.js?v=blog-ux-20260713"></script>
+
+    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
+      <div class="page-shell stage-shell-footer-inner">
+        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
+        <span>Finance judgment / Practical technology / Visible ownership</span>
+        <a href="../../index.html#hero">Back to top &uarr;</a>
+      </div>
+    </footer>
+      <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/site.js"></script>
+  </body>
+</html>

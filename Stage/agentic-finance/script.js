@@ -1,12 +1,153 @@
-const menuButton = document.querySelector(".menu-button");
-const navigation = document.querySelector("#primary-navigation");
-const navigationLinks = [...document.querySelectorAll("#primary-navigation a")];
 const currentYear = document.querySelector("#current-year");
+const backToTop = document.querySelector(".back-to-top");
 const revealElements = [...document.querySelectorAll("[data-reveal]")];
 const caseVideos = [...document.querySelectorAll(".case-video")];
 const videoToggles = [...document.querySelectorAll("[data-video-toggle]")];
+const scoreRows = [...document.querySelectorAll(".score-row")];
+const demoHookVideo = document.querySelector(".demo-hook-video");
+const demoPlayCover = document.querySelector("[data-demo-play-cover]");
+const demoPlayButton = document.querySelector("[data-demo-play]");
+const demoPlayLabel = document.querySelector("[data-demo-play-label]");
+const captionButtons = [...document.querySelectorAll("[data-caption-language]")];
+const captionOverlay = document.querySelector("[data-caption-overlay]");
+const heroDemoEntry = document.querySelector(".hero-demo-entry");
+const demoSection = document.querySelector("#demo");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const saveDataEnabled = Boolean(navigator.connection?.saveData);
+
+if (heroDemoEntry && demoSection) {
+  heroDemoEntry.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.history.pushState(null, "", "#demo");
+    window.scrollTo({
+      top: demoSection.offsetTop,
+      behavior: reducedMotion.matches ? "auto" : "smooth",
+    });
+  });
+}
+
+function setDemoPlaybackState(state) {
+  if (!(demoHookVideo instanceof HTMLVideoElement) || !demoPlayCover || !demoPlayButton) {
+    return;
+  }
+
+  const isPlaying = state === "playing";
+  const labels = {
+    ready: "Play demo",
+    paused: "Resume demo",
+    ended: "Replay demo",
+  };
+
+  demoHookVideo.dataset.playbackState = state;
+  demoPlayCover.hidden = isPlaying;
+  demoPlayButton.setAttribute("aria-label", labels[state] || "Play demo");
+
+  if (demoPlayLabel) {
+    demoPlayLabel.textContent = labels[state] || "Play demo";
+  }
+}
+
+if (demoHookVideo && demoPlayButton) {
+  demoPlayButton.addEventListener("click", async () => {
+    if (demoHookVideo.ended) {
+      demoHookVideo.currentTime = 0;
+    }
+
+    try {
+      await demoHookVideo.play();
+    } catch {
+      setDemoPlaybackState("ready");
+    }
+  });
+
+  demoHookVideo.addEventListener("play", () => setDemoPlaybackState("playing"));
+  demoHookVideo.addEventListener("pause", () => {
+    if (!demoHookVideo.ended) {
+      setDemoPlaybackState(demoHookVideo.currentTime > 0 ? "paused" : "ready");
+    }
+  });
+  demoHookVideo.addEventListener("ended", () => {
+    demoHookVideo.currentTime = 0;
+    setDemoPlaybackState("ended");
+  });
+
+  demoHookVideo.pause();
+  demoHookVideo.currentTime = 0;
+  setDemoPlaybackState("ready");
+}
+
+function renderActiveCaption(track) {
+  if (!captionOverlay || !track) {
+    return;
+  }
+
+  let activeCues = [...(track.activeCues ?? [])];
+  if (activeCues.length === 0 && track.cues && demoHookVideo) {
+    const currentTime = demoHookVideo.currentTime + 0.01;
+    const matchingCue = [...track.cues].find(
+      (cue) => cue.startTime <= currentTime && cue.endTime > currentTime,
+    );
+    activeCues = matchingCue ? [matchingCue] : [];
+  }
+
+  const activeText = activeCues
+    .map((cue) => cue.text.trim())
+    .filter(Boolean)
+    .join(" ");
+
+  captionOverlay.textContent = activeText;
+}
+
+function setCaptionLanguage(language) {
+  if (!(demoHookVideo instanceof HTMLVideoElement)) {
+    return;
+  }
+
+  const tracks = [...demoHookVideo.textTracks];
+  let selectedTrack = null;
+
+  tracks.forEach((track) => {
+    const isSelected = track.kind === "captions" && track.language === language;
+    track.mode = isSelected ? "hidden" : "disabled";
+    if (isSelected) {
+      selectedTrack = track;
+    }
+  });
+
+  captionButtons.forEach((button) => {
+    const isSelected = button.dataset.captionLanguage === language;
+    button.classList.toggle("is-active", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+  });
+
+  if (captionOverlay) {
+    captionOverlay.lang = language;
+  }
+  demoHookVideo.dataset.activeCaptionLanguage = language;
+  renderActiveCaption(selectedTrack);
+}
+
+if (demoHookVideo && captionButtons.length > 0) {
+  [...demoHookVideo.textTracks].forEach((track) => {
+    track.addEventListener("cuechange", () => {
+      if (track.language === demoHookVideo.dataset.activeCaptionLanguage) {
+        renderActiveCaption(track);
+      }
+    });
+  });
+
+  demoHookVideo.querySelectorAll("track").forEach((trackElement) => {
+    trackElement.addEventListener("load", () => {
+      setCaptionLanguage(demoHookVideo.dataset.activeCaptionLanguage || "en");
+    });
+  });
+
+  captionButtons.forEach((button) => {
+    button.addEventListener("click", () => setCaptionLanguage(button.dataset.captionLanguage));
+  });
+
+  setCaptionLanguage("en");
+}
 
 function getVideoRate(video) {
   const requestedRate = Number.parseFloat(video.dataset.playbackRate ?? "");
@@ -35,13 +176,14 @@ function updateVideoUi(video) {
     }
 
     if (text) {
-      text.textContent = isPlaying ? "Pause" : "Play";
+      text.textContent = "Watch";
     }
   }
 }
 
 function canAutoplayVideo(video) {
   return (
+    video.dataset.autoplay !== "false" &&
     video.dataset.inView === "true" &&
     video.dataset.userPaused !== "true" &&
     !document.hidden &&
@@ -60,57 +202,145 @@ function syncVideoPlayback(video) {
   }
 }
 
-function setMenuState(isOpen) {
-  menuButton?.setAttribute("aria-expanded", String(isOpen));
-  menuButton?.setAttribute("aria-label", isOpen ? "Close capabilities menu" : "Open capabilities menu");
-  navigation?.classList.toggle("is-open", isOpen);
-  navigation?.setAttribute("aria-hidden", String(!isOpen));
+const SCORE_MOTION = Object.freeze({
+  enter: 0.22,
+  stagger: 0.04,
+  reveal: 0.18,
+  exitScale: 1.012,
+  labelScale: 1.07,
+  travel: -42,
+});
 
-  if (navigation) {
-    navigation.inert = !isOpen;
+function initScoreMotion() {
+  const gsapRuntime = window.gsap;
+
+  if (!gsapRuntime || scoreRows.length === 0) {
+    return null;
   }
+
+  const media = gsapRuntime.matchMedia();
+
+  media.add(
+    {
+      desktop: "(min-width: 761px) and (hover: hover) and (pointer: fine)",
+      reduceMotion: "(prefers-reduced-motion: reduce)",
+    },
+    (context) => {
+      const { desktop, reduceMotion } = context.conditions;
+      const motionEnabled = desktop && !reduceMotion;
+      document.documentElement.classList.toggle("gsap-score-motion", motionEnabled);
+
+      if (!motionEnabled) {
+        return undefined;
+      }
+
+      const cleanups = scoreRows.map((row) => {
+        const skill = row.querySelector(".score-skill");
+        const links = [...row.querySelectorAll(".score-evidence-link")];
+        const labels = [...row.querySelectorAll(".score-evidence-label")];
+        const destinations = [...row.querySelectorAll(".score-destination")];
+
+        gsapRuntime.set(skill, { scale: 1, transformOrigin: "left center" });
+        gsapRuntime.set(links, { x: 0 });
+        gsapRuntime.set(labels, { scale: 1, transformOrigin: "left center" });
+        gsapRuntime.set(destinations, {
+          x: 12,
+          scaleX: 0.55,
+          autoAlpha: 0,
+          transformOrigin: "right center",
+        });
+
+        const timeline = gsapRuntime
+          .timeline({ paused: true, defaults: { overwrite: "auto" } })
+          .addLabel("activate", 0)
+          .to(
+            skill,
+            {
+              scale: SCORE_MOTION.exitScale,
+              duration: SCORE_MOTION.enter,
+              ease: "power3.out",
+            },
+            "activate",
+          )
+          .to(
+            links,
+            {
+              x: SCORE_MOTION.travel,
+              duration: SCORE_MOTION.enter,
+              ease: "power3.out",
+              stagger: SCORE_MOTION.stagger,
+            },
+            "activate",
+          )
+          .to(
+            labels,
+            {
+              scale: SCORE_MOTION.labelScale,
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
+              duration: SCORE_MOTION.enter,
+              ease: "power3.out",
+              stagger: SCORE_MOTION.stagger,
+            },
+            "activate+=0.02",
+          )
+          .to(
+            destinations,
+            {
+              x: 0,
+              scaleX: 1,
+              autoAlpha: 1,
+              duration: SCORE_MOTION.reveal,
+              ease: "power3.out",
+              stagger: SCORE_MOTION.stagger,
+            },
+            "activate+=0.08",
+          );
+
+        const play = () => timeline.play();
+        const reverse = () => {
+          if (!row.contains(document.activeElement)) {
+            timeline.reverse();
+          }
+        };
+        const handleFocusOut = () => requestAnimationFrame(reverse);
+
+        row.addEventListener("pointerenter", play);
+        row.addEventListener("pointerleave", reverse);
+        row.addEventListener("focusin", play);
+        row.addEventListener("focusout", handleFocusOut);
+
+        return () => {
+          row.removeEventListener("pointerenter", play);
+          row.removeEventListener("pointerleave", reverse);
+          row.removeEventListener("focusin", play);
+          row.removeEventListener("focusout", handleFocusOut);
+          timeline.kill();
+          gsapRuntime.set([skill, ...links, ...labels, ...destinations], {
+            clearProps: "transform,opacity,visibility,fontWeight,letterSpacing",
+          });
+        };
+      });
+
+      return () => {
+        document.documentElement.classList.remove("gsap-score-motion");
+        cleanups.forEach((cleanup) => cleanup());
+      };
+    },
+  );
+
+  return media;
 }
 
-function closeMenu() {
-  setMenuState(false);
-}
+const scoreMotionMedia = initScoreMotion();
 
-setMenuState(false);
-
-menuButton?.addEventListener("click", () => {
-  const willOpen = menuButton.getAttribute("aria-expanded") !== "true";
-  setMenuState(willOpen);
-});
-
-menuButton?.addEventListener("keydown", (event) => {
-  if (
-    event.key === "Tab" &&
-    !event.shiftKey &&
-    menuButton.getAttribute("aria-expanded") === "true"
-  ) {
-    event.preventDefault();
-    navigation?.querySelector("a")?.focus();
-  }
-});
-
-navigationLinks.forEach((link) => link.addEventListener("click", closeMenu));
-
-document.addEventListener("pointerdown", (event) => {
-  if (
-    menuButton?.getAttribute("aria-expanded") === "true" &&
-    event.target instanceof Element &&
-    !event.target.closest(".header-inner")
-  ) {
-    closeMenu();
-  }
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && menuButton?.getAttribute("aria-expanded") === "true") {
-    closeMenu();
-    menuButton.focus();
-  }
-});
+window.addEventListener(
+  "pagehide",
+  () => {
+    scoreMotionMedia?.revert();
+  },
+  { once: true },
+);
 
 if (!reducedMotion.matches && "IntersectionObserver" in window) {
   document.documentElement.classList.add("js-motion");
@@ -210,4 +440,27 @@ reducedMotion.addEventListener("change", (event) => {
 
 if (currentYear) {
   currentYear.textContent = String(new Date().getFullYear());
+}
+
+if (backToTop) {
+  let scrollFrame;
+
+  const updateBackToTop = () => {
+    const shouldShow = window.scrollY > Math.max(360, window.innerHeight * 0.7);
+    backToTop.classList.toggle("is-visible", shouldShow);
+    backToTop.tabIndex = shouldShow ? 0 : -1;
+    scrollFrame = undefined;
+  };
+
+  const requestBackToTopUpdate = () => {
+    if (scrollFrame !== undefined) {
+      return;
+    }
+
+    scrollFrame = window.requestAnimationFrame(updateBackToTop);
+  };
+
+  updateBackToTop();
+  window.addEventListener("scroll", requestBackToTopUpdate, { passive: true });
+  window.addEventListener("resize", requestBackToTopUpdate);
 }

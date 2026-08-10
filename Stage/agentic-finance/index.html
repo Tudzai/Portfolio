@@ -9,31 +9,37 @@
       content="Truong Dinh Anh Tu - Commercial FP&A, finance automation and governed Agentic AI."
     />
     <title>Truong Dinh Anh Tu | FP&amp;A, Automation &amp; Agentic AI</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231d1329'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial,sans-serif' font-size='24' font-weight='700' fill='white'%3ETA%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Manrope:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?rev=capabilities-menu" />
+    <link rel="stylesheet" data-agentic-stage href="./assets/css/tokens.css" />
+    <link rel="stylesheet" data-agentic-stage href="./assets/css/base.css" />
+    <link rel="stylesheet" data-agentic-stage href="./assets/css/components.css" />
+    <link rel="stylesheet" href="./styles.css?rev=hero-center-v31" />
+    <link rel="stylesheet" data-agentic-stage href="./assets/css/shell.css" />
   </head>
-  <body>
+  <body data-stage-family="core" data-stage-template="homepage">
     <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <header class="site-header">
-      <div class="page-shell header-inner">
-        <a class="brand" href="#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark" aria-hidden="true">TA</span>
-          <span class="brand-copy">
+    <header class="site-header stage-shell-header" data-stage-shell data-header>
+      <div class="page-shell header-inner stage-shell-inner">
+        <a class="brand stage-shell-brand" href="#hero" aria-label="Truong Dinh Anh Tu, homepage">
+          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true">TA</span>
+          <span class="brand-copy stage-shell-brand-copy">
             <strong>Truong Dinh Anh Tu</strong>
-            <small>Commercial FP&amp;A</small>
+            <small>FP&amp;A &times; AI</small>
           </span>
         </a>
 
-        <div class="header-actions">
+        <div class="header-actions stage-shell-actions">
           <button
-            class="menu-button"
+            class="menu-button stage-shell-menu-button"
             type="button"
+            data-stage-menu-toggle
             aria-expanded="false"
             aria-controls="primary-navigation"
             aria-label="Open capabilities menu"
@@ -43,77 +49,116 @@
           </button>
           <a class="header-link" href="#experience">Experience</a>
           <a class="header-link" href="#contact">Contact</a>
-          <a class="nav-cv" href="../../cv.html">View CV</a>
+          <a class="header-link" href="#explore">Blog</a>
+          <a class="nav-cv" href="./cv.html">View CV</a>
         </div>
 
-        <nav id="primary-navigation" aria-label="Capabilities" aria-hidden="true" inert>
+        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
           <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav">
+          <div class="capability-nav stage-shell-capabilities">
             <a href="#case-fpa"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
             <a href="#case-automation"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../showcase/powerbi/"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../showcase/financial-models/"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
+            <a href="./showcase/powerbi/"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
+            <a href="./showcase/financial-models/"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
             <a href="#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
           </div>
-          <div class="nav-utility-links">
+          <div class="nav-utility-links stage-shell-utilities">
             <a href="#demo">Demo</a>
             <a href="#experience">Experience</a>
             <a href="#contact">Contact</a>
-            <a href="../../cv.html">View CV</a>
+            <a href="#explore">Blog</a>
+            <a href="./cv.html">View CV</a>
           </div>
         </nav>
       </div>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" data-stage-content>
       <section id="hero" class="hero" aria-labelledby="hero-title">
         <div class="page-shell">
-          <div class="hero-meta" data-reveal>
-            <p>Truong Dinh Anh Tu / Commercial FP&amp;A</p>
-            <p>Portfolio proof / Public-safe</p>
-          </div>
-
           <div class="hero-command" data-reveal>
-            <p class="eyebrow">Decide / Build / Govern</p>
             <h1 id="hero-title" class="sr-only">FP&amp;A, Automation and Agentic AI</h1>
             <div class="hero-scoreboard" aria-labelledby="hero-title">
-              <a class="score-row score-fpa" href="#case-fpa">
-                <span class="score-skill">FP&amp;A</span>
+              <section class="score-row score-fpa" aria-labelledby="score-fpa-title">
+                <span id="score-fpa-title" class="score-skill">FP&amp;A</span>
                 <ul class="score-results" aria-label="FP&A core capabilities">
-                  <li>Budgeting &amp; Forecasting</li>
-                  <li>Variance &amp; Driver Analysis</li>
-                  <li>P&amp;L &amp; Cash Decisions</li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/financial-models/budget-rolling-forecast/">
+                      <span class="score-evidence-label">Budgeting &amp; Forecasting</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/fpa-decision-cases/ebitda-variance-bridge/">
+                      <span class="score-evidence-label">Variance &amp; Drivers</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/fpa-decision-cases/working-capital-cash-runway/">
+                      <span class="score-evidence-label">P&amp;L &amp; Cash Decisions</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
                 </ul>
-              </a>
-              <a class="score-row score-automation" href="#case-automation">
-                <span class="score-skill">Automation</span>
+              </section>
+              <section class="score-row score-automation" aria-labelledby="score-automation-title">
+                <span id="score-automation-title" class="score-skill">Automation</span>
                 <ul class="score-results" aria-label="Automation core capabilities">
-                  <li>Excel Report Automation</li>
-                  <li>Word Report Generation</li>
-                  <li>HTML Slide Production</li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/python-automation/monthly-reporting-pipeline/">
+                      <span class="score-evidence-label">Report Automation</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/financial-models/">
+                      <span class="score-evidence-label">Model Production</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/python-automation/quick-kpi-file-distribution/">
+                      <span class="score-evidence-label">Team Deliverables</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
                 </ul>
-              </a>
-              <a class="score-row score-agentic" href="#case-agentic">
-                <span class="score-skill">Agentic AI</span>
+              </section>
+              <section class="score-row score-agentic" aria-labelledby="score-agentic-title">
+                <span id="score-agentic-title" class="score-skill">Agentic AI</span>
                 <ul class="score-results" aria-label="Agentic AI core capabilities">
-                  <li>Team Task Automation</li>
-                  <li>Custom Workspace Hubs</li>
-                  <li>BI Decision Dashboards</li>
+                  <li>
+                    <a class="score-evidence-link" href="./blog/predictive-collections-agent/">
+                      <span class="score-evidence-label">Workflow Agents</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/financial-models/">
+                      <span class="score-evidence-label">Finance Models</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="score-evidence-link" href="./showcase/powerbi/">
+                      <span class="score-evidence-label">BI Decisions</span>
+                      <span class="score-destination">View <i aria-hidden="true">&nearr;</i></span>
+                    </a>
+                  </li>
                 </ul>
-              </a>
+              </section>
             </div>
           </div>
 
           <div class="hero-bottom" data-reveal>
-            <a class="hero-demo-entry" href="#demo" aria-label="View the 60-second Finance Automation demo">
-              <span class="hero-demo-kicker">Finance Automation / 60 sec</span>
-              <strong class="hero-demo-flow">
-                Excel <i aria-hidden="true">&rarr;</i>
-                Python <i aria-hidden="true">&rarr;</i>
-                Variance <i aria-hidden="true">&rarr;</i>
-                Controls
-              </strong>
-              <span class="hero-demo-action">View demo <i aria-hidden="true">&rarr;</i></span>
+            <a class="hero-demo-entry" href="#demo" aria-label="Play the 60-second team automation demo">
+              <span class="hero-demo-kicker">
+                <strong>Team automation</strong>
+                <small>60 sec</small>
+              </span>
+              <strong class="hero-demo-flow">Automate at team level</strong>
+              <span class="hero-demo-action"><i aria-hidden="true">&#9654;</i> Play demo</span>
             </a>
           </div>
         </div>
@@ -121,87 +166,107 @@
 
       <section id="demo" class="demo" aria-labelledby="demo-title">
         <div class="page-shell">
-          <div class="section-intro section-intro-light" data-reveal>
-            <p class="section-index">01 / Video demo</p>
-            <div>
-              <p class="eyebrow">Click to play / 60 sec</p>
-              <h2 id="demo-title">See the system work.</h2>
-            </div>
-            <p class="keyword-line">Signal &rarr; Decision &rarr; Action</p>
+          <div class="demo-intro" data-reveal>
+            <h2 id="demo-title">
+              <span class="demo-title-line">Automate manual work.</span>
+              <span class="demo-title-line demo-title-accent">
+                Boost team performance &times;3.
+              </span>
+            </h2>
           </div>
 
           <div class="demo-window" data-reveal>
             <div class="window-bar">
               <span><i></i><i></i><i></i></span>
-              <strong>Finance decision system / 60 sec</strong>
-              <a href="./film.html" target="_blank" rel="noreferrer">Open full screen &nearr;</a>
+              <a href="./assets/media/fpa-team-hub-60s-4k60.webm" target="_blank" rel="noreferrer">Open video &nearr;</a>
             </div>
-            <div class="demo-embed">
-              <iframe
-                src="./film.html"
-                title="60-second interactive finance system demonstration"
-                loading="eager"
-                allow="fullscreen"
-              ></iframe>
-              <div class="demo-mobile-poster">
-                <span>60 SEC</span>
-                <h3>Finance work, end to end.</h3>
-                <p>FP&amp;A &rarr; Automation &rarr; Agentic AI</p>
-                <a class="button button-white" href="./film.html" target="_blank" rel="noreferrer">Play full screen</a>
+            <div class="caption-toolbar" role="group" aria-label="Video subtitle language">
+              <span>Subtitles</span>
+              <div class="caption-language-options">
+                <button
+                  class="caption-language is-active"
+                  type="button"
+                  data-caption-language="en"
+                  aria-controls="fpa-team-hub-video"
+                  aria-label="English subtitles"
+                  aria-pressed="true"
+                >
+                  EN
+                </button>
+                <button
+                  class="caption-language"
+                  type="button"
+                  data-caption-language="vi"
+                  aria-controls="fpa-team-hub-video"
+                  aria-label="Vietnamese subtitles"
+                  aria-pressed="false"
+                >
+                  VN
+                </button>
               </div>
             </div>
-          </div>
-
-          <div class="demo-pillars" data-reveal>
-            <p><span>FP&amp;A</span>Plan / Decide</p>
-            <p><span>Automation</span>Build / Deliver</p>
-            <p><span>Agentic AI</span>Create / Scale</p>
+            <div class="demo-embed">
+              <video
+                id="fpa-team-hub-video"
+                class="demo-hook-video"
+                playsinline
+                controls
+                preload="metadata"
+                aria-label="60-second FP&A team hub automation demonstration"
+              >
+                <source src="./assets/media/fpa-team-hub-60s-web.mp4" type="video/mp4" />
+                <track
+                  src="./assets/captions/fpa-team-hub.en.vtt"
+                  kind="captions"
+                  srclang="en"
+                  label="English"
+                  default
+                />
+                <track
+                  src="./assets/captions/fpa-team-hub.vi.vtt"
+                  kind="captions"
+                  srclang="vi"
+                  label="Tiếng Việt"
+                />
+                Your browser does not support the FP&amp;A team hub video.
+              </video>
+              <div class="demo-play-cover" data-demo-play-cover>
+                <button
+                  class="demo-play-button"
+                  type="button"
+                  data-demo-play
+                  aria-controls="fpa-team-hub-video"
+                >
+                  <span aria-hidden="true">&#9654;</span>
+                  <strong data-demo-play-label>Play demo</strong>
+                </button>
+              </div>
+              <p class="demo-caption-overlay" data-caption-overlay lang="en" aria-live="polite"></p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="work" class="selected-work" aria-labelledby="work-title">
+      <section id="work" class="selected-work" aria-label="Finance expertise">
         <div class="page-shell">
-          <div class="section-intro" data-reveal>
-            <p class="section-index">02 / Results</p>
-            <div>
-              <p class="eyebrow">Finance / Automation / AI</p>
-              <h2 id="work-title">Finance results. Systems I built.</h2>
-            </div>
-            <p class="keyword-line">Real work / Public-safe proof</p>
-          </div>
-
           <article id="case-fpa" class="case-study" data-reveal>
             <div class="case-media case-media-finance">
-              <div class="finance-result-visual" aria-hidden="true">
-                <div class="finance-result-topline">
-                  <span>Operating diagnosis</span>
-                  <b>Sanitized</b>
-                </div>
-                <div class="finance-result-main">
-                  <div class="finance-data-point">
-                    <strong>212,573</strong>
-                    <span>Rows analyzed</span>
-                  </div>
-                  <div class="finance-outcomes">
-                    <div><strong>+21%</strong><span>Revenue vs target</span></div>
-                    <div><strong>+5%</strong><span>EBIT vs target</span></div>
-                  </div>
-                </div>
-                <div class="finance-result-footer">
-                  <span>11 departments</span>
-                  <span>3 offices</span>
-                  <span>CFO-validated pack</span>
-                </div>
+              <div class="finance-impact-visual">
+                <p>FP&amp;A decision system</p>
+                <h4>Plan. Explain.<br />Focus. Control.</h4>
+                <ul class="finance-impact-lenses" aria-label="Finance expertise lenses">
+                  <li>Forecast</li>
+                  <li>P&amp;L</li>
+                  <li>Margin</li>
+                  <li>Cash</li>
+                </ul>
               </div>
-              <span class="media-label">Real work / sanitized evidence</span>
             </div>
             <div class="case-copy">
-              <p class="case-number">01 / FP&amp;A tracking</p>
-              <h3>Revenue +21%. EBIT +5%.</h3>
-              <p class="case-keywords">5M vs target / 212K rows / Sanitized</p>
-              <a class="case-link" href="../../showcase/fpa-decision-cases/">
-                View FP&amp;A decisions <span aria-hidden="true">&nearr;</span>
+              <p class="case-number">01 / FP&amp;A</p>
+              <h3>Finance Expertise</h3>
+              <a class="case-link" href="./showcase/fpa-decision-cases/">
+                Explore FP&amp;A cases <span aria-hidden="true">&nearr;</span>
               </a>
             </div>
           </article>
@@ -215,9 +280,10 @@
                 loop
                 playsinline
                 preload="metadata"
+                data-autoplay="false"
                 poster="../../showcase/python-automation/fpa-monthly-reporting-demo/assets/fpa-automation-highlight-poster.jpg"
                 data-playback-rate="2.5"
-                aria-label="FP&A automation demo showing raw Excel data, a Python workflow, variance analysis, and control checks"
+                aria-label="FP&A automation demo showing raw Excel data, a Python workflow, report production, and finance insights"
               >
                 <source
                   src="../../showcase/python-automation/fpa-monthly-reporting-demo/assets/fpa-automation-highlight.mp4"
@@ -232,80 +298,44 @@
                   <i>&rarr;</i>
                   <span>Python</span>
                   <i>&rarr;</i>
-                  <span>Variance</span>
+                  <span>Report</span>
                   <i>&rarr;</i>
-                  <span>Controls</span>
+                  <span>Insight</span>
                 </div>
               </div>
 
-              <button
+              <a
                 class="video-toggle"
-                type="button"
-                data-video-toggle="automation-case-video"
-                aria-label="Play automation demo"
-                aria-pressed="false"
+                href="../../showcase/python-automation/fpa-monthly-reporting-demo/assets/fpa-automation-highlight.mp4"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Watch the full automation demo"
               >
                 <span class="video-toggle-icon" aria-hidden="true">&#9654;</span>
-                <span class="video-toggle-text">Play</span>
-              </button>
+                <span class="video-toggle-text">Watch</span>
+              </a>
             </div>
             <div class="case-copy">
               <p class="case-number">02 / Automation</p>
-              <h3>~90% less prep.</h3>
-              <p class="case-keywords">16&ndash;20M cells / Excel + Python</p>
-              <p class="case-evidence-note">Self-reported reduction / Fictional demo data</p>
-              <a class="case-link" href="../../showcase/python-automation/monthly-reporting-pipeline/">
-                View automation <span aria-hidden="true">&nearr;</span>
+              <h3>Automate personal tasks.</h3>
+              <p class="case-keywords">16&ndash;20M cells / Reports / Models</p>
+              <a class="case-link" href="./showcase/python-automation/monthly-reporting-pipeline/">
+                View demo automation <span aria-hidden="true">&nearr;</span>
               </a>
             </div>
           </article>
 
-          <article id="case-agentic" class="case-study" data-reveal>
-            <div class="case-media case-media-ai">
-              <div class="ai-build-visual" aria-hidden="true">
-                <div class="ai-build-topline">
-                  <span>AI-assisted finance builds</span>
-                  <b>Human-reviewed</b>
-                </div>
-                <div class="ai-build-grid">
-                  <div>
-                    <strong>20</strong>
-                    <span>BI previews</span>
-                    <small>Explore / Explain / Decide</small>
-                  </div>
-                  <div>
-                    <strong>24</strong>
-                    <span>Released models</span>
-                    <small>Scenario / Check / Release</small>
-                  </div>
-                  <div>
-                    <strong>01</strong>
-                    <span>Workspace hub</span>
-                    <small>Prototype / Tasks / Knowledge</small>
-                  </div>
-                </div>
-                <div class="ai-build-footer">
-                  <span>Prompt</span><i>&rarr;</i><span>Build</span><i>&rarr;</i><span>Review</span><i>&rarr;</i><span>Deploy</span>
-                </div>
+          <article id="case-agentic" class="case-study case-study-agentic-simple" data-reveal>
+            <div class="agentic-simple-panel">
+              <div class="agentic-simple-copy">
+                <p class="case-number">03 / Agentic AI</p>
+                <h3>AI-assisted finance systems.</h3>
               </div>
-              <span class="media-label">AI assists / Finance reviews</span>
-            </div>
-            <div class="case-copy">
-              <p class="case-number">03 / Agentic AI / AI-assisted builds</p>
-              <h3>Dashboards. Models. Workspaces.</h3>
-              <p class="case-keywords">AI assists / Finance reviews</p>
-              <div class="case-fact">
-                <strong>3</strong>
-                <span><b>Finance build systems</b><small>20 BI previews / 24 released models / Hub prototype</small></span>
-              </div>
-              <ul class="tag-list" aria-label="Agentic AI project skills">
-                <li>Power BI</li>
-                <li>Financial models</li>
-                <li>Workspace hub</li>
+              <ul class="agentic-cta-list" aria-label="Agentic AI evidence">
+                <li><a href="./showcase/powerbi/"><span class="agentic-cta-index">01</span><strong>Power BI</strong><span class="agentic-cta-arrow" aria-hidden="true">&nearr;</span></a></li>
+                <li><a href="./showcase/financial-models/"><span class="agentic-cta-index">02</span><strong>Financial Models</strong><span class="agentic-cta-arrow" aria-hidden="true">&nearr;</span></a></li>
+                <li><a href="./blog/predictive-collections-agent/"><span class="agentic-cta-index">03</span><strong>Workspace Hub</strong><span class="agentic-cta-arrow" aria-hidden="true">&nearr;</span></a></li>
               </ul>
-              <a class="case-link" href="../../blog/predictive-collections-agent/">
-                See a governed AI workflow <span aria-hidden="true">&nearr;</span>
-              </a>
             </div>
           </article>
         </div>
@@ -313,13 +343,9 @@
 
       <section id="experience" class="experience" aria-labelledby="experience-title">
         <div class="page-shell">
-          <div class="section-intro" data-reveal>
-            <p class="section-index">03 / Experience</p>
-            <div>
-              <p class="eyebrow">Finance / Data / Systems</p>
-              <h2 id="experience-title">Finance foundation. Builder edge.</h2>
-            </div>
-            <p class="keyword-line">Logistics / Commercial FP&amp;A / HCMC</p>
+          <div class="section-intro section-intro-simple experience-intro" data-reveal>
+            <h2 id="experience-title">Experience</h2>
+            <p class="core-advantages">FP&amp;A / Automation / Business partnering</p>
           </div>
 
           <div class="experience-layout">
@@ -334,7 +360,7 @@
                   decoding="async"
                 />
               </div>
-              <figcaption>Building finance systems / Ho Chi Minh City</figcaption>
+              <a class="case-link about-photo-cta" href="./cv.html">Open complete CV <span aria-hidden="true">&nearr;</span></a>
             </figure>
 
             <div class="experience-content" data-reveal>
@@ -346,76 +372,86 @@
 
               <div class="timeline">
                 <article>
-                  <time>2025 - Now</time>
+                  <time>Sep 2025 - Jun 2026</time>
                   <div>
                     <h3>FP&amp;A Analyst</h3>
-                    <p>BEE Logistics Corporation / Ho Chi Minh City</p>
+                    <p><a href="https://beelogistics.com/?language=En" target="_blank" rel="noreferrer">BEE Logistics Corporation / Ho Chi Minh City <span aria-hidden="true">&nearr;</span></a></p>
                   </div>
                 </article>
                 <article>
-                  <time>2025</time>
+                  <time>Mar 2025 - Sep 2025</time>
                   <div>
                     <h3>Finance Intern</h3>
-                    <p>DHL Global Forwarding / Ho Chi Minh City</p>
+                    <p><a href="https://www.dhl.com/vn-en/home/global-forwarding.html" target="_blank" rel="noreferrer">DHL Global Forwarding / Ho Chi Minh City <span aria-hidden="true">&nearr;</span></a></p>
                   </div>
                 </article>
                 <article>
                   <time>2021 - 2025</time>
                   <div>
                     <h3>Bachelor of Finance</h3>
-                    <p>University of Economics Ho Chi Minh City</p>
+                    <p><a href="https://ueh.edu.vn/en/" target="_blank" rel="noreferrer">University of Economics Ho Chi Minh City <span aria-hidden="true">&nearr;</span></a></p>
                   </div>
                 </article>
               </div>
-
-              <div class="skill-groups">
-                <div>
-                  <p>Finance</p>
-                  <span>Planning / Forecasting / P&amp;L / Cash flow / Variance</span>
-                </div>
-                <div>
-                  <p>Build</p>
-                  <span>Excel / Financial models / Power BI / Python / SQL</span>
-                </div>
-                <div>
-                  <p>Deliver</p>
-                  <span>Management reporting / Workflow design / Business partnering</span>
-                </div>
-              </div>
-
-              <a class="case-link" href="../../cv.html">Open complete CV <span aria-hidden="true">&nearr;</span></a>
             </div>
           </div>
         </div>
       </section>
 
+      <section id="explore" class="explore blog-feature" aria-labelledby="explore-title">
+        <div class="page-shell blog-feature-layout" data-reveal>
+          <div class="blog-feature-heading">
+            <h2 id="explore-title">Blog &amp; Activities</h2>
+          </div>
+          <article class="blog-feature-main">
+            <div>
+              <p>Latest article <time datetime="2026-07-14">14 Jul 2026</time></p>
+              <h3>My First Hackathon as a Non-Technical Builder</h3>
+            </div>
+            <div class="blog-feature-actions">
+              <a class="button blog-feature-primary" href="./blog/aabw-2026-recap/">Read article <span aria-hidden="true">&nearr;</span></a>
+              <a class="button blog-feature-secondary" href="./blog/">View all articles <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section id="contact" class="contact" aria-labelledby="contact-title">
         <div class="page-shell contact-layout" data-reveal>
-          <p class="section-index">04 / Contact</p>
-          <div>
-            <p class="eyebrow">Vietnam / Regional / Relocation</p>
-            <h2 id="contact-title">FP&amp;A. Builder edge.</h2>
-          </div>
+          <h2 id="contact-title">Let's connect.</h2>
           <div class="contact-side">
-            <p>Commercial finance / Finance BI</p>
             <div class="contact-actions">
               <a class="button button-white" href="mailto:truongtu293@gmail.com">Start a conversation</a>
               <a class="button button-ghost" href="https://www.linkedin.com/in/truongtu293/">LinkedIn</a>
-              <a class="button button-ghost" href="../../cv.html">View CV</a>
+              <a class="button button-ghost" href="./cv.html">View CV</a>
+              <a class="button button-ghost" href="https://github.com/Tudzai">GitHub</a>
             </div>
           </div>
         </div>
       </section>
     </main>
 
-    <footer>
-      <div class="page-shell">
-        <span>&copy; <span id="current-year">2026</span> Truong Dinh Anh Tu</span>
-        <span>Finance judgment / Practical technology / Visible ownership</span>
-        <a href="#hero">Back to top &uarr;</a>
+    <footer data-stage-shell class="stage-site-footer stage-shell-footer">
+      <div class="page-shell stage-shell-footer-inner">
+        <div class="footer-owner">
+          <span>&copy; <span id="current-year">2026</span> Truong Dinh Anh Tu</span>
+          <a class="vault-link" href="../../knowledge-vault/" aria-label="Open the Knowledge Vault">
+            <svg viewBox="0 0 48 32" role="img" aria-labelledby="sulcata-title">
+              <title id="sulcata-title">Sulcata tortoise</title>
+              <path d="M7 21c0-9 7-16 17-16 9 0 15 6 17 15H7Z" />
+              <circle cx="42" cy="20" r="4" />
+              <circle class="sulcata-eye" cx="43" cy="19" r="0.8" />
+              <path d="M12 20c2-6 6-10 12-10s11 4 13 10M18 9l-3 11m12-10 4 10M14 20h24M12 22l-2 6m27-6 2 6m-19-6-1 6m9-6 1 6M7 20l-4 2" />
+            </svg>
+            <span class="sr-only">Knowledge Vault</span>
+          </a>
+        </div>
+        <a class="back-to-top" href="#hero" aria-label="Back to top"><span aria-hidden="true">&uarr;</span></a>
       </div>
     </footer>
 
-    <script src="./script.js?rev=capabilities-menu"></script>
+    <script src="./assets/js/navigation.js"></script>
+    <script src="./assets/vendor/gsap/gsap.min.js"></script>
+    <script src="./script.js?rev=performance-v10"></script>
   </body>
 </html>
