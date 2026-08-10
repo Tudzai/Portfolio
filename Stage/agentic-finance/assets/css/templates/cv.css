@@ -1,3 +1,7 @@
+body[data-stage-template="cv"] {
+  --stage-template-section-gap: clamp(3rem, 5vw, 5rem);
+}
+
 body[data-stage-template="cv"] main {
   padding-bottom: var(--stage-section-space);
 }
@@ -17,7 +21,7 @@ body[data-stage-template="cv"] :is(.cv-hero h1, .detail-hero h1) {
 }
 
 body[data-stage-template="cv"] .cv-viewer-section {
-  padding-block: var(--stage-section-space);
+  padding-block: var(--stage-template-section-gap);
 }
 
 body[data-stage-template="cv"] :is(.cv-viewer-section iframe, .cv-viewer) {
@@ -65,5 +69,30 @@ body[data-stage-template="cv"] .cv-viewer {
     grid-column: 1;
     grid-row: auto;
     justify-content: flex-start;
+  }
+}
+
+/* Hybrid CV: compact profile context, prominent download, full document proof. */
+body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .cv-hero {
+  padding-block: clamp(3.5rem, 5.5vw, 5rem);
+}
+
+body[data-stage-template="cv"] .cv-hero .hero-actions :is(.button, .primary, .button-primary) {
+  background: linear-gradient(90deg, var(--stage-violet-dark), var(--stage-pink));
+  border-color: transparent;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--stage-pink) 18%, transparent);
+}
+
+body[data-stage-template="cv"] :is(.cv-viewer-section iframe, .cv-viewer) {
+  min-height: min(80vh, 1100px);
+}
+
+@media (max-width: 760px) {
+  body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .cv-hero {
+    padding-block: 3rem;
+  }
+
+  body[data-stage-template="cv"] :is(.cv-viewer-section iframe, .cv-viewer) {
+    min-height: 70vh;
   }
 }

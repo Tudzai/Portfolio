@@ -1,10 +1,11 @@
 body[data-stage-template="dashboard-preview"] {
   --stage-page-bg: #f8f2ec;
+  --stage-template-section-gap: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 body[data-stage-template="dashboard-preview"] main.dashboard {
   width: min(1400px, calc(100% - 48px));
-  padding-block: clamp(2rem, 5vw, 4rem) var(--stage-section-space);
+  padding-block: var(--stage-template-section-gap) var(--stage-section-space);
 }
 
 body[data-stage-template="dashboard-preview"] main.dashboard > .topbar,
@@ -19,10 +20,14 @@ body[data-stage-template="dashboard-preview"] :is(.dashboard, .dashboard-shell) 
   color: var(--stage-white);
 }
 
-body[data-stage-template="dashboard-preview"] :is(.kpis, .grid, .notes) {
+body[data-stage-template="dashboard-preview"] :is(.kpis, .notes) {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
+}
+
+body[data-stage-template="dashboard-preview"] main[data-stage-content] :is(h1, h2, h3, h4) {
+  color: var(--stage-white);
 }
 
 body[data-stage-template="dashboard-preview"] :is(.kpi, .panel, .notes > article) {
@@ -110,7 +115,7 @@ body[data-stage-template="dashboard-preview"] .notes {
 }
 
 @media (max-width: 900px) {
-  body[data-stage-template="dashboard-preview"] :is(.kpis, .grid, .notes) {
+  body[data-stage-template="dashboard-preview"] :is(.kpis, .notes) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -120,8 +125,35 @@ body[data-stage-template="dashboard-preview"] .notes {
     width: min(100% - 32px, 1400px);
   }
 
-  body[data-stage-template="dashboard-preview"] :is(.kpis, .grid, .notes) {
+  body[data-stage-template="dashboard-preview"] :is(.kpis, .notes) {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Hybrid preview: route context stays compact while the decision canvas dominates. */
+body[data-stage-template="dashboard-preview"] .stage-route-intro {
+  margin-bottom: var(--stage-template-section-gap);
+  color: var(--stage-ink);
+}
+
+body[data-stage-template="dashboard-preview"] :is(.dashboard-shell, .preview-frame) {
+  min-height: min(76vh, 900px);
+  background:
+    radial-gradient(circle at 88% 8%, rgba(247, 37, 133, 0.16), transparent 28%),
+    #140b1d;
+}
+
+body[data-stage-template="dashboard-preview"] :is(.kpi, .panel, .notes > article) {
+  background: color-mix(in srgb, var(--stage-panel-ink) 88%, var(--stage-violet) 12%);
+}
+
+@media (max-width: 760px) {
+  body[data-stage-template="dashboard-preview"] .stage-route-intro {
+    margin-bottom: 12px;
+  }
+
+  body[data-stage-template="dashboard-preview"] :is(.dashboard-shell, .preview-frame) {
+    min-height: 0;
   }
 }
 

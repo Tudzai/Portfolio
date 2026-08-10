@@ -1,3 +1,7 @@
+body[data-stage-template="model-detail"] {
+  --stage-template-section-gap: clamp(4rem, 6vw, 6rem);
+}
+
 body[data-stage-template="model-detail"] main {
   padding-bottom: var(--stage-section-space);
 }
@@ -55,7 +59,7 @@ body[data-stage-template="model-detail"] :is(.model-metadata-card strong, .model
 }
 
 body[data-stage-template="model-detail"] :is(.detail-section, .section) {
-  padding-block: var(--stage-section-space);
+  padding-block: var(--stage-template-section-gap);
 }
 
 body[data-stage-template="model-detail"] :is(.section-heading, .model-section-heading) {
@@ -170,6 +174,42 @@ body[data-stage-template="model-detail"] summary {
   body[data-stage-template="model-detail"] :is(.section-heading, .model-section-heading) {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+/* Hybrid model detail: decision/use case first, governed workbook evidence second. */
+body[data-stage-template="model-detail"] main[data-stage-content] > .stage-route-intro + :is(.model-detail-hero, .model-library-hero) {
+  position: relative;
+  padding-block: clamp(3.75rem, 6vw, 5.75rem);
+  border-bottom: 1px solid var(--stage-line);
+  background:
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--stage-violet) 13%, transparent), transparent 32%),
+    linear-gradient(135deg, var(--stage-white), transparent 70%);
+}
+
+body[data-stage-template="model-detail"] .model-metadata-grid {
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--stage-line);
+  border-radius: var(--stage-radius-md);
+  background: var(--stage-line);
+}
+
+body[data-stage-template="model-detail"] .model-preview-gallery figure:first-child {
+  grid-column: span 2;
+}
+
+body[data-stage-template="model-detail"] :is(.model-method-card, .model-standard-card, .model-detail-panel, .model-usage-card) {
+  border-top: 3px solid color-mix(in srgb, var(--stage-accent) 72%, var(--stage-pink));
+}
+
+@media (max-width: 760px) {
+  body[data-stage-template="model-detail"] main[data-stage-content] > .stage-route-intro + :is(.model-detail-hero, .model-library-hero) {
+    padding-block: 3rem;
+  }
+
+  body[data-stage-template="model-detail"] .model-preview-gallery figure:first-child {
+    grid-column: auto;
   }
 }
 

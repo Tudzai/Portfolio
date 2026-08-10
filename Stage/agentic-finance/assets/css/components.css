@@ -409,3 +409,199 @@ footer a {
     font-size: clamp(2.25rem, 14vw, 4rem);
   }
 }
+
+/* Hybrid branch route context: one compact decision rail across every generated page. */
+.stage-route-intro {
+  position: relative;
+  display: grid;
+  min-height: var(--stage-route-rail);
+  grid-template-columns: minmax(170px, 0.82fr) minmax(300px, 1.35fr) minmax(180px, 0.82fr) auto;
+  align-items: center;
+  gap: clamp(18px, 2.4vw, 34px);
+  padding: 14px clamp(16px, 2vw, 26px);
+  overflow: hidden;
+  border-top: 1px solid var(--stage-line);
+  border-bottom: 1px solid var(--stage-line);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--stage-accent) 7%, transparent), transparent 32%),
+    color-mix(in srgb, var(--stage-white) 76%, transparent);
+}
+
+.stage-route-intro::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--stage-violet), var(--stage-pink));
+  content: "";
+}
+
+.stage-route-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 11px;
+}
+
+.stage-route-index {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--stage-accent) 32%, var(--stage-line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--stage-accent) 10%, var(--stage-white));
+  color: var(--stage-accent-strong);
+  font-family: var(--stage-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.stage-route-label,
+.stage-route-evidence {
+  margin: 0;
+  font-family: var(--stage-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.075em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.stage-route-label {
+  overflow: hidden;
+  color: var(--stage-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stage-route-flow {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 1.8vw, 24px);
+  padding: 0;
+  margin: 0;
+  color: var(--stage-ink);
+  list-style: none;
+}
+
+.stage-route-flow li {
+  position: relative;
+  font-family: var(--stage-display);
+  font-size: clamp(0.78rem, 0.74rem + 0.14vw, 0.9rem);
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.stage-route-flow li + li::before {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + clamp(4px, 0.65vw, 9px));
+  color: var(--stage-pink);
+  content: "\2192";
+  font-family: var(--stage-mono);
+  font-size: 0.72rem;
+  transform: translateY(-50%);
+}
+
+.stage-route-evidence {
+  color: var(--stage-muted);
+  text-align: right;
+}
+
+.stage-route-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 16px;
+  border: 1px solid var(--stage-ink);
+  border-radius: 999px;
+  background: var(--stage-ink);
+  color: var(--stage-white);
+  font-family: var(--stage-display);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform var(--stage-motion-fast) var(--stage-ease), background-color var(--stage-motion-fast) ease;
+}
+
+.stage-route-link > span {
+  color: var(--stage-pink);
+  font-family: var(--stage-mono);
+}
+
+.stage-route-link:hover,
+.stage-route-link:focus-visible {
+  transform: translateY(-2px);
+  background: var(--stage-violet-dark);
+}
+
+@media (max-width: 980px) {
+  .stage-route-intro {
+    grid-template-columns: minmax(160px, 0.8fr) minmax(280px, 1.2fr) auto;
+  }
+
+  .stage-route-evidence {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .stage-route-intro {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 16px;
+    padding: 14px 14px 16px;
+  }
+
+  .stage-route-identity {
+    min-width: 0;
+  }
+
+  .stage-route-flow {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+    gap: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .stage-route-flow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stage-route-flow li {
+    font-size: 0.76rem;
+  }
+
+  .stage-route-link {
+    min-height: 40px;
+    padding: 0 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .stage-route-index {
+    width: 28px;
+    height: 28px;
+  }
+
+  .stage-route-link {
+    width: 40px;
+    padding: 0;
+    overflow: hidden;
+    color: transparent;
+    font-size: 0;
+  }
+
+  .stage-route-link > span {
+    color: var(--stage-white);
+    font-size: 0.8rem;
+  }
+}
