@@ -15,19 +15,6 @@
     }, { once: true });
   });
 
-  const stageBackToTop = document.querySelector('.stage-back-to-top');
-  if (stageBackToTop) {
-    const syncBackToTop = () => {
-      const threshold = Math.max(360, window.innerHeight * 0.55);
-      const isVisible = window.scrollY > threshold;
-      stageBackToTop.classList.toggle('is-visible', isVisible);
-      stageBackToTop.tabIndex = isVisible ? 0 : -1;
-    };
-
-    syncBackToTop();
-    window.addEventListener('scroll', syncBackToTop, { passive: true });
-  }
-
   const filterGroups = [...document.querySelectorAll('[data-stage-filter]')];
   filterGroups.forEach((group) => {
     const items = [...group.querySelectorAll('[data-filter-value]')];
@@ -49,29 +36,4 @@
     controls.forEach((control) => control.addEventListener('click', () => applyFilter(control.dataset.filterControl)));
     applyFilter('all');
   });
-
-  const fitDeckStage = () => {
-    if (document.body.dataset.stageTemplate !== 'deck') return;
-    const viewport = document.querySelector('.deck-viewport');
-    const stage = viewport?.querySelector('.deck-stage');
-    if (!viewport || !stage) return;
-
-    const bounds = viewport.getBoundingClientRect();
-    const factor = Math.min(bounds.width / 1920, bounds.height / 1080);
-    const x = (bounds.width - 1920 * factor) / 2;
-    const y = (bounds.height - 1080 * factor) / 2;
-    stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
-  };
-
-  const scheduleDeckFit = () => requestAnimationFrame(fitDeckStage);
-
-  if (document.body.dataset.stageTemplate === 'deck') {
-    const viewport = document.querySelector('.deck-viewport');
-    scheduleDeckFit();
-    window.addEventListener('load', scheduleDeckFit, { once: true });
-    window.addEventListener('resize', scheduleDeckFit, { passive: true });
-    if (viewport && typeof ResizeObserver !== 'undefined') {
-      new ResizeObserver(scheduleDeckFit).observe(viewport);
-    }
-  }
 })();

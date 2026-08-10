@@ -1,11 +1,8 @@
-body[data-stage-template="utility"] {
-  --stage-template-section-gap: clamp(2rem, 4vw, 4rem);
-}
-
 body[data-stage-template="utility"] main {
-  display: block;
+  display: grid;
   min-height: 64vh;
-  padding-block: 0 var(--stage-template-section-gap);
+  align-content: center;
+  padding-block: var(--stage-section-space);
 }
 
 body[data-stage-template="utility"] :is(.detail-hero, .hero) {
@@ -29,42 +26,14 @@ body[data-stage-template="utility"] > main[data-stage-content] {
   width: var(--stage-shell);
   min-height: calc(100vh - var(--stage-header-height) - 84px);
   margin-inline: auto;
-  padding: 0 0 var(--stage-template-section-gap);
+  padding: var(--stage-section-space) 0;
 }
 
-body[data-stage-template="utility"] > main[data-stage-content] > .stage-route-intro + * {
+body[data-stage-template="utility"] > main[data-stage-content] > :first-child {
   max-width: 780px;
-  margin: var(--stage-template-section-gap) auto 0;
   padding: clamp(2rem, 5vw, 4rem);
   border: 1px solid var(--stage-line);
   border-radius: var(--stage-radius-lg);
-  background:
-    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--stage-accent) 13%, transparent), transparent 30%),
-    color-mix(in srgb, var(--stage-white) 90%, transparent);
+  background: color-mix(in srgb, var(--stage-white) 88%, transparent);
   box-shadow: var(--stage-shadow-card);
-}
-
-body[data-stage-template="utility"] > main[data-stage-content] > p {
-  width: min(780px, 100%);
-  margin: 1rem auto 0;
-  color: var(--stage-muted);
-  font-size: var(--stage-reading-size);
-  line-height: 1.65;
-}
-
-body[data-stage-template="utility"] > main[data-stage-content] > p a {
-  color: var(--stage-violet-dark);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-}
-
-@media (max-width: 760px) {
-  body[data-stage-template="utility"] > main[data-stage-content] > .stage-route-intro + * {
-    margin-top: 2rem;
-    padding: 1.5rem;
-  }
-
-  body[data-stage-template="utility"] > main[data-stage-content] > p {
-    padding-inline: 1.5rem;
-  }
 }

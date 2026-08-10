@@ -1,84 +1,58 @@
-html:has(body[data-stage-template="deck"]) {
-  min-height: 100%;
-  height: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
+body[data-stage-template="deck"] main {
+  min-height: calc(100vh - var(--stage-header-height));
+  padding-block: 24px var(--stage-section-space);
 }
 
-body[data-stage-template="deck"] {
-  --stage-template-section-gap: clamp(1rem, 2vw, 2rem);
-  min-height: 100%;
-  height: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
-  background: var(--stage-page-bg);
-}
-
-/* Hybrid deck: shared context around an immersive, seekable 16:9 canvas. */
-body[data-stage-template="deck"] .stage-route-intro {
-  margin-bottom: var(--stage-template-section-gap);
+body[data-stage-template="deck"] > main[data-stage-content] {
+  width: min(1320px, calc(100% - 48px));
+  margin-inline: auto;
+  padding: 24px 0 var(--stage-section-space);
 }
 
 body[data-stage-template="deck"] .deck-viewport {
-  position: relative;
-  inset: auto;
-  width: min(1240px, calc(100% - 48px));
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 16 / 9;
-  margin: 0 auto var(--stage-template-section-gap);
   overflow: hidden;
   border: 1px solid var(--stage-line-strong);
   border-radius: var(--stage-radius-lg);
-  background:
-    radial-gradient(circle at 88% 10%, rgba(247, 37, 133, 0.18), transparent 30%),
-    var(--stage-panel-ink);
+  background: var(--stage-ink);
   box-shadow: var(--stage-shadow);
 }
 
-body[data-stage-template="deck"] .deck-stage {
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-}
-
 body[data-stage-template="deck"] .deck-controls {
-  position: sticky;
-  left: auto;
-  right: auto;
-  bottom: 12px;
-  transform: none;
-  z-index: 12;
-  width: fit-content;
-  margin: -72px max(24px, calc((100vw - 1240px) / 2 + 24px)) 24px auto;
-  padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--stage-line);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--stage-panel-ink) 88%, transparent);
-  color: var(--stage-white);
-  box-shadow: var(--stage-shadow-card);
-  backdrop-filter: blur(14px);
-}
-
-body[data-stage-template="deck"] .deck-controls button,
-body[data-stage-template="deck"] .deck-controls a {
-  min-width: 40px;
-  min-height: 40px;
+  background: color-mix(in srgb, var(--stage-white) 86%, transparent);
 }
 
 @media (max-width: 760px) {
-  body[data-stage-template="deck"] .stage-route-intro {
-    margin-bottom: 12px;
+  body[data-stage-template="deck"] > main[data-stage-content] {
+    width: min(100% - 24px, 1320px);
+    padding-top: 12px;
+  }
+}
+
+body[data-stage-template="deck"] :is(.deck-shell, .deck, .slides, .presentation) {
+  width: min(1200px, 100%);
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--stage-line-strong);
+  border-radius: var(--stage-radius-lg);
+  background: var(--stage-ink);
+  box-shadow: var(--stage-shadow);
+}
+
+body[data-stage-template="deck"] button,
+body[data-stage-template="deck"] a {
+  min-height: 44px;
+}
+
+@media (max-width: 760px) {
+  body[data-stage-template="deck"] main {
+    padding-block: 16px 48px;
   }
 
-  body[data-stage-template="deck"] .deck-viewport {
-    width: calc(100% - 24px);
+  body[data-stage-template="deck"] :is(.deck-shell, .deck, .slides, .presentation) {
     border-radius: var(--stage-radius-md);
-  }
-
-  body[data-stage-template="deck"] .deck-controls {
-    margin-top: -60px;
-    margin-right: 20px;
-    margin-bottom: 16px;
   }
 }

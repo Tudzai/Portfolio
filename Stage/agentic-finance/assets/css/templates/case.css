@@ -1,7 +1,3 @@
-body[data-stage-template="case"] {
-  --stage-template-section-gap: clamp(4rem, 6vw, 6rem);
-}
-
 body[data-stage-template="case"] main {
   padding-bottom: var(--stage-section-space);
 }
@@ -27,7 +23,7 @@ body[data-stage-template="case"] :is(.detail-hero .hero-actions, .detail-hero-ac
 }
 
 body[data-stage-template="case"] :is(.detail-section, .section) {
-  padding-block: var(--stage-template-section-gap);
+  padding-block: var(--stage-section-space);
 }
 
 body[data-stage-template="case"] :is(.section-heading, .section-intro) {
@@ -123,54 +119,6 @@ body[data-stage-family="automation"] :is(.automation-demo-feature, .automation-d
 
   body[data-stage-template="case"] :is(.grid, .decision-card-grid, .model-detail-split, .split-detail, .metric-grid, .memo-grid) {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Hybrid case: decision framing beside public-safe proof, followed by action modules. */
-body[data-stage-template="case"] main[data-stage-content] > .stage-route-intro + :is(.detail-hero, .hero) {
-  padding-block: clamp(3.75rem, 6vw, 5.75rem) clamp(3rem, 5vw, 4.5rem);
-}
-
-body[data-stage-template="case"] :is(.detail-hero-grid, .hero-grid, .case-study-layout, .case-layout) {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-  align-items: center;
-  gap: clamp(2rem, 5vw, 4.75rem);
-}
-
-body[data-stage-template="case"] :is(.frame-card, .case-media, .automation-demo-feature, .automation-demo) {
-  background: var(--stage-panel-gradient);
-}
-
-body[data-stage-template="case"] :is(.memo-card, .cash-panel, .decision-card, .card) {
-  position: relative;
-  overflow: hidden;
-}
-
-body[data-stage-template="case"] :is(.memo-card, .cash-panel, .decision-card, .card)::before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 44px;
-  height: 3px;
-  border-radius: 0 999px 999px 0;
-  background: linear-gradient(90deg, var(--stage-violet), var(--stage-pink));
-  content: "";
-}
-
-body[data-stage-template="case"] :is(.detail-section, .section):nth-of-type(even) {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--stage-violet) 3%, transparent), transparent 42%);
-}
-
-@media (max-width: 900px) {
-  body[data-stage-template="case"] :is(.detail-hero-grid, .hero-grid, .case-study-layout, .case-layout) {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 760px) {
-  body[data-stage-template="case"] main[data-stage-content] > .stage-route-intro + :is(.detail-hero, .hero) {
-    padding-block: 3rem;
   }
 }
 

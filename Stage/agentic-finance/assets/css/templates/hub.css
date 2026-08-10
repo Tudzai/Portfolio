@@ -1,7 +1,3 @@
-body[data-stage-template="hub"] {
-  --stage-template-section-gap: clamp(3.5rem, 5vw, 5rem);
-}
-
 body[data-stage-template="hub"] main {
   padding-bottom: var(--stage-section-space);
 }
@@ -60,7 +56,7 @@ body[data-stage-template="hub"] :is(.project-grid, .model-grid, .decision-card-g
 }
 
 body[data-stage-template="hub"] :is(.detail-section, .section) {
-  padding-block: var(--stage-template-section-gap);
+  padding-block: var(--stage-section-space);
 }
 
 body[data-stage-template="hub"] :is(.section-heading, .section-intro) {
@@ -175,43 +171,6 @@ body[data-stage-template="hub"] :is(.project-card.featured, .decision-card.featu
   body[data-stage-template="hub"] :is(.section-heading, .section-intro) {
     grid-template-columns: 1fr;
     gap: 10px;
-  }
-}
-
-/* Hybrid hub: brief orientation first, then a clear discovery grid. */
-body[data-stage-template="hub"] main[data-stage-content] > .stage-route-intro + :is(.detail-hero, .hero) {
-  padding-block: clamp(3.25rem, 5.5vw, 5.25rem) clamp(2.75rem, 4.5vw, 4rem);
-}
-
-body[data-stage-template="hub"] :is(.project-card, .decision-card, .python-case-card, .model-card, .blog-archive-card) {
-  min-height: 240px;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
-  transition: transform var(--stage-motion-base) var(--stage-ease), border-color var(--stage-motion-fast) ease, box-shadow var(--stage-motion-base) ease;
-}
-
-body[data-stage-template="hub"] :is(.project-card p, .decision-card p, .python-case-card p, .model-card p, .blog-archive-card p) {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-body[data-stage-template="hub"] :is(.project-card.featured, .decision-card.featured, .python-case-card.primary-case) {
-  background: var(--stage-panel-gradient);
-}
-
-body[data-stage-template="hub"] :is(.project-card, .decision-card, .python-case-card, .model-card, .blog-archive-card) :is(.button, .text-link, .project-link, .model-card-link) {
-  align-self: end;
-  justify-self: start;
-}
-
-@media (max-width: 760px) {
-  body[data-stage-template="hub"] main[data-stage-content] > .stage-route-intro + :is(.detail-hero, .hero) {
-    padding-block: 2.75rem;
-  }
-
-  body[data-stage-template="hub"] :is(.project-card, .decision-card, .python-case-card, .model-card, .blog-archive-card) {
-    min-height: 0;
   }
 }
 

@@ -1,7 +1,3 @@
-body[data-stage-template="article"] {
-  --stage-template-section-gap: clamp(3.5rem, 5vw, 5.5rem);
-}
-
 body[data-stage-template="article"] main {
   padding-bottom: var(--stage-section-space);
 }
@@ -262,7 +258,7 @@ body[data-stage-template="article"] .article-toc-card a {
 }
 
 body[data-stage-template="article"] .article-section {
-  padding: var(--stage-template-section-gap) 0;
+  padding: clamp(3.75rem, 6vw, 6rem) 0;
 }
 
 body[data-stage-template="article"] .article-section-heading {
@@ -351,37 +347,5 @@ body[data-stage-template="article"] .article-figure figcaption {
   body[data-stage-template="article"] .article-summary-grid,
   body[data-stage-template="article"] .article-section-heading {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Hybrid article: recruiter-readable summary, then an editorial evidence rail. */
-body[data-stage-template="article"] main[data-stage-content] > .stage-route-intro + :is(.detail-hero, article > header) {
-  padding-block: clamp(3.75rem, 6vw, 5.75rem) clamp(3rem, 5vw, 4.5rem);
-}
-
-body[data-stage-template="article"] .article-summary {
-  box-shadow: var(--stage-shadow-card);
-}
-
-body[data-stage-template="article"] .article-summary-heading {
-  background: var(--stage-panel-gradient);
-  color: var(--stage-white);
-}
-
-body[data-stage-template="article"] .article-summary-heading :is(h2, p, span) {
-  color: inherit;
-}
-
-body[data-stage-template="article"] .article-reading-main {
-  max-width: 820px;
-}
-
-body[data-stage-template="article"] .article-section h2 {
-  text-wrap: balance;
-}
-
-@media (max-width: 760px) {
-  body[data-stage-template="article"] main[data-stage-content] > .stage-route-intro + :is(.detail-hero, article > header) {
-    padding-block: 3rem;
   }
 }

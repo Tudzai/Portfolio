@@ -496,46 +496,6 @@ body[data-stage-template] > .stage-shell-footer .stage-shell-footer-inner {
   padding: 0;
 }
 
-.stage-back-to-top {
-  position: fixed;
-  z-index: 180;
-  right: clamp(18px, 2.6vw, 38px);
-  bottom: clamp(18px, 2.6vw, 38px);
-  display: grid;
-  width: 56px;
-  height: 56px;
-  place-items: center;
-  transform: translateY(14px) scale(0.94);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  background: linear-gradient(145deg, var(--stage-violet-dark), var(--stage-ink) 64%);
-  box-shadow: 0 18px 42px rgba(28, 18, 44, 0.24);
-  color: var(--stage-white);
-  font-family: var(--stage-display);
-  font-size: 1.45rem;
-  line-height: 1;
-  text-decoration: none;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 180ms ease, transform 220ms var(--stage-ease), box-shadow 180ms ease;
-}
-
-.stage-back-to-top.is-visible {
-  transform: translateY(0) scale(1);
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.stage-back-to-top:hover,
-.stage-back-to-top:focus-visible {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 22px 48px rgba(28, 18, 44, 0.3);
-}
-
-.stage-back-to-top span {
-  transform: translateY(-1px);
-}
-
 @media (max-width: 760px) {
   body[data-stage-template] .stage-shell-inner {
     min-height: 70px;
@@ -563,18 +523,5 @@ body[data-stage-template] > .stage-shell-footer .stage-shell-footer-inner {
     flex-direction: column;
     justify-content: center;
     gap: 8px;
-  }
-
-  .stage-back-to-top {
-    right: 16px;
-    bottom: 16px;
-    width: 52px;
-    height: 52px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stage-back-to-top {
-    transition-duration: 1ms;
   }
 }
