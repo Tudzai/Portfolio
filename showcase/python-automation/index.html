@@ -17,11 +17,11 @@
     />
     <link rel="stylesheet" href="../../styles.css" />
       <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/base.css?v=routes-20260811-annotated1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260811-annotated2">
       <script src="../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
   <body class="detail-page" data-stage-family="automation" data-stage-template="hub">
@@ -78,22 +78,29 @@
           Portfolio home<span aria-hidden="true">&nearr;</span>
         </a>
       </section>
-      <section class="detail-hero python-detail-hero">
-        <p class="breadcrumb"><a href="../../index.html">Home</a> / Python Automation</p>
-        <p class="eyebrow">Python Automation Hub</p>
-        <h1>Watch a complete FP&amp;A workflow, then download the files to run it yourself.</h1>
-        <p>
-          This hub shows how I use Python for recurring finance work: reading source files, validating data contracts,
-          calculating KPIs, writing Excel and Word outputs, and preparing stakeholder handoffs. Everything here uses
-          synthetic files and generic labels, so the logic is visible while company data stays private.
-        </p>
-        <div class="detail-hero-grid">
+      <section class="detail-hero python-detail-hero decision-hub-hero automation-library-hero">
+        <div class="decision-hub-copy">
+          <p class="breadcrumb"><a href="../../index.html">Home</a> / Python Automation</p>
+          <p class="eyebrow">Python Automation Hub</p>
+          <h1>One finance workflow. Eight inspectable scripts.</h1>
+          <p>
+            Watch recurring FP&amp;A work move from source files through validation, KPI logic, Excel and Word outputs,
+            and a controlled stakeholder handoff. Every example runs on synthetic data.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#automation-demo">Watch the workflow</a>
+            <a class="button quiet" href="#code-index">Browse the scripts</a>
+          </div>
+        </div>
+        <div class="detail-hero-grid decision-hub-panel automation-hero-metrics" aria-label="Automation portfolio status">
           <div class="metric-tile"><span>8</span><p>inspectable Python scripts</p></div>
           <div class="metric-tile"><span>3</span><p>finance automation cases</p></div>
           <div class="metric-tile"><span>1</span><p>end-to-end video demo</p></div>
           <div class="metric-tile"><span>0</span><p>company records exposed</p></div>
         </div>
-        <div class="python-review-strip" aria-label="Recommended review order">
+      </section>
+
+      <section class="python-review-strip" aria-label="Recommended review order">
           <div>
             <span>01</span>
             <strong>Watch the demo</strong>
@@ -114,10 +121,9 @@
             <strong>Inspect controls</strong>
             <p>Review tie-outs, mappings, and the approval boundary.</p>
           </div>
-        </div>
       </section>
 
-      <section class="detail-section automation-demo-feature">
+      <section class="detail-section automation-demo-feature" id="automation-demo">
         <div class="section-heading">
           <div>
             <p class="section-kicker">Featured walkthrough</p>
@@ -259,7 +265,7 @@
         </div>
       </section>
 
-      <section class="detail-section">
+      <section class="detail-section" id="code-index">
         <div class="section-heading">
           <div>
             <p class="section-kicker">Direct code index</p>

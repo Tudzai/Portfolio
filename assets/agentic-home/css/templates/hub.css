@@ -45,7 +45,7 @@ body[data-stage-template="hub"] :is(.summary-strip > *:last-child, .start-strip 
   border-right: 0;
 }
 
-body[data-stage-template="hub"] :is(.summary-strip strong, .start-strip strong, .stage-review-summary span) {
+body[data-stage-template="hub"] :is(.summary-strip strong, .stage-review-summary span) {
   display: block;
   color: var(--stage-accent-strong);
   font-family: var(--stage-display);
@@ -178,6 +178,765 @@ body[data-stage-template="hub"] :is(.project-card.featured, .decision-card.featu
   }
 }
 
+/* Annotated library redesign */
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) {
+  background:
+    radial-gradient(circle at 92% 4%, color-mix(in srgb, var(--stage-accent) 10%, transparent), transparent 30rem),
+    var(--stage-warm-white);
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] {
+  width: min(1180px, calc(100% - 48px));
+  margin-inline: auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(4rem, 7vw, 7rem);
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .stage-route-intro {
+  display: none;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.78fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  margin: 0;
+  padding: clamp(2.25rem, 4.5vw, 4.25rem);
+  overflow: hidden;
+  border: 0;
+  border-radius: clamp(22px, 2.5vw, 32px);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.24), transparent 28%),
+    radial-gradient(circle at 62% 110%, rgba(124, 58, 237, 0.34), transparent 42%),
+    linear-gradient(135deg, #1d1428 0%, #2b1839 58%, #3b1950 100%);
+  color: var(--stage-white);
+  box-shadow: 0 28px 70px rgba(50, 25, 73, 0.16);
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] > .stage-route-intro + .decision-hub-hero {
+  display: grid;
+  margin: 0;
+  padding: clamp(2.25rem, 4.5vw, 4.25rem);
+  border: 0;
+  border-radius: clamp(22px, 2.5vw, 32px);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.24), transparent 28%),
+    radial-gradient(circle at 62% 110%, rgba(124, 58, 237, 0.34), transparent 42%),
+    linear-gradient(135deg, #1d1428 0%, #2b1839 58%, #3b1950 100%);
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] > .stage-route-intro + .decision-hub-hero h1 {
+  max-width: 11.5ch;
+  margin: 0;
+  font-size: clamp(2.8rem, 4.6vw, 4.6rem);
+  line-height: 0.96;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] > .stage-route-intro + .decision-hub-hero::after {
+  top: 22px;
+  right: 24px;
+  bottom: auto;
+  width: 84px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.64));
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  width: 84px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.64));
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero :is(.breadcrumb, .breadcrumb a, .eyebrow, .kicker) {
+  color: #d8c4ff;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero :is(.breadcrumb, .eyebrow, .kicker) {
+  margin: 0 0 14px;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero h1 {
+  max-width: 11.5ch;
+  margin: 0;
+  color: var(--stage-white);
+  font-size: clamp(2.8rem, 4.6vw, 4.6rem);
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero .decision-hub-copy > p:not(.breadcrumb, .eyebrow, .kicker) {
+  max-width: 58ch;
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: clamp(0.95rem, 1.15vw, 1.08rem);
+  line-height: 1.65;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 0;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero .button {
+  min-height: 46px;
+  padding: 0 17px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--stage-white);
+  text-decoration: none;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero .button:first-child,
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero .button.primary {
+  border-color: var(--stage-white);
+  background: var(--stage-white);
+  color: var(--stage-ink);
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) .decision-hub-hero .hero-actions :is(.button.secondary, .button.quiet, .detail-secondary) {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: var(--stage-white);
+}
+
+.decision-hub-panel {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.075);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.decision-hub-panel-label {
+  margin: 0 0 18px;
+  color: #d8c4ff;
+  font: 600 0.64rem/1.3 var(--stage-mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.decision-hub-steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.decision-hub-steps li {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.decision-hub-steps li:first-child {
+  border-top: 0;
+}
+
+.decision-hub-steps span {
+  color: #f9a8d4;
+  font: 600 0.65rem/1.5 var(--stage-mono);
+}
+
+.decision-hub-steps strong,
+.decision-hub-steps small {
+  display: block;
+}
+
+.decision-hub-steps strong {
+  color: var(--stage-white);
+  font-size: 1rem;
+}
+
+.decision-hub-steps small {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.decision-hub-assurance {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.6);
+  font: 500 0.62rem/1.5 var(--stage-mono);
+  text-transform: uppercase;
+}
+
+body[data-stage-family="powerbi"] .back {
+  display: none;
+}
+
+body[data-stage-family="powerbi"] .powerbi-library-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr);
+}
+
+body[data-stage-family="powerbi"] .powerbi-library-hero .lead {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+body[data-stage-family="powerbi"] .powerbi-library-hero .lens-nav {
+  margin: 18px 0 0;
+}
+
+body[data-stage-family="powerbi"] .powerbi-library-hero .chip {
+  min-height: 34px;
+  padding: 0 11px;
+  border-color: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.7rem;
+}
+
+body[data-stage-family="powerbi"] .decision-hub-media {
+  display: grid;
+  gap: 12px;
+  transform: rotate(1deg);
+}
+
+body[data-stage-family="powerbi"] .decision-hub-media .preview-card {
+  border-color: rgba(255, 255, 255, 0.24);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(10, 4, 17, 0.34);
+}
+
+body[data-stage-family="powerbi"] .summary-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 16px;
+  border-radius: 20px;
+  background: var(--stage-line);
+}
+
+body[data-stage-family="powerbi"] .summary-strip > div {
+  min-height: 0;
+  padding: 18px;
+  border: 0;
+  background: var(--stage-white);
+}
+
+body[data-stage-family="powerbi"] .summary-strip strong {
+  font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+}
+
+body[data-stage-family="powerbi"] .start-strip {
+  grid-template-columns: minmax(220px, 0.32fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+  margin-top: 16px;
+  padding: 22px;
+  border-radius: 20px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .start-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--stage-line);
+  border-radius: 14px;
+  background: var(--stage-white);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 58px;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--stage-line);
+  border-radius: 0;
+  background: var(--stage-white);
+  box-shadow: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card:last-child {
+  border-bottom: 0;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card span {
+  color: var(--stage-teal);
+  font: 700 0.72rem/1 var(--stage-mono);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card strong {
+  min-width: 0;
+  color: var(--stage-ink);
+  font-family: var(--stage-display);
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card em {
+  max-width: 180px;
+  color: var(--stage-muted);
+  font-size: 0.72rem;
+  font-style: normal;
+  line-height: 1.35;
+  text-align: right;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card small {
+  display: none;
+}
+
+body[data-stage-family="fpa"] .real-decision-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+
+body[data-stage-family="fpa"] .real-decision-grid > :nth-child(1) {
+  grid-column: span 7;
+}
+
+body[data-stage-family="fpa"] .real-decision-grid > :nth-child(2) {
+  grid-column: span 5;
+}
+
+body[data-stage-family="fpa"] .real-decision-grid > :nth-child(n + 3) {
+  grid-column: span 6;
+}
+
+body[data-stage-family="automation"] .automation-library-hero {
+  align-items: stretch;
+}
+
+body[data-stage-family="automation"] .automation-hero-metrics,
+body[data-stage-family="models"] .model-hero-dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-self: stretch;
+  gap: 1px;
+  margin: 0;
+  padding: 1px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+body[data-stage-template="hub"][data-stage-family="automation"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .automation-hero-metrics,
+body[data-stage-template="hub"][data-stage-family="models"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .model-hero-dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-self: stretch;
+  gap: 1px;
+  margin: 0;
+  padding: 1px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+body[data-stage-family="automation"] .automation-hero-metrics .metric-tile,
+body[data-stage-family="models"] .model-hero-dashboard .metric-tile {
+  min-height: 0;
+  padding: 20px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(28, 17, 39, 0.74);
+}
+
+body[data-stage-template="hub"][data-stage-family="automation"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .automation-hero-metrics .metric-tile,
+body[data-stage-template="hub"][data-stage-family="models"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .model-hero-dashboard .metric-tile {
+  min-height: 0;
+  padding: 20px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(28, 17, 39, 0.74);
+}
+
+body[data-stage-family="automation"] .automation-hero-metrics .metric-tile span,
+body[data-stage-family="models"] .model-hero-dashboard .metric-tile span {
+  color: #d8c4ff;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+}
+
+body[data-stage-template="hub"][data-stage-family="automation"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .automation-hero-metrics .metric-tile span,
+body[data-stage-template="hub"][data-stage-family="models"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .model-hero-dashboard .metric-tile span {
+  color: #d8c4ff;
+}
+
+body[data-stage-family="automation"] .automation-hero-metrics .metric-tile p,
+body[data-stage-family="models"] .model-hero-dashboard .metric-tile p {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+body[data-stage-template="hub"][data-stage-family="automation"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .automation-hero-metrics .metric-tile p,
+body[data-stage-template="hub"][data-stage-family="models"] main[data-stage-content]
+  > .stage-route-intro + .decision-hub-hero .model-hero-dashboard .metric-tile p {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+body[data-stage-family="automation"] .python-review-strip {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: -10px 0 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+body[data-stage-family="automation"] .python-review-strip div {
+  min-height: 0;
+  padding: 15px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(28, 17, 39, 0.76);
+  box-shadow: none;
+}
+
+body[data-stage-family="automation"] .python-review-strip span {
+  width: auto;
+  height: auto;
+  margin: 0 0 9px;
+  background: transparent;
+  color: #f9a8d4;
+  font-family: var(--stage-mono);
+}
+
+body[data-stage-family="automation"] .python-review-strip strong {
+  color: var(--stage-white);
+  font-size: 0.82rem;
+}
+
+body[data-stage-family="automation"] .python-review-strip p {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.7rem;
+  line-height: 1.42;
+}
+
+body[data-stage-family="models"] .models-library-hero {
+  align-items: stretch;
+}
+
+body[data-stage-family="models"] .model-hero-trust {
+  gap: 7px;
+  margin-top: 22px;
+}
+
+body[data-stage-family="models"] .model-hero-trust span {
+  min-height: 32px;
+  padding: 0 10px;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.64rem;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) :is(.detail-section, .section) {
+  padding-block: clamp(3.25rem, 6vw, 5.75rem);
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) :is(.section-heading h2, .section-intro h2) {
+  max-width: 22ch;
+  font-size: clamp(2rem, 3.5vw, 3.4rem);
+  line-height: 1.02;
+}
+
+/* Portfolio-wide hub overflow guard */
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] :is(.section-heading, .section-intro) {
+  grid-template-columns: 1fr;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] :is(.section-heading, .section-intro) > * {
+  min-width: 0;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] :is(.section-heading, .section-intro) h2 {
+  width: 100%;
+  max-width: 22ch;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+:is(
+  body[data-stage-template="hub"][data-stage-family="powerbi"],
+  body[data-stage-template="hub"][data-stage-family="fpa"],
+  body[data-stage-template="hub"][data-stage-family="automation"],
+  body[data-stage-template="hub"][data-stage-family="models"]
+) main[data-stage-content] :is(.section-heading, .section-intro) > p {
+  max-width: 68ch;
+}
+
+@media (max-width: 980px) {
+  :is(
+    body[data-stage-template="hub"][data-stage-family="powerbi"],
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) .decision-hub-hero,
+  body[data-stage-family="powerbi"] .powerbi-library-hero {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  body[data-stage-family="powerbi"] .decision-hub-media {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    transform: none;
+  }
+
+  body[data-stage-family="fpa"] .real-decision-grid > * {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 700px) {
+  :is(
+    body[data-stage-template="hub"][data-stage-family="powerbi"],
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) main[data-stage-content] {
+    width: calc(100% - 28px);
+    padding-top: 14px;
+  }
+
+  :is(
+    body[data-stage-template="hub"][data-stage-family="powerbi"],
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) .decision-hub-hero {
+    gap: 24px;
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  :is(
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) main[data-stage-content] > .stage-route-intro + .decision-hub-hero {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  :is(
+    body[data-stage-template="hub"][data-stage-family="powerbi"],
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) .decision-hub-hero h1 {
+    max-width: none;
+    font-size: clamp(2.35rem, 11vw, 3.25rem);
+  }
+
+  :is(
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) main[data-stage-content] > .stage-route-intro + .decision-hub-hero h1 {
+    max-width: none;
+    font-size: clamp(2.35rem, 11vw, 3.25rem);
+  }
+
+  :is(
+    body[data-stage-template="hub"][data-stage-family="powerbi"],
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) .decision-hub-hero .hero-actions,
+  :is(
+    body[data-stage-template="hub"][data-stage-family="powerbi"],
+    body[data-stage-template="hub"][data-stage-family="fpa"],
+    body[data-stage-template="hub"][data-stage-family="automation"],
+    body[data-stage-template="hub"][data-stage-family="models"]
+  ) .decision-hub-hero .button {
+    width: 100%;
+  }
+
+  body[data-stage-family="powerbi"] .decision-hub-media,
+  body[data-stage-family="powerbi"] .summary-strip,
+  body[data-stage-family="powerbi"] .start-strip,
+  body[data-stage-family="automation"] .python-review-strip {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .start-card em {
+    grid-column: 2;
+    max-width: none;
+    text-align: left;
+  }
+
+  body[data-stage-family="powerbi"] .decision-hub-media .preview-card + .preview-card {
+    display: none;
+  }
+
+  body[data-stage-family="fpa"] .real-decision-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-stage-family="fpa"] .real-decision-grid > * {
+    grid-column: auto;
+  }
+
+  body[data-stage-family="automation"] .automation-hero-metrics,
+  body[data-stage-family="models"] .model-hero-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 body[data-stage-template="hub"] .detail-hero-grid {
   margin-top: 42px;
 }
@@ -305,5 +1064,766 @@ body[data-stage-template="hub"] .model-matrix-hint {
     align-items: flex-start;
     flex-direction: column;
     gap: 6px;
+  }
+}
+
+/* Power BI case library: recruiter shortlist and editorial catalog */
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.68fr) minmax(0, 1.32fr);
+  align-items: stretch;
+  gap: clamp(2rem, 4vw, 4.5rem);
+  margin-top: 24px;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--stage-violet) 18%, var(--stage-line));
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 4% 100%, rgba(124, 58, 237, 0.11), transparent 28rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(250, 247, 255, 0.92));
+  box-shadow: 0 24px 70px rgba(50, 25, 73, 0.08);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist > * {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-copy .kicker {
+  color: var(--stage-violet);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-copy h2 {
+  max-width: 13ch;
+  color: var(--stage-ink);
+  font-size: clamp(2rem, 3.6vw, 3.45rem);
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-copy > p:not(.kicker, .shortlist-note) {
+  max-width: 38ch;
+  color: var(--stage-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .shortlist-note {
+  display: grid;
+  gap: 5px;
+  margin: auto 0 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--stage-line);
+  color: var(--stage-muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .shortlist-note strong {
+  color: var(--stage-ink);
+  font: 650 0.64rem/1.4 var(--stage-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: start;
+  gap: 6px 12px;
+  min-height: 112px;
+  padding: 17px;
+  border: 1px solid var(--stage-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--stage-ink);
+  box-shadow: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card:hover,
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card:focus-visible {
+  border-color: color-mix(in srgb, var(--stage-violet) 48%, var(--stage-line));
+  box-shadow: 0 14px 30px rgba(47, 26, 66, 0.1);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card > span {
+  grid-row: 1 / span 2;
+  color: var(--stage-violet);
+  font: 700 0.67rem/1.4 var(--stage-mono);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card > strong {
+  min-width: 0;
+  color: var(--stage-ink);
+  font-family: var(--stage-display);
+  font-size: 1rem;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card > em {
+  grid-column: 2;
+  max-width: none;
+  color: var(--stage-muted);
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 650;
+  line-height: 1.4;
+  text-align: left;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card > small {
+  display: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary {
+  grid-column: 1 / -1;
+  grid-template-columns: 40px minmax(0, 1fr) minmax(180px, 0.76fr);
+  grid-template-rows: auto auto 1fr;
+  min-height: 220px;
+  padding: 22px;
+  overflow: hidden;
+  border: 0;
+  background:
+    radial-gradient(circle at 86% 16%, rgba(247, 37, 133, 0.22), transparent 35%),
+    linear-gradient(135deg, #1d1428, #311747);
+  color: var(--stage-white);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary > span {
+  color: #f9a8d4;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary > strong {
+  max-width: 15ch;
+  color: var(--stage-white);
+  font-size: clamp(1.45rem, 2.35vw, 2.15rem);
+  line-height: 1.02;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary > em {
+  color: #e9d5ff;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary > small {
+  display: block;
+  grid-column: 2;
+  max-width: 42ch;
+  align-self: end;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary > img {
+  grid-column: 3;
+  grid-row: 1 / span 3;
+  width: 100%;
+  height: 100%;
+  min-height: 172px;
+  object-fit: cover;
+  object-position: top left;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 13px;
+  box-shadow: 0 18px 34px rgba(8, 3, 14, 0.34);
+  transform: rotate(1deg);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.82fr) repeat(4, minmax(0, 1fr));
+  margin-top: 28px;
+  overflow: hidden;
+  border-block: 1px solid var(--stage-line);
+  background: rgba(255, 255, 255, 0.44);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory-intro,
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a {
+  min-width: 0;
+  padding: 19px 18px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory-intro {
+  display: grid;
+  gap: 4px;
+  align-content: center;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory-intro .kicker {
+  color: var(--stage-violet);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory-intro strong {
+  font-size: 0.9rem;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 4px 10px;
+  align-content: center;
+  border-left: 1px solid var(--stage-line);
+  transition: background 160ms ease, color 160ms ease;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:hover,
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:focus-visible {
+  background: var(--stage-ink);
+  color: var(--stage-white);
+  outline: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a > span {
+  grid-row: 1 / span 2;
+  color: var(--stage-violet);
+  font: 700 0.65rem/1.5 var(--stage-mono);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:hover > span,
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:focus-visible > span {
+  color: #f9a8d4;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a > strong {
+  font-size: 0.84rem;
+  line-height: 1.25;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a > small {
+  grid-column: 2;
+  color: var(--stage-muted);
+  font-size: 0.66rem;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:hover > small,
+body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:focus-visible > small {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens {
+  padding-block: clamp(4.5rem, 8vw, 7.5rem);
+  border-bottom: 1px solid var(--stage-line);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .section-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.46fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: end;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .section-heading > * {
+  min-width: 0;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .section-heading h2 {
+  width: auto;
+  max-width: 17ch;
+  margin-top: 12px;
+  font-size: clamp(2.35rem, 4.4vw, 4.35rem);
+  letter-spacing: -0.06em;
+  line-height: 0.96;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .section-heading > p {
+  max-width: 48ch;
+  padding-bottom: 3px;
+  color: var(--stage-muted);
+  font-size: 0.96rem;
+  line-height: 1.68;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card {
+  grid-column: span 4;
+  display: grid;
+  gap: 13px;
+  align-content: start;
+  min-width: 0;
+  min-height: 280px;
+  padding: 23px;
+  overflow: hidden;
+  border: 1px solid var(--stage-line);
+  border-radius: 19px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--stage-ink);
+  box-shadow: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card:hover {
+  border-color: color-mix(in srgb, var(--stage-violet) 34%, var(--stage-line));
+  box-shadow: 0 18px 42px rgba(50, 25, 73, 0.09);
+  transform: translateY(-3px);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured {
+  grid-column: span 4;
+  min-height: 530px;
+  background:
+    radial-gradient(circle at 92% 2%, rgba(247, 37, 133, 0.2), transparent 30%),
+    linear-gradient(145deg, #1c1426, #2c173c);
+  color: var(--stage-white);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card :is(h3, p, a),
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured :is(h3, p, a) {
+  color: inherit;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card .card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-no {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--stage-violet) 34%, var(--stage-line));
+  border-radius: 50%;
+  color: var(--stage-violet);
+  font: 700 0.64rem/1 var(--stage-mono);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .status {
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid var(--stage-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--stage-muted);
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured .project-no {
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #f9a8d4;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured .status {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-visual {
+  display: block;
+  margin: 3px 0 4px;
+  overflow: hidden;
+  border: 1px solid var(--stage-line);
+  border-radius: 12px;
+  background: #eeebef;
+  text-decoration: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-card.featured .project-visual {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-visual img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 220ms ease;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-card:hover .project-visual img {
+  transform: scale(1.025);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card .label {
+  color: var(--stage-violet);
+  font: 650 0.64rem/1.4 var(--stage-mono);
+  letter-spacing: 0.08em;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured .label {
+  color: #d8c4ff;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card h3 {
+  max-width: 20ch;
+  margin: 0;
+  color: var(--stage-ink);
+  font-size: clamp(1.35rem, 2vw, 1.85rem);
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card > p:not(.label) {
+  margin: 0;
+  color: var(--stage-muted);
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured > p:not(.label) {
+  color: rgba(255, 255, 255, 0.67);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .proof-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .proof-list span {
+  min-height: 28px;
+  padding: 6px 8px;
+  border: 1px solid var(--stage-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.46);
+  color: var(--stage-muted);
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured .proof-list span {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-actions,
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-open {
+  margin-top: auto;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-actions .button {
+  width: auto;
+  min-height: 39px;
+  padding: 0 13px;
+  border: 1px solid var(--stage-white);
+  border-radius: 999px;
+  background: var(--stage-white);
+  color: var(--stage-ink);
+  font-size: 0.72rem;
+  text-decoration: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured .project-actions .button {
+  color: var(--stage-ink);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-actions .button.secondary {
+  border-color: rgba(255, 255, 255, 0.26);
+  background: transparent;
+  color: var(--stage-white);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured .project-actions .button.secondary {
+  color: var(--stage-white);
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-open {
+  display: inline-flex;
+  width: max-content;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--stage-violet) 28%, var(--stage-line));
+  border-radius: 999px;
+  color: var(--stage-ink);
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-open:hover,
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-open:focus-visible {
+  border-color: var(--stage-violet);
+  background: var(--stage-violet);
+  color: var(--stage-white);
+  outline: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final {
+  border-bottom: 0;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(300px, 0.82fr) minmax(0, 1fr) auto;
+  grid-template-rows: repeat(5, auto);
+  align-items: start;
+  min-height: 0;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .card-top {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-visual {
+  grid-column: 1;
+  grid-row: 1 / span 5;
+  align-self: stretch;
+  margin: 0;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-visual img {
+  height: 100%;
+  min-height: 260px;
+  aspect-ratio: auto;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card :is(.label, h3, p, .proof-list) {
+  grid-column: 2;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-open {
+  grid-column: 3;
+  grid-row: 1 / span 5;
+  align-self: center;
+  margin: 0 0 0 18px;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] main[data-stage-content] > .note {
+  margin: 0;
+  padding: 28px 0 0;
+  border: 0;
+  border-top: 1px solid var(--stage-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--stage-muted);
+  font-size: 0.72rem;
+  line-height: 1.65;
+}
+
+@media (max-width: 1040px) {
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .shortlist-note {
+    margin-top: 8px;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory-intro {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--stage-line);
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:nth-of-type(odd) {
+    border-left: 0;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:nth-of-type(n + 3) {
+    border-top: 1px solid var(--stage-line);
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured {
+    grid-column: span 6;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured {
+    min-height: 500px;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens #driver-based-forecasting {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(240px, 0.78fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr auto;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens #driver-based-forecasting .card-top,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens #driver-based-forecasting .project-visual {
+    grid-column: 1;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens #driver-based-forecasting .project-visual {
+    grid-row: 2 / span 4;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens #driver-based-forecasting :is(.label, h3, p, .proof-list, .project-actions) {
+    grid-column: 2;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card {
+    grid-template-columns: minmax(250px, 0.74fr) minmax(0, 1fr);
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-open {
+    grid-column: 2;
+    grid-row: auto;
+    align-self: start;
+    margin: auto 0 0;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist {
+    gap: 28px;
+    padding: 26px 20px;
+    border-radius: 20px;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-copy h2 {
+    max-width: none;
+    font-size: clamp(2rem, 10.5vw, 3rem);
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-grid,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary {
+    grid-template-columns: 34px minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary > small {
+    grid-column: 2;
+    align-self: auto;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-shortlist .start-card-primary > img {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    height: auto;
+    min-height: 0;
+    margin-top: 12px;
+    transform: none;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a {
+    border-top: 1px solid var(--stage-line);
+    border-left: 0;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .powerbi-directory > a:first-of-type {
+    border-top: 0;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens {
+    padding-block: 4rem;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .section-heading {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .section-heading h2 {
+    max-width: none;
+    font-size: clamp(2.25rem, 12vw, 3.3rem);
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-card.featured,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens #driver-based-forecasting {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    min-height: 0;
+    padding: 20px;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens #driver-based-forecasting :is(
+    .card-top,
+    .project-visual,
+    .label,
+    h3,
+    p,
+    .proof-list,
+    .project-actions
+  ) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-actions,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .project-actions .button {
+    width: 100%;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .card-top,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-visual,
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card :is(.label, h3, p, .proof-list),
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-open {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .card-top {
+    align-self: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-visual img {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-open {
+    margin: auto 0 0;
   }
 }

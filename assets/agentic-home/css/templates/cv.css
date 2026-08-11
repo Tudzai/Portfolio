@@ -58,7 +58,7 @@ body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .
 }
 
 body[data-stage-template="cv"] .cv-role-line {
-  max-width: 52ch;
+  max-width: none;
   margin: 20px 0 0;
   color: rgba(255, 255, 255, 0.72);
   font-family: var(--stage-mono);
@@ -67,6 +67,7 @@ body[data-stage-template="cv"] .cv-role-line {
   letter-spacing: 0.04em;
   line-height: 1.6;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 body[data-stage-template="cv"] main[data-stage-content] .cv-hero .hero-actions {
@@ -187,6 +188,10 @@ body[data-stage-template="cv"] :is(.cv-viewer-section iframe, .cv-viewer) {
 
   body[data-stage-template="cv"] main[data-stage-content] .cv-hero .hero-actions {
     max-width: 520px;
+  }
+
+  body[data-stage-template="cv"] .cv-role-line {
+    white-space: normal;
   }
 }
 

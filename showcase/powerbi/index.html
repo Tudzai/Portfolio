@@ -626,11 +626,11 @@
       }
     </style>
       <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/base.css?v=routes-20260811-annotated1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260811-annotated4">
       <script src="../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
   <body data-stage-family="powerbi" data-stage-template="hub">
@@ -689,13 +689,13 @@
       </section>
       <a class="back" href="../../index.html#work">Back to portfolio</a>
 
-      <section class="hero">
-        <div>
+      <section class="hero decision-hub-hero powerbi-library-hero">
+        <div class="decision-hub-copy">
           <p class="kicker">Power BI decision previews</p>
-          <h1>20 public-safe Power BI decision previews, led by CFO and FP&amp;A case studies.</h1>
+          <h1>Dashboards built for the decision after the meeting.</h1>
           <p class="lead">
-            This hub organizes the Power BI portfolio by the business question each preview answers. It keeps the
-            recruiter path clear: finance judgment first, model depth second, and public-safe interactive proof patterns throughout.
+            Explore 20 public-safe BI products organized by the question they answer&mdash;from forecast calls and cash
+            pressure to margin recovery, risk, and growth.
           </p>
           <div class="hero-actions">
             <a class="button" href="#cfo-fpa">Start with CFO and FP&amp;A</a>
@@ -708,7 +708,7 @@
             <a class="chip" href="#esg-finance">ESG finance</a>
           </nav>
         </div>
-        <div class="hero-preview" aria-label="Featured BI preview images">
+        <div class="hero-preview decision-hub-media" aria-label="Featured BI preview images">
           <a class="preview-card" href="monthly-fpa-performance-pack/index.html">
             <img src="../../assets/bi-monthly-fpa-dashboard.png" alt="Monthly FP&A dashboard preview" />
           </a>
@@ -725,18 +725,20 @@
         <div><strong>0</strong><span>raw data, PBIX, PBIT, local path, or private BI source files published here.</span></div>
       </section>
 
-      <section class="start-strip" aria-labelledby="start-here-title">
+      <section class="start-strip powerbi-shortlist" aria-labelledby="start-here-title">
         <div class="start-copy">
-          <p class="kicker">Start here</p>
-          <h2 id="start-here-title">Open these 5 first for FP&amp;A hiring proof.</h2>
-          <p>They show management reporting, forecasting, regional close control, cash discipline, and margin recovery.</p>
+          <p class="kicker">Recruiter shortlist</p>
+          <h2 id="start-here-title">Five cases that prove I can support the finance decision.</h2>
+          <p>Start with the work closest to the role, then browse the full library by business question.</p>
+          <p class="shortlist-note"><strong>Recommended order</strong><span>Reporting &rarr; forecast &rarr; close &rarr; cash &rarr; margin</span></p>
         </div>
         <div class="start-grid">
-          <a class="start-card" href="monthly-fpa-performance-pack/index.html">
+          <a class="start-card start-card-primary" href="monthly-fpa-performance-pack/index.html">
             <span>01</span>
             <strong>Monthly FP&amp;A Performance Pack</strong>
             <em>Best proof: management reporting</em>
             <small>Actual/Budget/Forecast, EBITDA bridge, cash view, and owner comments.</small>
+            <img src="../../assets/bi-monthly-fpa-dashboard.png" alt="Monthly FP&amp;A Performance Pack preview" />
           </a>
           <a class="start-card" href="driver-based-forecasting/index.html">
             <span>02</span>
@@ -765,19 +767,18 @@
         </div>
       </section>
 
-      <section class="chart-mode-panel" aria-labelledby="chart-mode-title">
-        <div>
-          <p class="kicker" id="chart-mode-title">Project chart lens</p>
-          <p>Scan each preview by finance question, metric at risk, and owner action readiness.</p>
+      <nav class="powerbi-directory" aria-label="Browse the Power BI case library by decision lens">
+        <div class="powerbi-directory-intro">
+          <p class="kicker">All 20 cases</p>
+          <strong>Browse by decision lens</strong>
         </div>
-        <div class="chart-mode-buttons" role="group" aria-label="Project card chart lens">
-          <button class="chart-mode-button is-active" type="button" data-chart-mode="score" aria-pressed="true">Executive</button>
-          <button class="chart-mode-button" type="button" data-chart-mode="risk" aria-pressed="false">Risk</button>
-          <button class="chart-mode-button" type="button" data-chart-mode="action" aria-pressed="false">Action</button>
-        </div>
-      </section>
+        <a href="#cfo-fpa"><span>01</span><strong>Finance leadership</strong><small>9 cases</small></a>
+        <a href="#commercial-growth"><span>02</span><strong>Commercial growth</strong><small>5 cases</small></a>
+        <a href="#fintech-risk"><span>03</span><strong>Fintech &amp; risk</strong><small>5 cases</small></a>
+        <a href="#esg-finance"><span>04</span><strong>ESG finance</strong><small>1 case</small></a>
+      </nav>
 
-      <section class="section" id="cfo-fpa" aria-labelledby="cfo-fpa-title">
+      <section class="section project-lens project-lens-primary" id="cfo-fpa" aria-labelledby="cfo-fpa-title">
         <div class="section-heading">
           <div>
             <p class="kicker">Decision lens 01</p>
@@ -791,6 +792,9 @@
         <div class="project-grid">
           <article class="project-card featured" id="monthly-fpa-performance-pack">
             <div class="card-top"><span class="project-no">01</span><span class="status">Public preview</span></div>
+            <a class="project-visual" href="monthly-fpa-performance-pack/index.html" aria-label="Open Monthly FP&amp;A Performance Pack">
+              <img src="../../assets/powerbi-previews/monthly-fpa-performance-pack.png" alt="Monthly FP&amp;A Performance Pack dashboard preview" decoding="async" />
+            </a>
             <p class="label">Management reporting</p>
             <h3>Monthly FP&amp;A Performance Pack</h3>
             <p>Executive close pack tying Actual/Budget/Forecast to EBITDA bridge, cash visibility, drilldowns, and action commentary.</p>
@@ -803,6 +807,9 @@
 
           <article class="project-card featured" id="board-investor-cfo-pack">
             <div class="card-top"><span class="project-no">20</span><span class="status">Interactive preview</span></div>
+            <a class="project-visual" href="board-investor-cfo-pack/index.html" aria-label="Open Board Investor CFO Pack">
+              <img src="../../assets/powerbi-previews/board-investor-cfo-pack.png" alt="Board Investor CFO Pack dashboard preview" decoding="async" />
+            </a>
             <p class="label">Board reporting</p>
             <h3>Board Investor CFO Pack</h3>
             <p>Board pack summarizing performance, cash runway, covenant headroom, valuation sensitivity, and owner actions.</p>
@@ -815,6 +822,9 @@
 
           <article class="project-card featured" id="driver-based-forecasting">
             <div class="card-top"><span class="project-no">02</span><span class="status">Public preview</span></div>
+            <a class="project-visual" href="driver-based-forecasting/index.html" aria-label="Open Driver-Based Forecasting">
+              <img src="../../assets/powerbi-previews/driver-based-forecasting.png" alt="Driver-Based Forecasting dashboard preview" decoding="async" />
+            </a>
             <p class="label">Planning model</p>
             <h3>Driver-Based Forecasting</h3>
             <p>Scenario model translating volume, cost, headcount, and cash assumptions into forecast decisions.</p>
@@ -827,56 +837,80 @@
 
           <article class="project-card" id="regional-fpa-consolidation">
             <div class="card-top"><span class="project-no">13</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="regional-fpa-consolidation/index.html" aria-label="Open Regional FP&amp;A Consolidation">
+              <img src="../../assets/powerbi-previews/regional-fpa-consolidation.png" alt="Regional FP&amp;A Consolidation dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Regional MNC finance</p>
             <h3>Regional FP&amp;A Consolidation</h3>
             <p>Regional consolidation view for country/entity variance, FX translation, eliminations, and close exceptions.</p>
             <div class="proof-list"><span>multi-entity</span><span>FX bridge</span><span>P&amp;L tie-out</span></div>
+            <a class="project-open" href="regional-fpa-consolidation/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="treasury-working-capital">
             <div class="card-top"><span class="project-no">14</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="treasury-working-capital/index.html" aria-label="Open Treasury Working Capital">
+              <img src="../../assets/powerbi-previews/treasury-working-capital.png" alt="Treasury Working Capital dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Treasury and cash</p>
             <h3>Treasury Working Capital</h3>
             <p>Treasury view prioritizing cash roll-forward, overdue AR, DSO, runway, FX exposure, and collection actions.</p>
             <div class="proof-list"><span>cash roll-forward</span><span>DSO and overdue AR</span><span>FX risk</span></div>
+            <a class="project-open" href="treasury-working-capital/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="saas-cfo-metrics">
             <div class="card-top"><span class="project-no">15</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="saas-cfo-metrics/index.html" aria-label="Open SaaS CFO Metrics">
+              <img src="../../assets/powerbi-previews/saas-cfo-metrics.png" alt="SaaS CFO Metrics dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">CFO metrics</p>
             <h3>SaaS CFO Metrics</h3>
             <p>CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health.</p>
             <div class="proof-list"><span>ARR / MRR</span><span>retention</span><span>efficiency</span></div>
+            <a class="project-open" href="saas-cfo-metrics/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="manufacturing-cost-fpa">
             <div class="card-top"><span class="project-no">16</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="manufacturing-cost-fpa/index.html" aria-label="Open Manufacturing Cost FP&amp;A">
+              <img src="../../assets/powerbi-previews/manufacturing-cost-fpa.png" alt="Manufacturing Cost FP&amp;A dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Cost FP&amp;A</p>
             <h3>Manufacturing Cost FP&amp;A</h3>
             <p>Cost FP&amp;A pack decomposing standard cost variance, yield, capacity, inventory days, and margin recovery actions.</p>
             <div class="proof-list"><span>standard cost</span><span>yield</span><span>inventory days</span></div>
+            <a class="project-open" href="manufacturing-cost-fpa/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="logistics-trade-lane-profitability">
             <div class="card-top"><span class="project-no">17</span><span class="status">Interactive</span></div>
+            <a class="project-visual" href="logistics-trade-lane-profitability/index.html" aria-label="Open Logistics Trade Lane Profitability">
+              <img src="../../assets/powerbi-previews/logistics-trade-lane-profitability.png" alt="Logistics Trade Lane Profitability dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Commercial finance</p>
             <h3>Logistics Trade Lane Profitability</h3>
             <p>Lane-level profitability view showing customers, services, and lanes needing repricing or renegotiation.</p>
             <div class="proof-list"><span>GP margin</span><span>trade lane</span><span>reprice exposure</span></div>
+            <a class="project-open" href="logistics-trade-lane-profitability/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="finance-data-quality-bi-governance">
             <div class="card-top"><span class="project-no">19</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="finance-data-quality-bi-governance/index.html" aria-label="Open Finance Data Quality BI Governance">
+              <img src="../../assets/powerbi-previews/finance-data-quality-bi-governance.png" alt="Finance Data Quality BI Governance dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Finance governance</p>
             <h3>Finance Data Quality BI Governance</h3>
             <p>Governance BI monitoring reconciliation breaks, data quality risk, refresh reliability, and owner action queues.</p>
             <div class="proof-list"><span>refresh SLA</span><span>reconciliation</span><span>RLS controls</span></div>
+            <a class="project-open" href="finance-data-quality-bi-governance/index.html">Open case</a>
           </article>
 
         </div>
       </section>
 
-      <section class="section" id="commercial-growth" aria-labelledby="commercial-growth-title">
+      <section class="section project-lens" id="commercial-growth" aria-labelledby="commercial-growth-title">
         <div class="section-heading">
           <div>
             <p class="kicker">Decision lens 02</p>
@@ -890,47 +924,67 @@
         <div class="project-grid">
           <article class="project-card" id="ecommerce-executive-performance">
             <div class="card-top"><span class="project-no">03</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="ecommerce-executive-performance/index.html" aria-label="Open Ecommerce Executive Performance">
+              <img src="../../assets/powerbi-previews/ecommerce-executive-performance.png" alt="Ecommerce Executive Performance dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Ecommerce executive KPIs</p>
             <h3>Ecommerce Executive Performance</h3>
             <p>Executive ecommerce review for revenue, margin, customers, orders, refunds, and operating levers.</p>
             <div class="proof-list"><span>GMV</span><span>orders</span><span>category mix</span></div>
+            <a class="project-open" href="ecommerce-executive-performance/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="customer-funnel-conversion">
             <div class="card-top"><span class="project-no">04</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="customer-funnel-conversion/index.html" aria-label="Open Customer Funnel Conversion">
+              <img src="../../assets/powerbi-previews/customer-funnel-conversion.png" alt="Customer Funnel Conversion dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Conversion analytics</p>
             <h3>Customer Funnel Conversion</h3>
             <p>Conversion funnel dashboard tracing acquisition-to-order leakage by segment, category, and channel.</p>
             <div class="proof-list"><span>funnel leakage</span><span>segment diagnostics</span><span>channel ROI</span></div>
+            <a class="project-open" href="customer-funnel-conversion/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="retention-cohort-ltv">
             <div class="card-top"><span class="project-no">05</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="retention-cohort-ltv/index.html" aria-label="Open Retention Cohort LTV">
+              <img src="../../assets/powerbi-previews/retention-cohort-ltv.png" alt="Retention Cohort LTV dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Customer lifecycle</p>
             <h3>Retention Cohort LTV</h3>
             <p>Cohort and LTV dashboard exposing retention decay, churn signals, customer value, and win-back priorities.</p>
             <div class="proof-list"><span>cohorts</span><span>LTV curves</span><span>winback actions</span></div>
+            <a class="project-open" href="retention-cohort-ltv/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="marketing-campaign-roi">
             <div class="card-top"><span class="project-no">06</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="marketing-campaign-roi/index.html" aria-label="Open Marketing Campaign ROI">
+              <img src="../../assets/powerbi-previews/marketing-campaign-roi.png" alt="Marketing Campaign ROI dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Marketing finance</p>
             <h3>Marketing Campaign ROI</h3>
             <p>Campaign ROI review showing which channels to scale, pause, or fix based on spend efficiency.</p>
             <div class="proof-list"><span>ROAS</span><span>CAC</span><span>scale / cut</span></div>
+            <a class="project-open" href="marketing-campaign-roi/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="marketplace-seller-performance">
             <div class="card-top"><span class="project-no">07</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="marketplace-seller-performance/index.html" aria-label="Open Marketplace Seller Performance">
+              <img src="../../assets/powerbi-previews/marketplace-seller-performance.png" alt="Marketplace Seller Performance dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Marketplace operations</p>
             <h3>Marketplace Seller Performance</h3>
             <p>Seller performance dashboard ranking GMV, fulfillment, cancellation, rating, stock risk, and growth actions.</p>
             <div class="proof-list"><span>seller GMV</span><span>fulfillment</span><span>ops risk</span></div>
+            <a class="project-open" href="marketplace-seller-performance/index.html">Open case</a>
           </article>
         </div>
       </section>
 
-      <section class="section" id="fintech-risk" aria-labelledby="fintech-risk-title">
+      <section class="section project-lens" id="fintech-risk" aria-labelledby="fintech-risk-title">
         <div class="section-heading">
           <div>
             <p class="kicker">Decision lens 03</p>
@@ -944,47 +998,67 @@
         <div class="project-grid">
           <article class="project-card" id="digital-payments-profitability">
             <div class="card-top"><span class="project-no">08</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="digital-payments-profitability/index.html" aria-label="Open Digital Payments Profitability">
+              <img src="../../assets/powerbi-previews/digital-payments-profitability.png" alt="Digital Payments Profitability dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Payments profitability</p>
             <h3>Digital Payments Profitability</h3>
             <p>Payments profitability dashboard linking merchant mix, transaction drivers, margin scenarios, and fee economics.</p>
             <div class="proof-list"><span>take rate</span><span>merchant mix</span><span>margin scenario</span></div>
+            <a class="project-open" href="digital-payments-profitability/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="bnpl-credit-risk-provision">
             <div class="card-top"><span class="project-no">09</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="bnpl-credit-risk-provision/index.html" aria-label="Open BNPL Credit Risk Provision">
+              <img src="../../assets/powerbi-previews/bnpl-credit-risk-provision.png" alt="BNPL Credit Risk Provision dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Credit risk</p>
             <h3>BNPL Credit Risk Provision</h3>
             <p>Credit-risk provision dashboard for loan book trend, delinquency, collections SLA, and provision pressure.</p>
             <div class="proof-list"><span>roll rates</span><span>vintage</span><span>provision forecast</span></div>
+            <a class="project-open" href="bnpl-credit-risk-provision/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="aml-fraud-monitoring">
             <div class="card-top"><span class="project-no">10</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="aml-fraud-monitoring/index.html" aria-label="Open AML Fraud Monitoring">
+              <img src="../../assets/powerbi-previews/aml-fraud-monitoring.png" alt="AML Fraud Monitoring dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Risk operations</p>
             <h3>AML Fraud Monitoring</h3>
             <p>Fraud monitoring view surfacing suspicious patterns, case backlog, rule performance, and AML actions.</p>
             <div class="proof-list"><span>alerts</span><span>case SLA</span><span>rule performance</span></div>
+            <a class="project-open" href="aml-fraud-monitoring/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="neobank-growth-retention-ltv">
             <div class="card-top"><span class="project-no">11</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="neobank-growth-retention-ltv/index.html" aria-label="Open Neobank Growth Retention LTV">
+              <img src="../../assets/powerbi-previews/neobank-growth-retention-ltv.png" alt="Neobank Growth Retention LTV dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Neobank growth</p>
             <h3>Neobank Growth Retention LTV</h3>
             <p>Growth and retention pack tying onboarding funnel, cohorts, churn, marketing ROI, and LTV to profitable growth.</p>
             <div class="proof-list"><span>funded accounts</span><span>LTV/CAC</span><span>churn</span></div>
+            <a class="project-open" href="neobank-growth-retention-ltv/index.html">Open case</a>
           </article>
 
           <article class="project-card" id="wealthtech-aum-client-retention">
             <div class="card-top"><span class="project-no">12</span><span class="status">Brief</span></div>
+            <a class="project-visual" href="wealthtech-aum-client-retention/index.html" aria-label="Open WealthTech AUM Client Retention">
+              <img src="../../assets/powerbi-previews/wealthtech-aum-client-retention.png" alt="WealthTech AUM Client Retention dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">Wealth analytics</p>
             <h3>WealthTech AUM Client Retention</h3>
             <p>AUM retention dashboard combining portfolio mix, client risk, suitability, and retention actions.</p>
             <div class="proof-list"><span>AUM</span><span>suitability risk</span><span>retention action</span></div>
+            <a class="project-open" href="wealthtech-aum-client-retention/index.html">Open case</a>
           </article>
         </div>
       </section>
 
-      <section class="section" id="esg-finance" aria-labelledby="esg-finance-title">
+      <section class="section project-lens project-lens-final" id="esg-finance" aria-labelledby="esg-finance-title">
         <div class="section-heading">
           <div>
             <p class="kicker">Decision lens 04</p>
@@ -998,10 +1072,14 @@
         <div class="project-grid">
           <article class="project-card" id="esg-carbon-finance">
             <div class="card-top"><span class="project-no">18</span><span class="status">Interactive</span></div>
+            <a class="project-visual" href="esg-carbon-finance/index.html" aria-label="Open ESG Carbon Finance">
+              <img src="../../assets/powerbi-previews/esg-carbon-finance.png" alt="ESG Carbon Finance dashboard preview" loading="lazy" decoding="async" />
+            </a>
             <p class="label">ESG finance</p>
             <h3>ESG Carbon Finance</h3>
             <p>CFO-style ESG finance dashboard with four large KPI cards, header Current Lens, dynamic TableEx cards, carbon cost scenarios, and abatement ROI governance.</p>
             <div class="proof-list"><span>$64.8M carbon cost</span><span>abatement ROI</span><span>risk control tower</span></div>
+            <a class="project-open" href="esg-carbon-finance/index.html">Open case</a>
           </article>
         </div>
       </section>
