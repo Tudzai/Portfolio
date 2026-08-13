@@ -5,7 +5,7 @@ body[data-stage-template="cv"] {
     var(--stage-warm-white);
 }
 
-body[data-stage-template="cv"] main.cv-shell {
+body[data-stage-template="cv"] > main.cv-shell[data-stage-content] {
   width: min(1120px, calc(100% - 48px));
   margin-inline: auto;
   padding: clamp(1.5rem, 3vw, 2.75rem) 0 var(--stage-template-section-gap);
@@ -15,7 +15,7 @@ body[data-stage-template="cv"] .stage-route-intro {
   display: none;
 }
 
-body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .cv-hero {
+body[data-stage-template="cv"] main[data-stage-content] > .cv-hero:first-child {
   position: relative;
   display: grid;
   min-height: 0;
@@ -33,7 +33,7 @@ body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .
   box-shadow: var(--stage-shadow-card);
 }
 
-body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .cv-hero::after {
+body[data-stage-template="cv"] main[data-stage-content] > .cv-hero:first-child::after {
   display: none;
 }
 
@@ -48,7 +48,7 @@ body[data-stage-template="cv"] .cv-hero .eyebrow {
   color: #d8c4ff;
 }
 
-body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .cv-hero h1 {
+body[data-stage-template="cv"] main[data-stage-content] > .cv-hero:first-child h1 {
   max-width: none;
   margin: 0;
   color: var(--stage-white);
@@ -181,7 +181,7 @@ body[data-stage-template="cv"] :is(.cv-viewer-section iframe, .cv-viewer) {
 }
 
 @media (max-width: 860px) {
-  body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .cv-hero {
+  body[data-stage-template="cv"] main[data-stage-content] > .cv-hero:first-child {
     grid-template-columns: 1fr;
     gap: 28px;
   }
@@ -196,12 +196,12 @@ body[data-stage-template="cv"] :is(.cv-viewer-section iframe, .cv-viewer) {
 }
 
 @media (max-width: 560px) {
-  body[data-stage-template="cv"] main.cv-shell {
+  body[data-stage-template="cv"] > main.cv-shell[data-stage-content] {
     width: calc(100% - 28px);
     padding-top: 14px;
   }
 
-  body[data-stage-template="cv"] main[data-stage-content] > .stage-route-intro + .cv-hero {
+  body[data-stage-template="cv"] main[data-stage-content] > .cv-hero:first-child {
     gap: 24px;
     margin-bottom: 12px;
     padding: 26px 20px;

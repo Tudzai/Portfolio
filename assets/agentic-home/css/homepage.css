@@ -234,9 +234,9 @@ button {
   gap: 1px;
 }
 
-.brand-copy strong {
+body[data-stage-template="homepage"] .stage-shell-brand-copy strong {
   font-family: var(--display);
-  font-size: 0.84rem;
+  font-size: 1rem;
   letter-spacing: -0.015em;
 }
 
@@ -2507,7 +2507,7 @@ footer a {
     min-height: var(--header-height);
   }
 
-  .brand-copy small {
+  body[data-stage-template="homepage"] .stage-shell-brand-copy small {
     display: none;
   }
 
@@ -2841,8 +2841,8 @@ footer a {
 }
 
 @media (max-width: 520px) {
-  .brand-copy strong {
-    font-size: 0.76rem;
+  body[data-stage-template="homepage"] .stage-shell-brand-copy strong {
+    font-size: 0.84rem;
   }
 
   .hero-demo-entry {
@@ -3163,7 +3163,7 @@ footer a {
 }
 
 @media (max-width: 360px) {
-  .brand-copy {
+  body[data-stage-template="homepage"] .stage-shell-brand-copy {
     display: none;
   }
 

@@ -64,6 +64,10 @@ body[data-stage-template] .stage-media-fallback {
 }
 
 /* Shared editorial foundation for every generated branch route. */
+body[data-stage-template]:not([data-stage-template="homepage"]):not([data-stage-template="dashboard-preview"]) {
+  --stage-route-content-inset: clamp(24px, 4vw, 52px);
+}
+
 body[data-stage-template]:not([data-stage-template="homepage"]) > main[data-stage-content] {
   width: var(--stage-shell);
   min-width: 0;
@@ -204,12 +208,22 @@ body[data-stage-template] main[data-stage-content] :is(.detail-section, .section
   border-top: 1px solid var(--stage-line);
 }
 
+body[data-stage-template]:not([data-stage-template="homepage"]):not([data-stage-template="dashboard-preview"]) main[data-stage-content] :is(.detail-hero, .hero, .detail-section, .section, .article-summary, .article-section) {
+  padding-inline: var(--stage-route-content-inset);
+}
+
 body[data-stage-template] main[data-stage-content] :is(.section-heading, .section-intro, .model-section-heading, .article-section-heading) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 28px;
   margin: 0 0 34px;
+}
+
+/* Keep route headings editorial and uncluttered across every showcase template. */
+body[data-stage-template] main[data-stage-content] .section-heading::after {
+  display: none !important;
+  content: none !important;
 }
 
 body[data-stage-template] main[data-stage-content] :is(.section-heading h2, .section-intro h2, .model-section-heading h2, .article-section-heading h2) {

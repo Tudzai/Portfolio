@@ -37,6 +37,10 @@ body.simple-three-page [data-core-section] {
   box-shadow: 0 18px 50px rgba(31, 20, 43, 0.045);
 }
 
+body.simple-three-page main[data-stage-content] [data-core-section] {
+  padding-inline: clamp(24px, 4vw, 52px);
+}
+
 body.simple-three-page [data-core-section="hero"] {
   background:
     linear-gradient(130deg, rgba(255, 255, 255, 0.98), rgba(245, 239, 252, 0.94)),
@@ -340,8 +344,8 @@ body.simple-three-page .simple-demo-hook {
 body.simple-three-page .simple-demo-hook video {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 7;
-  object-fit: cover;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -371,6 +375,30 @@ body.simple-three-page .simple-demo-route i {
 body.simple-three-page .simple-automation-hero {
   display: grid;
   gap: 30px;
+}
+
+/* Give model-detail heroes a calm inner frame instead of pinning content to the card edge. */
+body[data-stage-template="model-detail"].simple-three-page main[data-stage-content] > .model-detail-hero[data-core-section="hero"] {
+  padding: clamp(42px, 5vw, 68px);
+}
+
+body[data-stage-template="model-detail"].simple-three-page .model-detail-hero-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.82fr);
+  gap: clamp(40px, 5vw, 72px);
+  align-items: center;
+}
+
+body[data-stage-template="model-detail"].simple-three-page .model-detail-hero-copy {
+  max-width: 660px;
+}
+
+body[data-stage-template="model-detail"].simple-three-page .model-home-preview {
+  width: min(100%, 440px);
+  justify-self: end;
+}
+
+body[data-stage-template="model-detail"].simple-three-page .model-metadata-grid {
+  margin-top: clamp(34px, 4vw, 52px);
 }
 
 body.simple-three-model-library #standard .model-standard-grid > :nth-child(n + 4),
@@ -702,6 +730,11 @@ body.budget-model-page .budget-preview-grid figcaption strong {
     grid-template-columns: 1fr;
   }
 
+  body[data-stage-template="model-detail"].simple-three-page .model-home-preview {
+    width: min(100%, 620px);
+    justify-self: start;
+  }
+
   body.simple-three-page .detail-hero-grid,
   body.simple-three-page .model-hero-dashboard,
   body.simple-three-page .model-metadata-grid,
@@ -795,7 +828,7 @@ body.budget-model-page .budget-preview-grid figcaption strong {
   }
 
   body.simple-three-page .simple-demo-hook video {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
   }
 
   body.simple-three-page .simple-demo-route {

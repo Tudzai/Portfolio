@@ -2167,18 +2167,7 @@ main > section {
 }
 
 .section-heading::after {
-  content: "";
-  flex: 0 0 clamp(86px, 9vw, 132px);
-  height: 38px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background:
-    radial-gradient(circle at 18% 72%, var(--teal) 0 4px, transparent 5px),
-    radial-gradient(circle at 54% 38%, var(--green) 0 4px, transparent 5px),
-    radial-gradient(circle at 84% 58%, var(--amber) 0 4px, transparent 5px),
-    linear-gradient(118deg, transparent 12%, rgba(20, 121, 255, 0.18) 12% 16%, transparent 16% 48%, rgba(15, 159, 143, 0.18) 48% 53%, transparent 53%),
-    var(--surface);
-  opacity: 0.9;
+  display: none;
 }
 
 @media (min-width: 981px) {
