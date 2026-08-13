@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Synthetic EBITDA variance bridge case for FP&A portfolio, linking budget-to-actual drivers to actions and owners."
+      content="Synthetic CFO performance review that reconciles an $8.0M EBITDA miss, isolates the commercial and cost drivers, and assigns recovery decisions to accountable owners."
     />
-    <title>EBITDA Variance Bridge | FP&A Decision Case</title>
+    <title>EBITDA Recovery Review | FP&amp;A Decision Case</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,14 +18,15 @@
     <link rel="stylesheet" href="../../../styles.css" />
       <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/case.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" href="../../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260812-4">
+    <link rel="stylesheet" href="./ebitda-variance-bridge.css?v=20260813-redesign1">
       <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body class="detail-page simple-three-page" data-stage-family="fpa" data-stage-template="case">
+  <body class="detail-page simple-three-page ebitda-bridge-page" data-stage-family="fpa" data-stage-template="case">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -64,81 +65,184 @@
     </header>
     <div id="main-content" tabindex="-1"></div>
     <main class="page-shell" data-stage-content>
-<section class="detail-hero" data-core-section="hero">
-        <p class="breadcrumb"><a href="../index.html">Decision Cases</a> / EBITDA Variance Bridge</p>
-        <p class="eyebrow">Variance analysis deep dive</p>
-        <h1>Budget-to-actual EBITDA bridge with owner actions.</h1>
-        <p>
-          This synthetic case shows how I would move monthly performance review from explaining numbers to assigning
-          controllable actions, forecast updates, and margin recovery owners.
-        </p>
+      <section class="detail-hero ebitda-review-hero" data-core-section="hero" aria-labelledby="ebitda-review-title">
+        <div class="ebitda-hero-copy">
+          <p class="breadcrumb"><a href="../index.html">Decision cases</a><span aria-hidden="true">/</span> EBITDA recovery review</p>
+          <p class="eyebrow">Monthly performance review <span aria-hidden="true">&middot;</span> Synthetic case</p>
+          <h1 id="ebitda-review-title">EBITDA missed plan by <span>$8.0M.</span> Here is the recovery call.</h1>
+          <p class="ebitda-hero-lede">
+            A budget-to-actual review built for action: isolate the controllable drivers, rebase the forecast,
+            and give each recovery move an owner and a checkpoint.
+          </p>
+          <div class="ebitda-hero-actions" aria-label="Review shortcuts">
+            <a class="ebitda-primary-link" href="#diagnosis">See the diagnosis <span aria-hidden="true">&darr;</span></a>
+            <a class="ebitda-text-link" href="#recovery-plan">Jump to recovery plan</a>
+          </div>
+        </div>
+
+        <aside class="ebitda-executive-card" aria-label="Executive EBITDA summary">
+          <div class="ebitda-card-heading">
+            <div>
+              <span>Executive call</span>
+              <strong>June performance review</strong>
+            </div>
+            <span class="ebitda-status">Action required</span>
+          </div>
+          <div class="ebitda-scoreboard">
+            <div>
+              <span>Plan</span>
+              <strong>$37.6M</strong>
+            </div>
+            <div>
+              <span>Actual</span>
+              <strong>$29.6M</strong>
+            </div>
+            <div class="is-adverse">
+              <span>Gap</span>
+              <strong>-$8.0M</strong>
+              <small>-21.3%</small>
+            </div>
+          </div>
+          <div class="ebitda-callout">
+            <span>Management decision</span>
+            <p>Protect price, reset carrier-cost assumptions, and rebase the full-year outlook before the next forecast lock.</p>
+          </div>
+          <div class="ebitda-tags" aria-label="Review priorities">
+            <span>Margin recovery</span>
+            <span>Forecast rebase</span>
+            <span>Owner discipline</span>
+          </div>
+        </aside>
       </section>
 
-      <section class="detail-section" data-core-section="evidence" aria-labelledby="bridge-title">
-        <div class="section-heading"><div><h2 id="bridge-title">What moved EBITDA.</h2></div></div>
-        <div class="bridge-visual" aria-label="Budget to actual EBITDA bridge">
-          <div class="bridge-step positive"><span>$37.6M</span><p>Budget EBITDA</p></div>
-          <div class="bridge-step negative"><span>-$2.9M</span><p>Volume</p></div>
-          <div class="bridge-step negative"><span>-$2.1M</span><p>Pricing</p></div>
-          <div class="bridge-step negative"><span>-$1.4M</span><p>Mix</p></div>
-          <div class="bridge-step negative"><span>-$2.5M</span><p>Carrier/Fuel</p></div>
-          <div class="bridge-step negative"><span>-$0.7M</span><p>Opex</p></div>
-          <div class="bridge-step positive"><span>+$1.6M</span><p>Timing</p></div>
-          <div class="bridge-step result"><span>$29.6M</span><p>Actual EBITDA</p></div>
+      <section class="detail-section ebitda-diagnosis" id="diagnosis" data-core-section="evidence" aria-labelledby="bridge-title">
+        <div class="ebitda-section-intro">
+          <span class="ebitda-section-number">01 / Diagnose</span>
+          <div>
+            <h2 id="bridge-title">The miss is concentrated, not mysterious.</h2>
+            <p>Volume and pricing account for 62.5% of the net gap. Carrier and fuel inflation creates the next largest pressure; timing only softens the month, not the structural issue.</p>
+          </div>
+        </div>
+
+        <div class="ebitda-diagnosis-grid">
+          <div class="ebitda-driver-panel">
+            <div class="ebitda-reconciliation" aria-label="EBITDA reconciliation summary">
+              <div>
+                <span>Budget</span>
+                <strong>$37.6M</strong>
+              </div>
+              <i aria-hidden="true">&minus;</i>
+              <div class="is-adverse">
+                <span>Adverse drivers</span>
+                <strong>$9.6M</strong>
+              </div>
+              <i aria-hidden="true">+</i>
+              <div class="is-favorable">
+                <span>Timing benefit</span>
+                <strong>$1.6M</strong>
+              </div>
+              <i aria-hidden="true">=</i>
+              <div class="is-result">
+                <span>Actual</span>
+                <strong>$29.6M</strong>
+              </div>
+            </div>
+
+            <div class="ebitda-driver-list" aria-label="EBITDA variance by driver">
+              <div class="ebitda-driver is-adverse" style="--driver-share: 100%">
+                <div><strong>Volume</strong><span>Lower freight-forwarding shipment count</span></div>
+                <b>-$2.9M</b>
+                <i aria-hidden="true"><span></span></i>
+              </div>
+              <div class="ebitda-driver is-adverse" style="--driver-share: 86%">
+                <div><strong>Carrier / fuel</strong><span>Input costs moved faster than yield</span></div>
+                <b>-$2.5M</b>
+                <i aria-hidden="true"><span></span></i>
+              </div>
+              <div class="ebitda-driver is-adverse" style="--driver-share: 72%">
+                <div><strong>Pricing</strong><span>Spot-account discounting pressure</span></div>
+                <b>-$2.1M</b>
+                <i aria-hidden="true"><span></span></i>
+              </div>
+              <div class="ebitda-driver is-adverse" style="--driver-share: 48%">
+                <div><strong>Service mix</strong><span>Lower customs and warehousing mix</span></div>
+                <b>-$1.4M</b>
+                <i aria-hidden="true"><span></span></i>
+              </div>
+              <div class="ebitda-driver is-adverse" style="--driver-share: 24%">
+                <div><strong>Opex</strong><span>Jobs per FTE below threshold</span></div>
+                <b>-$0.7M</b>
+                <i aria-hidden="true"><span></span></i>
+              </div>
+              <div class="ebitda-driver is-favorable" style="--driver-share: 55%">
+                <div><strong>Timing</strong><span>Expense phasing, not a run-rate recovery</span></div>
+                <b>+$1.6M</b>
+                <i aria-hidden="true"><span></span></i>
+              </div>
+            </div>
+          </div>
+
+          <aside class="ebitda-cfo-read" aria-labelledby="cfo-read-title">
+            <span class="ebitda-panel-label">CFO read</span>
+            <h3 id="cfo-read-title">Three implications for the forecast call.</h3>
+            <ol>
+              <li><span>01</span><div><strong>Revenue quality comes first.</strong><p>Volume and price require separate recovery assumptions; one blended revenue line would hide the commercial risk.</p></div></li>
+              <li><span>02</span><div><strong>Cost standards are stale.</strong><p>Carrier and fuel pressure should be reflected in job-cost assumptions and surcharge governance now.</p></div></li>
+              <li><span>03</span><div><strong>Timing is not a save.</strong><p>The $1.6M benefit reverses later, so it cannot support the full-year outlook without a real action plan.</p></div></li>
+            </ol>
+            <div class="ebitda-control-note"><span>Control</span><p>Bridge ties: $37.6M - $9.6M + $1.6M = $29.6M.</p></div>
+          </aside>
         </div>
       </section>
 
-      <section class="detail-section" data-core-section="action" aria-labelledby="bridge-actions-title">
-        <div class="section-heading"><div><h2 id="bridge-actions-title">Actions by owner.</h2></div></div>
-        <div class="table-shell">
-          <table>
-            <thead>
-              <tr>
-                <th>Driver</th>
-                <th>Variance</th>
-                <th>Root cause</th>
-                <th>Owner</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Volume</td>
-                <td>-$2.9M</td>
-                <td>Lower freight-forwarding shipment count</td>
-                <td>Branch directors</td>
-                <td>Challenge recovery pipeline and branch forecast.</td>
-              </tr>
-              <tr>
-                <td>Pricing</td>
-                <td>-$2.1M</td>
-                <td>Spot-account discounting pressure</td>
-                <td>Sales heads</td>
-                <td>Review low-margin customer groups before next forecast lock.</td>
-              </tr>
-              <tr>
-                <td>Service mix</td>
-                <td>-$1.4M</td>
-                <td>Lower mix of customs and warehousing</td>
-                <td>Commercial finance</td>
-                <td>Push service bundles with better gross margin profile.</td>
-              </tr>
-              <tr>
-                <td>Cost/job</td>
-                <td>-$2.5M</td>
-                <td>Carrier and fuel costs moved faster than yield</td>
-                <td>Procurement / ops</td>
-                <td>Refresh cost escalation assumptions and surcharge policy.</td>
-              </tr>
-              <tr>
-                <td>Opex productivity</td>
-                <td>-$0.7M</td>
-                <td>Jobs per FTE below threshold</td>
-                <td>Finance business partner</td>
-                <td>Phase hiring and rebalance workload between teams.</td>
-              </tr>
-            </tbody>
-          </table>
+      <section class="detail-section ebitda-recovery" id="recovery-plan" data-core-section="action" aria-labelledby="bridge-actions-title">
+        <div class="ebitda-section-intro is-light">
+          <span class="ebitda-section-number">02 / Decide</span>
+          <div>
+            <h2 id="bridge-actions-title">Make three calls before the next forecast lock.</h2>
+            <p>The output is not another variance table. It is a short management agenda with a decision, one accountable owner, and a measurable checkpoint.</p>
+          </div>
+        </div>
+
+        <div class="ebitda-decision-grid">
+          <article class="ebitda-decision-card">
+            <div class="ebitda-decision-topline"><span>01</span><b>Commercial</b></div>
+            <h3>Protect yield on the accounts that matter.</h3>
+            <p>Set customer-level margin floors and route exceptions through a weekly pricing review instead of broad discounting.</p>
+            <dl>
+              <div><dt>Owner</dt><dd>Sales heads</dd></div>
+              <div><dt>Checkpoint</dt><dd>14 days</dd></div>
+              <div><dt>Measure</dt><dd>Yield / job</dd></div>
+            </dl>
+          </article>
+
+          <article class="ebitda-decision-card">
+            <div class="ebitda-decision-topline"><span>02</span><b>Operations</b></div>
+            <h3>Reset the cost base to current economics.</h3>
+            <p>Refresh carrier and fuel assumptions, tighten surcharge rules, and challenge lane-level leakage with procurement.</p>
+            <dl>
+              <div><dt>Owner</dt><dd>Ops + Procurement</dd></div>
+              <div><dt>Checkpoint</dt><dd>30 days</dd></div>
+              <div><dt>Measure</dt><dd>Cost / job</dd></div>
+            </dl>
+          </article>
+
+          <article class="ebitda-decision-card">
+            <div class="ebitda-decision-topline"><span>03</span><b>FP&amp;A</b></div>
+            <h3>Rebase the outlook without timing cover.</h3>
+            <p>Separate volume, price, mix, and cost assumptions; remove the temporary timing benefit from the run-rate view.</p>
+            <dl>
+              <div><dt>Owner</dt><dd>FP&amp;A lead</dd></div>
+              <div><dt>Checkpoint</dt><dd>Next lock</dd></div>
+              <div><dt>Measure</dt><dd>Forecast bias</dd></div>
+            </dl>
+          </article>
+        </div>
+
+        <div class="ebitda-management-ask">
+          <span>Management ask</span>
+          <p>Approve pricing guardrails, the carrier-cost reset, and a revised full-year EBITDA range at the next performance review.</p>
+          <a href="../index.html">Back to decision cases <span aria-hidden="true">&rarr;</span></a>
         </div>
       </section>
     </main>

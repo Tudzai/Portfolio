@@ -443,6 +443,7 @@ body[data-stage-template] .stage-shell-brand {
 }
 
 body[data-stage-template] .stage-shell-brand-mark {
+  position: relative;
   display: grid;
   width: 34px;
   height: 34px;
@@ -460,10 +461,14 @@ body[data-stage-template] .stage-shell-brand-mark {
 }
 
 body[data-stage-template] .stage-shell-brand-mark::before {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
   content: "AT";
   color: currentColor;
   font-family: var(--stage-display);
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.06em;
   line-height: 1;

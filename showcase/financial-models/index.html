@@ -34,11 +34,12 @@
     <link rel="stylesheet" href="models.css" />
       <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/base.css?v=routes-20260811-annotated1">
-    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260811-annotated2">
     <link rel="stylesheet" href="../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260812-4">
+    <link rel="stylesheet" href="library-hero.css?v=20260813-redesign2">
       <script src="../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
   <body class="detail-page models-page simple-three-page simple-three-model-library" data-stage-family="models" data-stage-template="hub">
@@ -80,14 +81,16 @@
     </header>
     <div id="main-content" tabindex="-1"></div>
     <main class="page-shell" data-stage-content>
-<section class="detail-hero model-library-hero decision-hub-hero models-library-hero" aria-labelledby="model-library-title" data-core-section="hero">
-        <div class="decision-hub-copy">
-          <p class="breadcrumb"><a href="../../index.html">Home</a> / Financial Models</p>
-          <p class="eyebrow">TDAT Financial Model Library</p>
-          <h1 id="model-library-title">Models built to flex, tie, and survive review.</h1>
-          <p>
+      <section class="detail-hero model-library-hero decision-hub-hero models-library-hero" aria-labelledby="model-library-title" data-core-section="hero">
+        <div class="decision-hub-copy models-hero-copy">
+          <div class="models-hero-kicker" aria-label="Library scope">
+            <span>Financial Model Library</span>
+            <span>Excel 365 · Public-safe</span>
+          </div>
+          <h1 id="model-library-title">Models built to flex, tie, and stand up to review.</h1>
+          <p class="models-hero-lede">
             Twenty-four reusable Excel models for planning, valuation, cash, debt, risk, and transaction decisions—each
-            released with transparent logic, documentation, and visible QA.
+            released with transparent logic, clear documentation, and visible QA.
           </p>
           <div class="model-library-actions hero-actions">
             <a class="button primary" href="#catalogue">
@@ -106,19 +109,32 @@
               Download flagship model
             </a>
           </div>
-          <div class="model-hero-trust" aria-label="Library trust standards">
-            <span><i data-lucide="file-spreadsheet"></i> Macro-free .xlsx</span>
-            <span><i data-lucide="waypoints"></i> Transparent formulas</span>
-            <span><i data-lucide="shield-check"></i> Visible QA</span>
-            <span><i data-lucide="database-zap"></i> Synthetic public data</span>
+          <ul class="models-hero-standards" aria-label="Library release standards">
+            <li><i data-lucide="file-spreadsheet"></i>Macro-free .xlsx</li>
+            <li><i data-lucide="waypoints"></i>Transparent formulas</li>
+            <li><i data-lucide="shield-check"></i>Visible QA</li>
+          </ul>
+        </div>
+
+        <aside class="models-hero-snapshot" aria-label="Financial model library status">
+          <div class="models-snapshot-header">
+            <div>
+              <span>Library snapshot</span>
+              <strong>Released and review-ready</strong>
+            </div>
+            <span class="models-release-state"><i data-lucide="badge-check"></i>Live</span>
           </div>
-        </div>
-        <div class="detail-hero-grid decision-hub-panel model-hero-dashboard" aria-label="Financial model library status">
-          <div class="metric-tile"><span>24</span><p>downloadable Excel models</p></div>
-          <div class="metric-tile"><span>7</span><p>career families · 41 roles</p></div>
-          <div class="metric-tile"><span>9</span><p>finance decision domains</p></div>
-          <div class="metric-tile"><span>267</span><p>published checks across the library</p></div>
-        </div>
+          <div class="model-hero-dashboard">
+            <div class="metric-tile"><span>24</span><p>Released models</p><small>downloadable .xlsx</small></div>
+            <div class="metric-tile"><span>267</span><p>QA checks</p><small>published in-workbook</small></div>
+            <div class="metric-tile"><span>9</span><p>Decision domains</p><small>planning to risk</small></div>
+            <div class="metric-tile"><span>7</span><p>Career families</p><small>mapped to 41 roles</small></div>
+          </div>
+          <p class="models-snapshot-note">
+            <i data-lucide="database-zap"></i>
+            Synthetic examples, no macros, and no external data links.
+          </p>
+        </aside>
       </section>
 
       <section class="detail-section" aria-labelledby="model-method-title">

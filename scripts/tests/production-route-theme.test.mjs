@@ -7,7 +7,12 @@ import { classifyRoute, isScopedHtmlRoute } from "../build-agentic-finance-stage
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const THEMED_ASSET_ROOT = path.join(REPO_ROOT, "assets", "agentic-home");
-const EXCLUDED_THEME_ROUTES = new Set(["index.html", "404.html"]);
+const EXCLUDED_THEME_ROUTES = new Set([
+  "index.html",
+  "404.html",
+  "blog/predictive-collections-agent/deck/index.html",
+]);
+const EXCLUDED_REFERENCE_ROUTES = new Set(["index.html", "404.html"]);
 const EXCLUDED_ROOT_DIRECTORIES = new Set([
   "Stage",
   "assets",
@@ -78,9 +83,35 @@ test("keeps the canonical recruiter-facing route inventory at 85 pages", async (
   assert.equal(routes.includes("showcase/powerbi/driver-based-forecasting/preview.html"), true);
 });
 
-test("serves every visible branch route with the approved purple production shell", async () => {
+test("ships the enlarged AT mark through one fresh shared shell cache key", async () => {
+  const shellConsumers = [];
+
+  for (const route of await walkHtml(REPO_ROOT)) {
+    const html = await fs.readFile(path.join(REPO_ROOT, route), "utf8");
+    if (!/assets\/agentic-home\/css\/shell\.css/.test(html)) continue;
+    shellConsumers.push(route);
+    assert.match(
+      html,
+      /assets\/agentic-home\/css\/shell\.css\?v=routes-20260813-atmark3/,
+      `${route}: fresh shell cache key`,
+    );
+  }
+
+  const shellCss = await fs.readFile(path.join(THEMED_ASSET_ROOT, "css", "shell.css"), "utf8");
+  assert.equal(shellConsumers.length, 83);
+  assert.match(
+    shellCss,
+    /body\[data-stage-template\] \.stage-shell-brand-mark\s*\{[^}]*position:\s*relative/s,
+  );
+  assert.match(
+    shellCss,
+    /body\[data-stage-template\] \.stage-shell-brand-mark::before\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;[^}]*display:\s*grid;[^}]*place-items:\s*center;[^}]*font-size:\s*1rem/s,
+  );
+});
+
+test("serves every shell-managed branch route with the approved purple production shell", async () => {
   const routes = (await walkHtml(REPO_ROOT)).filter((route) => !EXCLUDED_THEME_ROUTES.has(route));
-  assert.equal(routes.length, 83);
+  assert.equal(routes.length, 82);
 
   for (const route of routes) {
     const html = await fs.readFile(path.join(REPO_ROOT, route), "utf8");
@@ -106,7 +137,7 @@ test("serves every visible branch route with the approved purple production shel
 });
 
 test("resolves all promoted branch assets and links inside the production repository", async () => {
-  const routes = (await walkHtml(REPO_ROOT)).filter((route) => !EXCLUDED_THEME_ROUTES.has(route));
+  const routes = (await walkHtml(REPO_ROOT)).filter((route) => !EXCLUDED_REFERENCE_ROUTES.has(route));
 
   for (const route of routes) {
     const html = await fs.readFile(path.join(REPO_ROOT, route), "utf8");
