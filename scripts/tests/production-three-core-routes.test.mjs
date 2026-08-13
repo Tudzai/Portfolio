@@ -28,7 +28,7 @@ test("keeps every simplified route to three visible core sections", async () => 
   }
 });
 
-test("puts the reporting automation demo first and accelerates both demo videos", async () => {
+test("puts the reporting automation demo first and preserves intentional playback behavior", async () => {
   const [homepage, reporting] = await Promise.all([
     read("index.html"),
     read("showcase/python-automation/monthly-reporting-pipeline/index.html"),
@@ -36,7 +36,8 @@ test("puts the reporting automation demo first and accelerates both demo videos"
 
   assert.match(homepage, /id="automation-case-video"[\s\S]*?data-playback-rate="5"/);
   assert.match(reporting, /class="detail-hero python-detail-hero simple-automation-hero"[^>]*data-core-section="hero"[\s\S]*?id="reporting-pipeline-video"/);
-  assert.match(reporting, /id="reporting-pipeline-video"[\s\S]*?data-playback-rate="3\.5"/);
+  assert.match(reporting, /id="reporting-pipeline-video"[\s\S]*?controls[\s\S]*?data-autoplay="false"/);
+  assert.doesNotMatch(reporting, /id="reporting-pipeline-video"[\s\S]*?data-playback-rate=/);
 });
 
 test("uses the focused four-step and primary-preview layout for the rolling forecast", async () => {
@@ -54,35 +55,33 @@ test("uses the focused four-step and primary-preview layout for the rolling fore
   assert.match(css, /body\.budget-model-page \.budget-preview-grid\s*\{[^}]*grid-template-columns:/s);
 });
 
-test("restores the original three-scene pitch-deck finale", async () => {
-  const [html, deckCss, siteJs] = await Promise.all([
+test("keeps the collections pitch deck standalone", async () => {
+  const [html, shortlink, recap, homepage] = await Promise.all([
     read("blog/predictive-collections-agent/deck/index.html"),
-    read("assets/agentic-home/css/templates/deck.css"),
-    read("assets/agentic-home/js/site.js"),
+    read("collections-agent/index.html"),
+    read("blog/aabw-2026-recap/index.html"),
+    read("index.html"),
   ]);
 
-  assert.match(html, /templates\/deck\.css\?v=routes-20260813-embedded2/);
-  assert.match(html, /document\.documentElement\.classList\.add\('is-embedded-deck'\)/);
-  assert.match(html, /class="brand-mark stage-shell-brand-mark" aria-hidden="true"><\/span>/);
-  assert.doesNotMatch(html, />TA<\/span>/);
-  assert.match(html, /class="qa-stage qa-recap-stage"/);
-  assert.equal((html.match(/<section class="qa-recap-scene" data-qa-recap-scene="[0-2]"/g) ?? []).length, 3);
-  assert.match(deckCss, /\.qa-slide > \.qa-single-stage\s*\{[^}]*display:\s*none/s);
-  assert.match(deckCss, /\.qa-slide > \.qa-recap-stage\s*\{[^}]*display:\s*block/s);
-  assert.match(siteJs, /slide\.classList\.contains\('qa-slide'\) && qaRecap\) return 3/);
-  assert.match(siteJs, /getCurrentScene:\s*\(\) => slideScenes\.get\(orderedSlides\[currentSlide\]\) \?\? 0/);
+  assert.match(html, /<body>\s*<div class="deck-viewport">/);
+  assert.match(html, /<nav class="deck-controls" aria-label="Presentation controls">/);
+  assert.match(html, /class SlidePresentation/);
+  assert.match(html, /this\.setupStageScale\(\)/);
+  assert.equal((html.match(/<section class="slide /g) ?? []).length, 6);
+  assert.doesNotMatch(html, /stage-shell-header/);
+  assert.doesNotMatch(html, /templates\/deck\.css/);
+  assert.equal((shortlink.match(/20260813-standalone-ff5c17b/g) ?? []).length, 2);
+  assert.equal((recap.match(/collections-agent\/\?v=20260813-standalone-ff5c17b/g) ?? []).length, 3);
+  assert.match(homepage, /href="\.\/blog\/predictive-collections-agent\/deck\/index\.html\?v=20260813-standalone-ff5c17b"[\s\S]*?>HTML Slides<\/span>/);
 });
 
 test("presents the interactive deck as the article action section", async () => {
-  const [html, deckCss] = await Promise.all([
-    read("blog/predictive-collections-agent/index.html"),
-    read("assets/agentic-home/css/templates/deck.css"),
-  ]);
+  const html = await read("blog/predictive-collections-agent/index.html");
 
   assert.match(html, /class="detail-section article-section deck-core-section"[^>]*data-core-section="action"/);
-  assert.match(html, /src="deck\/index\.html\?v=20260813-embedded1"/);
+  assert.match(html, /src="deck\/index\.html\?v=20260813-standalone-ff5c17b"/);
+  assert.equal((html.match(/deck\/index\.html\?v=20260813-standalone-ff5c17b/g) ?? []).length, 5);
   assert.doesNotMatch(html, /aria-labelledby="workflow-title"[^>]*data-core-section/);
-  assert.match(deckCss, /html\.is-embedded-deck body\[data-stage-template="deck"\] > \.deck-viewport\s*\{[^}]*height:\s*100dvh/s);
 });
 
 test("routes Workspace Hub to the explicit upcoming section", async () => {

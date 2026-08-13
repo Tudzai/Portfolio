@@ -463,7 +463,7 @@ body[data-stage-template] .stage-shell-brand-mark::before {
   content: "AT";
   color: currentColor;
   font-family: var(--stage-display);
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: -0.06em;
   line-height: 1;
