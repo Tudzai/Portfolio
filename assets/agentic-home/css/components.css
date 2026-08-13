@@ -10,7 +10,7 @@
 }
 
 .stage-route-intro {
-  display: grid;
+  display: none !important;
   grid-template-columns: minmax(150px, 0.62fr) minmax(360px, 1.7fr) minmax(190px, 0.85fr) auto;
   align-items: stretch;
   gap: 1px;

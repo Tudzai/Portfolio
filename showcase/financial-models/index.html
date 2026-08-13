@@ -38,9 +38,10 @@
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260811-annotated2">
+    <link rel="stylesheet" href="../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260812-4">
       <script src="../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body class="detail-page models-page" data-stage-family="models" data-stage-template="hub">
+  <body class="detail-page models-page simple-three-page simple-three-model-library" data-stage-family="models" data-stage-template="hub">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -79,22 +80,7 @@
     </header>
     <div id="main-content" tabindex="-1"></div>
     <main class="page-shell" data-stage-content>
-      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
-        <div class="stage-route-identity">
-          <span class="stage-route-index">04</span>
-          <span class="stage-route-label">Models / Library</span>
-        </div>
-        <ol class="stage-route-flow" aria-label="Page flow">
-          <li>Explore</li>
-          <li>Compare</li>
-          <li>Download</li>
-        </ol>
-        <p class="stage-route-evidence">Governed synthetic workbooks</p>
-        <a class="stage-route-link" href="../../index.html">
-          Portfolio home<span aria-hidden="true">&nearr;</span>
-        </a>
-      </section>
-      <section class="detail-hero model-library-hero decision-hub-hero models-library-hero" aria-labelledby="model-library-title">
+<section class="detail-hero model-library-hero decision-hub-hero models-library-hero" aria-labelledby="model-library-title" data-core-section="hero">
         <div class="decision-hub-copy">
           <p class="breadcrumb"><a href="../../index.html">Home</a> / Financial Models</p>
           <p class="eyebrow">TDAT Financial Model Library</p>
@@ -167,13 +153,40 @@
         </div>
       </section>
 
-      <section class="detail-section" id="catalogue" aria-labelledby="catalogue-title" data-model-library>
+      <section class="detail-section" id="catalogue" aria-labelledby="catalogue-title" data-model-library data-core-section="evidence">
         <div class="section-heading">
           <div>
             <p class="section-kicker">Model catalogue</p>
             <h2 id="catalogue-title">Find a starting point by decision, role, domain, or difficulty.</h2>
           </div>
           <span class="process-pill">24 of 24 available · Excel 365</span>
+        </div>
+
+        <div class="simple-library-grid" aria-label="Financial model catalogue">
+          <a class="simple-library-card" href="budget-rolling-forecast/index.html"><span>FP&amp;A</span><h3>Budget &amp; Rolling Forecast</h3><p>Driver-based planning, scenarios, and forecast accuracy.</p></a>
+          <a class="simple-library-card" href="three-statement-model/index.html"><span>CORE FINANCE</span><h3>Three-Statement Model</h3><p>Integrated income statement, balance sheet, and cash flow.</p></a>
+          <a class="simple-library-card" href="thirteen-week-cash-flow/index.html"><span>TREASURY</span><h3>13-Week Cash Flow</h3><p>Short-term liquidity, receipts, payments, and headroom.</p></a>
+          <a class="simple-library-card" href="working-capital-planner/index.html"><span>FP&amp;A</span><h3>Working Capital Planner</h3><p>AR, AP, inventory, DSO, DPO, and cash release.</p></a>
+          <a class="simple-library-card" href="pricing-margin-waterfall/index.html"><span>COMMERCIAL</span><h3>Pricing &amp; Margin Waterfall</h3><p>Price, mix, volume, cost, and contribution decisions.</p></a>
+          <a class="simple-library-card" href="variance-bridge-forecast-accuracy/index.html"><span>FP&amp;A</span><h3>Variance Bridge &amp; Forecast Accuracy</h3><p>Actual-versus-plan drivers, error, and owner action.</p></a>
+          <a class="simple-library-card" href="capex-business-case/index.html"><span>INVESTMENT</span><h3>Capex Business Case</h3><p>Returns, payback, sensitivity, and approval evidence.</p></a>
+          <a class="simple-library-card" href="dcf-valuation/index.html"><span>VALUATION</span><h3>DCF Valuation</h3><p>Cash flows, terminal value, WACC, and sensitivity.</p></a>
+          <a class="simple-library-card" href="trading-comps/index.html"><span>VALUATION</span><h3>Trading Comparables</h3><p>Peer multiples, normalization, and valuation range.</p></a>
+          <a class="simple-library-card" href="ma-accretion-dilution/index.html"><span>TRANSACTIONS</span><h3>M&amp;A Accretion / Dilution</h3><p>Purchase price, financing, synergies, and EPS impact.</p></a>
+          <a class="simple-library-card" href="lbo-returns-model/index.html"><span>TRANSACTIONS</span><h3>LBO Returns Model</h3><p>Leverage, debt paydown, exit value, and sponsor returns.</p></a>
+          <a class="simple-library-card" href="project-finance-lite/index.html"><span>PROJECT FINANCE</span><h3>Project Finance Lite</h3><p>Project cash flow, debt service, and return profile.</p></a>
+          <a class="simple-library-card" href="debt-covenant-model/index.html"><span>TREASURY</span><h3>Debt &amp; Covenant Model</h3><p>Leverage, interest, maturity, and covenant headroom.</p></a>
+          <a class="simple-library-card" href="debt-sculpting-waterfall/index.html"><span>FUNDING</span><h3>Debt Sculpting Waterfall</h3><p>Repayment capacity, DSCR, and financing waterfall.</p></a>
+          <a class="simple-library-card" href="fx-exposure-hedge/index.html"><span>TREASURY</span><h3>FX Exposure &amp; Hedge</h3><p>Currency exposure, hedge coverage, and sensitivity.</p></a>
+          <a class="simple-library-card" href="credit-underwriting-dscr/index.html"><span>CREDIT</span><h3>Credit Underwriting &amp; DSCR</h3><p>Borrower cash flow, leverage, coverage, and downside.</p></a>
+          <a class="simple-library-card" href="ecl-credit-stress-lite/index.html"><span>RISK</span><h3>ECL Credit Stress Lite</h3><p>Expected loss, provision, staging, and scenario stress.</p></a>
+          <a class="simple-library-card" href="market-portfolio-stress/index.html"><span>RISK</span><h3>Market &amp; Portfolio Stress</h3><p>Exposure, concentration, shocks, and loss capacity.</p></a>
+          <a class="simple-library-card" href="multi-entity-consolidation-fx/index.html"><span>CONTROLLERSHIP</span><h3>Multi-Entity Consolidation &amp; FX</h3><p>Entities, eliminations, translation, and reconciliation.</p></a>
+          <a class="simple-library-card" href="headcount-compensation-plan/index.html"><span>OPERATIONS</span><h3>Headcount &amp; Compensation Plan</h3><p>Roles, hiring timing, compensation, and capacity.</p></a>
+          <a class="simple-library-card" href="saas-unit-economics/index.html"><span>STARTUP FINANCE</span><h3>SaaS Unit Economics</h3><p>ARR, retention, CAC, payback, and runway.</p></a>
+          <a class="simple-library-card" href="sme-integrated-forecast/index.html"><span>SME FINANCE</span><h3>SME Integrated Forecast</h3><p>Sales, costs, working capital, funding, and cash.</p></a>
+          <a class="simple-library-card" href="personal-budget-net-worth/index.html"><span>PERSONAL FINANCE</span><h3>Personal Budget &amp; Net Worth</h3><p>Income, spending, debt, savings, and net worth.</p></a>
+          <a class="simple-library-card" href="retirement-scenario-planner/index.html"><span>PERSONAL FINANCE</span><h3>Retirement Scenario Planner</h3><p>Contributions, returns, inflation, and retirement income.</p></a>
         </div>
 
         <form class="model-library-form" role="search" aria-label="Search and filter financial models" onsubmit="return false;">
@@ -286,7 +299,7 @@
         </div>
       </section>
 
-      <section class="detail-section" id="standard" aria-labelledby="standard-title">
+      <section class="detail-section" id="standard" aria-labelledby="standard-title" data-core-section="action">
         <div class="section-heading">
           <div>
             <p class="section-kicker">TDAT Model Standard 1.0</p>

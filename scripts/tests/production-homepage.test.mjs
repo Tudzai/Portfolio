@@ -70,7 +70,8 @@ test("renders stable shared branding and icons across operating systems", async 
     readShellCss(),
   ]);
 
-  assert.match(shellCss, /\.stage-shell-brand-mark\s*\{[^}]*background-image:\s*url\("\.\.\/\.\.\/favicon\.svg"\)/s);
+  assert.match(shellCss, /\.stage-shell-brand-mark\s*\{[^}]*background-image:\s*none/s);
+  assert.match(shellCss, /\.stage-shell-brand-mark::before\s*\{[^}]*content:\s*"AT"/s);
   assert.match(shellCss, /\.stage-shell-brand-copy small\s*\{[^}]*font-family:\s*var\(--stage-mono\)/s);
   assert.match(homepageCss, /\.ui-icon-external\s*\{[^}]*mask-image:/s);
   assert.match(homepageCss, /\.ui-icon-play\s*\{[^}]*mask-image:/s);
@@ -92,10 +93,12 @@ test("presents the main demo compactly and runs the automation preview as backgr
   const [html, homepageCss] = await Promise.all([readRootHomepage(), readHomepageCss()]);
 
   assert.doesNotMatch(html, /class="demo-compact-toolbar"/);
-  assert.match(homepageCss, /\.demo-window\s*\{[^}]*max-width:\s*1080px/s);
-  assert.match(homepageCss, /@media \(min-width: 901px\) and \(max-height: 800px\)[\s\S]*?\.demo-window[^}]*max-width:\s*840px/s);
-  assert.match(homepageCss, /\.demo-hook-video\s*\{[^}]*object-fit:\s*contain/s);
+  assert.match(homepageCss, /@media \(min-width: 901px\)[\s\S]*?\.demo\s*\{[^}]*height:\s*100svh/s);
+  assert.match(homepageCss, /@media \(min-width: 901px\)[\s\S]*?\.demo-window\s*\{[^}]*width:\s*min\(100%, calc\(\(100svh - 96px\) \* 1\.7778\)\)[^}]*aspect-ratio:\s*16 \/ 9/s);
+  assert.match(homepageCss, /@media \(min-width: 901px\)[\s\S]*?\.demo-hook-video\s*\{[^}]*object-fit:\s*contain/s);
   assert.match(html, /id="automation-case-video"[\s\S]*data-autoplay="true"/);
+  assert.match(html, /id="automation-case-video"[\s\S]*data-playback-rate="5"/);
   assert.doesNotMatch(html, /class="video-toggle"/);
   assert.match(homepageCss, /\.automation-video-route\s*\{[^}]*bottom:\s*12px/s);
+  assert.match(html, /href="\.\/blog\/predictive-collections-agent\/#deck-title"[\s\S]*?>HTML Slides<\/span>/);
 });

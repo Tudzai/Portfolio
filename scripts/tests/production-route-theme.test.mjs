@@ -91,7 +91,7 @@ test("serves every visible branch route with the approved purple production shel
 
     assert.equal(headerCount, 1, `${route}: shared header`);
     assert.equal(footerCount, 1, `${route}: shared footer`);
-    assert.equal(introCount, 1, `${route}: route context`);
+    assert.equal(introCount, 0, `${route}: route context removed`);
     assert.match(html, new RegExp(`data-stage-family=["']${family}["']`), `${route}: family`);
     assert.match(html, new RegExp(`data-stage-template=["']${template}["']`), `${route}: template`);
     assert.match(html, new RegExp(`assets/agentic-home/css/templates/${template}\\.css`), `${route}: adapter`);

@@ -8,7 +8,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const read = (relativePath) => fs.readFile(path.join(repoRoot, relativePath), "utf8");
 
 const hubRoutes = [
-  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "annotated4"],
+  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "powerbi5"],
   ["showcase/fpa-decision-cases/index.html", "fpa", "decision-hub-hero", "annotated2"],
   ["showcase/python-automation/index.html", "automation", "decision-hub-hero", "annotated2"],
   ["showcase/financial-models/index.html", "models", "decision-hub-hero", "annotated2"],
@@ -80,11 +80,14 @@ test("redesigns the Power BI library from the recruiter shortlist through the fi
   assert.match(html, /class="section project-lens project-lens-primary"/);
   assert.match(html, /class="section project-lens project-lens-final"/);
   assert.equal((html.match(/class="project-open"/g) ?? []).length, 17);
-  assert.equal((html.match(/class="project-visual"/g) ?? []).length, 20);
+  assert.equal((html.match(/class="project-visual"/g) ?? []).length, 19);
 
   const previewImages = [...html.matchAll(/src="\.\.\/\.\.\/(assets\/powerbi-previews\/[^"?]+\.png)"/g)].map((match) => match[1]);
-  assert.equal(previewImages.length, 20);
-  assert.equal(new Set(previewImages).size, 20);
+  assert.equal(previewImages.length, 19);
+  assert.equal(new Set(previewImages).size, 19);
+
+  assert.match(html, /class="project-card featured preview-suppressed" id="board-investor-cfo-pack"/);
+  assert.match(html, /<article class="project-card" id="esg-carbon-finance">/);
 
   for (const previewImage of previewImages) {
     const metadata = await fs.stat(path.join(repoRoot, previewImage));

@@ -444,21 +444,29 @@ body[data-stage-template] .stage-shell-brand {
 
 body[data-stage-template] .stage-shell-brand-mark {
   display: grid;
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
   place-items: center;
   margin: 0;
   padding: 0;
-  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
   background-color: var(--stage-ink);
-  background-image: url("../../favicon.svg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  color: transparent;
+  background-image: none;
+  color: var(--stage-white);
   font-size: 0;
+}
+
+body[data-stage-template] .stage-shell-brand-mark::before {
+  content: "AT";
+  color: currentColor;
+  font-family: var(--stage-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
 }
 
 body[data-stage-template] .stage-shell-brand-copy {

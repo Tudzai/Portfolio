@@ -13,6 +13,14 @@ html:has(body[data-stage-template="deck"]) body {
   overflow-y: auto;
 }
 
+body[data-stage-template="deck"] > .stage-route-intro {
+  display: none !important;
+}
+
+body[data-stage-template="deck"] > .deck-viewport {
+  height: calc(100dvh - var(--stage-header-height));
+}
+
 body[data-stage-template="deck"] > main[data-stage-content] {
   width: min(1320px, calc(100% - 48px));
   margin-inline: auto;
@@ -37,14 +45,97 @@ body[data-stage-template="deck"] .deck-viewport > .deck-stage {
 }
 
 body[data-stage-template="deck"] .deck-controls {
-  margin-top: 12px;
-  padding: 12px;
-  border: 1px solid var(--stage-line);
+  position: fixed;
+  z-index: 1000;
+  top: calc(var(--stage-header-height) + 16px);
+  right: 24px;
+  left: auto;
+  bottom: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 10px;
+  transform: none;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--stage-white) 86%, transparent);
+  background: rgba(33, 22, 44, 0.9);
+  box-shadow: 0 14px 34px rgba(33, 22, 44, 0.22);
+  color: var(--stage-white);
+  opacity: 1;
+  backdrop-filter: blur(12px);
+}
+
+body[data-stage-template="deck"] .deck-controls button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--stage-white);
+}
+
+body[data-stage-template="deck"] .deck-controls button:disabled {
+  opacity: 0.36;
+  cursor: not-allowed;
+}
+
+body[data-stage-template="deck"] .progress-track {
+  z-index: 1001;
+  background: rgba(33, 22, 44, 0.18);
+}
+
+body[data-stage-template="deck"] .progress-bar {
+  background: linear-gradient(90deg, var(--stage-violet), var(--stage-pink));
+}
+
+/* The article presents the same deck without duplicating the portfolio shell. */
+html.is-embedded-deck,
+html.is-embedded-deck body[data-stage-template="deck"] {
+  height: 100%;
+  overflow: hidden;
+}
+
+html.is-embedded-deck body[data-stage-template="deck"] > :is(.skip-link, .stage-shell-header, .stage-shell-footer) {
+  display: none !important;
+}
+
+html.is-embedded-deck body[data-stage-template="deck"] > .deck-viewport {
+  width: 100%;
+  height: 100dvh;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+html.is-embedded-deck body[data-stage-template="deck"] .deck-controls {
+  top: 22px;
+}
+
+/* Restore the original three-scene Q&A finale retained in the source deck. */
+body[data-stage-template="deck"] .qa-slide > .qa-single-stage {
+  display: none !important;
+}
+
+body[data-stage-template="deck"] .qa-slide > .qa-recap-stage {
+  display: block !important;
 }
 
 @media (max-width: 760px) {
+  body[data-stage-template="deck"] .deck-controls {
+    top: auto;
+    right: 12px;
+    bottom: 14px;
+  }
+
+  body[data-stage-template="deck"] > .deck-viewport {
+    height: calc(100dvh - var(--stage-header-height));
+  }
+
   body[data-stage-template="deck"] > main[data-stage-content] {
     width: min(100% - 24px, 1320px);
     padding-top: 12px;

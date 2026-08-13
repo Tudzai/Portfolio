@@ -21,13 +21,14 @@
     <link rel="stylesheet" href="../models.css" />
       <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-simple-mark1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/model-detail.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" href="../../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260813-5">
       <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body class="detail-page models-page" data-stage-family="models" data-stage-template="model-detail">
+  <body class="detail-page models-page simple-three-page budget-model-page" data-stage-family="models" data-stage-template="model-detail">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -66,22 +67,7 @@
     </header>
     <div id="main-content" tabindex="-1"></div>
     <main class="page-shell" data-stage-content>
-      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
-        <div class="stage-route-identity">
-          <span class="stage-route-index">04</span>
-          <span class="stage-route-label">Model / Workbook</span>
-        </div>
-        <ol class="stage-route-flow" aria-label="Page flow">
-          <li>Inputs</li>
-          <li>Logic</li>
-          <li>Controls</li>
-        </ol>
-        <p class="stage-route-evidence">Governed synthetic workbook</p>
-        <a class="stage-route-link" href="../index.html">
-          Model library<span aria-hidden="true">&nearr;</span>
-        </a>
-      </section>
-      <section class="detail-hero model-detail-hero" aria-labelledby="model-title">
+<section class="detail-hero model-detail-hero" aria-labelledby="model-title" data-core-section="hero">
         <div class="model-detail-hero-grid">
           <div class="model-detail-hero-copy">
             <p class="breadcrumb"><a href="../../../index.html">Home</a> / <a href="../index.html">Financial Models</a> / Budget &amp; Rolling Forecast</p>
@@ -97,7 +83,21 @@
           <article class="model-metadata-card"><span>Version</span><strong>1.0.0</strong></article><article class="model-metadata-card"><span>Last tested</span><strong>2026-07-13</strong></article><article class="model-metadata-card"><span>Compatibility</span><strong>Excel 365</strong></article><article class="model-metadata-card"><span>File</span><strong>.xlsx · 32.6 KB</strong></article><article class="model-metadata-card"><span>Horizon</span><strong>12–36 months</strong></article><article class="model-metadata-card"><span>Sheets</span><strong>9</strong></article><article class="model-metadata-card"><span>Scenarios</span><strong>Base · Upside · Downside</strong></article><article class="model-metadata-card"><span>Difficulty</span><strong>Practitioner</strong></article><article class="model-metadata-card"><span>Setup</span><strong>1–3 hours</strong></article><article class="model-metadata-card"><span>Evidence</span><strong>Synthetic worked template</strong></article>
         </div>
       </section>
-      <section class="detail-section" aria-labelledby="start-title"><div class="section-heading"><div><p class="section-kicker">Decision first</p><h2 id="start-title">What changed in the outlook, why, and what must management do next?</h2></div><span class="process-pill">Template posture · validate before decision use</span></div><div class="model-method-grid"><article class="model-method-card"><span>01</span><h3>Confirm scope</h3><p>Read Cover and Guide; confirm decision, roles, horizon, units, method, and exclusions.</p></article><article class="model-method-card"><span>02</span><h3>Select a scenario</h3><p>Choose Base, Upside, or Downside and challenge the visible driver rationale.</p></article><article class="model-method-card"><span>03</span><h3>Replace blue inputs</h3><p>Update synthetic source values and assumptions with approved, dated inputs.</p></article><article class="model-method-card"><span>04</span><h3>Resolve Checks</h3><p>Trace every FAIL to its source, assumption, schedule, definition, or sensitivity.</p></article></div></section>
+      <section class="detail-section budget-workflow" aria-labelledby="start-title" data-core-section="evidence">
+        <div class="budget-section-lead">
+          <span aria-hidden="true">01</span>
+          <div>
+            <h2 id="start-title">Plan. Test. Decide.</h2>
+            <p>Four clear steps keep every planning decision traceable.</p>
+          </div>
+        </div>
+        <ol class="budget-step-flow">
+          <li><b>01</b><div><h3>Scope</h3><p>Set the decision, owner, horizon, and units.</p></div></li>
+          <li><b>02</b><div><h3>Scenario</h3><p>Choose Base, Upside, or Downside.</p></div></li>
+          <li><b>03</b><div><h3>Inputs</h3><p>Replace blue cells with approved assumptions.</p></div></li>
+          <li><b>04</b><div><h3>Checks</h3><p>Resolve every FAIL before using the output.</p></div></li>
+        </ol>
+      </section>
       <section class="detail-section" aria-labelledby="map-title"><div class="section-heading"><div><p class="section-kicker">Workbook map</p><h2 id="map-title">Nine visible sheets with a controlled input-to-decision flow.</h2></div><span class="process-pill">Cover → Inputs → Engine → Sensitivity → Checks</span></div><article class="model-detail-panel"><ul class="model-detail-list"><li><i data-lucide="file-spreadsheet"></i><span><strong>Cover:</strong> guidance, outputs, control, or release evidence</span></li>
 <li><i data-lucide="file-spreadsheet"></i><span><strong>Guide:</strong> guidance, outputs, control, or release evidence</span></li>
 <li><i data-lucide="file-spreadsheet"></i><span><strong>Assumptions:</strong> guidance, outputs, control, or release evidence</span></li>
@@ -115,7 +115,19 @@
 <article class="model-standard-card"><h3>EBITDA margin</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
 <article class="model-standard-card"><h3>Budget revenue</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
 <article class="model-standard-card"><h3>Revenue variance vs budget</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article></div></section>
-      <section class="detail-section" aria-labelledby="preview-title"><div class="section-heading"><div><p class="section-kicker">Rendered from the released workbook</p><h2 id="preview-title">The web preview and download are the same build.</h2></div><span class="process-pill">9 sheets visually rendered</span></div><div class="model-preview-gallery"><figure><img src="assets/cover.png" alt="Budget &amp; Rolling Forecast Cover sheet" loading="lazy" /><figcaption><strong>Cover:</strong> identity, calculation integrity, readiness, outputs, and color legend.</figcaption></figure><figure><img src="assets/summary.png" alt="Budget &amp; Rolling Forecast Summary sheet" loading="lazy" /><figcaption><strong>Summary:</strong> decision KPIs, trend, scenario, questions, owners, and actions.</figcaption></figure><figure><img src="assets/checks.png" alt="Budget &amp; Rolling Forecast Checks sheet" loading="lazy" /><figcaption><strong>Checks:</strong> 11 assertions with actual, expected, difference, tolerance, status, and fix location.</figcaption></figure></div></section>
+      <section class="detail-section budget-download" aria-labelledby="preview-title" data-core-section="action">
+        <div class="budget-download-copy">
+          <span aria-hidden="true">02</span>
+          <h2 id="preview-title">See the model.<br />Download the file.</h2>
+          <p>Cover, decision summary, and control checks are visible before download.</p>
+          <a class="button primary" href="model/tdat-budget-rolling-forecast.xlsx" download="tdat-budget-rolling-forecast.xlsx" data-track-event="model downloaded" data-track-label="TDAT-FM-FPA-001" data-track-location="model detail preview"><i data-lucide="download"></i>Download .xlsx</a>
+        </div>
+        <div class="budget-preview-grid">
+          <figure class="budget-preview-primary"><img src="assets/summary.png" alt="Budget &amp; Rolling Forecast Summary sheet" loading="lazy" /><figcaption><strong>Summary</strong><span>KPIs, trend, scenarios, owners, and actions.</span></figcaption></figure>
+          <figure><img src="assets/cover.png" alt="Budget &amp; Rolling Forecast Cover sheet" loading="lazy" /><figcaption><strong>Cover</strong><span>Model identity and readiness.</span></figcaption></figure>
+          <figure><img src="assets/checks.png" alt="Budget &amp; Rolling Forecast Checks sheet" loading="lazy" /><figcaption><strong>Checks</strong><span>11 published controls.</span></figcaption></figure>
+        </div>
+      </section>
       <section class="detail-section" aria-labelledby="qa-title"><div class="section-heading"><div><p class="section-kicker">QA and release evidence</p><h2 id="qa-title">11 / 11 published checks PASS in the released synthetic case.</h2></div><span class="process-pill">TDAT QA reviewed · not independently certified</span></div><div class="model-detail-split"><article class="model-detail-panel"><h3>Published finance controls</h3><ul class="model-detail-list"><li><i data-lucide="check"></i><span><strong>EBITDA ties gross profit and opex:</strong> EBITDA equals gross profit plus opex.</span></li>
 <li><i data-lucide="check"></i><span><strong>Revenue variance bridge ties:</strong> Forecast less budget equals the displayed variance.</span></li>
 <li><i data-lucide="check"></i><span><strong>Forecast revenue is non-negative:</strong> Negative revenue requires an explicit business case.</span></li>

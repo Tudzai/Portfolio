@@ -22,9 +22,10 @@
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/case.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" href="../../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260812-4">
       <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body class="detail-page" data-stage-family="automation" data-stage-template="case">
+  <body class="detail-page simple-three-page" data-stage-family="automation" data-stage-template="case">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -63,22 +64,27 @@
     </header>
     <div id="main-content" tabindex="-1"></div>
     <main class="page-shell" data-stage-content>
-      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
-        <div class="stage-route-identity">
-          <span class="stage-route-index">02</span>
-          <span class="stage-route-label">Automation / Workflow</span>
+<section class="detail-hero python-detail-hero simple-automation-hero" data-core-section="hero">
+        <div class="simple-demo-hook" aria-label="Monthly reporting automation demo">
+          <video
+            id="reporting-pipeline-video"
+            class="case-video"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            data-autoplay="true"
+            data-playback-rate="3.5"
+            poster="../fpa-monthly-reporting-demo/assets/fpa-automation-highlight-poster.jpg"
+            aria-label="Automation demo moving from raw finance data through Python to reports and insights"
+          >
+            <source src="../fpa-monthly-reporting-demo/assets/fpa-automation-highlight.mp4" type="video/mp4" />
+            Your browser does not support embedded video.
+          </video>
+          <div class="simple-demo-route" aria-hidden="true">
+            <span>Raw data</span><i>→</i><span>Python</span><i>→</i><span>Report</span><i>→</i><span>Insight</span>
+          </div>
         </div>
-        <ol class="stage-route-flow" aria-label="Page flow">
-          <li>Inputs</li>
-          <li>Workflow</li>
-          <li>Output</li>
-        </ol>
-        <p class="stage-route-evidence">Public-safe runnable sample</p>
-        <a class="stage-route-link" href="../index.html">
-          Automation library<span aria-hidden="true">&nearr;</span>
-        </a>
-      </section>
-      <section class="detail-hero python-detail-hero">
         <p class="breadcrumb"><a href="../index.html">Python Automation</a> / Monthly Reporting Pipeline</p>
         <p class="eyebrow">Clean-room Python case</p>
         <h1>Python-built monthly reporting pipeline for FP&amp;A close work.</h1>
@@ -128,7 +134,7 @@
         </div>
       </section>
 
-      <section class="detail-section">
+      <section class="detail-section" data-core-section="evidence">
         <div class="section-heading">
           <div>
             <p class="section-kicker">Workflow</p>
@@ -175,7 +181,7 @@ python src/generate_insight_brief.py</code></pre>
         </div>
       </section>
 
-      <section class="detail-section">
+      <section class="detail-section" data-core-section="action">
         <div class="section-heading">
           <div>
             <p class="section-kicker">Generated outputs</p>
@@ -236,5 +242,6 @@ python src/generate_insight_brief.py</code></pre>
     </footer>
       <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
     <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script src="../../../assets/agentic-home/js/homepage.js?v=three-core-20260812-1"></script>
   </body>
 </html>

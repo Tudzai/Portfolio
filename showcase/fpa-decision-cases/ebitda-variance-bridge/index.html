@@ -22,9 +22,10 @@
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/case.css?v=routes-20260810-hybrid1">
+    <link rel="stylesheet" href="../../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260812-4">
       <script src="../../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
-  <body class="detail-page" data-stage-family="fpa" data-stage-template="case">
+  <body class="detail-page simple-three-page" data-stage-family="fpa" data-stage-template="case">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -63,22 +64,7 @@
     </header>
     <div id="main-content" tabindex="-1"></div>
     <main class="page-shell" data-stage-content>
-      <section class="stage-route-intro" data-stage-route-intro aria-label="Page context">
-        <div class="stage-route-identity">
-          <span class="stage-route-index">01</span>
-          <span class="stage-route-label">FP&A / Case</span>
-        </div>
-        <ol class="stage-route-flow" aria-label="Page flow">
-          <li>Decision</li>
-          <li>Drivers</li>
-          <li>Action</li>
-        </ol>
-        <p class="stage-route-evidence">Public-safe decision evidence</p>
-        <a class="stage-route-link" href="../index.html">
-          FP&A cases<span aria-hidden="true">&nearr;</span>
-        </a>
-      </section>
-      <section class="detail-hero">
+<section class="detail-hero" data-core-section="hero">
         <p class="breadcrumb"><a href="../index.html">Decision Cases</a> / EBITDA Variance Bridge</p>
         <p class="eyebrow">Variance analysis deep dive</p>
         <h1>Budget-to-actual EBITDA bridge with owner actions.</h1>
@@ -88,7 +74,8 @@
         </p>
       </section>
 
-      <section class="detail-section">
+      <section class="detail-section" data-core-section="evidence" aria-labelledby="bridge-title">
+        <div class="section-heading"><div><h2 id="bridge-title">What moved EBITDA.</h2></div></div>
         <div class="bridge-visual" aria-label="Budget to actual EBITDA bridge">
           <div class="bridge-step positive"><span>$37.6M</span><p>Budget EBITDA</p></div>
           <div class="bridge-step negative"><span>-$2.9M</span><p>Volume</p></div>
@@ -101,7 +88,8 @@
         </div>
       </section>
 
-      <section class="detail-section">
+      <section class="detail-section" data-core-section="action" aria-labelledby="bridge-actions-title">
+        <div class="section-heading"><div><h2 id="bridge-actions-title">Actions by owner.</h2></div></div>
         <div class="table-shell">
           <table>
             <thead>
