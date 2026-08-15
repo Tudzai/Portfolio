@@ -74,13 +74,14 @@ function resolveProductionReference(route, value) {
   return path.resolve(REPO_ROOT, path.dirname(route), pathname);
 }
 
-test("keeps the canonical recruiter-facing route inventory at 85 pages", async () => {
+test("keeps the canonical recruiter-facing route inventory at 86 pages", async () => {
   const routes = await walkHtml(REPO_ROOT);
-  assert.equal(routes.length, 85);
+  assert.equal(routes.length, 86);
   assert.equal(routes.includes("index.html"), true);
   assert.equal(routes.includes("cv.html"), true);
   assert.equal(routes.includes("showcase/financial-models/budget-rolling-forecast/index.html"), true);
   assert.equal(routes.includes("showcase/powerbi/driver-based-forecasting/preview.html"), true);
+  assert.equal(routes.includes("showcase/workspace-hub/index.html"), true);
 });
 
 test("ships the enlarged AT mark through one fresh shared shell cache key", async () => {
@@ -98,7 +99,7 @@ test("ships the enlarged AT mark through one fresh shared shell cache key", asyn
   }
 
   const shellCss = await fs.readFile(path.join(THEMED_ASSET_ROOT, "css", "shell.css"), "utf8");
-  assert.equal(shellConsumers.length, 83);
+  assert.equal(shellConsumers.length, 84);
   assert.match(
     shellCss,
     /body\[data-stage-template\] \.stage-shell-brand-mark\s*\{[^}]*position:\s*relative/s,
@@ -111,7 +112,7 @@ test("ships the enlarged AT mark through one fresh shared shell cache key", asyn
 
 test("serves every shell-managed branch route with the approved purple production shell", async () => {
   const routes = (await walkHtml(REPO_ROOT)).filter((route) => !EXCLUDED_THEME_ROUTES.has(route));
-  assert.equal(routes.length, 82);
+  assert.equal(routes.length, 83);
 
   for (const route of routes) {
     const html = await fs.readFile(path.join(REPO_ROOT, route), "utf8");

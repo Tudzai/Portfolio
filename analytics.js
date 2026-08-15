@@ -639,6 +639,7 @@
 
     const button = target.closest("button, [role='button']");
     if (!button) return;
+    if (button.closest(".ph-no-autocapture, [data-ph-no-autocapture]")) return;
     recordInteraction();
     if (button.closest("[data-track-event]")) return;
 
@@ -657,6 +658,7 @@
   document.addEventListener("change", (event) => {
     const control = event.target instanceof Element ? event.target : null;
     if (!control || !control.matches("select, input[type='checkbox'], input[type='radio']")) return;
+    if (control.closest(".ph-no-autocapture, [data-ph-no-autocapture]")) return;
     recordInteraction();
     let selectedValue = null;
     if (control instanceof HTMLSelectElement) {

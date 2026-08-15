@@ -84,12 +84,11 @@ test("presents the interactive deck as the article action section", async () => 
   assert.doesNotMatch(html, /aria-labelledby="workflow-title"[^>]*data-core-section/);
 });
 
-test("routes Workspace Hub to the explicit upcoming section", async () => {
-  const [homepage, blog] = await Promise.all([read("index.html"), read("blog/index.html")]);
+test("routes Workspace Hub to the interactive simulation", async () => {
+  const homepage = await read("index.html");
 
-  assert.match(homepage, /href="\.\/blog\/index\.html#upcoming"[^>]*aria-label="Workspace Hub, upcoming"/);
-  assert.match(homepage, /class="agentic-cta-status">Upcoming</);
-  assert.match(blog, /id="upcoming"[^>]*aria-labelledby="blog-upcoming-title"/);
+  assert.match(homepage, /href="\.\/showcase\/workspace-hub\/"[^>]*aria-label="Open Workspace Hub simulation"/);
+  assert.doesNotMatch(homepage, /class="agentic-cta-status">Upcoming</);
 });
 
 test("provides a clear static model and blog directory", async () => {

@@ -83,6 +83,9 @@ export function classifyRoute(route) {
   if (normalized.startsWith("showcase/fpa-decision-cases/")) {
     return { family: "fpa", template: "case" };
   }
+  if (normalized === "showcase/workspace-hub/index.html") {
+    return { family: "fpa", template: "case" };
+  }
 
   if (normalized === "showcase/powerbi/index.html") {
     return { family: "powerbi", template: "hub" };
