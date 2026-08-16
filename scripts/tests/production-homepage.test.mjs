@@ -15,7 +15,7 @@ test("serves the approved Agentic Finance homepage from the production root", as
   const html = await readRootHomepage();
 
   assert.match(html, /<meta name="robots" content="index, follow"/);
-  assert.match(html, /<title>Truong Dinh Anh Tu \| FP&amp;A, Automation &amp; Agentic AI<\/title>/);
+  assert.match(html, /<title>Truong Dinh Anh Tu<\/title>/);
   assert.match(html, /<section id="hero" class="hero"/);
   assert.match(html, /class="score-row score-fpa"/);
   assert.match(html, /class="score-row score-automation"/);
@@ -100,5 +100,5 @@ test("presents the main demo compactly and runs the automation preview as backgr
   assert.match(html, /id="automation-case-video"[\s\S]*data-playback-rate="5"/);
   assert.doesNotMatch(html, /class="video-toggle"/);
   assert.match(homepageCss, /\.automation-video-route\s*\{[^}]*bottom:\s*12px/s);
-  assert.match(html, /href="\.\/blog\/predictive-collections-agent\/#deck-title"[\s\S]*?>HTML Slides<\/span>/);
+  assert.match(html, /href="\.\/blog\/predictive-collections-agent\/deck\/index\.html\?v=[^"]+"[\s\S]*?>HTML Slides<\/span>/);
 });
