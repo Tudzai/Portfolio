@@ -39,7 +39,7 @@
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260811-annotated2">
     <link rel="stylesheet" href="../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260812-4">
-    <link rel="stylesheet" href="library-hero.css?v=20260813-redesign2">
+    <link rel="stylesheet" href="library-hero.css?v=20260816-motion6">
       <script src="../../analytics.js?v=routes-20260810-hybrid1"></script>
   </head>
   <body class="detail-page models-page simple-three-page simple-three-model-library" data-stage-family="models" data-stage-template="hub">
@@ -81,16 +81,15 @@
     </header>
     <div id="main-content" tabindex="-1"></div>
     <main class="page-shell" data-stage-content>
-      <section class="detail-hero model-library-hero decision-hub-hero models-library-hero" aria-labelledby="model-library-title" data-core-section="hero">
+      <section class="detail-hero model-library-hero decision-hub-hero models-library-hero cinematic-library-hero" aria-labelledby="model-library-title" data-core-section="hero">
         <div class="decision-hub-copy models-hero-copy">
           <div class="models-hero-kicker" aria-label="Library scope">
             <span>Financial Model Library</span>
-            <span>Excel 365 · Public-safe</span>
+            <span>Excel 365 &middot; Public-safe</span>
           </div>
-          <h1 id="model-library-title">Models built to flex, tie, and stand up to review.</h1>
+          <h1 id="model-library-title">Model the decision.<br><em>Defend the answer.</em></h1>
           <p class="models-hero-lede">
-            Twenty-four reusable Excel models for planning, valuation, cash, debt, risk, and transaction decisions—each
-            released with transparent logic, clear documentation, and visible QA.
+            Twenty-four review-ready workbooks across eight finance paths&mdash;built to test assumptions, trace outcomes, and stand up to scrutiny.
           </p>
           <div class="model-library-actions hero-actions">
             <a class="button primary" href="#catalogue">
@@ -109,31 +108,52 @@
               Download flagship model
             </a>
           </div>
-          <ul class="models-hero-standards" aria-label="Library release standards">
-            <li><i data-lucide="file-spreadsheet"></i>Macro-free .xlsx</li>
-            <li><i data-lucide="waypoints"></i>Transparent formulas</li>
-            <li><i data-lucide="shield-check"></i>Visible QA</li>
-          </ul>
+          <div class="models-hero-proof" aria-label="Library summary">
+            <span><strong>24</strong> models</span>
+            <span><strong>8</strong> finance paths</span>
+            <span><strong>267</strong> QA checks</span>
+          </div>
         </div>
 
-        <aside class="models-hero-snapshot" aria-label="Financial model library status">
-          <div class="models-snapshot-header">
-            <div>
-              <span>Library snapshot</span>
-              <strong>Released and review-ready</strong>
+        <aside class="models-decision-visual" aria-label="Budget and rolling forecast decision cockpit">
+          <div class="decision-sheet-layer decision-sheet-layer-one" aria-hidden="true"></div>
+          <div class="decision-sheet-layer decision-sheet-layer-two" aria-hidden="true"></div>
+          <div class="decision-cockpit">
+            <header class="decision-cockpit-header">
+              <div><span class="model-excel-mark">X</span><p><small>FEATURED MODEL</small><strong>Budget &amp; Rolling Forecast</strong></p></div>
+              <span class="decision-live-state"><i></i>Verified</span>
+            </header>
+            <div class="decision-cockpit-body">
+              <div class="decision-cockpit-topline">
+                <div class="decision-primary-metric"><small>FORECAST EBITDA</small><strong><span>$</span><b data-cockpit-ebitda>12.7</b>m</strong><p><b data-cockpit-variance>+$1.8m</b> vs plan</p></div>
+                <div class="decision-scenario-control" aria-label="Illustrative scenario selection"><button type="button" class="active" aria-pressed="true" data-cockpit-scenario="base">Base</button><button type="button" aria-pressed="false" data-cockpit-scenario="upside">Upside</button><button type="button" aria-pressed="false" data-cockpit-scenario="downside">Downside</button></div>
+              </div>
+              <div class="decision-chart" aria-label="Illustrative EBITDA forecast curve">
+                <div><span>Plan</span><strong>Forecast trajectory</strong><span>FY27</span></div>
+                <svg viewBox="0 0 480 175" role="img" aria-label="Forecast rising above plan across six periods">
+                  <defs>
+                    <linearGradient id="forecast-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a855f7" stop-opacity=".42"/><stop offset="100%" stop-color="#a855f7" stop-opacity="0"/></linearGradient>
+                    <linearGradient id="forecast-line" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
+                  </defs>
+                  <g class="decision-chart-grid"><path d="M18 30H462M18 75H462M18 120H462M18 160H462"/></g>
+                  <path class="decision-plan-line" d="M22 132 C82 126,112 116,170 112 S270 94,320 91 S405 76,458 72"/>
+                  <path class="decision-area" data-cockpit-area d="M22 140 C78 136,110 124,166 116 S263 88,316 80 S402 45,458 28 L458 160 L22 160 Z"/>
+                  <path class="decision-forecast-line" data-cockpit-line d="M22 140 C78 136,110 124,166 116 S263 88,316 80 S402 45,458 28"/>
+                  <g class="decision-chart-points" data-cockpit-points><circle cx="22" cy="140" r="4"/><circle cx="166" cy="116" r="4"/><circle cx="316" cy="80" r="4"/><circle cx="458" cy="28" r="5"/></g>
+                </svg>
+                <div class="decision-chart-periods"><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span></div>
+              </div>
+              <div class="decision-driver-strip" data-cockpit-drivers>
+                <div><span>Volume</span><strong>+$2.4m</strong><i class="positive" style="--impact:88%"></i></div>
+                <div><span>Price / mix</span><strong>+$1.1m</strong><i class="positive" style="--impact:58%"></i></div>
+                <div><span>Fuel</span><strong>&minus;$0.8m</strong><i class="negative" style="--impact:42%"></i></div>
+              </div>
             </div>
-            <span class="models-release-state"><i data-lucide="badge-check"></i>Live</span>
+            <footer class="decision-cockpit-footer">
+              <div><span>Inputs</span><i>&rarr;</i><span>Model</span><i>&rarr;</i><strong>Decision</strong></div>
+              <p><i></i><span data-cockpit-checks>267 / 267 checks</span></p>
+            </footer>
           </div>
-          <div class="model-hero-dashboard">
-            <div class="metric-tile"><span>24</span><p>Released models</p><small>downloadable .xlsx</small></div>
-            <div class="metric-tile"><span>267</span><p>QA checks</p><small>published in-workbook</small></div>
-            <div class="metric-tile"><span>9</span><p>Decision domains</p><small>planning to risk</small></div>
-            <div class="metric-tile"><span>7</span><p>Career families</p><small>mapped to 41 roles</small></div>
-          </div>
-          <p class="models-snapshot-note">
-            <i data-lucide="database-zap"></i>
-            Synthetic examples, no macros, and no external data links.
-          </p>
         </aside>
       </section>
 
@@ -172,37 +192,112 @@
       <section class="detail-section" id="catalogue" aria-labelledby="catalogue-title" data-model-library data-core-section="evidence">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">Model catalogue</p>
-            <h2 id="catalogue-title">Find a starting point by decision, role, domain, or difficulty.</h2>
+            <p class="section-kicker">Model finder</p>
+            <h2 id="catalogue-title">Start with the role. Find the decision.</h2>
+            <p class="model-catalogue-lede">Select a finance path to reveal the models, decisions, and outputs most relevant to that role.</p>
           </div>
-          <span class="process-pill">24 of 24 available · Excel 365</span>
+          <span class="process-pill">24 models &middot; 8 paths</span>
         </div>
 
-        <div class="simple-library-grid" aria-label="Financial model catalogue">
-          <a class="simple-library-card" href="budget-rolling-forecast/index.html"><span>FP&amp;A</span><h3>Budget &amp; Rolling Forecast</h3><p>Driver-based planning, scenarios, and forecast accuracy.</p></a>
-          <a class="simple-library-card" href="three-statement-model/index.html"><span>CORE FINANCE</span><h3>Three-Statement Model</h3><p>Integrated income statement, balance sheet, and cash flow.</p></a>
-          <a class="simple-library-card" href="thirteen-week-cash-flow/index.html"><span>TREASURY</span><h3>13-Week Cash Flow</h3><p>Short-term liquidity, receipts, payments, and headroom.</p></a>
-          <a class="simple-library-card" href="working-capital-planner/index.html"><span>FP&amp;A</span><h3>Working Capital Planner</h3><p>AR, AP, inventory, DSO, DPO, and cash release.</p></a>
-          <a class="simple-library-card" href="pricing-margin-waterfall/index.html"><span>COMMERCIAL</span><h3>Pricing &amp; Margin Waterfall</h3><p>Price, mix, volume, cost, and contribution decisions.</p></a>
-          <a class="simple-library-card" href="variance-bridge-forecast-accuracy/index.html"><span>FP&amp;A</span><h3>Variance Bridge &amp; Forecast Accuracy</h3><p>Actual-versus-plan drivers, error, and owner action.</p></a>
-          <a class="simple-library-card" href="capex-business-case/index.html"><span>INVESTMENT</span><h3>Capex Business Case</h3><p>Returns, payback, sensitivity, and approval evidence.</p></a>
-          <a class="simple-library-card" href="dcf-valuation/index.html"><span>VALUATION</span><h3>DCF Valuation</h3><p>Cash flows, terminal value, WACC, and sensitivity.</p></a>
-          <a class="simple-library-card" href="trading-comps/index.html"><span>VALUATION</span><h3>Trading Comparables</h3><p>Peer multiples, normalization, and valuation range.</p></a>
-          <a class="simple-library-card" href="ma-accretion-dilution/index.html"><span>TRANSACTIONS</span><h3>M&amp;A Accretion / Dilution</h3><p>Purchase price, financing, synergies, and EPS impact.</p></a>
-          <a class="simple-library-card" href="lbo-returns-model/index.html"><span>TRANSACTIONS</span><h3>LBO Returns Model</h3><p>Leverage, debt paydown, exit value, and sponsor returns.</p></a>
-          <a class="simple-library-card" href="project-finance-lite/index.html"><span>PROJECT FINANCE</span><h3>Project Finance Lite</h3><p>Project cash flow, debt service, and return profile.</p></a>
-          <a class="simple-library-card" href="debt-covenant-model/index.html"><span>TREASURY</span><h3>Debt &amp; Covenant Model</h3><p>Leverage, interest, maturity, and covenant headroom.</p></a>
-          <a class="simple-library-card" href="debt-sculpting-waterfall/index.html"><span>FUNDING</span><h3>Debt Sculpting Waterfall</h3><p>Repayment capacity, DSCR, and financing waterfall.</p></a>
-          <a class="simple-library-card" href="fx-exposure-hedge/index.html"><span>TREASURY</span><h3>FX Exposure &amp; Hedge</h3><p>Currency exposure, hedge coverage, and sensitivity.</p></a>
-          <a class="simple-library-card" href="credit-underwriting-dscr/index.html"><span>CREDIT</span><h3>Credit Underwriting &amp; DSCR</h3><p>Borrower cash flow, leverage, coverage, and downside.</p></a>
-          <a class="simple-library-card" href="ecl-credit-stress-lite/index.html"><span>RISK</span><h3>ECL Credit Stress Lite</h3><p>Expected loss, provision, staging, and scenario stress.</p></a>
-          <a class="simple-library-card" href="market-portfolio-stress/index.html"><span>RISK</span><h3>Market &amp; Portfolio Stress</h3><p>Exposure, concentration, shocks, and loss capacity.</p></a>
-          <a class="simple-library-card" href="multi-entity-consolidation-fx/index.html"><span>CONTROLLERSHIP</span><h3>Multi-Entity Consolidation &amp; FX</h3><p>Entities, eliminations, translation, and reconciliation.</p></a>
-          <a class="simple-library-card" href="headcount-compensation-plan/index.html"><span>OPERATIONS</span><h3>Headcount &amp; Compensation Plan</h3><p>Roles, hiring timing, compensation, and capacity.</p></a>
-          <a class="simple-library-card" href="saas-unit-economics/index.html"><span>STARTUP FINANCE</span><h3>SaaS Unit Economics</h3><p>ARR, retention, CAC, payback, and runway.</p></a>
-          <a class="simple-library-card" href="sme-integrated-forecast/index.html"><span>SME FINANCE</span><h3>SME Integrated Forecast</h3><p>Sales, costs, working capital, funding, and cash.</p></a>
-          <a class="simple-library-card" href="personal-budget-net-worth/index.html"><span>PERSONAL FINANCE</span><h3>Personal Budget &amp; Net Worth</h3><p>Income, spending, debt, savings, and net worth.</p></a>
-          <a class="simple-library-card" href="retirement-scenario-planner/index.html"><span>PERSONAL FINANCE</span><h3>Retirement Scenario Planner</h3><p>Contributions, returns, inflation, and retirement income.</p></a>
+        <div class="model-role-browser" data-role-browser>
+          <aside class="model-role-navigation" aria-label="Choose a finance path">
+            <div class="model-role-navigation-heading"><span>Role index</span><strong>Where do you work?</strong></div>
+            <div class="model-role-tabs" role="tablist" aria-orientation="vertical">
+              <button type="button" role="tab" aria-selected="true" aria-controls="panel-all" data-role-tab="panel-all"><span>ALL</span><strong>All models</strong><small>24 models</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-fpa" data-role-tab="panel-fpa"><span>01</span><strong>FP&amp;A &amp; Commercial</strong><small>5 models</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-corporate" data-role-tab="panel-corporate"><span>02</span><strong>Corporate Finance</strong><small>3 models</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-treasury" data-role-tab="panel-treasury"><span>03</span><strong>Treasury &amp; Funding</strong><small>4 models</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-valuation" data-role-tab="panel-valuation"><span>04</span><strong>Valuation &amp; Investment</strong><small>3 models</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-deals" data-role-tab="panel-deals"><span>05</span><strong>Transactions</strong><small>3 models</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-risk" data-role-tab="panel-risk"><span>06</span><strong>Credit &amp; Risk</strong><small>3 models</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-startup" data-role-tab="panel-startup"><span>07</span><strong>Startup Finance</strong><small>1 model</small></button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="panel-personal" data-role-tab="panel-personal"><span>08</span><strong>Personal Finance</strong><small>2 models</small></button>
+            </div>
+          </aside>
+
+          <div class="model-role-catalogue" aria-label="Financial models grouped by finance role">
+          <section class="model-role-group model-role-group-all" id="panel-all" role="tabpanel" aria-labelledby="role-all" data-role-panel>
+            <header><span>ALL</span><div><h3 id="role-all">All financial models</h3><p>Search the complete library or select a role for a more focused starting point.</p></div></header>
+            <div class="model-all-toolbar">
+              <label for="all-model-search">Search all 24 models</label>
+              <div><input id="all-model-search" type="search" placeholder="Try cash, DCF, forecast, risk…" autocomplete="off" data-all-model-search><span data-all-model-count>24 models</span></div>
+            </div>
+            <div class="simple-library-grid" data-all-models-grid></div>
+            <p class="model-all-empty" data-all-model-empty hidden>No models match that search.</p>
+          </section>
+
+          <section class="model-role-group" id="panel-fpa" role="tabpanel" aria-labelledby="role-fpa" data-role-panel>
+            <header><span>01</span><div><h3 id="role-fpa">FP&amp;A &amp; Commercial Finance</h3><p>Plan performance, explain variance, and turn operating drivers into action.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="budget-rolling-forecast/index.html"><span>Planning</span><h3>Budget &amp; Rolling Forecast</h3><p>Driver-based planning, scenarios, and forecast accuracy.</p></a>
+              <a class="simple-library-card" href="variance-bridge-forecast-accuracy/index.html"><span>Performance</span><h3>Variance Bridge &amp; Forecast Accuracy</h3><p>Actual-versus-plan drivers, error, and owner action.</p></a>
+              <a class="simple-library-card" href="working-capital-planner/index.html"><span>Cash</span><h3>Working Capital Planner</h3><p>AR, AP, inventory, DSO, DPO, and cash release.</p></a>
+              <a class="simple-library-card" href="pricing-margin-waterfall/index.html"><span>Commercial</span><h3>Pricing &amp; Margin Waterfall</h3><p>Price, mix, volume, cost, and contribution decisions.</p></a>
+              <a class="simple-library-card" href="headcount-compensation-plan/index.html"><span>Workforce</span><h3>Headcount &amp; Compensation Plan</h3><p>Roles, hiring timing, compensation, and capacity.</p></a>
+            </div>
+          </section>
+
+          <section class="model-role-group" id="panel-corporate" role="tabpanel" aria-labelledby="role-corporate" data-role-panel>
+            <header><span>02</span><div><h3 id="role-corporate">Corporate Finance &amp; Controllership</h3><p>Connect the statements, consolidate entities, and maintain financial control.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="three-statement-model/index.html"><span>Core model</span><h3>Three-Statement Model</h3><p>Integrated income statement, balance sheet, and cash flow.</p></a>
+              <a class="simple-library-card" href="multi-entity-consolidation-fx/index.html"><span>Consolidation</span><h3>Multi-Entity Consolidation &amp; FX</h3><p>Entities, eliminations, translation, and reconciliation.</p></a>
+              <a class="simple-library-card" href="sme-integrated-forecast/index.html"><span>Integrated finance</span><h3>SME Integrated Forecast</h3><p>Sales, costs, working capital, funding, and cash.</p></a>
+            </div>
+          </section>
+
+          <section class="model-role-group" id="panel-treasury" role="tabpanel" aria-labelledby="role-treasury" data-role-panel>
+            <header><span>03</span><div><h3 id="role-treasury">Treasury &amp; Funding</h3><p>Protect liquidity, manage debt, and control currency exposure.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="thirteen-week-cash-flow/index.html"><span>Liquidity</span><h3>13-Week Cash Flow</h3><p>Short-term receipts, payments, and cash headroom.</p></a>
+              <a class="simple-library-card" href="debt-covenant-model/index.html"><span>Debt</span><h3>Debt &amp; Covenant Model</h3><p>Leverage, interest, maturity, and covenant headroom.</p></a>
+              <a class="simple-library-card" href="debt-sculpting-waterfall/index.html"><span>Funding</span><h3>Debt Sculpting Waterfall</h3><p>Repayment capacity, DSCR, and financing waterfall.</p></a>
+              <a class="simple-library-card" href="fx-exposure-hedge/index.html"><span>FX risk</span><h3>FX Exposure &amp; Hedge</h3><p>Currency exposure, hedge coverage, and sensitivity.</p></a>
+            </div>
+          </section>
+
+          <section class="model-role-group" id="panel-valuation" role="tabpanel" aria-labelledby="role-valuation" data-role-panel>
+            <header><span>04</span><div><h3 id="role-valuation">Valuation &amp; Investment</h3><p>Test value, returns, and capital allocation before approval.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="capex-business-case/index.html"><span>Capital allocation</span><h3>Capex Business Case</h3><p>Returns, payback, sensitivity, and approval evidence.</p></a>
+              <a class="simple-library-card" href="dcf-valuation/index.html"><span>Intrinsic value</span><h3>DCF Valuation</h3><p>Cash flows, terminal value, WACC, and sensitivity.</p></a>
+              <a class="simple-library-card" href="trading-comps/index.html"><span>Market value</span><h3>Trading Comparables</h3><p>Peer multiples, normalization, and valuation range.</p></a>
+            </div>
+          </section>
+
+          <section class="model-role-group" id="panel-deals" role="tabpanel" aria-labelledby="role-deals" data-role-panel>
+            <header><span>05</span><div><h3 id="role-deals">Transactions &amp; Project Finance</h3><p>Evaluate deal structure, leverage, and project bankability.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="ma-accretion-dilution/index.html"><span>M&amp;A</span><h3>M&amp;A Accretion / Dilution</h3><p>Purchase price, financing, synergies, and EPS impact.</p></a>
+              <a class="simple-library-card" href="lbo-returns-model/index.html"><span>Private equity</span><h3>LBO Returns Model</h3><p>Leverage, debt paydown, exit value, and sponsor returns.</p></a>
+              <a class="simple-library-card" href="project-finance-lite/index.html"><span>Infrastructure</span><h3>Project Finance Lite</h3><p>Project cash flow, debt service, and return profile.</p></a>
+            </div>
+          </section>
+
+          <section class="model-role-group" id="panel-risk" role="tabpanel" aria-labelledby="role-risk" data-role-panel>
+            <header><span>06</span><div><h3 id="role-risk">Credit &amp; Risk</h3><p>Assess borrower capacity, expected loss, and portfolio downside.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="credit-underwriting-dscr/index.html"><span>Underwriting</span><h3>Credit Underwriting &amp; DSCR</h3><p>Borrower cash flow, leverage, coverage, and downside.</p></a>
+              <a class="simple-library-card" href="ecl-credit-stress-lite/index.html"><span>Credit risk</span><h3>ECL Credit Stress Lite</h3><p>Expected loss, provision, staging, and scenario stress.</p></a>
+              <a class="simple-library-card" href="market-portfolio-stress/index.html"><span>Market risk</span><h3>Market &amp; Portfolio Stress</h3><p>Exposure, concentration, shocks, and loss capacity.</p></a>
+            </div>
+          </section>
+
+          <section class="model-role-group" id="panel-startup" role="tabpanel" aria-labelledby="role-startup" data-role-panel>
+            <header><span>07</span><div><h3 id="role-startup">Startup Finance</h3><p>Connect growth economics to funding needs and runway.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="saas-unit-economics/index.html"><span>Startup finance</span><h3>SaaS Unit Economics</h3><p>ARR, retention, CAC, payback, and runway.</p></a>
+            </div>
+          </section>
+
+          <section class="model-role-group" id="panel-personal" role="tabpanel" aria-labelledby="role-personal" data-role-panel>
+            <header><span>08</span><div><h3 id="role-personal">Personal Finance</h3><p>Plan household cash, wealth, and long-term financial security.</p></div></header>
+            <div class="simple-library-grid">
+              <a class="simple-library-card" href="personal-budget-net-worth/index.html"><span>Household finance</span><h3>Personal Budget &amp; Net Worth</h3><p>Income, spending, debt, savings, and net worth.</p></a>
+              <a class="simple-library-card" href="retirement-scenario-planner/index.html"><span>Long-term planning</span><h3>Retirement Scenario Planner</h3><p>Contributions, returns, inflation, and retirement income.</p></a>
+            </div>
+          </section>
+          </div>
         </div>
 
         <form class="model-library-form" role="search" aria-label="Search and filter financial models" onsubmit="return false;">
@@ -318,59 +413,37 @@
       <section class="detail-section" id="standard" aria-labelledby="standard-title" data-core-section="action">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">TDAT Model Standard 1.0</p>
-            <h2 id="standard-title">Brand consistency on the surface; finance discipline underneath.</h2>
+            <p class="section-kicker">Before you use a model</p>
+            <h2 id="standard-title">Use every model in three steps.</h2>
+            <p class="model-standard-lede">Scope it. Edit inputs. Clear checks.</p>
           </div>
-          <span class="process-pill">Built to flex · Built to tie · Built to trust</span>
+          <span class="process-pill">Scope &rarr; Edit &rarr; Trust</span>
         </div>
 
-        <div class="model-standard-grid">
-          <article class="model-standard-card"><h3>01 · Identity</h3><p>Purpose, model ID, owner, version, as-of date, currency, units, scenario, evidence, and limitations.</p></article>
-          <article class="model-standard-card"><h3>02 · Architecture</h3><p>Inputs, calculations, outputs, checks, sources, and change history remain visible and logically separated.</p></article>
-          <article class="model-standard-card"><h3>03 · Formula integrity</h3><p>No hidden hardcodes, broken references, undisclosed circulars, opaque formulas, or volatile shortcuts in the core.</p></article>
-          <article class="model-standard-card"><h3>04 · Finance integrity</h3><p>Statements, bridges, cash, debt, retained earnings, valuation, or risk relationships reconcile where applicable.</p></article>
-          <article class="model-standard-card"><h3>05 · Flexibility</h3><p>Central controls, consistent time axes, modular schedules, scenario logic, and copy-across formulas support adaptation.</p></article>
-          <article class="model-standard-card"><h3>06 · Handoff</h3><p>Quick start, workbook map, assumptions, sources, checks, compatibility, usage note, and issue-report details travel with the file.</p></article>
-          <article class="model-standard-card"><h3>07 · Privacy</h3><p>No real company records, personal data, local paths, hidden connections, macros, or external links in public core templates.</p></article>
-          <article class="model-standard-card"><h3>08 · Release</h3><p>Available means the workbook exists, required checks pass, screenshots come from the file, and limitations are visible.</p></article>
-        </div>
-
-        <div class="model-standard-layout">
-          <article class="model-appearance-panel">
-            <p class="case-label">Workbook appearance system</p>
-            <h3>Color communicates both brand hierarchy and cell behavior.</h3>
-            <p>
-              Brand navy, cobalt, teal, and amber structure the workbook. Finance-semantic font colors stay separate so
-              users can audit what is editable, calculated, linked, or exceptional.
-            </p>
-            <div class="model-swatch-list" aria-label="Financial model color legend">
-              <div class="model-swatch"><i style="background:#101827"></i><strong>TDAT Navy</strong><span>Titles, section bands, key outputs</span></div>
-              <div class="model-swatch"><i style="background:#1479ff"></i><strong>TDAT Cobalt</strong><span>Forecast hierarchy and primary actions</span></div>
-              <div class="model-swatch"><i style="background:#0f9f8f"></i><strong>Trust Teal</strong><span>PASS state and trusted status</span></div>
-              <div class="model-swatch"><i style="background:#fff4de"></i><strong>Decision Amber</strong><span>Scenario controls, warnings, review notes</span></div>
-              <div class="model-swatch"><i style="background:#eef5ff"></i><strong>Pale Input Fill</strong><span>Editable zones with blue font</span></div>
-              <div class="model-swatch"><i style="background:#dbe4ef"></i><strong>Structure Line</strong><span>Selective borders, never a boxed grid</span></div>
-            </div>
+        <div class="model-use-steps">
+          <article>
+            <span>01</span>
+            <div><p>Scope</p><h3>Confirm the question.</h3></div>
+            <ul><li>Check purpose and period</li><li>Read assumptions and limits</li></ul>
           </article>
+          <article>
+            <span>02</span>
+            <div><p>Edit</p><h3>Change inputs only.</h3></div>
+            <ul><li>Use labeled input cells</li><li>Document scenario overrides</li></ul>
+          </article>
+          <article>
+            <span>03</span>
+            <div><p>Check</p><h3>Reconcile before use.</h3></div>
+            <ul><li>Clear every core FAIL</li><li>Review warnings and outputs</li></ul>
+          </article>
+        </div>
 
-          <div class="model-standard-stack">
-            <article class="model-detail-panel">
-              <h3>Cell semantics</h3>
-              <ul class="model-detail-list">
-                <li><i data-lucide="pencil"></i><span><strong>Blue font:</strong> editable hardcodes and approved inputs.</span></li>
-                <li><i data-lucide="sigma"></i><span><strong>Black font:</strong> formulas within the same sheet.</span></li>
-                <li><i data-lucide="workflow"></i><span><strong>Green font:</strong> references to another worksheet.</span></li>
-                <li><i data-lucide="triangle-alert"></i><span><strong>Red:</strong> external workbook link or failed control only.</span></li>
-              </ul>
-            </article>
-            <article class="model-detail-panel">
-              <h3>Workbook flow</h3>
-              <p>Not every model needs every tab, but each required function has one obvious home.</p>
-              <div class="model-sheet-flow" aria-label="Standard workbook sheet flow">
-                <span>Cover</span><span>Guide</span><span>Summary</span><span>Inputs</span><span>Sources</span><span>Schedules</span><span>Statements</span><span>Scenarios</span><span>Outputs</span><span>Checks</span><span>Change Log</span>
-              </div>
-            </article>
+        <div class="model-standard-utility">
+          <div>
+            <p class="case-label">Cell color guide</p>
+            <h3>Blue input &middot; Black formula &middot; Green link &middot; Red issue</h3>
           </div>
+          <div class="model-standard-note"><strong>PASS means the controls tie.</strong><span>It does not validate the assumptions.</span></div>
         </div>
       </section>
 
@@ -434,5 +507,7 @@
     </footer>
       <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
     <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script src="library-role-browser.js?v=20260816-all3"></script>
+    <script src="hero-cockpit.js?v=20260816-motion1"></script>
   </body>
 </html>
