@@ -5,7 +5,7 @@
   const posthogApiHost = "https://us.i.posthog.com";
   const posthogUiHost = "https://us.posthog.com";
   const trackedHosts = new Set(["tudzai.github.io"]);
-  const schemaVersion = "2026-07-13.2";
+  const schemaVersion = "2026-08-16.1";
   const analyticsPreferenceKey = "portfolio-analytics-preference";
   const analyticsControlParameter = "portfolio_analytics";
   const bridgeMessageType = "portfolio-analytics-bridge-v1";
@@ -78,6 +78,11 @@
     } catch {
       return true;
     }
+  }
+
+  function isRestrictedAnalyticsRoute(pathname = window.location.pathname) {
+    const relativePath = pathname.replace(/^\/Portfolio(?:\/|$)/, "/").replace(/\/{2,}/g, "/");
+    return relativePath === "/knowledge-vault" || relativePath.startsWith("/knowledge-vault/");
   }
 
   function shouldBridgeToParent() {
@@ -156,6 +161,15 @@
       contentGroup = "cv";
       contentSlug = "cv";
       artifactType = "pdf_viewer";
+    } else if (parts[0] === "collections-agent") {
+      pageType = "redirect";
+      contentGroup = "blog";
+      contentSlug = "predictive-collections-agent";
+      artifactType = "interactive_deck";
+    } else if (parts[0] === "knowledge-vault") {
+      pageType = "private_tool";
+      contentGroup = "knowledge";
+      contentSlug = "knowledge-vault";
     } else if (fileName === "share.html") {
       pageType = "share_redirect";
       contentGroup = "system";
@@ -257,6 +271,7 @@
   const entryContext = getEntryContext();
   const likelyBot = Boolean(window.navigator.webdriver) || /(?:bot|crawler|spider|headless|lighthouse)/i.test(window.navigator.userAgent || "");
   const bridgeOnly = shouldBridgeToParent();
+  const restrictedAnalytics = isRestrictedAnalyticsRoute();
 
   function getCommonProperties() {
     return {
@@ -375,7 +390,7 @@
       person_profiles: "identified_only",
       capture_pageview: !isEmbeddedFrame(),
       capture_pageleave: !isEmbeddedFrame(),
-      autocapture: {
+      autocapture: restrictedAnalytics ? false : {
         dom_event_allowlist: ["click", "change", "submit"],
         element_allowlist: ["a", "button", "form", "input", "select", "textarea", "label"],
         css_selector_ignorelist: [
@@ -388,11 +403,12 @@
         element_attribute_ignorelist: ["value", "data-email", "data-phone", "data-sensitive"],
         capture_copied_text: false,
       },
-      capture_dead_clicks: true,
-      enable_heatmaps: true,
-      capture_exceptions: true,
+      capture_dead_clicks: !restrictedAnalytics,
+      capture_heatmaps: !restrictedAnalytics,
+      capture_exceptions: !restrictedAnalytics,
       disable_surveys: true,
-      disable_session_recording: isEmbeddedFrame() || analyticsPreference === "internal",
+      disable_persistence: restrictedAnalytics,
+      disable_session_recording: restrictedAnalytics || isEmbeddedFrame() || analyticsPreference === "internal",
       session_recording: {
         maskAllInputs: true,
         maskTextSelector: "*",
@@ -405,6 +421,7 @@
 
   function capturePortfolioEvent(eventName, properties = {}) {
     if (typeof eventName !== "string" || !/^[A-Za-z0-9_$][A-Za-z0-9_$ .-]{0,79}$/.test(eventName)) return;
+    if (restrictedAnalytics && eventName !== "portfolio_page_loaded") return;
     const sanitizedProperties = sanitizeCustomProperties(properties);
 
     if (bridgeOnly) {

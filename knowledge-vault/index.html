@@ -7,7 +7,7 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'self'; script-src 'self' https://us-assets.i.posthog.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://us.i.posthog.com; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
     <meta name="theme-color" content="#0a1118" />
     <meta
@@ -17,10 +17,11 @@
     <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
     <link rel="stylesheet" href="vault.css?v=20260727-road-to-cfo" />
+    <script src="../analytics.js?v=posthog-all-routes-20260816"></script>
     <script src="vault-data.js?v=20260727-road-to-cfo" defer></script>
     <script src="vault.js?v=20260727-road-to-cfo" defer></script>
   </head>
-  <body class="is-locked">
+  <body class="is-locked ph-no-capture" data-ph-no-autocapture>
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <header class="site-header">
