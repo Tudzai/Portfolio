@@ -5,7 +5,7 @@
   const posthogApiHost = "https://us.i.posthog.com";
   const posthogUiHost = "https://us.posthog.com";
   const trackedHosts = new Set(["tudzai.github.io"]);
-  const schemaVersion = "2026-08-16.1";
+  const schemaVersion = "2026-08-16.2";
   const analyticsPreferenceKey = "portfolio-analytics-preference";
   const analyticsControlParameter = "portfolio_analytics";
   const bridgeMessageType = "portfolio-analytics-bridge-v1";
@@ -363,6 +363,9 @@
 
   function beforeSendPostHogEvent(event) {
     if (!event || typeof event !== "object") return event;
+    // Replay snapshots are structured rrweb payloads. Rewriting their nested
+    // properties makes the recording impossible for PostHog to reconstruct.
+    if (event.event === "$snapshot") return event;
     const rawProperties = event.properties && typeof event.properties === "object" ? event.properties : {};
     const properties = sanitizePostHogPropertyTree(rawProperties);
     event.properties = {

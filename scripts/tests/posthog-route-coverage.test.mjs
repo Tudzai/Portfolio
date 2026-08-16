@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const excludedRootDirectories = new Set(["BI", "node_modules", "output", "outputs", "scripts", "test-results", "tmp"]);
-const analyticsVersion = "posthog-all-routes-20260816";
+const analyticsVersion = "posthog-replay-fix-20260816";
 
 const toPosix = (value) => value.replaceAll(path.sep, "/");
 
@@ -56,4 +56,13 @@ test("keeps private knowledge-vault analytics pageview-only", async () => {
   assert.match(analytics, /restrictedAnalytics\s*&&\s*eventName\s*!==\s*["']portfolio_page_loaded["']/);
   assert.match(vault, /class="is-locked ph-no-capture"/);
   assert.match(vault, /data-ph-no-autocapture/);
+});
+
+test("preserves PostHog replay snapshots before custom event sanitization", async () => {
+  const analytics = await fs.readFile(path.join(repoRoot, "analytics.js"), "utf8");
+  const replayGuard = analytics.indexOf('if (event.event === "$snapshot") return event;');
+  const customSanitizer = analytics.indexOf("sanitizePostHogPropertyTree(rawProperties)", replayGuard);
+
+  assert.notEqual(replayGuard, -1, "missing replay snapshot guard");
+  assert.ok(customSanitizer > replayGuard, "replay snapshot guard must run before custom property sanitization");
 });
