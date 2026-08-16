@@ -254,6 +254,19 @@ body.simple-three-page :is(.bridge-step, .cash-ladder > div) p {
   line-height: 1.35;
 }
 
+body.simple-three-page .cash-ladder > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  gap: 6px;
+}
+
+body.simple-three-page .cash-ladder > div p {
+  margin: 0;
+  overflow-wrap: normal;
+  text-align: left;
+}
+
 body.simple-three-page .table-shell {
   max-width: 100%;
   overflow-x: auto;

@@ -614,6 +614,50 @@ body[data-stage-family="fpa"] .real-decision-grid > :nth-child(n + 3) {
   grid-column: span 6;
 }
 
+/* Keep the FP&A hub's dark surfaces above the higher-specificity generic template defaults. */
+body[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] > .decision-hub-hero:first-child {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.24), transparent 28%),
+    radial-gradient(circle at 62% 110%, rgba(124, 58, 237, 0.34), transparent 42%),
+    linear-gradient(135deg, #1d1428 0%, #2b1839 58%, #3b1950 100%);
+  color: var(--stage-white);
+}
+
+body[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] .decision-card.featured {
+  background: var(--stage-ink);
+  color: var(--stage-white);
+}
+
+body[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] .decision-card.featured :is(h2, h3, p, a, dt, dd) {
+  color: inherit;
+}
+
+body[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] .decision-card.featured .mini-metrics,
+body[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] .decision-card.featured .mini-metrics > div {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+body[data-stage-template="hub"][data-stage-family="fpa"] #decision-cases .decision-cases-heading {
+  display: block;
+  margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+body[data-stage-template="hub"][data-stage-family="fpa"] #decision-cases .decision-cases-heading h2 {
+  max-width: 16ch;
+  margin: 0;
+  font-size: clamp(2.25rem, 4.5vw, 4.25rem);
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+body[data-stage-template="hub"][data-stage-family="fpa"] #decision-cases .decision-cases-heading p {
+  max-width: 62ch;
+  margin: 14px 0 0;
+  color: var(--stage-muted);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
 body[data-stage-family="automation"] .automation-library-hero {
   align-items: stretch;
 }

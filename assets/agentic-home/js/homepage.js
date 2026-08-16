@@ -276,8 +276,6 @@ function initScoreMotion() {
             labels,
             {
               scale: SCORE_MOTION.labelScale,
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
               duration: SCORE_MOTION.enter,
               ease: "power3.out",
               stagger: SCORE_MOTION.stagger,
@@ -317,7 +315,7 @@ function initScoreMotion() {
           row.removeEventListener("focusout", handleFocusOut);
           timeline.kill();
           gsapRuntime.set([skill, ...links, ...labels, ...destinations], {
-            clearProps: "transform,opacity,visibility,fontWeight,letterSpacing",
+            clearProps: "transform,opacity,visibility",
           });
         };
       });

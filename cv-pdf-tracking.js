@@ -387,6 +387,7 @@
         if (!frameWindow) throw new Error("viewer_window_unavailable");
         application = await waitForApplication(frameWindow);
         await application.initializedPromise;
+        application.viewsManager?.switchView(1, true);
 
         const eventBus = application.eventBus;
         eventBus.on("documentloaded", handleDocumentLoaded);
