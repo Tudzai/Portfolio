@@ -1,33 +1,34 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Download the TDAT DCF Valuation: a reusable Excel finance template with synthetic worked data, scenarios, sensitivity, visible checks, and model notes." />
+    <meta name="description" content="Download the DCF Valuation Excel model. See what it answers, what to edit, how the model works, and what to review." />
     <link rel="canonical" href="https://tudzai.github.io/Portfolio/showcase/financial-models/dcf-valuation/" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="DCF Valuation | TDAT Financial Models" />
-    <meta property="og:description" content="What enterprise and equity value range is supported by operating cash flow and risk assumptions?" />
+    <meta property="og:description" content="What are the business and equity worth under one driver-based operating case?" />
     <meta property="og:url" content="https://tudzai.github.io/Portfolio/showcase/financial-models/dcf-valuation/" />
-    <meta property="og:image" content="https://tudzai.github.io/Portfolio/showcase/financial-models/dcf-valuation/assets/cover.png" />
+    <meta property="og:image" content="https://tudzai.github.io/Portfolio/showcase/financial-models/dcf-valuation/assets/summary.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>DCF Valuation | TDAT Financial Models</title>
     <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../../styles.css" />
     <link rel="stylesheet" href="../models.css" />
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/model-detail.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1" />
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1" />
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3" />
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1" />
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1" />
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/model-detail.css?v=routes-20260817-detail1" />
+    <link rel="stylesheet" data-model-variant href="../../../assets/agentic-home/css/templates/model-cinematic.css?v=model-cinematic-20260817-1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body class="detail-page models-page" data-stage-family="models" data-stage-template="model-detail">
+  <body class="detail-page models-page" data-stage-family="models" data-stage-template="model-detail" data-model-slug="dcf-valuation">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -36,10 +37,7 @@
           <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
         </a>
         <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
+          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="Open capabilities menu"><span>Capabilities</span><i aria-hidden="true"></i></button>
           <a class="header-link" href="../../../index.html#experience">Experience</a>
           <a class="header-link" href="../../../index.html#contact">Contact</a>
           <a class="header-link" href="../../../blog/index.html">Blog</a>
@@ -64,69 +62,111 @@
         </nav>
       </div>
     </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="page-shell" data-stage-content>
-<section class="detail-hero model-detail-hero" aria-labelledby="model-title">
-        <div class="model-detail-hero-grid">
-          <div class="model-detail-hero-copy">
-            <p class="breadcrumb"><a href="../../../index.html">Home</a> / <a href="../index.html">Financial Models</a> / DCF Valuation</p>
-            <p class="eyebrow">Available · TDAT-FM-VAL-001</p>
-            <h1 id="model-title">DCF Valuation</h1>
-            <p>Unlevered free cash flow, WACC, terminal value, equity bridge, and two-way sensitivity logic.</p>
-            <div class="model-detail-actions hero-actions"><a class="button primary" href="model/tdat-dcf-valuation.xlsx" download="tdat-dcf-valuation.xlsx" data-track-event="model downloaded" data-track-label="TDAT-FM-VAL-001" data-track-location="model detail hero"><i data-lucide="download"></i>Download .xlsx</a><a class="button quiet" href="../index.html"><i data-lucide="arrow-left"></i>Back to model library</a></div>
-            <div class="model-hero-trust" aria-label="Model release status"><span><i data-lucide="badge-check"></i>Calculation integrity PASS</span><span><i data-lucide="shield-check"></i>12 / 12 published checks</span><span><i data-lucide="file-lock-2"></i>Macro-free</span><span><i data-lucide="unlink"></i>No external links</span><span><i data-lucide="database-zap"></i>Synthetic example</span></div>
+
+    <main id="main-content" class="page-shell model-simple-page" data-stage-content tabindex="-1">
+      <section class="model-simple-hero model-cinema-hero" data-core-section="hero" aria-labelledby="model-title">
+        <nav class="breadcrumb model-cinema-breadcrumb" aria-label="Breadcrumb"><a href="../index.html"><span aria-hidden="true">&larr;</span> Financial models</a></nav>
+        <div class="model-simple-hero-grid model-cinema-grid">
+          <div class="model-simple-copy model-cinema-copy">
+            <h1 id="model-title" class="" aria-label="DCF Valuation"><span>DCF</span> <span>Valuation</span></h1>
+            <p class="model-cinema-deck">What are the business and equity worth under one driver-based operating case?</p>
+            <div class="model-simple-actions model-cinema-actions">
+              <a class="button primary" href="model/tdat-dcf-valuation.xlsx" download="tdat-dcf-valuation.xlsx" data-track-event="model downloaded" data-track-label="TDAT-FM-VAL-001" data-track-location="model detail hero">Download Excel <span aria-hidden="true">&darr;</span></a>
+              <a class="button quiet" href="#preview-title">Preview the 5 sheets <span aria-hidden="true">&rarr;</span></a>
+            </div>
           </div>
-          <figure class="model-home-preview"><div class="model-preview-bar"><div class="model-preview-tabs" aria-hidden="true"><span>Cover</span><span>Guide</span><span>Inputs</span><span>Model</span><span>Checks</span></div><strong>PASS</strong></div><img src="assets/cover.png" alt="Rendered Cover sheet of DCF Valuation showing identity, calculation integrity, readiness, key outputs, and cell-color legend" loading="eager" /></figure>
-        </div>
-        <div class="model-metadata-grid" aria-label="Model metadata">
-          <article class="model-metadata-card"><span>Version</span><strong>1.0.0</strong></article><article class="model-metadata-card"><span>Last tested</span><strong>2026-07-13</strong></article><article class="model-metadata-card"><span>Compatibility</span><strong>Excel 365</strong></article><article class="model-metadata-card"><span>File</span><strong>.xlsx · 31.5 KB</strong></article><article class="model-metadata-card"><span>Horizon</span><strong>5–10 years</strong></article><article class="model-metadata-card"><span>Sheets</span><strong>9</strong></article><article class="model-metadata-card"><span>Scenarios</span><strong>Base · Upside · Downside</strong></article><article class="model-metadata-card"><span>Difficulty</span><strong>Practitioner</strong></article><article class="model-metadata-card"><span>Setup</span><strong>1–2 hours</strong></article><article class="model-metadata-card"><span>Evidence</span><strong>Synthetic worked template</strong></article>
+          <div class="model-cinema-visual">
+            <div class="model-cinema-stack">
+              <span class="model-cinema-sheet model-cinema-sheet-back" aria-hidden="true"><b>MODEL</b></span>
+              <span class="model-cinema-sheet model-cinema-sheet-mid" aria-hidden="true"><b>INPUTS</b></span>
+              <button class="model-simple-hero-preview model-cinema-preview" type="button" data-model-preview data-model-preview-index="3" data-model-preview-src="assets/summary.png" data-model-preview-label="Results" aria-haspopup="dialog" aria-controls="model-image-viewer" aria-label="Preview the DCF Valuation results sheet without leaving this page">
+                <span class="model-simple-preview-label"><span><i aria-hidden="true"></i> Results preview</span><strong>10 / 10 calculation controls PASS</strong></span>
+                <img src="assets/summary.png" alt="DCF Valuation results sheet" width="1560" height="1326" loading="eager" fetchpriority="high" decoding="async" />
+                <span class="model-cinema-open" aria-hidden="true">Open full view <b>&nearr;</b></span>
+              </button>
+            </div>
+            <ol class="model-cinema-trace" aria-label="Workbook flow">
+              <li>Inputs</li><li>Model</li><li>Results</li><li>Checks</li>
+            </ol>
+          </div>
         </div>
       </section>
-      <section class="detail-section" aria-labelledby="start-title"><div class="section-heading"><div><p class="section-kicker">Decision first</p><h2 id="start-title">What enterprise and equity value range is supported by operating cash flow and risk assumptions?</h2></div><span class="process-pill">Template posture · validate before decision use</span></div><div class="model-method-grid"><article class="model-method-card"><span>01</span><h3>Confirm scope</h3><p>Read Cover and Guide; confirm decision, roles, horizon, units, method, and exclusions.</p></article><article class="model-method-card"><span>02</span><h3>Select a scenario</h3><p>Choose Base, Upside, or Downside and challenge the visible driver rationale.</p></article><article class="model-method-card"><span>03</span><h3>Replace blue inputs</h3><p>Update synthetic source values and assumptions with approved, dated inputs.</p></article><article class="model-method-card"><span>04</span><h3>Resolve Checks</h3><p>Trace every FAIL to its source, assumption, schedule, definition, or sensitivity.</p></article></div></section>
-      <section class="detail-section" aria-labelledby="map-title"><div class="section-heading"><div><p class="section-kicker">Workbook map</p><h2 id="map-title">Nine visible sheets with a controlled input-to-decision flow.</h2></div><span class="process-pill">Cover → Inputs → Engine → Sensitivity → Checks</span></div><article class="model-detail-panel"><ul class="model-detail-list"><li><i data-lucide="file-spreadsheet"></i><span><strong>Cover:</strong> guidance, outputs, control, or release evidence</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>Guide:</strong> guidance, outputs, control, or release evidence</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>Assumptions:</strong> guidance, outputs, control, or release evidence</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>Valuation Inputs:</strong> editable synthetic source inputs</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>DCF:</strong> core finance mechanics</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>Sensitivity:</strong> WACC × Terminal growth</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>Summary:</strong> guidance, outputs, control, or release evidence</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>Checks:</strong> 12 published controls</span></li>
-<li><i data-lucide="file-spreadsheet"></i><span><strong>Sources &amp; Version:</strong> guidance, outputs, control, or release evidence</span></li></ul></article></section>
-      <section class="detail-section" aria-labelledby="logic-title"><div class="section-heading"><div><p class="section-kicker">What moves the model</p><h2 id="logic-title">Model-specific mechanics stay visible and traceable.</h2></div></div><div class="model-standard-grid"><article class="model-standard-card"><h3>Revenue</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
-<article class="model-standard-card"><h3>EBITDA</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
-<article class="model-standard-card"><h3>D&amp;A</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
-<article class="model-standard-card"><h3>EBIT</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
-<article class="model-standard-card"><h3>Cash tax on EBIT</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
-<article class="model-standard-card"><h3>NOPAT</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
-<article class="model-standard-card"><h3>D&amp;A add-back</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article>
-<article class="model-standard-card"><h3>Capex</h3><p>Formula-driven schedule linked to visible inputs and selected scenario assumptions.</p></article></div></section>
-      <section class="detail-section" aria-labelledby="preview-title"><div class="section-heading"><div><p class="section-kicker">Rendered from the released workbook</p><h2 id="preview-title">The web preview and download are the same build.</h2></div><span class="process-pill">9 sheets visually rendered</span></div><div class="model-preview-gallery"><figure><img src="assets/cover.png" alt="DCF Valuation Cover sheet" loading="lazy" /><figcaption><strong>Cover:</strong> identity, calculation integrity, readiness, outputs, and color legend.</figcaption></figure><figure><img src="assets/summary.png" alt="DCF Valuation Summary sheet" loading="lazy" /><figcaption><strong>Summary:</strong> decision KPIs, trend, scenario, questions, owners, and actions.</figcaption></figure><figure><img src="assets/checks.png" alt="DCF Valuation Checks sheet" loading="lazy" /><figcaption><strong>Checks:</strong> 12 assertions with actual, expected, difference, tolerance, status, and fix location.</figcaption></figure></div></section>
-      <section class="detail-section" aria-labelledby="qa-title"><div class="section-heading"><div><p class="section-kicker">QA and release evidence</p><h2 id="qa-title">12 / 12 published checks PASS in the released synthetic case.</h2></div><span class="process-pill">TDAT QA reviewed · not independently certified</span></div><div class="model-detail-split"><article class="model-detail-panel"><h3>Published finance controls</h3><ul class="model-detail-list"><li><i data-lucide="check"></i><span><strong>Unlevered FCF components tie:</strong> NOPAT plus D&amp;A less capex and NWC equals UFCF.</span></li>
-<li><i data-lucide="check"></i><span><strong>WACC exceeds terminal growth:</strong> Gordon growth requires WACC greater than terminal growth.</span></li>
-<li><i data-lucide="check"></i><span><strong>EV-to-equity bridge ties:</strong> EV plus cash less debt equals equity value.</span></li>
-<li><i data-lucide="check"></i><span><strong>Diluted shares are positive:</strong> Per-share value requires a positive diluted share count.</span></li>
-<li><i data-lucide="check"></i><span><strong>Terminal value concentration is below 90%:</strong> High terminal concentration must be visible and challenged.</span></li>
-<li><i data-lucide="check"></i><span><strong>Scenario selector is valid:</strong> Base, Upside, or Downside only.</span></li>
-<li><i data-lucide="check"></i><span><strong>Period headers are complete:</strong> All modeled periods must have a visible header.</span></li>
-<li><i data-lucide="check"></i><span><strong>Source input grid is complete:</strong> Replace blanks with an approved value or an explicitly documented zero.</span></li></ul></article><article class="model-detail-panel"><h3>Distribution controls</h3><ul class="model-detail-list"><li><i data-lucide="file-lock-2"></i><span>Macro-free .xlsx; no external workbook links or intentional circular references.</span></li><li><i data-lucide="database-zap"></i><span>Synthetic values; no real company, customer, employee, vendor, borrower, position, transaction, or household record.</span></li><li><i data-lucide="monitor-check"></i><span>All 9 user-facing sheets were rendered for clipping and legibility review.</span></li><li><i data-lucide="triangle-alert"></i><span>Calculation integrity and decision readiness are deliberately separate.</span></li></ul><code class="model-hash">SHA-256<br />64FF0BA891EEB88E9A39CA545B8E4BF01C1D7582CE8A6D4A28A92218EAC980DE</code></article></div></section>
-      <section class="detail-section" aria-labelledby="limits-title"><div class="section-heading"><div><p class="section-kicker">Scope and responsibility</p><h2 id="limits-title">A reusable template is explicit about what it does not decide.</h2></div></div><div class="model-detail-split"><article class="model-usage-card"><h3>Included</h3><p>Enterprise value, Equity value, Sensitivity; synthetic inputs; scenario control; formula-driven engine; sensitivity; summary; sources; and checks.</p></article><article class="model-usage-card"><h3>Deliberately excluded</h3><p>company-specific public filings; option treasury-stock method; lease/pension/minority detail; reverse DCF solver; formal valuation opinion.</p></article><article class="model-usage-card"><h3>Usage note</h3><p>Download, copy, and adapt for learning, interview cases, internal planning, or analysis. Do not resell an unchanged copy as your own product.</p></article><article class="model-usage-card"><h3>Professional responsibility</h3><p>Illustrative valuation template only. Validate forecast support, WACC, terminal assumptions, enterprise-to-equity items, diluted shares, tax, accounting, market data, and decision context with qualified reviewers.</p></article></div></section>
-      <section class="detail-section" aria-labelledby="faq-title"><div class="section-heading"><div><p class="section-kicker">Q&A</p><h2 id="faq-title">Questions to answer before using the output.</h2></div></div><div class="model-faq"><details><summary>What should I replace first?</summary><p>Replace blue cells on Valuation Inputs, then update scenario drivers on Assumptions.</p></details>
-<details><summary>How flexible is the template?</summary><p>Add periods or source rows in the input layer, extend formulas and formats together, and add a reconciliation check back to DCF.</p></details>
-<details><summary>What does PASS mean?</summary><p>All 12 published controls tie within tolerance. It does not validate the user&#039;s sources, policy, assumptions, method, or suitability.</p></details>
-<details><summary>Can I use the model with real data?</summary><p>Yes, in an authorized private copy. Confirm privacy, confidentiality, source ownership, and distribution rules first.</p></details>
-<details><summary>Does it support Google Sheets or LibreOffice?</summary><p>Not verified. Excel 365 is the supported target; retest formulas, charts, validations, and checks after conversion.</p></details>
-<details><summary>Is the template professional advice?</summary><p>Illustrative valuation template only. Validate forecast support, WACC, terminal assumptions, enterprise-to-equity items, diluted shares, tax, accounting, market data, and decision context with qualified reviewers.</p></details></div></section>
+
+      <section id="how-to-use" class="model-simple-section" data-core-section="evidence" aria-labelledby="use-title">
+        <div class="model-simple-heading">
+          <p class="section-kicker">Quick start</p>
+          <h2 id="use-title">Use it in four steps.</h2>
+        </div>
+        <ol class="model-simple-steps">
+          <li><span aria-hidden="true">1</span><div><strong>Edit Inputs</strong><small>Change only blue values.</small></div></li>
+          <li><span aria-hidden="true">2</span><div><strong>Trace Model</strong><small>Follow visible schedules and bridges.</small></div></li>
+          <li><span aria-hidden="true">3</span><div><strong>Read Results</strong><small>Start with the four decision KPIs.</small></div></li>
+          <li><span aria-hidden="true">4</span><div><strong>Confirm Checks</strong><small>Every control should say PASS.</small></div></li>
+        </ol>
+        <div class="model-simple-fit">
+          <div><h3>Best for</h3><ul><li class="model-simple-chip">Valuation Advisory</li><li class="model-simple-chip">Corporate Development</li><li class="model-simple-chip">Equity Research</li><li class="model-simple-chip">Investment Banking</li></ul></div>
+          <div><h3>Includes</h3><ul><li class="model-simple-chip">DCF</li><li class="model-simple-chip">Free Cash Flow</li><li class="model-simple-chip">Enterprise Value</li></ul></div>
+        </div>
+      </section>
+
+      <section class="model-simple-section model-simple-see" data-core-section="action" aria-labelledby="preview-title">
+        <div class="model-simple-heading">
+          <p class="section-kicker">Inside the file</p>
+          <h2 id="preview-title">See every sheet before you download.</h2>
+        </div>
+        <div class="model-simple-gallery">
+          <button class="model-cinema-gallery-trigger" type="button" data-model-preview data-model-preview-index="0" data-model-preview-src="assets/cover.png" data-model-preview-label="Start" aria-haspopup="dialog" aria-controls="model-image-viewer" aria-label="Preview the DCF Valuation start sheet without leaving this page"><img src="assets/cover.png" alt="DCF Valuation start sheet" loading="lazy" /><span><strong>Start</strong><small>Purpose and status</small></span></button>
+          <button class="model-cinema-gallery-trigger" type="button" data-model-preview data-model-preview-index="1" data-model-preview-src="assets/inputs.png" data-model-preview-label="Inputs" aria-haspopup="dialog" aria-controls="model-image-viewer" aria-label="Preview the DCF Valuation inputs sheet without leaving this page"><img src="assets/inputs.png" alt="DCF Valuation inputs sheet" loading="lazy" /><span><strong>Inputs</strong><small>Blue editable drivers</small></span></button>
+          <button class="model-cinema-gallery-trigger" type="button" data-model-preview data-model-preview-index="2" data-model-preview-src="assets/model.png" data-model-preview-label="Model" aria-haspopup="dialog" aria-controls="model-image-viewer" aria-label="Preview the DCF Valuation detailed model sheet without leaving this page"><img src="assets/model.png" alt="DCF Valuation detailed model sheet" loading="lazy" /><span><strong>Model</strong><small>Schedules, bridges, and formulas</small></span></button>
+          <button class="model-cinema-gallery-trigger" type="button" data-model-preview data-model-preview-index="3" data-model-preview-src="assets/summary.png" data-model-preview-label="Results" aria-haspopup="dialog" aria-controls="model-image-viewer" aria-label="Preview the DCF Valuation results sheet without leaving this page"><img src="assets/summary.png" alt="DCF Valuation results sheet" loading="lazy" /><span><strong>Results</strong><small>Four decision KPIs</small></span></button>
+          <button class="model-cinema-gallery-trigger" type="button" data-model-preview data-model-preview-index="4" data-model-preview-src="assets/checks.png" data-model-preview-label="Checks" aria-haspopup="dialog" aria-controls="model-image-viewer" aria-label="Preview the DCF Valuation checks sheet without leaving this page"><img src="assets/checks.png" alt="DCF Valuation checks sheet" loading="lazy" /><span><strong>Checks</strong><small>Formula controls</small></span></button>
+        </div>
+        <details class="model-simple-proof">
+          <summary>QA and limitations</summary>
+          <div>
+            <dl class="model-simple-technical">
+              <div><dt>Version</dt><dd>1.4.0</dd></div>
+              <div><dt>Tested</dt><dd>2026-08-17</dd></div>
+              <div><dt>File</dt><dd>18.1 KB</dd></div>
+              <div><dt>QA</dt><dd>10 / 10 calculation controls PASS; 5 / 5 sheets rendered</dd></div>
+            </dl>
+            <p><strong>Not included:</strong> Company-specific filings, option dilution, detailed lease or pension items, reverse DCF, and a formal valuation opinion.</p>
+            <p><strong>Use:</strong> Adapt this synthetic, macro-free template in Excel 365. Validate inputs, method, policy, and outputs before relying on it.</p>
+          </div>
+        </details>
+        <div class="model-simple-download">
+          <div><p class="section-kicker">Ready to use</p><h2>Download. Edit blue. Trace the model. Review checks.</h2></div>
+          <a class="button primary" href="model/tdat-dcf-valuation.xlsx" download="tdat-dcf-valuation.xlsx" data-track-event="model downloaded" data-track-label="TDAT-FM-VAL-001" data-track-location="model detail footer">Download Excel</a>
+        </div>
+      </section>
+    <dialog id="model-image-viewer" class="model-cinema-lightbox" data-model-lightbox aria-labelledby="model-lightbox-title">
+      <div class="model-cinema-lightbox-panel">
+        <header class="model-cinema-lightbox-bar">
+          <div><span>Workbook preview</span><strong id="model-lightbox-title" data-model-lightbox-title>Results sheet</strong></div>
+          <button type="button" data-model-lightbox-close aria-label="Close sheet preview"><span>Close</span><b aria-hidden="true">&times;</b></button>
+        </header>
+        <div class="model-cinema-lightbox-canvas" data-model-lightbox-canvas tabindex="0" aria-label="Scrollable sheet preview">
+          <img data-model-lightbox-image src="assets/summary.png" alt="DCF Valuation results sheet" />
+        </div>
+        <footer class="model-cinema-lightbox-footer">
+          <p data-model-lightbox-caption>Results &middot; Four decision KPIs</p>
+          <div class="model-cinema-lightbox-controls" aria-label="Sheet preview controls">
+            <span data-model-lightbox-count aria-live="polite">Sheet 4 of 5</span>
+            <button type="button" data-model-lightbox-zoom aria-pressed="false">Read detail</button>
+          </div>
+        </footer>
+      </div>
+    </dialog>
     </main>
 
     <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
       <div class="page-shell stage-shell-footer-inner">
         <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
+        <a class="back-to-top stage-back-to-top" href="#main-content" aria-label="Back to top" tabindex="-1"><span aria-hidden="true">&uarr;</span></a>
       </div>
     </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
+    <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
     <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script data-model-variant src="../../../assets/agentic-home/js/model-lightbox.js?v=model-lightbox-20260817-1"></script>
   </body>
 </html>

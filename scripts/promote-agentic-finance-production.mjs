@@ -89,9 +89,9 @@ function isNonLocalUrl(value) {
   );
 }
 
-function cleanExistingTheme(html) {
+export function cleanExistingTheme(html) {
   return html
-    .replace(/\s*<link\b(?=[^>]*(?:data-agentic-(?:stage|theme)|assets\/agentic-home\/css\/))[^>]*>/gi, "")
+    .replace(/\s*<link\b(?![^>]*\bdata-model-variant\b)(?=[^>]*(?:data-agentic-(?:stage|theme)|assets\/agentic-home\/css\/))[^>]*>/gi, "")
     .replace(/\s*<script\b[^>]*\bsrc=["'][^"']*assets\/agentic-home\/js\/(?:navigation|site)\.js[^"']*["'][^>]*>\s*<\/script>/gi, "")
     .replace(/\s*<section\b[^>]*\bdata-stage-route-intro\b[^>]*>[\s\S]*?<\/section>/gi, "")
     .replace(/\s*<div\b[^>]*\bid=["']main-content["'][^>]*>\s*<\/div>/gi, "");

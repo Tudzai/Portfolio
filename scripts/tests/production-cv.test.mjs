@@ -17,7 +17,7 @@ test("uses a compact document-first CV composition", async () => {
   assert.match(html, /class="cv-document-bar"/);
   assert.match(html, /Commercial FP&amp;A · Finance Automation · Agentic AI/);
   assert.match(css, /\.stage-route-intro\s*\{[^}]*display:\s*none/s);
-  assert.match(css, /\.cv-hero\s*\{[^}]*min-height:\s*0/s);
+  assert.match(css, /main\[data-stage-content\]\s*>\s*\.cv-hero:first-child\s*\{[^}]*min-height:\s*0/s);
   assert.match(css, /\.cv-viewer-section\s*\{[^}]*padding:\s*0/s);
 });
 

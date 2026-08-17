@@ -8,10 +8,10 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const read = (relativePath) => fs.readFile(path.join(repoRoot, relativePath), "utf8");
 
 const hubRoutes = [
-  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "powerbi5"],
-  ["showcase/fpa-decision-cases/index.html", "fpa", "decision-hub-hero", "annotated2"],
-  ["showcase/python-automation/index.html", "automation", "decision-hub-hero", "annotated2"],
-  ["showcase/financial-models/index.html", "models", "decision-hub-hero", "annotated2"],
+  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "routes-20260811-powerbi5"],
+  ["showcase/fpa-decision-cases/index.html", "fpa", "decision-hub-hero", "routes-20260816-fpa-simple2"],
+  ["showcase/python-automation/index.html", "automation", "decision-hub-hero", "routes-20260811-annotated2"],
+  ["showcase/financial-models/index.html", "models", "decision-hub-hero", "routes-20260811-annotated2"],
 ];
 
 test("keeps the CV role line unbroken on desktop without creating mobile overflow", async () => {
@@ -40,7 +40,7 @@ test("uses compact decision-led compositions for every annotated library hub", a
     const html = await read(route);
     assert.match(html, new RegExp(`data-stage-family=["']${family}["']`));
     assert.match(html, new RegExp(`class=["'][^"']*${heroClass}`));
-    assert.match(html, new RegExp(`templates/hub\\.css\\?v=routes-20260811-${cacheVersion}`));
+    assert.match(html, new RegExp(`templates/hub\\.css\\?v=${cacheVersion}`));
   }
 });
 

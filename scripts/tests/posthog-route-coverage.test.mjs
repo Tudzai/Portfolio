@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const excludedRootDirectories = new Set(["BI", "node_modules", "output", "outputs", "scripts", "test-results", "tmp"]);
+const excludedRootDirectories = new Set(["BI", "Stage", "node_modules", "output", "outputs", "scripts", "test-results", "tmp"]);
 const analyticsVersion = "posthog-replay-fix-20260816";
 
 const toPosix = (value) => value.replaceAll(path.sep, "/");

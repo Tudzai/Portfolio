@@ -1,81 +1,36 @@
 # Three-Statement Model Starter
 
-| Field | Value |
-|---|---|
-| Model ID | `TDAT-FM-CORE-001` |
-| Version | `1.0.0` |
-| Release date | `2026-07-13` |
-| Compatibility | Excel 365 |
-| Frequency | Annual |
-| Horizon | 3 actual + 5 forecast years |
-| Evidence | Synthetic worked template |
-| Public checks | 27 / 27 PASS in Base, Upside, and Downside QA |
-| Macros | None |
-| External workbook links | None |
-| Intentional circular references | None |
+## Option C release
 
-## Decision supported
+- Model ID: `TDAT-FM-CORE-001`
+- Canonical file: `tdat-three-statement-model.xlsx`
+- Version: `1.4.0`
+- Last tested: `2026-08-17`
+- Compatibility: Excel 365
+- Theme: Charcoal and gold
+- Visible sheets: `Start` → `Inputs` → `Model` → `Results` → `Checks`
+- QA: `10 / 10 calculation controls PASS; 5 / 5 sheets rendered`
+- File size: 26.1 KB
+- SHA-256: `16B5615E27167765E255A5FDFEBFA495E9D99D3230614400A4F8021EC08C2CDA`
+- Macros / external links / circular references: None / None / None
 
-How do operating assumptions flow through profit, financial position, cash, debt, and retained earnings?
+## Decision and scope
 
-## Workbook flow
+**Decision:** How do five years of operating drivers flow through profit, cash, debt, and the balance sheet?
 
-```text
-Cover → Read Me → Summary → Assumptions → Historical → Schedules
-→ Income Statement → Balance Sheet → Cash Flow → Checks → Sources & Version
-```
+Five-year integrated income statement, cash flow, and balance sheet. Explicit working-capital, PP&E, debt, and retained-earnings schedules. Visible driver ramps with ten calculation controls.
 
-## Quick start
-
-1. Read `Cover` and `Read Me`.
-2. Choose Base, Upside, or Downside on `Assumptions`.
-3. Replace blue-font synthetic inputs with approved data.
-4. Review operating drivers and supporting schedules.
-5. Challenge the Summary and the three statements.
-6. Resolve every core FAIL on `Checks` before relying on an output.
-7. Update `Sources & Version` when assumptions or structure change materially.
-
-## Main drivers
-
-- revenue growth;
-- gross margin;
-- operating expense as a percentage of revenue;
-- DSO, DIO, and DPO;
-- other current assets, accrued liabilities, and other liabilities as a percentage of revenue;
-- capex and depreciation;
-- tax and dividend payout;
-- debt repayment, interest rate, new borrowing, and share issuance.
-
-## Published checks
-
-- five forecast balance-sheet checks;
-- five forecast cash roll-forward checks;
-- five debt roll-forward checks;
-- five retained-earnings roll-forward checks;
-- historical balance-sheet and cash roll-forward checks;
-- scenario-selector validity;
-- selected-driver completeness;
-- non-negative revenue and gross-margin sanity;
-- no hidden cash plug.
-
-The release scan also found no visible `#REF!`, `#DIV/0!`, `#VALUE!`, `#NAME?`, `#N/A`, or `#NUM!` errors.
-Base, Upside, and Downside all recalculated to `MODEL STATUS: PASS` during release QA.
+- Horizon: Base plus five-year forecast
+- Designed for: FP&A, Corporate Finance, Accounting, Valuation Advisory
+- Typical use: Three statements, Driver ramps, Balance-sheet roll-forwards
+- Detailed Model sheet: visible formulas, schedules, roll-forwards, and bridges remain on one traceable calculation sheet.
+- Results sheet: four decision KPIs and a business outcome linked to the detailed Model sheet.
+- Checks sheet: calculation status is kept separate from the business outcome.
 
 ## Deliberate limitations
 
-Version 1.0 is a single-entity annual starter. It does not include multi-entity consolidation, monthly planning,
-IFRS 16, NOL and detailed tax, M&A purchase accounting, LBO cash sweeps, complex debt tranches, covenant tests,
-regulated risk methods, or project-finance waterfalls.
+- Monthly phasing, multiple scenarios, lease accounting, deferred tax, share issuance, and external-data automation.
 
-## Usage note
+## Educational-use notice
 
-Download, copy, and adapt the template for learning, interview cases, personal analysis, or internal business
-planning. Do not resell or redistribute an unchanged copy as your own product. Validate sources, assumptions,
-formulas, accounting treatment, and suitability before real-world use. The template is educational and analytical,
-not professional advice, and is provided without warranty.
-
-## File integrity
-
-```text
-SHA-256: 720A4BEC9679F3A72F96DECC37FF9F08EF871DB3C07A41350DB59620AF6CF333
-```
+This is a synthetic, macro-free educational template. It is not accounting, tax, legal, regulatory, credit, actuarial, investment, or other professional advice. Validate every source, assumption, formula, definition, policy choice, and output before real-world use. Use real company or personal data only in an appropriately secured private working copy.

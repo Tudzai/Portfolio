@@ -1,141 +1,36 @@
 # SaaS Unit Economics
 
-## Release identity
+## Option C release
 
 - Model ID: `TDAT-FM-SME-002`
 - Canonical file: `tdat-saas-unit-economics.xlsx`
-- Version: `1.0.0`
-- TDAT Model Standard: `1.0`
-- Status: `Available`
-- Last tested: `2026-07-13`
+- Version: `1.4.0`
+- Last tested: `2026-08-17`
 - Compatibility: Excel 365
-- Evidence: Synthetic worked template
-- Macro / external-link / circularity status: None / None / None
-- File size: 41.2 KB
-- SHA-256: `C8F0AE910E6F8107CF857F880173659A0244ACA79A39DCFCC2A366EB896AEA19`
+- Theme: Charcoal and gold
+- Visible sheets: `Start` → `Inputs` → `Model` → `Results` → `Checks`
+- QA: `10 / 10 calculation controls PASS; 5 / 5 sheets rendered`
+- File size: 19.3 KB
+- SHA-256: `1818513A46A31775EE26404EB63019D241C19E17FDCB3E01C65A436B9B255F69`
+- Macros / external links / circular references: None / None / None
 
-## Decision and users
+## Decision and scope
 
-**Decision:** Is growth efficient enough when retention, CAC, LTV, burn, and payback are viewed together?
+**Decision:** Does a steady growth plan create efficient ARR without using too much cash?
 
-ARR bridge, cohort retention, CAC, LTV, gross margin, burn multiple, runway, and scenario logic.
+One steady twelve-month customer plan. ARR, CAC, LTV/CAC, payback, and burn. Monthly MRR, ARR, EBITDA, and cash roll-forward plus an annual bridge.
 
-**Primary roles:** Startup Finance, FP&A, Venture Capital, Founder
-
-**Typical use cases:** Unit economics, Runway, Fundraising
-
-**Horizon:** 24–60 months
-
-## Workbook map
-
-1. `Cover`
-2. `Guide`
-3. `Assumptions`
-4. `Monthly Drivers`
-5. `SaaS Engine`
-6. `Sensitivity`
-7. `Summary`
-8. `Checks`
-9. `Sources & Version`
-
-## Core inputs
-
-- New customer logos
-- Monthly ARPA
-- Monthly expansion MRR
-- Monthly contraction MRR
-- Monthly logo / revenue churn
-- Sales & marketing spend
-- Other operating expense
-
-## Core logic
-
-- Opening logos
-- New logos
-- Churned logos
-- Closing logos
-- Opening MRR
-- New MRR
-- Expansion MRR
-- Contraction MRR
-- Churned MRR
-- Closing MRR
-- Ending ARR
-- Gross revenue retention
-- Net revenue retention
-- Customer acquisition cost
-- Illustrative LTV
-- LTV / CAC
-- CAC payback months
-- Monthly gross profit
-- Monthly EBITDA
-- Opening cash
-- Explicit funding
-- Closing cash
-- Net new ARR
-- Net burn
-- Burn multiple
-- ARR bridge check
-
-## Scenarios and sensitivity
-
-- Scenario selector: Base / Upside / Downside
-- Sensitivity row driver: Monthly churn
-- Sensitivity column driver: CAC
-- Sensitivity output: LTV / CAC
-- Base: Most likely operating and finance assumptions.
-- Upside: Stronger performance, faster conversion, or lower risk/cost.
-- Downside: Slower activity, weaker conversion, or higher risk/cost.
-
-## Published checks (10 / 10 PASS)
-
-- ARR equals closing MRR × 12: ARR must reconcile to monthly recurring revenue.
-- Closing logos are non-negative: Churn cannot reduce logos below zero.
-- GRR stays within 0%–100%: GRR excludes expansion and cannot exceed 100%.
-- CAC is non-negative: Guard zero new-logo periods.
-- Scenario selector is valid: Base, Upside, or Downside only.
-- Period headers are complete: All modeled periods must have a visible header.
-- Source input grid is complete: Replace blanks with an approved value or an explicitly documented zero.
-- Selected assumptions are complete: Every scenario driver must resolve to a numeric selected value.
-- Core model cells calculate to numbers: No blank or text output is permitted inside the calculation block.
-- Headline output is non-negative: Negative outputs require an explicit method and decision interpretation.
-
-A separate formula-error scan found no visible `#REF!`, `#DIV/0!`, `#VALUE!`, `#NAME?`, `#N/A`, or `#NUM!` errors in the released build. All 9 user-facing sheets were rendered for visual QA.
-
-## Practical Q&A
-
-### What should I replace first?
-
-Replace blue cells on `Monthly Drivers`, then update the scenario drivers on `Assumptions`.
-
-### How do I extend the template?
-
-Add periods or source rows in the input layer, extend formulas and formats together, update the model map, and add a check that reconciles the new dimension back to the headline output.
-
-### What does PASS mean?
-
-PASS means the published calculations and tie-outs are within their stated tolerance. It does not validate source quality, accounting policy, tax, legal, regulatory, credit, actuarial, investment, or business suitability.
-
-### Can I use real company data?
-
-Yes, in a private working copy with appropriate permission. Review privacy, confidentiality, distribution, and source-ownership rules before sharing.
-
-### Does the file support Google Sheets or LibreOffice?
-
-Not verified. Excel 365 is the supported target. Retest formulas, charts, data validation, formats, and all checks after conversion.
-
-### Is this professional advice?
-
-No. This is an educational analytical template. Obtain appropriate professional review before real-world use.
+- Horizon: 12 months
+- Designed for: Startup Finance, FP&A, Venture Capital, Founder
+- Typical use: ARR, Unit economics, Cash runway
+- Detailed Model sheet: visible formulas, schedules, roll-forwards, and bridges remain on one traceable calculation sheet.
+- Results sheet: four decision KPIs and a business outcome linked to the detailed Model sheet.
+- Checks sheet: calculation status is kept separate from the business outcome.
 
 ## Deliberate limitations
 
-- cohort survival model
-- deferred revenue accounting
-- GAAP revenue recognition
-- probabilistic fundraising
-- customer-identifiable records
+- Cohorts, expansion, contraction, funding rounds, deferred revenue, GAAP revenue, and fundraising advice.
 
-## Usage
+## Educational-use notice
 
-Download, copy, and adapt for learning, interview cases, internal planning, or analysis. Do not resell or redistribute an unchanged copy as your own product. Validate every source, assumption, formula, definition, and output before decision use. Provided without warranty.
+This is a synthetic, macro-free educational template. It is not accounting, tax, legal, regulatory, credit, actuarial, investment, or other professional advice. Validate every source, assumption, formula, definition, policy choice, and output before real-world use. Use real company or personal data only in an appropriately secured private working copy.
