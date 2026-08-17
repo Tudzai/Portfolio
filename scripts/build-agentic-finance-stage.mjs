@@ -270,7 +270,8 @@ function stripLegacyShell(html) {
     .replace(/\s*<a\b[^>]*class=["'][^"']*\bskip-link\b[^"']*["'][^>]*>[\s\S]*?<\/a>/i, "")
     .replace(/\s*<header\b[^>]*class=["'][^"']*\bsite-header\b[^"']*["'][^>]*>[\s\S]*?<\/header>/i, "")
     .replace(/\s*<nav\b[^>]*class=["'][^"']*\bmobile-nav\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i, "")
-    .replace(/(<\/main>)[\s\S]*?<footer\b[^>]*>[\s\S]*?<\/footer>/i, "$1");
+    .replace(/\s*<section\b[^>]*\bdata-stage-route-intro\b[^>]*>[\s\S]*?<\/section>/gi, "")
+    .replace(/\s*<footer\b[^>]*class=["'][^"']*\b(?:site-footer|stage-site-footer)\b[^"']*["'][^>]*>[\s\S]*?<\/footer>/gi, "");
 }
 
 function removeStageOnlyRedirects(html, sourcePath) {

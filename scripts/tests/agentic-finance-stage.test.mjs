@@ -193,6 +193,22 @@ test("preserves dashboard-internal topbars while adding the shared shell", async
   assert.match(result, /Dashboard evidence chrome/);
 });
 
+test("preserves route-owned scripts after an internal dashboard main", () => {
+  const html = `<!doctype html><html><head></head><body>
+    <header class="site-header" data-stage-shell></header>
+    <main class="dashboard" data-stage-content><section>Dashboard</section></main>
+    <script>window.renderDashboard = () => "ready";</script>
+    <footer class="stage-site-footer" data-stage-shell></footer>
+  </body></html>`;
+  const result = composeStageDocument(
+    html,
+    stageContext("showcase/powerbi/example/preview.html"),
+  );
+
+  assert.match(result, /window\.renderDashboard = \(\) => "ready"/);
+  assert.equal((result.match(/class="stage-site-footer stage-shell-footer"/g) ?? []).length, 1);
+});
+
 test("injects one route context rail into generated branch content", async () => {
   const result = composeStageDocument(
     await loadFixture("legacy-shell.html"),

@@ -1506,6 +1506,28 @@ body[data-stage-template="hub"][data-stage-family="powerbi"] .project-card.featu
   background: rgba(255, 255, 255, 0.06);
 }
 
+body[data-stage-template="hub"][data-stage-family="powerbi"] #board-investor-cfo-pack .project-visual {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] #board-investor-cfo-pack .project-visual img {
+  position: absolute;
+  top: -3.06%;
+  left: -6.25%;
+  width: 112.5%;
+  max-width: none;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: fill;
+  transform: none;
+}
+
+body[data-stage-template="hub"][data-stage-family="powerbi"] #board-investor-cfo-pack:hover .project-visual img {
+  transform: none;
+}
+
 body[data-stage-template="hub"][data-stage-family="powerbi"] .project-visual img {
   display: block;
   width: 100%;
@@ -1907,10 +1929,6 @@ body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final
 body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-open {
   align-self: auto;
   margin: auto 0 0;
-}
-
-body[data-stage-template="hub"][data-stage-family="powerbi"] #board-investor-cfo-pack.preview-suppressed {
-  min-height: 360px;
 }
 
 @media (max-width: 1040px) {

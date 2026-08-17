@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta name="robots" content="index, follow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Project 20 - Board Investor CFO Pack</title>
   <link rel="icon" href="data:,">
+  <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   <style>
     :root {
       --canvas: #463793;
@@ -784,51 +784,8 @@
       }
     }
   </style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
-        </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
-      </div>
-    </header>
+</head>
+<body>
   <div class="preview-frame">
     <div class="dashboard-shell">
       <div class="dashboard" role="application" aria-label="Board Investor CFO Pack preview">
@@ -891,19 +848,1226 @@
 
           <div class="as-of">Data through<br>May 2026</div>
         </aside>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="content" id="content" data-stage-content>
-</main>
 
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
+        <main class="content" id="content"></main>
       </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
-  </body>
+    </div>
+  </div>
+
+  <script>
+    const pageOrder = ["performance", "cash", "risk"];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const pageTitles = {
+      performance: "Board Performance Overview",
+      cash: "Financial Plan & Cash Runway",
+      risk: "Valuation, Covenants & Risk Monitor"
+    };
+
+    const kpiPositions = [
+      { x: 204, y: 72, w: 258, h: 146 },
+      { x: 474, y: 72, w: 258, h: 146 },
+      { x: 744, y: 72, w: 258, h: 146 },
+      { x: 1014, y: 72, w: 258, h: 146 }
+    ];
+
+    const panelPositions = [
+      { x: 206, y: 234, w: 426, h: 194 },
+      { x: 641, y: 234, w: 304, h: 194 },
+      { x: 966, y: 234, w: 293, h: 194 },
+      { x: 204, y: 448, w: 426, h: 244 },
+      { x: 646, y: 448, w: 304, h: 244 },
+      { x: 966, y: 448, w: 294, h: 244 }
+    ];
+
+    const COLORS = {
+      blue: "#5b83e6",
+      navy: "#29258f",
+      teal: "#569b94",
+      green: "#4d8d4b",
+      gold: "#be7c10",
+      red: "#b73535",
+      plum: "#7a1b8d",
+      orange: "#d07343"
+    };
+
+    const SCENARIOS = {
+      Base: { color: COLORS.green, revenue: 1.00, gm: 0.000, opex: 0.000, risk: 1.00, multiple: 55, forecast: 1.012 },
+      Upside: { color: COLORS.blue, revenue: 1.075, gm: 0.012, opex: -0.006, risk: 0.82, multiple: 60, forecast: 1.044 },
+      Downside: { color: COLORS.gold, revenue: 0.915, gm: -0.025, opex: 0.012, risk: 1.34, multiple: 44, forecast: 0.958 },
+      Stress: { color: COLORS.red, revenue: 0.820, gm: -0.048, opex: 0.028, risk: 1.78, multiple: 35, forecast: 0.905 }
+    };
+
+    const BUSINESS_UNITS = [
+      { name: "Core SaaS", mix: 1.36, gm: 0.824, opex: 0.344, risk: 0.76, planBias: 0.010 },
+      { name: "Data", mix: 0.78, gm: 0.792, opex: 0.326, risk: 0.94, planBias: 0.000 },
+      { name: "Services", mix: 0.48, gm: 0.702, opex: 0.292, risk: 1.18, planBias: -0.014 },
+      { name: "Other", mix: 0.18, gm: 0.664, opex: 0.256, risk: 1.38, planBias: -0.024 }
+    ];
+
+    const REGIONS = [
+      { name: "Americas", mix: 1.18, gm: 0.012, opex: 0.004, risk: 0.92, cashLag: 0.028 },
+      { name: "EMEA", mix: 0.95, gm: 0.004, opex: 0.000, risk: 1.00, cashLag: 0.034 },
+      { name: "APAC", mix: 0.78, gm: -0.002, opex: -0.004, risk: 1.10, cashLag: 0.039 },
+      { name: "LATAM", mix: 0.46, gm: -0.015, opex: 0.006, risk: 1.28, cashLag: 0.052 }
+    ];
+
+    const state = {
+      page: "performance",
+      year: "2026",
+      scenario: "Base",
+      businessUnit: "All BU",
+      region: "All Region"
+    };
+
+    const content = document.getElementById("content");
+    const frame = document.querySelector(".preview-frame");
+    const shell = document.querySelector(".dashboard-shell");
+    const dashboard = document.querySelector(".dashboard");
+
+    const DATA = buildData();
+
+    window.previewState = state;
+
+    window.previewActions = {
+      setPage,
+      setFilter,
+      resetFilters,
+      getSummary: () => financeSummary(state),
+      getRows: () => rowsFor(state).map(row => ({ ...row }))
+    };
+
+    function buildData() {
+      const months = [];
+      [2024, 2025, 2026].forEach((year) => {
+        const maxMonth = year === 2026 ? 5 : 12;
+        for (let month = 1; month <= maxMonth; month += 1) {
+          months.push({
+            id: `${year}-${String(month).padStart(2, "0")}`,
+            label: `${monthNames[month - 1]} ${year}`,
+            year,
+            month
+          });
+        }
+      });
+
+      const facts = [];
+      months.forEach((period) => {
+        BUSINESS_UNITS.forEach((bu, buIndex) => {
+          REGIONS.forEach((region, regionIndex) => {
+            Object.entries(SCENARIOS).forEach(([scenarioName, scenario]) => {
+              const yearLift = period.year === 2024 ? 0.84 : period.year === 2025 ? 0.94 : 1.045;
+              const season = 1 + Math.sin(((period.month - 1) / 12) * Math.PI * 2) * 0.045 + (period.month >= 10 ? 0.034 : 0);
+              const trend = 1 + ((period.year - 2024) * 12 + period.month) * 0.0045;
+              const noise = 1 + (((buIndex + 2) * 7 + (regionIndex + 3) * 5 + period.month) % 9 - 4) * 0.006;
+              const baseRevenue = 0.645 * bu.mix * region.mix * yearLift * season * trend * noise;
+              const planRevenue = baseRevenue * (0.982 + bu.planBias + (regionIndex - 1.5) * 0.004);
+              const revenue = baseRevenue * scenario.revenue;
+              const gmRate = clamp(bu.gm + region.gm + scenario.gm + period.month * 0.0005, 0.52, 0.86);
+              const planGmRate = clamp(bu.gm + region.gm - 0.003, 0.52, 0.86);
+              const grossProfit = revenue * gmRate;
+              const planGrossProfit = planRevenue * planGmRate;
+              const opexRate = clamp(bu.opex + region.opex + scenario.opex, 0.19, 0.45);
+              const opex = revenue * opexRate + 0.046 * bu.mix;
+              const planOpex = planRevenue * clamp(bu.opex + region.opex - 0.002, 0.19, 0.45) + 0.044 * bu.mix;
+              const ebitda = grossProfit - opex;
+              const planEbitda = planGrossProfit - planOpex;
+              const workingCapital = revenue * region.cashLag * (scenario.risk * 0.82);
+              const capex = revenue * 0.018;
+              const fcf = ebitda * 0.84 - workingCapital - capex;
+              const planFcf = planEbitda * 0.84 - planRevenue * (region.cashLag * 0.75) - planRevenue * 0.016;
+              const fundingNeed = Math.max(0, -fcf * 0.72 + revenue * (scenarioName === "Stress" ? 0.035 : scenarioName === "Downside" ? 0.012 : 0));
+              const riskExposure = revenue * 0.82 * scenario.risk * region.risk * bu.risk;
+              const severity = riskExposure > 0.95 ? "High" : riskExposure > 0.55 ? "Medium" : "Low";
+              const owner = bu.name === "Services" ? "Ops" : region.name === "LATAM" ? "CFO" : bu.name === "Core SaaS" ? "Sales" : "Finance";
+
+              facts.push({
+                ...period,
+                businessUnit: bu.name,
+                region: region.name,
+                scenario: scenarioName,
+                revenue,
+                planRevenue,
+                forecastRevenue: planRevenue * scenario.forecast,
+                grossProfit,
+                planGrossProfit,
+                opex,
+                planOpex,
+                ebitda,
+                planEbitda,
+                fcf,
+                planFcf,
+                fundingNeed,
+                riskExposure,
+                severity,
+                owner
+              });
+            });
+          });
+        });
+      });
+
+      return { months, facts };
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function sum(rows, key) {
+      return rows.reduce((total, row) => total + (Number(row[key]) || 0), 0);
+    }
+
+    function unique(list) {
+      return Array.from(new Set(list));
+    }
+
+    function styleBox(el, box) {
+      el.style.left = `${box.x}px`;
+      el.style.top = `${box.y}px`;
+      el.style.width = `${box.w}px`;
+      el.style.height = `${box.h}px`;
+    }
+
+    function fitDashboard() {
+      const style = window.getComputedStyle(frame);
+      const horizontalPadding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const availableWidth = Math.max(320, frame.clientWidth - horizontalPadding);
+      const naturalScale = availableWidth / 1280;
+      const mobileReadableFloor = availableWidth < 720 ? 0.58 : 0;
+      const scale = Math.min(1, Math.max(naturalScale, mobileReadableFloor));
+      document.documentElement.style.setProperty("--dashboard-scale", scale.toFixed(4));
+      shell.style.width = `${Math.round(1280 * scale)}px`;
+      shell.style.height = `${Math.round(720 * scale)}px`;
+      updateQaState();
+    }
+
+    function rowsFor(filters, options = {}) {
+      const ignore = options.ignore || "";
+      return DATA.facts.filter((row) => {
+        if (String(row.year) !== String(filters.year)) return false;
+        if (filters.maxMonth && row.month > filters.maxMonth) return false;
+        if (row.scenario !== filters.scenario) return false;
+        if (ignore !== "businessUnit" && filters.businessUnit !== "All BU" && row.businessUnit !== filters.businessUnit) return false;
+        if (ignore !== "region" && filters.region !== "All Region" && row.region !== filters.region) return false;
+        if (options.month && row.month !== options.month) return false;
+        return true;
+      });
+    }
+
+    function coreTotals(rows) {
+      const revenue = sum(rows, "revenue");
+      const planRevenue = sum(rows, "planRevenue");
+      const grossProfit = sum(rows, "grossProfit");
+      const planGrossProfit = sum(rows, "planGrossProfit");
+      const ebitda = sum(rows, "ebitda");
+      const planEbitda = sum(rows, "planEbitda");
+      const fcf = sum(rows, "fcf");
+      const planFcf = sum(rows, "planFcf");
+      const opex = sum(rows, "opex");
+      const fundingNeed = sum(rows, "fundingNeed");
+      const riskExposure = sum(rows, "riskExposure");
+      const forecastRevenue = sum(rows, "forecastRevenue");
+      return {
+        revenue,
+        planRevenue,
+        forecastRevenue,
+        grossProfit,
+        planGrossProfit,
+        gmRate: revenue ? grossProfit / revenue : 0,
+        planGmRate: planRevenue ? planGrossProfit / planRevenue : 0,
+        ebitda,
+        planEbitda,
+        fcf,
+        planFcf,
+        opex,
+        fundingNeed,
+        riskExposure
+      };
+    }
+
+    function filterShare(filters) {
+      const selectedRows = rowsFor({ ...filters, scenario: "Base" });
+      const allRows = rowsFor({ ...filters, scenario: "Base", businessUnit: "All BU", region: "All Region" });
+      const allRevenue = sum(allRows, "revenue");
+      return allRevenue ? sum(selectedRows, "revenue") / allRevenue : 1;
+    }
+
+    function openingCash(year) {
+      if (String(year) === "2026") return 362;
+      if (String(year) === "2025") return 324;
+      return 292;
+    }
+
+    function monthCountForYear(year) {
+      return DATA.months.filter(month => String(month.year) === String(year)).length || 1;
+    }
+
+    function financeSummary(filters) {
+      const rows = rowsFor(filters);
+      const core = coreTotals(rows);
+      const share = filterShare(filters);
+      const months = unique(rows.map(row => row.month)).length || monthCountForYear(filters.year);
+      const cash = openingCash(filters.year) * share + core.fcf - core.fundingNeed;
+      const burn = Math.max(0, -core.fcf + core.fundingNeed);
+      const monthlyOpex = Math.max(0.7, core.opex / Math.max(1, months));
+      const runway = burn > 0 ? cash / Math.max(0.4, burn / Math.max(1, months)) : Math.min(120, cash / (monthlyOpex * 1.23));
+      const annualizedEbitda = core.ebitda * 12 / Math.max(1, months);
+      const debt = Math.max(4 * share, annualizedEbitda * (filters.scenario === "Stress" ? 0.46 : filters.scenario === "Downside" ? 0.34 : 0.21));
+      const ev = annualizedEbitda * SCENARIOS[filters.scenario].multiple;
+      const equity = Math.max(0, ev * 0.78 + cash * 0.16 - debt * 0.34);
+      const leverage = annualizedEbitda ? debt / annualizedEbitda : 0;
+      const covenantHeadroom = Math.max(0, 3.5 - leverage);
+      return {
+        ...core,
+        months,
+        cash,
+        burn,
+        runway,
+        annualizedEbitda,
+        debt,
+        ev,
+        equity,
+        leverage,
+        covenantHeadroom
+      };
+    }
+
+    function previousFilters() {
+      const comparableMonths = monthCountForYear(state.year);
+      return {
+        ...state,
+        year: String(Number(state.year) - 1),
+        scenario: "Base",
+        maxMonth: comparableMonths
+      };
+    }
+
+    function monthlyTrend(filters) {
+      const months = DATA.months.filter(month => String(month.year) === String(filters.year));
+      const share = filterShare(filters);
+      let cumulativeFcf = 0;
+      let cumulativeFunding = 0;
+      return months.map((period) => {
+        const rows = rowsFor(filters, { month: period.month });
+        const core = coreTotals(rows);
+        cumulativeFcf += core.fcf;
+        cumulativeFunding += core.fundingNeed;
+        return {
+          ...period,
+          ...core,
+          cash: openingCash(filters.year) * share + cumulativeFcf - cumulativeFunding,
+          burn: Math.max(0, -core.fcf + core.fundingNeed)
+        };
+      });
+    }
+
+    function money(value, digits = 1) {
+      const abs = Math.abs(value);
+      if (abs >= 1000) return `$${(value / 1000).toFixed(1)}B`;
+      return `$${value.toFixed(digits)}M`;
+    }
+
+    function money0(value) {
+      if (Math.abs(value) < 0.05) return "$0";
+      return money(value, Math.abs(value) >= 10 ? 0 : 1);
+    }
+
+    function pct(value, digits = 1) {
+      return `${(value * 100).toFixed(digits)}%`;
+    }
+
+    function signedPct(current, previous) {
+      if (!previous) return "+0.0%";
+      let change = (current - previous) / Math.abs(previous);
+      if (Math.abs(change) < 0.0005) change = 0;
+      return `${change >= 0 ? "+" : ""}${(change * 100).toFixed(1)}%`;
+    }
+
+    function signedPts(current, previous) {
+      let change = (current - previous) * 100;
+      if (Math.abs(change) < 0.05) change = 0;
+      return `${change >= 0 ? "+" : ""}${change.toFixed(1)}pt`;
+    }
+
+    function signedMoneyDelta(current, previous) {
+      let delta = current - previous;
+      if (Math.abs(delta) < 0.05) delta = 0;
+      return `${delta >= 0 ? "+" : "-"}${money(Math.abs(delta), Math.abs(delta) >= 10 ? 0 : 1)}`;
+    }
+
+    function fmtRunway(value) {
+      return `${value.toFixed(value >= 100 ? 0 : 1)}x`;
+    }
+
+    function favorableClass(current, previous, higherBetter = true) {
+      if (!previous) return "good";
+      const good = higherBetter ? current >= previous : current <= previous;
+      return good ? "good" : "bad";
+    }
+
+    function seriesValues(metric, filters = state) {
+      return monthlyTrend(filters).map(row => row[metric] || 0);
+    }
+
+    function sparkline(values, color, mood = "good") {
+      const safeValues = values.length ? values : [0, 0];
+      const min = Math.min(...safeValues);
+      const max = Math.max(...safeValues);
+      const spread = max - min || 1;
+      const coords = safeValues.map((value, index) => {
+        const x = 8 + index * (222 / Math.max(1, safeValues.length - 1));
+        const y = 40 - ((value - min) / spread) * 29;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const points = coords.split(" ");
+      const start = points[0].split(",");
+      const end = points[points.length - 1].split(",");
+      const band = mood === "bad" ? "#f3d7d7" : "#ddeedc";
+
+      return `
+        <svg class="spark" viewBox="0 0 238 46" aria-hidden="true">
+          <rect x="0" y="0" width="238" height="46" rx="8" fill="#f3effa"/>
+          <rect x="7" y="18" width="224" height="12" rx="6" fill="${band}"/>
+          <line x1="7" y1="24" x2="231" y2="24" stroke="#b8aecf" stroke-width="1" stroke-dasharray="4 5"/>
+          <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="${start[0]}" cy="${start[1]}" r="3.6" fill="#fff" stroke="#8f7bae" stroke-width="1.4"/>
+          <circle cx="${end[0]}" cy="${end[1]}" r="4.8" fill="${color}" stroke="#fff" stroke-width="2"/>
+        </svg>
+      `;
+    }
+
+    function renderKpi(kpi, index) {
+      const el = document.createElement("article");
+      el.className = "kpi-card";
+      el.style.setProperty("--accent", kpi.color);
+      styleBox(el, kpiPositions[index]);
+      const icon = kpi.label.replace(/[^A-Za-z]/g, "").slice(0, 2);
+
+      el.innerHTML = `
+        <div class="kpi-head">
+          <span class="kpi-icon">${escapeHtml(icon)}</span>
+          <span class="kpi-label">${escapeHtml(kpi.label)}</span>
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-value">${escapeHtml(kpi.value)}</div>
+          ${sparkline(kpi.spark, kpi.color, kpi.mood)}
+        </div>
+        <div class="kpi-foot">
+          <div><span>PY</span><b>${escapeHtml(kpi.py)}</b></div>
+          <div class="${kpi.mood}"><span>YoY</span><b>${escapeHtml(kpi.yoy)}</b></div>
+        </div>
+      `;
+      return el;
+    }
+
+    function pointsFor(values, width = 400, height = 142) {
+      const safeValues = values.length ? values : [0, 0];
+      const min = Math.min(0, ...safeValues);
+      const max = Math.max(...safeValues, 1);
+      const spread = max - min || 1;
+      return safeValues.map((value, index) => {
+        const x = 8 + index * ((width - 18) / Math.max(1, safeValues.length - 1));
+        const y = height - 18 - ((value - min) / spread) * (height - 36);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+    }
+
+    function comboChart(panel) {
+      const legend = panel.series.map(item => `<span style="--dot:${item.color}"><i></i>${escapeHtml(item.label)}</span>`).join("");
+      const lines = panel.series.map(item => `
+        <polyline points="${pointsFor(item.values)}" fill="none" stroke="${item.color}" stroke-width="${item.width || 4}" stroke-linecap="round" stroke-linejoin="round" opacity="${item.opacity || 1}"/>
+      `).join("");
+      return `
+        <div class="legend">${legend}</div>
+        <svg class="chart-svg" viewBox="0 0 400 142" aria-hidden="true">
+          <g stroke="#ded6eb" stroke-width="1">
+            <line x1="0" y1="30" x2="400" y2="30"/>
+            <line x1="0" y1="70" x2="400" y2="70"/>
+            <line x1="0" y1="110" x2="400" y2="110"/>
+          </g>
+          ${lines}
+        </svg>
+      `;
+    }
+
+    function barChart(panel) {
+      const fills = [COLORS.plum, COLORS.blue, COLORS.teal, COLORS.gold, COLORS.orange];
+      const maxValue = Math.max(...panel.rows.map(row => Math.abs(row.value)), 1);
+      const rows = panel.rows.map((row, index) => {
+        const pctWidth = Math.max(3, Math.min(100, Math.abs(row.value) / maxValue * 100));
+        const fill = row.color || fills[index % fills.length];
+        const active = panel.clickFilter && state[panel.clickFilter] === row.filterValue;
+        const tag = panel.clickFilter ? "button" : "div";
+        const attrs = panel.clickFilter
+          ? `type="button" data-filter-kind="${panel.clickFilter}" data-filter-value="${escapeHtml(row.filterValue)}" aria-label="Filter ${escapeHtml(panel.clickFilter)} ${escapeHtml(row.label)}"`
+          : "";
+        return `
+          <${tag} class="bar-row ${active ? "active" : ""}" ${attrs}>
+            <span>${escapeHtml(row.label)}</span>
+            <div class="bar-track"><div class="bar-fill" style="--value:${pctWidth.toFixed(1)}%;--fill:${fill}"></div></div>
+            <b>${escapeHtml(row.display)}</b>
+          </${tag}>
+        `;
+      }).join("");
+      return `<div class="bar-list">${rows}</div>`;
+    }
+
+    function donutChart(panel) {
+      const colors = [COLORS.blue, COLORS.navy, COLORS.orange, COLORS.plum, COLORS.teal];
+      const total = panel.segments.reduce((acc, row) => acc + Math.max(0, row.value), 0) || 1;
+      let cursor = 0;
+      const parts = panel.segments.map((segment, index) => {
+        const start = cursor;
+        const next = cursor + Math.max(0, segment.value) / total * 100;
+        cursor = next;
+        return `${colors[index % colors.length]} ${start.toFixed(1)}% ${next.toFixed(1)}%`;
+      });
+      const legend = panel.segments.map((segment, index) => `
+        <span style="--dot:${colors[index % colors.length]}"><i></i>${escapeHtml(segment.label)}</span>
+      `).join("");
+      return `
+        <div class="donut-wrap">
+          <div class="donut" style="--donut:conic-gradient(${parts.join(", ")})">
+            <div class="donut-total">${escapeHtml(panel.totalLabel)}</div>
+          </div>
+          <div class="legend">${legend}</div>
+        </div>
+      `;
+    }
+
+    function parseDisplayValue(value) {
+      const text = String(value || "").trim();
+      const cleaned = text.replace(/[$,%x,]/g, "");
+      let number = Number.parseFloat(cleaned);
+      if (!Number.isFinite(number)) return 0;
+      if (/B/i.test(text)) number *= 1000;
+      return number;
+    }
+
+    function tableColor(status, delta, lowerBetter = false) {
+      if (status === "Risk") return COLORS.red;
+      if (status === "Watch") return COLORS.gold;
+      const favorable = lowerBetter ? delta <= 0 : delta >= 0;
+      return favorable ? COLORS.green : COLORS.red;
+    }
+
+    function tableVariance(metric, actual, plan, status) {
+      const actualValue = parseDisplayValue(actual);
+      const planValue = parseDisplayValue(plan);
+      const delta = actualValue - planValue;
+      const lowerBetter = /funding|burn|risk|leverage/i.test(metric);
+      const color = tableColor(status, delta, lowerBetter);
+      const isPercent = String(actual).includes("%") || String(plan).includes("%");
+      const display = isPercent
+        ? `${delta >= 0 ? "+" : ""}${delta.toFixed(1)}pt`
+        : `${delta >= 0 ? "+" : "-"}${money(Math.abs(delta), Math.abs(delta) >= 10 ? 0 : 1)}`;
+
+      return { delta, color, display };
+    }
+
+    function miniSpark(values, color) {
+      const safeValues = values.length ? values : [0, 0];
+      const min = Math.min(...safeValues);
+      const max = Math.max(...safeValues);
+      const spread = max - min || 1;
+      const coords = safeValues.map((value, index) => {
+        const x = 2 + index * (40 / Math.max(1, safeValues.length - 1));
+        const y = 15 - ((value - min) / spread) * 12;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      return `
+        <svg class="mini-spark" viewBox="0 0 44 18" aria-hidden="true">
+          <line x1="1" y1="14.5" x2="43" y2="14.5" stroke="#ddd4eb" stroke-width="1"/>
+          <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+    }
+
+    function tableSeries(metric) {
+      if (/revenue/i.test(metric)) return seriesValues("revenue");
+      if (/ebitda/i.test(metric)) return seriesValues("ebitda");
+      if (/margin/i.test(metric)) {
+        const revenue = seriesValues("revenue");
+        return seriesValues("grossProfit").map((value, index) => value / Math.max(.01, revenue[index] || 1));
+      }
+      if (/cash/i.test(metric)) return seriesValues("cash");
+      if (/funding/i.test(metric)) return seriesValues("fundingNeed");
+      if (/free|operating|fcf/i.test(metric)) return seriesValues("fcf");
+      if (/cloud|fx|renewal|covenant|risk/i.test(metric)) return seriesValues("riskExposure");
+      return seriesValues("ebitda");
+    }
+
+    function renderMetricTable(panel) {
+      const rowVariance = panel.rows.map((row) => tableVariance(row[0], row[1], row[2], row[3]));
+      const maxDelta = Math.max(...rowVariance.map(item => Math.abs(item.delta)), .01);
+      const rows = panel.rows.map((row, index) => {
+        const [metric, actual, plan, status] = row;
+        const variance = rowVariance[index];
+        const width = Math.max(8, Math.min(100, Math.abs(variance.delta) / maxDelta * 100));
+        const statusClass = status === "Risk" ? "risk" : status === "Watch" ? "watch" : "";
+        const color = variance.color;
+
+        return `
+          <tr>
+            <td><span class="metric-name"><i class="metric-dot" style="--dot:${color}"></i>${escapeHtml(metric)}</span></td>
+            <td><span class="metric-value">${escapeHtml(actual)}</span></td>
+            <td>${escapeHtml(plan)}</td>
+            <td>
+              <span class="variance-cell" style="--var-color:${color}">
+                <b>${escapeHtml(variance.display)}</b>
+                <span class="variance-track"><span class="variance-fill" style="--value:${width.toFixed(0)}%"></span></span>
+              </span>
+            </td>
+            <td>${miniSpark(tableSeries(metric), color)}</td>
+            <td><span class="status ${statusClass}">${escapeHtml(status)}</span></td>
+          </tr>
+        `;
+      }).join("");
+
+      return `
+        <table class="metric-table">
+          <thead><tr><th>Metric</th><th>Actual</th><th>Plan</th><th>Variance</th><th>Trend</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function renderRiskTable(panel) {
+      const maxExposure = Math.max(...panel.rows.map(row => parseDisplayValue(row[1])), 1);
+      const rows = panel.rows.map((row, index) => {
+        const [risk, exposure, owner, signal] = row;
+        const exposureValue = parseDisplayValue(exposure);
+        const width = Math.max(8, Math.min(100, exposureValue / maxExposure * 100));
+        const statusClass = signal === "Risk" ? "risk" : signal === "Watch" ? "watch" : "";
+        const color = signal === "Risk" ? COLORS.red : signal === "Watch" ? COLORS.gold : COLORS.green;
+        const series = tableSeries(risk).map(value => value * (1 - index * .08));
+
+        return `
+          <tr>
+            <td><span class="metric-name"><i class="metric-dot" style="--dot:${color}"></i>${escapeHtml(risk)}</span></td>
+            <td>
+              <span class="variance-cell" style="--var-color:${color}">
+                <b>${escapeHtml(exposure)}</b>
+                <span class="variance-track"><span class="variance-fill" style="--value:${width.toFixed(0)}%"></span></span>
+              </span>
+            </td>
+            <td>${escapeHtml(owner)}</td>
+            <td>${miniSpark(series, color)}</td>
+            <td><span class="status ${statusClass}">${escapeHtml(signal)}</span></td>
+          </tr>
+        `;
+      }).join("");
+
+      return `
+        <table class="metric-table">
+          <thead><tr><th>Risk</th><th>Exposure</th><th>Owner</th><th>Signal</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function tablePanel(panel) {
+      if (panel.headers.includes("Plan")) return renderMetricTable(panel);
+      if (panel.headers.includes("Owner")) return renderRiskTable(panel);
+
+      const header = panel.headers.map(head => `<th>${escapeHtml(head)}</th>`).join("");
+      const rows = panel.rows.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
+      return `<table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function renderPanel(panel, index) {
+      const el = document.createElement("section");
+      el.className = "panel";
+      styleBox(el, panelPositions[index]);
+
+      const body = panel.type === "combo"
+        ? comboChart(panel)
+        : panel.type === "donut"
+          ? donutChart(panel)
+          : panel.type === "table"
+            ? tablePanel(panel)
+            : barChart(panel);
+
+      el.innerHTML = `
+        <h2>${escapeHtml(panel.title)}</h2>
+        <small>${escapeHtml(panel.subtitle)}</small>
+        ${body}
+      `;
+      return el;
+    }
+
+    function groupsFor(dimension, metric, filters = state, options = {}) {
+      const rows = rowsFor(filters, { ignore: options.ignore });
+      const labels = dimension === "businessUnit" ? BUSINESS_UNITS.map(item => item.name) : REGIONS.map(item => item.name);
+      return labels.map((label) => {
+        const groupRows = rows.filter(row => row[dimension] === label);
+        const totals = coreTotals(groupRows);
+        return {
+          label,
+          value: metric === "gmRate" ? totals.gmRate : totals[metric],
+          totals
+        };
+      }).filter(row => row.totals.revenue > 0);
+    }
+
+    function scenarioRows(metric) {
+      return Object.keys(SCENARIOS).map((scenario) => {
+        const summary = financeSummary({ ...state, scenario });
+        return {
+          label: scenario,
+          filterValue: scenario,
+          value: summary[metric],
+          summary
+        };
+      });
+    }
+
+    function statusFromVariance(value, caution, risk, lowerBetter = false) {
+      const pass = lowerBetter ? value <= caution : value >= caution;
+      const hardRisk = lowerBetter ? value >= risk : value <= risk;
+      if (hardRisk) return "Risk";
+      return pass ? "Clear" : "Watch";
+    }
+
+    function chipsFor(page, summary) {
+      const scenarioColor = SCENARIOS[state.scenario].color;
+      const scope = state.businessUnit === "All BU" && state.region === "All Region"
+        ? "Scope: Total Co"
+        : state.businessUnit !== "All BU" && state.region !== "All Region"
+          ? `${state.businessUnit} / ${state.region}`
+          : state.businessUnit !== "All BU"
+            ? `BU: ${state.businessUnit}`
+            : `Region: ${state.region}`;
+
+      if (page === "cash") {
+        return [
+          { label: `Scenario: ${state.scenario}`, color: scenarioColor },
+          { label: `Runway: ${fmtRunway(summary.runway)}`, color: COLORS.blue },
+          { label: `Funding: ${money0(summary.fundingNeed)}`, color: summary.fundingNeed > 0 ? COLORS.red : COLORS.green }
+        ];
+      }
+
+      if (page === "risk") {
+        const status = summary.leverage > 3.0 || summary.riskExposure > summary.revenue * 1.1 ? "Watch" : "Clear";
+        return [
+          { label: `Scenario: ${state.scenario}`, color: scenarioColor },
+          { label: `Leverage: ${summary.leverage.toFixed(1)}x`, color: COLORS.gold },
+          { label: `Status: ${status}`, color: status === "Clear" ? COLORS.green : COLORS.red }
+        ];
+      }
+
+      return [
+        { label: `Scenario: ${state.scenario}`, color: scenarioColor },
+        { label: scope, color: COLORS.teal },
+        { label: `Rev vs plan: ${signedPct(summary.revenue, summary.planRevenue)}`, color: summary.revenue >= summary.planRevenue ? COLORS.green : COLORS.red }
+      ];
+    }
+
+    function kpisFor(page) {
+      const now = financeSummary(state);
+      const prev = financeSummary(previousFilters());
+
+      if (page === "cash") {
+        return [
+          {
+            label: "Cash",
+            value: money(now.cash, 1),
+            py: money(prev.cash, 0),
+            yoy: signedPct(now.cash, prev.cash),
+            color: COLORS.gold,
+            spark: seriesValues("cash"),
+            mood: favorableClass(now.cash, prev.cash)
+          },
+          {
+            label: "Runway",
+            value: fmtRunway(now.runway),
+            py: fmtRunway(prev.runway),
+            yoy: signedPct(now.runway, prev.runway),
+            color: COLORS.blue,
+            spark: seriesValues("cash").map((value, index) => value / Math.max(1, 4 + index)),
+            mood: favorableClass(now.runway, prev.runway)
+          },
+          {
+            label: "FCF",
+            value: money(now.fcf, 1),
+            py: money(prev.fcf, 1),
+            yoy: signedPct(now.fcf, prev.fcf),
+            color: COLORS.teal,
+            spark: seriesValues("fcf"),
+            mood: favorableClass(now.fcf, prev.fcf)
+          },
+          {
+            label: "Burn",
+            value: money0(now.burn),
+            py: money0(prev.burn),
+            yoy: signedPct(now.burn, prev.burn || 1),
+            color: COLORS.red,
+            spark: seriesValues("burn"),
+            mood: favorableClass(now.burn, prev.burn, false)
+          }
+        ];
+      }
+
+      if (page === "risk") {
+        return [
+          {
+            label: "EV",
+            value: money(now.ev, 1),
+            py: money(prev.ev, 1),
+            yoy: signedPct(now.ev, prev.ev),
+            color: COLORS.blue,
+            spark: seriesValues("ebitda").map(value => value * SCENARIOS[state.scenario].multiple),
+            mood: favorableClass(now.ev, prev.ev)
+          },
+          {
+            label: "Equity",
+            value: money(now.equity, 1),
+            py: money(prev.equity, 1),
+            yoy: signedPct(now.equity, prev.equity),
+            color: COLORS.green,
+            spark: seriesValues("ebitda").map(value => value * SCENARIOS[state.scenario].multiple * 0.78),
+            mood: favorableClass(now.equity, prev.equity)
+          },
+          {
+            label: "Leverage",
+            value: `${now.leverage.toFixed(1)}x`,
+            py: `${prev.leverage.toFixed(1)}x`,
+            yoy: `${(now.leverage - prev.leverage).toFixed(1)}x`,
+            color: COLORS.gold,
+            spark: seriesValues("ebitda").map((value, index) => Math.max(0.05, (now.debt / Math.max(0.1, value * 12 / Math.max(1, index + 1))))),
+            mood: favorableClass(now.leverage, prev.leverage, false)
+          },
+          {
+            label: "Risk",
+            value: money(now.riskExposure, 0),
+            py: money(prev.riskExposure, 0),
+            yoy: signedPct(now.riskExposure, prev.riskExposure),
+            color: COLORS.red,
+            spark: seriesValues("riskExposure"),
+            mood: favorableClass(now.riskExposure, prev.riskExposure, false)
+          }
+        ];
+      }
+
+      return [
+        {
+          label: "Revenue",
+          value: money(now.revenue, 1),
+          py: money(prev.revenue, 1),
+          yoy: signedPct(now.revenue, prev.revenue),
+          color: COLORS.blue,
+          spark: seriesValues("revenue"),
+          mood: favorableClass(now.revenue, prev.revenue)
+        },
+        {
+          label: "Margin",
+          value: pct(now.gmRate),
+          py: pct(prev.gmRate),
+          yoy: signedPts(now.gmRate, prev.gmRate),
+          color: COLORS.teal,
+          spark: seriesValues("grossProfit").map((value, index) => value / Math.max(0.1, seriesValues("revenue")[index] || 1)),
+          mood: favorableClass(now.gmRate, prev.gmRate)
+        },
+        {
+          label: "EBITDA",
+          value: money(now.ebitda, 1),
+          py: money(prev.ebitda, 1),
+          yoy: signedPct(now.ebitda, prev.ebitda),
+          color: COLORS.green,
+          spark: seriesValues("ebitda"),
+          mood: favorableClass(now.ebitda, prev.ebitda)
+        },
+        {
+          label: "Cash",
+          value: money(now.cash, 1),
+          py: money(prev.cash, 0),
+          yoy: signedPct(now.cash, prev.cash),
+          color: COLORS.gold,
+          spark: seriesValues("cash"),
+          mood: favorableClass(now.cash, prev.cash)
+        }
+      ];
+    }
+
+    function boardKpiRows(summary) {
+      return [
+        ["Revenue", money(summary.revenue, 1), money(summary.planRevenue, 1), statusFromVariance(summary.revenue / Math.max(0.1, summary.planRevenue), 0.99, 0.94)],
+        ["EBITDA", money(summary.ebitda, 1), money(summary.planEbitda, 1), statusFromVariance(summary.ebitda / Math.max(0.1, summary.planEbitda), 0.98, 0.92)],
+        ["Margin", pct(summary.gmRate), pct(summary.planGmRate), statusFromVariance(summary.gmRate - summary.planGmRate, -0.004, -0.018)],
+        ["Cash", money(summary.cash, 1), money(openingCash(state.year) * filterShare(state) + summary.planFcf, 1), statusFromVariance(summary.cash, openingCash(state.year) * filterShare(state) * 0.98, openingCash(state.year) * filterShare(state) * 0.90)]
+      ];
+    }
+
+    function threeStatementRows(summary) {
+      return [
+        ["Revenue", money(summary.revenue, 1), money(summary.planRevenue, 1), statusFromVariance(summary.revenue / Math.max(0.1, summary.planRevenue), 0.99, 0.94)],
+        ["Operating CF", money(summary.fcf + summary.fundingNeed, 1), money(summary.planFcf + summary.fundingNeed, 1), statusFromVariance(summary.fcf, summary.planFcf * 0.96, summary.planFcf * 0.85)],
+        ["Free CF", money(summary.fcf, 1), money(summary.planFcf, 1), statusFromVariance(summary.fcf, summary.planFcf * 0.96, summary.planFcf * 0.84)],
+        ["Funding Need", money0(summary.fundingNeed), "$0", statusFromVariance(summary.fundingNeed, 0.5, 4.0, true)]
+      ];
+    }
+
+    function riskRegisterRows(summary) {
+      const base = summary.riskExposure;
+      return [
+        ["FX / rates", money(base * 0.34, 1), "CFO", base > 34 ? "Risk" : "Watch"],
+        ["Renewals", money(base * 0.25, 1), "Sales", base > 48 ? "Watch" : "Clear"],
+        ["Cloud cost", money(base * 0.22, 1), "Ops", base > 30 ? "Watch" : "Clear"],
+        ["Covenant", money(base * 0.19, 1), "Finance", summary.leverage > 3 ? "Risk" : "Clear"]
+      ];
+    }
+
+    function panelsFor(page) {
+      const summary = financeSummary(state);
+      const trend = monthlyTrend(state);
+      const regionGroups = groupsFor("region", "revenue", state, { ignore: "region" });
+      const buGroups = groupsFor("businessUnit", "revenue", state, { ignore: "businessUnit" });
+
+      if (page === "cash") {
+        const scenarioFunding = scenarioRows("fundingNeed");
+        const scenarioRunway = scenarioRows("runway");
+        const scenarioFcf = scenarioRows("fcf");
+        const costRows = [
+          ["Sales", 0.34],
+          ["R&D", 0.29],
+          ["G&A", 0.20],
+          ["Ops", 0.17]
+        ].map(([label, share]) => ({ label, value: summary.opex * share, display: money(summary.opex * share, 1) }));
+
+        return [
+          {
+            title: "Cash Balance + Funding Need Trend",
+            subtitle: `${state.year} liquidity under ${state.scenario}`,
+            type: "combo",
+            series: [
+              { label: "Cash", color: COLORS.gold, values: trend.map(row => row.cash), width: 5 },
+              { label: "FCF", color: COLORS.teal, values: trend.map(row => row.fcf), width: 4 },
+              { label: "Funding", color: COLORS.red, values: trend.map(row => row.fundingNeed), width: 4, opacity: .78 }
+            ]
+          },
+          {
+            title: "Funding Need by Scenario",
+            subtitle: "Liquidity need by scenario",
+            type: "bars",
+            clickFilter: "scenario",
+            rows: scenarioFunding.map(row => ({ label: row.label, value: row.value, display: money0(row.value), filterValue: row.label, color: SCENARIOS[row.label].color }))
+          },
+          {
+            title: "Runway by Scenario",
+            subtitle: "Scenario liquidity runway",
+            type: "bars",
+            clickFilter: "scenario",
+            rows: scenarioRunway.map(row => ({ label: row.label, value: row.value, display: fmtRunway(row.value), filterValue: row.label, color: SCENARIOS[row.label].color }))
+          },
+          {
+            title: "3-Statement Summary",
+            subtitle: "Actual, plan, variance, and status",
+            type: "table",
+            headers: ["Metric", "Actual", "Plan", "Status"],
+            rows: threeStatementRows(summary)
+          },
+          {
+            title: "Opex by Cost Category",
+            subtitle: "Functional spend lens",
+            type: "bars",
+            rows: costRows
+          },
+          {
+            title: "Free Cash Flow by Scenario",
+            subtitle: "FCF after working capital and capex",
+            type: "bars",
+            clickFilter: "scenario",
+            rows: scenarioFcf.map(row => ({ label: row.label, value: row.value, display: money(row.value, 1), filterValue: row.label, color: SCENARIOS[row.label].color }))
+          }
+        ];
+      }
+
+      if (page === "risk") {
+        const valuationRows = [
+          { label: "DCF", value: summary.ev * 0.98, display: money(summary.ev * 0.98, 1) },
+          { label: "Comps", value: summary.ev * 1.03, display: money(summary.ev * 1.03, 1) },
+          { label: "Precedent", value: summary.ev * 0.88, display: money(summary.ev * 0.88, 1) },
+          { label: "Base", value: summary.ev * 0.94, display: money(summary.ev * 0.94, 1) }
+        ];
+        const riskRows = ["Low", "Medium", "High"].map((severity) => {
+          const rows = rowsFor(state).filter(row => row.severity === severity);
+          const value = sum(rows, "riskExposure");
+          return { label: severity, value, display: money(value, 1), color: severity === "High" ? COLORS.red : severity === "Medium" ? COLORS.gold : COLORS.green };
+        });
+        const ownerRows = ["CFO", "Sales", "Ops", "Finance"].map((owner) => {
+          const rows = rowsFor(state).filter(row => row.owner === owner);
+          const value = sum(rows, "riskExposure");
+          return { label: owner, value, display: money(value, 1) };
+        });
+        const sensitivityRows = [
+          { label: "GM -1 pt", value: summary.revenue * 0.010, display: `-${money(summary.revenue * 0.010, 1)}` },
+          { label: "Revenue -3%", value: summary.revenue * summary.gmRate * 0.030, display: `-${money(summary.revenue * summary.gmRate * 0.030, 1)}` },
+          { label: "Opex +5%", value: summary.opex * 0.050, display: `-${money(summary.opex * 0.050, 1)}` },
+          { label: "WACC +1%", value: summary.ev * 0.018, display: `-${money(summary.ev * 0.018, 1)}` }
+        ];
+
+        return [
+          {
+            title: "Valuation Range by Method",
+            subtitle: "Enterprise value sensitivity",
+            type: "bars",
+            rows: valuationRows
+          },
+          {
+            title: "Risk Exposure by Severity",
+            subtitle: "Scenario-adjusted exposure",
+            type: "bars",
+            rows: riskRows
+          },
+          {
+            title: "Covenant Headroom Trend",
+            subtitle: "Leverage and headroom path",
+            type: "combo",
+            series: [
+              { label: "Headroom", color: COLORS.green, values: trend.map((row, index) => Math.max(0, 3.5 - (summary.debt / Math.max(0.1, row.ebitda * 12 / Math.max(1, index + 1))))), width: 5 },
+              { label: "Leverage", color: COLORS.gold, values: trend.map((row, index) => summary.debt / Math.max(0.1, row.ebitda * 12 / Math.max(1, index + 1))), width: 4 },
+              { label: "Risk", color: COLORS.red, values: trend.map(row => row.riskExposure / Math.max(1, summary.riskExposure) * 3.5), width: 4, opacity: .75 }
+            ]
+          },
+          {
+            title: "Risk Register",
+            subtitle: "Risk, exposure, owner, and signal",
+            type: "table",
+            headers: ["Risk", "Exposure", "Owner", "Signal"],
+            rows: riskRegisterRows(summary)
+          },
+          {
+            title: "Sensitivity Impact",
+            subtitle: "Downside value at risk",
+            type: "bars",
+            rows: sensitivityRows
+          },
+          {
+            title: "Risk Exposure by Owner",
+            subtitle: "Action ownership lens",
+            type: "bars",
+            rows: ownerRows
+          }
+        ];
+      }
+
+      return [
+        {
+          title: "Revenue vs Plan + EBITDA Trend",
+          subtitle: `${state.year} monthly plan and forecast path`,
+          type: "combo",
+          series: [
+            { label: "Actual", color: COLORS.blue, values: trend.map(row => row.revenue), width: 5 },
+            { label: "Plan", color: COLORS.navy, values: trend.map(row => row.planRevenue), width: 4 },
+            { label: "Forecast", color: COLORS.orange, values: trend.map(row => row.forecastRevenue), width: 4, opacity: .78 },
+            { label: "EBITDA", color: COLORS.plum, values: trend.map(row => row.ebitda), width: 4 }
+          ]
+        },
+        {
+          title: "Revenue Mix by Region",
+          subtitle: "Revenue share by geography",
+          type: "donut",
+          totalLabel: money(summary.revenue, 1),
+          segments: regionGroups.map(row => ({ label: row.label, value: row.value }))
+        },
+        {
+          title: "Revenue by Business Unit",
+          subtitle: "Revenue contribution by owner",
+          type: "bars",
+          clickFilter: "businessUnit",
+          rows: buGroups.map(row => ({ label: row.label, value: row.value, display: money(row.value, 1), filterValue: row.label }))
+        },
+        {
+          title: "Board KPI Details",
+          subtitle: "Actual, variance, status, and trend",
+          type: "table",
+          headers: ["Metric", "Actual", "Plan", "Status"],
+          rows: boardKpiRows(summary)
+        },
+        {
+          title: "Revenue vs Plan by BU",
+          subtitle: "Variance to plan by owner",
+          type: "bars",
+          clickFilter: "businessUnit",
+          rows: buGroups.map((row) => {
+            const variance = row.totals.revenue - row.totals.planRevenue;
+            return {
+              label: row.label,
+              value: Math.abs(variance),
+              display: signedMoneyDelta(row.totals.revenue, row.totals.planRevenue),
+              filterValue: row.label,
+              color: variance >= 0 ? COLORS.green : COLORS.red
+            };
+          })
+        },
+        {
+          title: "EBITDA by BU",
+          subtitle: "Contribution after opex",
+          type: "bars",
+          clickFilter: "businessUnit",
+          rows: buGroups.map(row => ({ label: row.label, value: row.totals.ebitda, display: money(row.totals.ebitda, 1), filterValue: row.label }))
+        }
+      ];
+    }
+
+    function renderPage(pageId) {
+      const summary = financeSummary(state);
+      const kpis = kpisFor(pageId);
+      const panels = panelsFor(pageId);
+      content.innerHTML = "";
+
+      const title = document.createElement("h1");
+      title.className = "page-title";
+      title.textContent = pageTitles[pageId];
+      content.appendChild(title);
+
+      const packId = document.createElement("div");
+      packId.className = "pack-id";
+      packId.innerHTML = "<span>FP20</span><strong>Board CFO Pack</strong>";
+      content.appendChild(packId);
+
+      const chipRow = document.createElement("div");
+      chipRow.className = "chip-row";
+      chipRow.innerHTML = chipsFor(pageId, summary).map((chip) => `
+        <span class="chip" style="color:${chip.color}"><i></i><span>${escapeHtml(chip.label)}</span></span>
+      `).join("");
+      content.appendChild(chipRow);
+
+      kpis.forEach((kpi, index) => content.appendChild(renderKpi(kpi, index)));
+      panels.forEach((panel, index) => content.appendChild(renderPanel(panel, index)));
+      updateQaState();
+    }
+
+    function setPage(pageId) {
+      state.page = pageId;
+      document.querySelectorAll(".nav button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.page === pageId);
+      });
+      renderPage(pageId);
+    }
+
+    function setFilter(key, value) {
+      state[key] = value;
+      syncControls();
+      renderPage(state.page);
+    }
+
+    function resetFilters() {
+      state.year = "2026";
+      state.scenario = "Base";
+      state.businessUnit = "All BU";
+      state.region = "All Region";
+      syncControls();
+      renderPage(state.page);
+    }
+
+    function fillSelect(id, values, selected) {
+      const select = document.getElementById(id);
+      select.innerHTML = values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+      select.value = selected;
+    }
+
+    function initControls() {
+      fillSelect("yearFilter", ["2026", "2025"], state.year);
+      fillSelect("scenarioFilter", Object.keys(SCENARIOS), state.scenario);
+      fillSelect("businessUnitFilter", ["All BU", ...BUSINESS_UNITS.map(item => item.name)], state.businessUnit);
+      fillSelect("regionFilter", ["All Region", ...REGIONS.map(item => item.name)], state.region);
+
+      document.getElementById("yearFilter").addEventListener("change", event => setFilter("year", event.target.value));
+      document.getElementById("scenarioFilter").addEventListener("change", event => setFilter("scenario", event.target.value));
+      document.getElementById("businessUnitFilter").addEventListener("change", event => setFilter("businessUnit", event.target.value));
+      document.getElementById("regionFilter").addEventListener("change", event => setFilter("region", event.target.value));
+      document.getElementById("resetFilters").addEventListener("click", resetFilters);
+    }
+
+    function syncControls() {
+      document.getElementById("yearFilter").value = state.year;
+      document.getElementById("scenarioFilter").value = state.scenario;
+      document.getElementById("businessUnitFilter").value = state.businessUnit;
+      document.getElementById("regionFilter").value = state.region;
+    }
+
+    function updateQaState() {
+      const overflowCandidates = document.querySelectorAll(".nav button,.slicer,.chip,.kpi-card,.kpi-value,.kpi-label,.kpi-foot b,.page-title,.panel h2,.panel small,.bar-row span,.bar-row b,.metric-name,.metric-value,.variance-cell b,th,td,.status");
+      const visibleOverflow = Array.from(overflowCandidates).filter((el) => {
+        const rect = el.getBoundingClientRect();
+        const style = window.getComputedStyle(el);
+        if (rect.width < 1 || rect.height < 1 || style.display === "none" || style.visibility === "hidden") return false;
+        const clips = /(hidden|clip)/.test(style.overflow + style.overflowX + style.overflowY);
+        return clips && (el.scrollWidth > el.clientWidth + 2 || el.scrollHeight > el.clientHeight + 2);
+      }).map((el) => ({
+        className: el.className || el.tagName,
+        text: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80)
+      }));
+
+      const kpiRects = Array.from(document.querySelectorAll(".kpi-card")).map((card) => card.getBoundingClientRect());
+      const kpiOverlapPx = kpiRects.reduce((maxOverlap, current, index) => {
+        const overlap = kpiRects.slice(index + 1).reduce((pairMax, next) => {
+          const horizontal = Math.max(0, Math.min(current.right, next.right) - Math.max(current.left, next.left));
+          const vertical = Math.max(0, Math.min(current.bottom, next.bottom) - Math.max(current.top, next.top));
+          return Math.max(pairMax, Math.round(horizontal * vertical));
+        }, 0);
+        return Math.max(maxOverlap, overlap);
+      }, 0);
+
+      const chipRow = document.querySelector(".chip-row")?.getBoundingClientRect();
+      const titleRect = document.querySelector(".page-title")?.getBoundingClientRect();
+      const packRect = document.querySelector(".pack-id")?.getBoundingClientRect();
+      const lensKpiOverlapPx = chipRow
+        ? kpiRects.reduce((maxOverlap, rect) => {
+          const horizontal = Math.max(0, Math.min(chipRow.right, rect.right) - Math.max(chipRow.left, rect.left));
+          const vertical = Math.max(0, Math.min(chipRow.bottom, rect.bottom) - Math.max(chipRow.top, rect.top));
+          return Math.max(maxOverlap, Math.round(horizontal * vertical));
+        }, 0)
+        : 0;
+      const headerOverlapPx = chipRow && titleRect && packRect
+        ? Math.max(0, Math.round(titleRect.right - chipRow.left), Math.round(chipRow.right - packRect.left))
+        : 0;
+
+      window.__dashboardQa = {
+        project: 20,
+        activePage: state.page,
+        filters: { ...state },
+        pages: pageOrder.length,
+        navigationButtons: document.querySelectorAll(".nav button").length,
+        filterControls: document.querySelectorAll("select").length,
+        kpiCards: document.querySelectorAll(".kpi-card").length,
+        panels: document.querySelectorAll(".panel").length,
+        tables: document.querySelectorAll("table").length,
+        svgVisuals: document.querySelectorAll("svg").length,
+        dashboardScale: Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dashboard-scale")) || 1,
+        visibleOverflow,
+        kpiOverlapPx,
+        lensKpiOverlapPx,
+        headerOverlapPx,
+        bodyOverflowPx: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth
+      };
+    }
+
+    document.querySelectorAll(".nav button").forEach((button) => {
+      button.addEventListener("click", () => setPage(button.dataset.page));
+    });
+
+    content.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-filter-kind]");
+      if (!target) return;
+      setFilter(target.dataset.filterKind, target.dataset.filterValue);
+    });
+
+    window.addEventListener("resize", fitDashboard);
+    initControls();
+    setPage(pageOrder[0]);
+    fitDashboard();
+  </script>
+</body>
 </html>

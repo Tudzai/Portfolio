@@ -8,7 +8,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const read = (relativePath) => fs.readFile(path.join(repoRoot, relativePath), "utf8");
 
 const hubRoutes = [
-  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "routes-20260811-powerbi5"],
+  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "routes-20260817-powerbi7"],
   ["showcase/fpa-decision-cases/index.html", "fpa", "decision-hub-hero", "routes-20260816-fpa-simple2"],
   ["showcase/python-automation/index.html", "automation", "decision-hub-hero", "routes-20260811-annotated2"],
   ["showcase/financial-models/index.html", "models", "decision-hub-hero", "routes-20260811-annotated2"],
@@ -80,13 +80,17 @@ test("redesigns the Power BI library from the recruiter shortlist through the fi
   assert.match(html, /class="section project-lens project-lens-primary"/);
   assert.match(html, /class="section project-lens project-lens-final"/);
   assert.equal((html.match(/class="project-open"/g) ?? []).length, 17);
-  assert.equal((html.match(/class="project-visual"/g) ?? []).length, 19);
+  assert.equal((html.match(/class="project-visual"/g) ?? []).length, 20);
 
   const previewImages = [...html.matchAll(/src="\.\.\/\.\.\/(assets\/powerbi-previews\/[^"?]+\.png)"/g)].map((match) => match[1]);
   assert.equal(previewImages.length, 19);
   assert.equal(new Set(previewImages).size, 19);
 
-  assert.match(html, /class="project-card featured preview-suppressed" id="board-investor-cfo-pack"/);
+  assert.match(html, /class="project-card featured" id="board-investor-cfo-pack"/);
+  assert.match(html, /<a class="project-visual" href="board-investor-cfo-pack\/index\.html"[^>]*>[\s\S]*?<img src="\.\.\/\.\.\/assets\/bi-board-cfo-dashboard\.png"/);
+  assert.doesNotMatch(html, /preview-suppressed/);
+  assert.match(css, /#board-investor-cfo-pack \.project-visual\s*\{[^}]*aspect-ratio:\s*16 \/ 9;[^}]*border:\s*0;/s);
+  assert.match(css, /#board-investor-cfo-pack \.project-visual img\s*\{[^}]*top:\s*-3\.06%;[^}]*left:\s*-6\.25%;[^}]*width:\s*112\.5%;/s);
   assert.match(html, /<article class="project-card" id="esg-carbon-finance">/);
 
   for (const previewImage of previewImages) {

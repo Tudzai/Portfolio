@@ -13,7 +13,11 @@ const DEFAULT_REPO_ROOT = path.resolve(SCRIPT_DIR, "..");
 const STAGE_PREFIX = "Stage/agentic-finance/";
 const THEME_ROOT = "assets/agentic-home";
 const THEME_VERSION = "routes-20260810-hybrid1";
-const SKIPPED_ROUTES = new Set(["index.html", "404.html"]);
+const SKIPPED_ROUTES = new Set([
+  "index.html",
+  "404.html",
+  "showcase/powerbi/board-investor-cfo-pack/preview.html",
+]);
 const THEME_FILES = [
   "css/tokens.css",
   "css/base.css",

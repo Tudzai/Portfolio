@@ -11,6 +11,7 @@ const EXCLUDED_THEME_ROUTES = new Set([
   "index.html",
   "404.html",
   "blog/predictive-collections-agent/deck/index.html",
+  "showcase/powerbi/board-investor-cfo-pack/preview.html",
 ]);
 const EXCLUDED_REFERENCE_ROUTES = new Set(["index.html", "404.html"]);
 const EXCLUDED_ROOT_DIRECTORIES = new Set([
@@ -99,7 +100,7 @@ test("ships the enlarged AT mark through one fresh shared shell cache key", asyn
   }
 
   const shellCss = await fs.readFile(path.join(THEMED_ASSET_ROOT, "css", "shell.css"), "utf8");
-  assert.equal(shellConsumers.length, 84);
+  assert.equal(shellConsumers.length, 83);
   assert.match(
     shellCss,
     /body\[data-stage-template\] \.stage-shell-brand-mark\s*\{[^}]*position:\s*relative/s,
@@ -112,7 +113,7 @@ test("ships the enlarged AT mark through one fresh shared shell cache key", asyn
 
 test("serves every shell-managed branch route with the approved purple production shell", async () => {
   const routes = (await walkHtml(REPO_ROOT)).filter((route) => !EXCLUDED_THEME_ROUTES.has(route));
-  assert.equal(routes.length, 83);
+  assert.equal(routes.length, 82);
 
   for (const route of routes) {
     const html = await fs.readFile(path.join(REPO_ROOT, route), "utf8");
@@ -135,6 +136,40 @@ test("serves every shell-managed branch route with the approved purple productio
     assert.doesNotMatch(html, /Stage\/agentic-finance/i, `${route}: Stage URL leak`);
     assert.doesNotMatch(html, /noindex|nofollow|noarchive/i, `${route}: Stage robots leak`);
   }
+});
+
+test("keeps the board CFO preview as a self-contained interactive dashboard", async () => {
+  const routeRoot = path.join(REPO_ROOT, "showcase", "powerbi", "board-investor-cfo-pack");
+  const [indexHtml, previewHtml, pageCss] = await Promise.all([
+    fs.readFile(path.join(routeRoot, "index.html"), "utf8"),
+    fs.readFile(path.join(routeRoot, "preview.html"), "utf8"),
+    fs.readFile(path.join(routeRoot, "board-pack-page.css"), "utf8"),
+  ]);
+
+  assert.match(indexHtml, /board-pack-page\.css\?v=board-borderless-20260817/);
+  assert.match(indexHtml, /<main\b[^>]*id=["']main-content["'][^>]*class=["']board-case["']/i);
+  assert.equal((indexHtml.match(/\bid=["']main-content["']/gi) || []).length, 1);
+  assert.match(indexHtml, /id=["']interactive-preview["']/);
+  assert.match(indexHtml, /<iframe\b[^>]*id=["']board-pack-preview["'][^>]*src=["']preview\.html\?v=interactive-20260817["'][^>]*title=["']Board Investor CFO Pack interactive preview["']/i);
+  assert.match(indexHtml, /<h1\b[^>]*>Board Investor\s*<span>CFO Pack<\/span><\/h1>/i);
+  assert.match(indexHtml, /class=["']board-overview["']/);
+  assert.match(indexHtml, /class=["']board-metrics["']/);
+  assert.doesNotMatch(indexHtml, /class=["']board-snapshot/);
+  assert.doesNotMatch(indexHtml, /class=["']board-signal-grid["']/);
+  assert.doesNotMatch(indexHtml, /class=["']board-brief["']/);
+  assert.match(indexHtml, /function resizeDashboardFrame\(\)/);
+  assert.match(indexHtml, /dashboardShell\.getBoundingClientRect\(\)\.height/);
+  assert.match(indexHtml, /preview\.style\.minHeight\s*=\s*["']0["']/);
+  assert.match(indexHtml, /preview\.style\.overflowY\s*=\s*["']hidden["']/);
+  assert.doesNotMatch(indexHtml, /\.scrollHeight/);
+  assert.doesNotMatch(indexHtml, /function resizePreviewFrame\(\)/);
+  assert.doesNotMatch(indexHtml, />104x</);
+  assert.match(pageCss, /\.board-dashboard-shell\s*\{[^}]*padding:\s*0;[^}]*border:\s*0;[^}]*background:\s*transparent;[^}]*box-shadow:\s*none;/s);
+  assert.match(previewHtml, /function initControls\(\)/);
+  assert.match(previewHtml, /renderPage\(state\.page\)/);
+  assert.match(previewHtml, /window\.previewActions\s*=/);
+  assert.match(previewHtml, /window\.__dashboardQa\s*=/);
+  assert.doesNotMatch(previewHtml, /\bdata-stage-shell\b/);
 });
 
 test("resolves all promoted branch assets and links inside the production repository", async () => {
