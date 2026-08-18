@@ -338,7 +338,7 @@ ${heroMarkup}
       </div>
     </footer>
     <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>${cinematicScript}
+    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260818-back-to-top1"></script>${cinematicScript}
   </body>
 </html>
 `;

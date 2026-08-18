@@ -100,4 +100,6 @@ test("shared shell carries the main-page floating return control", async () => {
   assert.match(shell, /\.stage-back-to-top\.is-visible/);
   assert.match(site, /querySelector\(['"]\.stage-back-to-top['"]\)/);
   assert.match(site, /window\.scrollY/);
+  assert.match(site, /backToTop\.addEventListener\(['"]click['"]/);
+  assert.match(site, /window\.scrollTo\(\{/);
 });

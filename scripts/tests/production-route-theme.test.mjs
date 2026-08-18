@@ -152,6 +152,12 @@ test("serves every shell-managed branch route with the approved purple productio
     assert.match(html, /assets\/agentic-home\/js\/site\.js/, `${route}: site behavior`);
     assert.match(
       html,
+      /class=["']back-to-top stage-back-to-top["'] href=["']#main-content["']/,
+      `${route}: same-page back-to-top target`,
+    );
+    assert.doesNotMatch(html, /class=["']back-to-top stage-back-to-top["'] href=["'][^"']*index\.html#hero/, `${route}: homepage back-to-top leak`);
+    assert.match(
+      html,
       /tokens\.css\?v=routes-20260818-responsive-all1/,
       `${route}: shared responsive token cache key`,
     );

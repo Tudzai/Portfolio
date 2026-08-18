@@ -237,7 +237,7 @@ export function renderStageFooter({ stagePath }) {
     <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
       <div class="page-shell stage-shell-footer-inner">
         <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="${home}#hero" aria-label="Back to top" tabindex="-1">
+        <a class="back-to-top stage-back-to-top" href="#main-content" aria-label="Back to top" tabindex="-1">
           <span aria-hidden="true">&uarr;</span>
         </a>
       </div>

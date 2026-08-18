@@ -39,6 +39,16 @@
 
   const backToTop = document.querySelector('.stage-back-to-top');
   if (backToTop) {
+    backToTop.addEventListener('click', (event) => {
+      event.preventDefault();
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      });
+    });
+
     let scrollFrame = 0;
     const syncBackToTop = () => {
       scrollFrame = 0;

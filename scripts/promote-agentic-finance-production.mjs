@@ -13,6 +13,7 @@ const DEFAULT_REPO_ROOT = path.resolve(SCRIPT_DIR, "..");
 const STAGE_PREFIX = "Stage/agentic-finance/";
 const THEME_ROOT = "assets/agentic-home";
 const THEME_VERSION = "routes-20260818-responsive-all1";
+const SITE_VERSION = "routes-20260818-back-to-top1";
 const SKIPPED_ROUTES = new Set([
   "index.html",
   "404.html",
@@ -117,7 +118,7 @@ function stageAssetLinks(stagePath, template) {
     templateStylesheetFor(template),
   ].map((file) => `<link rel="stylesheet" data-agentic-theme href="${cssRoot}/${file}?v=${THEME_VERSION}">`).join("\n    ");
   const scripts = ["navigation.js", "site.js"]
-    .map((file) => `<script data-agentic-theme src="${jsRoot}/${file}?v=${THEME_VERSION}"></script>`)
+    .map((file) => `<script data-agentic-theme src="${jsRoot}/${file}?v=${file === "site.js" ? SITE_VERSION : THEME_VERSION}"></script>`)
     .join("\n    ");
   return { styles, scripts };
 }

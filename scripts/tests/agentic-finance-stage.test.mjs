@@ -162,12 +162,13 @@ test("replaces legacy portfolio chrome with one shared Agentic Finance shell", a
   assert.match(result, /href="\.\.\/\.\.\/\.\.\/blog\/index\.html">Blog<\/a>/);
   assert.equal((result.match(/class="stage-site-footer stage-shell-footer"/g) ?? []).length, 1);
   assert.match(result, /class="back-to-top stage-back-to-top"/);
+  assert.match(result, /class="back-to-top stage-back-to-top" href="#main-content"/);
   assert.doesNotMatch(result, /Finance judgment \/ Practical technology \/ Visible ownership/);
   assert.doesNotMatch(result, /class="mobile-nav"/);
   assert.match(result, /<div id="main-content" tabindex="-1"><\/div>/);
   assert.match(result, /<main data-stage-content>[\s\S]*<h1>Decision evidence<\/h1>/);
   assert.match(result, /<h1>Decision evidence<\/h1>/);
-  assert.match(result, /href="\.\.\/\.\.\/\.\.\/index\.html#hero"/);
+  assert.doesNotMatch(result, /class="back-to-top stage-back-to-top" href="[^"]*index\.html#hero"/);
   assert.doesNotMatch(result, /\n[\t ]+\n[\t ]*<footer class="stage-site-footer/);
 });
 
