@@ -50,8 +50,17 @@ export function validateStageHtml(html) {
   return errors;
 }
 
-export function validateStageStructure(html, { template } = {}) {
+export function validateStageStructure(html, { template, source } = {}) {
   const errors = [];
+  const dashboardOnly = template === "dashboard-preview" && /^showcase\/powerbi\/[^/]+\/preview\.html$/.test(source || "");
+
+  if (dashboardOnly) {
+    if (!/class=["'][^"']*\bpreview-frame\b/i.test(html)) errors.push("must retain the dashboard preview frame");
+    if (!/class=["'][^"']*\bdashboard-shell\b/i.test(html)) errors.push("must retain the dashboard shell");
+    if (/\bdata-stage-shell\b/i.test(html)) errors.push("dashboard-only previews must not embed the shared stage shell");
+    return errors;
+  }
+
   const headerCount = (html.match(/<header\b[^>]*data-stage-shell\b[^>]*>/gi) ?? []).length;
   const footerCount = (html.match(/<footer\b[^>]*stage-site-footer\b[^>]*>/gi) ?? []).length;
 
@@ -90,7 +99,7 @@ export async function validateStage({ repoRoot = DEFAULT_REPO_ROOT } = {}) {
   const errors = [];
   const stageRoot = path.resolve(repoRoot, STAGE_ROOT_RELATIVE);
 
-  if (routes.length !== 85) errors.push(`manifest contains ${routes.length} routes; expected 85`);
+  if (routes.length !== 86) errors.push(`manifest contains ${routes.length} routes; expected 86`);
 
   for (const route of routes) {
     const stageAbsolute = path.resolve(repoRoot, route.stage.replaceAll("/", path.sep));

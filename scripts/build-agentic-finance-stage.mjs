@@ -6,7 +6,7 @@ import { getStageRouteContext } from "./agentic-finance-route-context.mjs";
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = path.resolve(SCRIPT_DIR, "..");
 const STAGE_PREFIX = "Stage/agentic-finance/";
-const STAGE_ASSET_VERSION = "hybrid-20260810";
+const STAGE_ASSET_VERSION = "responsive-all-20260818";
 const STAGE_FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231d1329'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial,sans-serif' font-size='24' font-weight='700' fill='white'%3ETA%3C/text%3E%3C/svg%3E";
 const EXCLUDED_PREFIXES = [
   "Stage/",
@@ -384,13 +384,17 @@ export function rewriteHtmlForStage(html, { sourcePath, stagePath, scopedRoutes 
   return result;
 }
 
+export function isSelfContainedPowerBiPreview(route) {
+  return /^showcase\/powerbi\/[^/]+\/preview\.html$/.test(normalizeRoute(route));
+}
+
 export async function buildStage({ repoRoot = DEFAULT_REPO_ROOT } = {}) {
   const stageRoot = path.join(repoRoot, STAGE_PREFIX.replaceAll("/", path.sep));
   const sourceRoutes = await walkHtml(repoRoot, repoRoot);
   const scopedRoutes = new Set(sourceRoutes);
 
-  if (sourceRoutes.length !== 85) {
-    throw new Error(`Expected 85 scoped HTML routes, found ${sourceRoutes.length}`);
+  if (sourceRoutes.length !== 86) {
+    throw new Error(`Expected 86 scoped HTML routes, found ${sourceRoutes.length}`);
   }
 
   let generated = 0;
@@ -401,11 +405,15 @@ export async function buildStage({ repoRoot = DEFAULT_REPO_ROOT } = {}) {
     const sourceAbsolute = path.join(repoRoot, sourceRoute.replaceAll("/", path.sep));
     const stageAbsolute = path.join(repoRoot, stagePath.replaceAll("/", path.sep));
     const sourceHtml = await fs.readFile(sourceAbsolute, "utf8");
-    const transformed = composeStageDocument(sourceHtml, {
+    const context = {
       sourcePath: sourceRoute,
       stagePath,
       scopedRoutes,
-    });
+    };
+    const dashboardOnly = isSelfContainedPowerBiPreview(sourceRoute);
+    const transformed = dashboardOnly
+      ? rewriteHtmlForStage(removeStageOnlyRedirects(sourceHtml, sourceRoute), context)
+      : composeStageDocument(sourceHtml, context);
     const stageDir = path.dirname(stageAbsolute);
     const cssDir = toPosix(path.relative(stageDir, path.join(stageRoot, "assets", "css")));
     const jsDir = toPosix(path.relative(stageDir, path.join(stageRoot, "assets", "js")));
@@ -416,9 +424,11 @@ export async function buildStage({ repoRoot = DEFAULT_REPO_ROOT } = {}) {
     const jsLinks = ["navigation.js", "site.js"]
       .map((file) => `<script src="${jsDir}/${file}?v=${STAGE_ASSET_VERSION}"></script>`)
       .join("\n    ");
-    const withStageAssets = transformed
-      .replace(/<\/head>/i, `    <link rel="icon" href="${STAGE_FAVICON}">\n    ${cssLinks}\n  </head>`)
-      .replace(/<\/body>/i, `    ${jsLinks}\n  </body>`);
+    const withStageAssets = dashboardOnly
+      ? transformed
+      : transformed
+        .replace(/<\/head>/i, `    <link rel="icon" href="${STAGE_FAVICON}">\n    ${cssLinks}\n  </head>`)
+        .replace(/<\/body>/i, `    ${jsLinks}\n  </body>`);
     const normalizedStageAssets = withStageAssets.replace(/^[\t ]+$/gm, "");
 
     await fs.mkdir(stageDir, { recursive: true });

@@ -1044,7 +1044,13 @@
       const availableWidth = Math.max(320, frame.clientWidth - horizontalPadding);
       const naturalScale = availableWidth / 1280;
       const mobileReadableFloor = availableWidth < 720 ? 0.58 : 0;
-      const scale = Math.min(1, Math.max(naturalScale, mobileReadableFloor));
+      const viewportAspect = window.innerWidth / Math.max(1, window.innerHeight);
+      const highDensityCap = viewportAspect <= 2 && window.innerWidth >= 3200 && window.innerHeight >= 1800
+        ? 2
+        : viewportAspect <= 2 && window.innerWidth >= 2200 && window.innerHeight >= 1200
+          ? 4 / 3
+          : 1;
+      const scale = Math.min(highDensityCap, Math.max(naturalScale, mobileReadableFloor));
       document.documentElement.style.setProperty("--dashboard-scale", scale.toFixed(4));
       shell.style.width = `${Math.round(1280 * scale)}px`;
       shell.style.height = `${Math.round(720 * scale)}px`;

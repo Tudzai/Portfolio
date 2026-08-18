@@ -1492,48 +1492,29 @@ body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens .proj
 }
 
 body[data-stage-template="hub"][data-stage-family="powerbi"] .project-visual {
+  position: relative;
   display: block;
   margin: 3px 0 4px;
   overflow: hidden;
-  border: 1px solid var(--stage-line);
+  aspect-ratio: 16 / 9;
+  border: 0;
   border-radius: 12px;
-  background: #eeebef;
+  background: transparent;
   text-decoration: none;
 }
 
 body[data-stage-template="hub"][data-stage-family="powerbi"] .project-card.featured .project-visual {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-body[data-stage-template="hub"][data-stage-family="powerbi"] #board-investor-cfo-pack .project-visual {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  border: 0;
-}
-
-body[data-stage-template="hub"][data-stage-family="powerbi"] #board-investor-cfo-pack .project-visual img {
-  position: absolute;
-  top: -3.06%;
-  left: -6.25%;
-  width: 112.5%;
-  max-width: none;
-  height: auto;
-  aspect-ratio: auto;
-  object-fit: fill;
-  transform: none;
-}
-
-body[data-stage-template="hub"][data-stage-family="powerbi"] #board-investor-cfo-pack:hover .project-visual img {
-  transform: none;
+  background: transparent;
 }
 
 body[data-stage-template="hub"][data-stage-family="powerbi"] .project-visual img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   object-fit: cover;
-  object-position: top center;
+  object-position: center;
   transition: transform 220ms ease;
 }
 
@@ -1884,9 +1865,9 @@ body[data-stage-template="hub"][data-stage-family="powerbi"] main[data-stage-con
   }
 
   body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-visual img {
-    height: auto;
+    height: 100%;
     min-height: 0;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: auto;
   }
 
   body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-open {
@@ -1921,9 +1902,9 @@ body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final
 }
 
 body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-visual img {
-  height: auto;
+  height: 100%;
   min-height: 0;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: auto;
 }
 
 body[data-stage-template="hub"][data-stage-family="powerbi"] .project-lens-final .project-card .project-open {

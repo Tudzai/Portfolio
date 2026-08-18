@@ -8,7 +8,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const read = (relativePath) => fs.readFile(path.join(repoRoot, relativePath), "utf8");
 
 const hubRoutes = [
-  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "routes-20260817-powerbi7"],
+  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "routes-20260817-powerbi8"],
   ["showcase/fpa-decision-cases/index.html", "fpa", "decision-hub-hero", "routes-20260816-fpa-simple2"],
   ["showcase/python-automation/index.html", "automation", "decision-hub-hero", "routes-20260811-annotated2"],
   ["showcase/financial-models/index.html", "models", "decision-hub-hero", "routes-20260811-annotated2"],
@@ -83,19 +83,23 @@ test("redesigns the Power BI library from the recruiter shortlist through the fi
   assert.equal((html.match(/class="project-visual"/g) ?? []).length, 20);
 
   const previewImages = [...html.matchAll(/src="\.\.\/\.\.\/(assets\/powerbi-previews\/[^"?]+\.png)"/g)].map((match) => match[1]);
-  assert.equal(previewImages.length, 19);
-  assert.equal(new Set(previewImages).size, 19);
+  assert.equal(previewImages.length, 22);
+  assert.equal(new Set(previewImages).size, 20);
+  assert.equal((html.match(/<span class="status">Interactive<\/span>/g) ?? []).length, 20);
 
   assert.match(html, /class="project-card featured" id="board-investor-cfo-pack"/);
-  assert.match(html, /<a class="project-visual" href="board-investor-cfo-pack\/index\.html"[^>]*>[\s\S]*?<img src="\.\.\/\.\.\/assets\/bi-board-cfo-dashboard\.png"/);
+  assert.match(html, /<a class="project-visual" href="board-investor-cfo-pack\/index\.html"[^>]*>[\s\S]*?<img src="\.\.\/\.\.\/assets\/powerbi-previews\/board-investor-cfo-pack\.png"/);
   assert.doesNotMatch(html, /preview-suppressed/);
-  assert.match(css, /#board-investor-cfo-pack \.project-visual\s*\{[^}]*aspect-ratio:\s*16 \/ 9;[^}]*border:\s*0;/s);
-  assert.match(css, /#board-investor-cfo-pack \.project-visual img\s*\{[^}]*top:\s*-3\.06%;[^}]*left:\s*-6\.25%;[^}]*width:\s*112\.5%;/s);
+  assert.match(css, /data-stage-family="powerbi"\] \.project-visual\s*\{[^}]*aspect-ratio:\s*16 \/ 9;[^}]*border:\s*0;[^}]*background:\s*transparent;/s);
+  assert.match(css, /data-stage-family="powerbi"\] \.project-visual img\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;[^}]*width:\s*100%;[^}]*height:\s*100%;[^}]*object-fit:\s*cover;/s);
   assert.match(html, /<article class="project-card" id="esg-carbon-finance">/);
 
-  for (const previewImage of previewImages) {
-    const metadata = await fs.stat(path.join(repoRoot, previewImage));
-    assert.ok(metadata.size > 0, `${previewImage} should be a non-empty image`);
+  for (const previewImage of new Set(previewImages)) {
+    const image = await fs.readFile(path.join(repoRoot, previewImage));
+    assert.equal(image.subarray(1, 4).toString("ascii"), "PNG", `${previewImage} should be a PNG`);
+    assert.equal(image.readUInt32BE(16), 1280, `${previewImage} should use the standard 1280px width`);
+    assert.equal(image.readUInt32BE(20), 720, `${previewImage} should use the standard 720px height`);
+    assert.ok(image.length > 40 * 1024, `${previewImage} should contain a rendered dashboard rather than a blank canvas`);
   }
 
   assert.match(css, /Power BI case library: recruiter shortlist and editorial catalog/);

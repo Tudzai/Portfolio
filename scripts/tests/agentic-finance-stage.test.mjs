@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import {
   classifyRoute,
   composeStageDocument,
+  isSelfContainedPowerBiPreview,
   isScopedHtmlRoute,
   rewriteHtmlForStage,
   templateStylesheetFor,
@@ -191,6 +192,20 @@ test("preserves dashboard-internal topbars while adding the shared shell", async
   assert.equal((result.match(/class="site-header stage-shell-header"/g) ?? []).length, 1);
   assert.match(result, /class="topbar"/);
   assert.match(result, /Dashboard evidence chrome/);
+});
+
+test("keeps per-project Power BI previews dashboard-only in Stage", () => {
+  assert.equal(isSelfContainedPowerBiPreview("showcase/powerbi/monthly-fpa-performance-pack/preview.html"), true);
+  assert.equal(isSelfContainedPowerBiPreview("showcase/powerbi/board-investor-cfo-pack/preview.html"), true);
+  assert.equal(isSelfContainedPowerBiPreview("showcase/powerbi/project-preview.html"), false);
+
+  const html = `<!doctype html><html><head><meta name="robots" content="noindex, nofollow, noarchive"></head><body>
+    <div class="preview-frame"><div class="dashboard-shell"><div class="dashboard"></div></div></div>
+  </body></html>`;
+  assert.deepEqual(validateStageStructure(html, {
+    source: "showcase/powerbi/monthly-fpa-performance-pack/preview.html",
+    template: "dashboard-preview",
+  }), []);
 });
 
 test("preserves route-owned scripts after an internal dashboard main", () => {

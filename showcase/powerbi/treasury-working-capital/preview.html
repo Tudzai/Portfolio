@@ -1,207 +1,39 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="noindex, follow" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Treasury Working Capital Interactive Preview | Truong Dinh Anh Tu</title>
-    <style>
-      :root { --bg: #f6f7f4; --surface: #fff; --ink: #17201d; --muted: #5f6d68; --line: #d9dfda; --teal: #6b6f2d; --amber: #b4654a; --blue: #1f6c87; --risk: #a24d61; --good: #2f766b; }
-      * { box-sizing: border-box; }
-      body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, Arial, sans-serif; }
-      .dashboard { width: min(1220px, calc(100% - 32px)); margin: 0 auto; padding: 18px 0 34px; }
-      .topbar { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; justify-content: space-between; padding: 18px 0; }
-      .eyebrow { margin: 0 0 6px; color: var(--amber); font-size: .72rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
-      h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.45rem); line-height: 1.08; overflow-wrap: anywhere; }
-      .subtitle { max-width: 760px; margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
-      .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; min-width: min(100%, 340px); }
-      .chip { border: 1px solid var(--line); border-radius: 999px; padding: 9px 12px; background: var(--surface); color: var(--muted); font-size: .82rem; font-weight: 800; }
-      .kpi-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
-      .kpi { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
-      .kpi span, .panel-label, .driver-card span { display: block; color: var(--muted); font-size: .72rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
-      .kpi strong { display: block; margin: 8px 0 6px; font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1; overflow-wrap: anywhere; }
-      .kpi em { color: var(--good); font-style: normal; font-size: .82rem; font-weight: 800; }
-      .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: 12px; margin-top: 12px; }
-      .panel { min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 18px; overflow: hidden; }
-      .panel h2 { margin: 6px 0 12px; font-size: 1.15rem; }
-      .chart-wrap { width: 100%; overflow: hidden; }
-      .chart-svg { display: block; width: 100%; height: auto; min-height: 230px; }
-      .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; color: var(--muted); font-size: .82rem; font-weight: 800; }
-      .legend i { display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; border-radius: 999px; background: var(--teal); }
-      .legend i.plan { background: var(--amber); }
-      .driver-list { display: grid; gap: 10px; }
-      .driver-row { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(120px, 2fr) 44px; gap: 9px; align-items: center; font-size: .88rem; font-weight: 800; color: var(--muted); }
-      .bar { height: 10px; border-radius: 999px; background: #e8ede8; overflow: hidden; }
-      .bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--amber)); }
-      .driver-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
-      .driver-card { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; }
-      .driver-card strong { display: block; margin: 6px 0; font-size: .96rem; }
-      .driver-card em { color: var(--good); font-style: normal; font-weight: 900; }
-      .driver-card.risk em { color: var(--risk); }
-      table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-      th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-      th { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
-      td { line-height: 1.4; }
-      .good { color: var(--good); font-weight: 900; }
-      .bad { color: var(--risk); font-weight: 900; }
-      .full { margin-top: 12px; }
-      .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-      .tab { border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); padding: 9px 12px; font-weight: 900; cursor: pointer; }
-      .tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
-      .commentary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-      .commentary article { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; }
-      .commentary strong { display: block; margin-bottom: 8px; }
-      .commentary p { margin: 0; color: var(--muted); line-height: 1.5; }
-      .footnote { margin: 16px 0 0; color: var(--muted); font-size: .85rem; line-height: 1.5; }
-      @media (max-width: 1040px) { .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .layout { grid-template-columns: 1fr; } }
-      @media (max-width: 720px) {
-        .dashboard { width: min(100% - 24px, 1220px); padding-top: 12px; }
-        .topbar { display: block; }
-        .filters { justify-content: flex-start; margin-top: 14px; }
-        .kpi-grid, .driver-cards, .commentary { grid-template-columns: 1fr; }
-        .driver-row { grid-template-columns: 1fr; gap: 6px; }
-        .panel { padding: 14px; }
-        table { font-size: .82rem; }
-        th, td { padding: 9px 7px; }
-      }
-    </style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" href="../../../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
+  <body class="powerbi-standard-preview" data-project-no="14">
+    <div class="preview-frame">
+      <div class="dashboard-shell">
+        <div class="dashboard" role="application" aria-label="Treasury Working Capital interactive dashboard">
+          <aside class="sidebar">
+            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Treasury and cash</small></span></div>
+            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
+            <div class="lens-group">
+              <h2 class="lens-title">Global Lens</h2>
+              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
+              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
+            </div>
+            <div class="lens-group">
+              <h2 class="lens-title">Operating Scope</h2>
+              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
+              <label><span class="filter-label">Entity</span><span class="select-wrap"><select id="regionFilter" aria-label="Entity filter"></select></span></label>
+            </div>
+            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
+          </aside>
+          <main class="dashboard-content" id="content"></main>
         </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
       </div>
-    </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="dashboard" data-stage-content>
-<header class="topbar">
-        <div>
-          <p class="eyebrow">Interactive Power BI-style preview / Project 14</p>
-          <h1>Treasury Working Capital</h1>
-          <p class="subtitle">Treasury working-capital cockpit linking liquidity, runway, AR/AP execution, FX exposure, forecast accuracy, risk ownership, and action queues. This HTML version keeps the recruiter-facing interaction visible without requiring Power BI Service access.</p>
-        </div>
-        <div class="filters" aria-label="Demo filter chips">
-          <span class="chip">Period: QTD</span><span class="chip">Region: All</span><span class="chip">BU: All</span><span class="chip">Scenario: Base</span>
-        </div>
-      </header>
-      <section class="kpi-grid" aria-label="KPI summary">
-          <article class="kpi"><span>available liquidity</span><strong>$92.5M</strong><em>on track</em></article>
-          <article class="kpi"><span>liquidity headroom</span><strong>$82.3M</strong><em>on track</em></article>
-          <article class="kpi"><span>cash runway</span><strong>263.9 wks</strong><em>Base case</em></article>
-          <article class="kpi"><span>overdue AR</span><strong>66.0%</strong><em>collection pressure</em></article>
-          <article class="kpi"><span>unhedged FX</span><strong>54.8%</strong><em>hedge gap</em></article>
-          <article class="kpi"><span>open risks</span><strong>61</strong><em>owner queue ready</em></article>
-      </section>
-      <section class="layout">
-        <article class="panel">
-          <span class="panel-label">Trend and forecast call</span>
-          <h2>13-week cash and liquidity outlook</h2>
-          <div class="chart-wrap">
-            <svg class="chart-svg" viewBox="0 0 760 300" role="img" aria-label="Actual and plan trend chart" xmlns="http://www.w3.org/2000/svg">
-              <rect width="760" height="300" rx="10" fill="#fbfcfa"/>
-              <g stroke="#d9dfda" stroke-width="1">
-                <line x1="48" y1="60" x2="718" y2="60"/><line x1="48" y1="118" x2="718" y2="118"/><line x1="48" y1="176" x2="718" y2="176"/><line x1="48" y1="234" x2="718" y2="234"/>
-              </g>
-              <polyline points="36.0,58.0 242.0,178.0 448.0,226.0 654.0,34.0" fill="none" stroke="#6b6f2d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="36.0,80.1 242.0,187.6 448.0,226.0 654.0,34.0" fill="none" stroke="#b4654a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 8"/>
-              <g fill="#6b6f2d"><circle cx="36.0" cy="58.0" r="5"/><circle cx="242.0" cy="178.0" r="5"/><circle cx="448.0" cy="226.0" r="5"/><circle cx="654.0" cy="34.0" r="5"/></g>
-              <text x="48" y="282" fill="#5f6d68" font-size="13" font-weight="800">Jan</text><text x="678" y="282" fill="#5f6d68" font-size="13" font-weight="800">Dec</text>
-            </svg>
-          </div>
-          <div class="legend"><span><i></i>Actual / latest view</span><span><i class="plan"></i>Plan / benchmark</span></div>
-        </article>
-        <article class="panel">
-          <span class="panel-label">Driver heatmap</span>
-          <h2>What is moving the decision?</h2>
-          <div class="driver-list"><div class="driver-row"><span>Liquidity</span><div class="bar"><i style="width:92%"></i></div><strong>92%</strong></div>
-              <div class="driver-row"><span>Headroom</span><div class="bar"><i style="width:82%"></i></div><strong>82%</strong></div>
-              <div class="driver-row"><span>AR pressure</span><div class="bar"><i style="width:66%"></i></div><strong>66%</strong></div>
-              <div class="driver-row"><span>FX hedge gap</span><div class="bar"><i style="width:55%"></i></div><strong>55%</strong></div></div>
-          <div class="driver-cards"><article class="driver-card risk"><span>Risk driver</span><strong>13W net flow</strong><em>-$3.8M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>AP due 14d</strong><em>$4.6M</em></article>
-              <article class="driver-card risk"><span>Risk driver</span><strong>Open risks</strong><em>61</em></article></div>
-        </article>
-      </section>
-      <section class="layout full">
-        <article class="panel">
-          <span class="panel-label">Scenario table</span>
-          <h2>Decision scenarios</h2>
-          <table aria-label="Scenario table"><thead><tr><th>Lens</th><th>Primary signal</th><th>Secondary signal</th><th>Owner</th><th>Decision use</th></tr></thead><tbody><tr><td>Base</td><td>$60.3M closing cash</td><td>-$3.8M net flow</td><td>Treasury</td><td>Sequence 13-week payments</td></tr>
-                <tr><td>Downside</td><td>$35.9M closing cash</td><td>42.6 wks runway</td><td>CFO / Treasury</td><td>Protect funding headroom</td></tr>
-                <tr><td>APAC</td><td>$30.5M liquidity</td><td>$27.5M headroom</td><td>Regional Finance</td><td>Release trapped cash</td></tr>
-                <tr><td>EUR</td><td>38.2% unhedged FX</td><td>Hedge gap</td><td>Treasury</td><td>Refresh hedge decision</td></tr></tbody></table>
-        </article>
-        <article class="panel">
-          <span class="panel-label">Bridge and ownership</span>
-          <h2>Variance to action bridge</h2>
-          <table aria-label="Bridge table"><thead><tr><th>Driver</th><th>Impact</th><th>Finance call</th><th>Owner</th></tr></thead><tbody><tr><td>13W net flow</td><td class="bad">-$3.8M</td><td>Watch funding cadence</td><td>Treasury</td></tr>
-                <tr><td>AP due 14d</td><td class="bad">$4.6M</td><td>Sequence payment queue</td><td>Operations</td></tr>
-                <tr><td>FX hedge gap</td><td class="bad">54.8%</td><td>Refresh hedge decision</td><td>Finance</td></tr></tbody></table>
-        </article>
-      </section>
-      <section class="panel full">
-        <span class="panel-label">Drilldown tabs</span>
-        <h2>Owner action queue</h2>
-        <div class="tabs"><button class="tab active" type="button" data-tab="0">Treasury</button>
-              <button class="tab" type="button" data-tab="1">Collections</button>
-              <button class="tab" type="button" data-tab="2">Finance</button></div>
-        <table aria-label="Drilldown table"><thead><tr><th>View</th><th>Action</th><th>Metric / driver</th><th>Priority</th></tr></thead><tbody id="drilldown-body"></tbody></table>
-      </section>
-      <section class="commentary full" aria-label="Executive commentary">
-        <article><strong>So what</strong><p>Liquidity is healthy, but the decision depends on AR recovery, AP sequencing, FX exposure, and whether forecast error changes the runway call.</p></article>
-        <article><strong>Now what</strong><p>Protect headroom, work overdue AR by owner, and refresh FX/runway calls before CFO review.</p></article>
-        <article><strong>Governance</strong><p>Bridge signs, scenario totals, and owner actions are reconciled before the pack is used in a management review.</p></article>
-      </section>
-      <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for the public site.</p>
-    </main>
-
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
-      </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    </div>
+    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"treasury-working-capital","route":"treasury-working-capital/","no":"14","folder":"Project 14 - Treasury Working Capital","title":"Treasury Working Capital","lens":"Treasury and cash","summary":"Treasury view prioritizing AR, DSO, cash runway, FX exposure, liquidity, and collection actions.","decisionQuestion":"Is liquidity protected, which working-capital exposures need escalation, and how does downside change runway?","pages":[{"id":"liquidity-runway","label":"Liquidity & Runway"},{"id":"working-capital-control","label":"Working Capital Control"},{"id":"forecast-fx-risk","label":"Forecast, FX & Risk"}],"metrics":[{"value":"$24.7M","label":"cash balance","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":24206000,"prior":22724000,"series":[22724000,22903636.363636363,23083272.727272727,23262909.09090909,23442545.454545453,23622181.818181816,23801818.18181818,23981454.545454547,24161090.90909091,24340727.272727273,24520363.636363637,24700000],"sensitivity":1},{"value":"51","label":"DSO days","note":"Synthetic preview value.","format":"days","higherIsBetter":false,"plan":52.02,"prior":55.59,"series":[55.59,55.17272727272728,54.75545454545455,54.33818181818182,53.92090909090909,53.50363636363637,53.086363636363636,52.66909090909091,52.25181818181818,51.834545454545456,51.41727272727273,51],"sensitivity":1},{"value":"$6.2M","label":"overdue AR","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":6324000,"prior":6758000.000000001,"series":[6758000.000000001,6707272.727272728,6656545.454545455,6605818.181818183,6555090.90909091,6504363.636363637,6453636.363636364,6402909.090909091,6352181.818181818,6301454.545454546,6250727.2727272725,6200000],"sensitivity":1},{"value":"14.8","label":"cash runway months","note":"Synthetic preview value.","format":"days","higherIsBetter":true,"plan":14.504,"prior":13.616000000000001,"series":[13.616000000000001,13.723636363636365,13.83127272727273,13.938909090909092,14.046545454545456,14.154181818181819,14.261818181818184,14.369454545454547,14.47709090909091,14.584727272727275,14.692363636363638,14.8],"sensitivity":1}],"bars":[{"label":"Cash","value":77},{"label":"AR quality","value":58},{"label":"DSO","value":48},{"label":"Collections","value":68}],"drivers":[{"label":"Overdue AR","value":"-$1.6M","isRisk":true},{"label":"Supplier terms","value":"+$0.7M","isRisk":false},{"label":"FX exposure","value":"-$0.4M","isRisk":true}],"actions":[{"owner":"Treasury","action":"Prioritize top overdue customers."},{"owner":"Commercial","action":"Escalate collection promises by owner."},{"owner":"Finance","action":"Refresh cash runway under downside case."}],"financeLogic":["Opening cash plus inflows minus operating and financing outflows equals closing cash.","DSO uses average receivables divided by credit sales times period days.","Runway divides available liquidity by modeled monthly net burn."],"scopeLabel":"Liquidity Scope","scopeOptions":["Group Treasury","Operating Cash","Receivables","FX Exposure"],"breakdownLabel":"Entity","breakdownOptions":["All Entities","North","Central","South","International"],"regionOptions":["All Entities","North","Central","South","International"],"governance":["Cash balances reconcile to synthetic bank and ledger totals.","Receivables aging uses one as-of date and due-date convention.","FX exposure and hedges share a common currency and maturity basis.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"Group Treasury","region":"All Entities"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Liquidity Scope","options":["Group Treasury","Operating Cash","Receivables","FX Exposure"],"default":"Group Treasury"},{"id":"region","label":"Entity","options":["All Entities","North","Central","South","International"],"default":"All Entities"}],"dataClassification":"Synthetic public-safe preview data"});</script>
+    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
   </body>
 </html>

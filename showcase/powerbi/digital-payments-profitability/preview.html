@@ -1,340 +1,39 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="noindex, follow" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Digital Payments Profitability Preview | Truong Dinh Anh Tu</title>
-    <style>
-      :root {
-        --bg: #f5f7fb;
-        --surface: #ffffff;
-        --ink: #0f172a;
-        --muted: #64748b;
-        --line: #dbe3ef;
-        --navy: #0b1324;
-        --blue: #2563eb;
-        --green: #16a34a;
-        --violet: #7c3aed;
-        --teal: #0f766e;
-        --amber: #d97706;
-        --red: #dc2626;
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--ink);
-        font-family: Inter, Arial, sans-serif;
-      }
-      .dashboard {
-        width: min(1240px, calc(100% - 28px));
-        margin: 0 auto;
-        padding: 18px 0 34px;
-      }
-      .topbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 18px;
-        align-items: flex-start;
-        justify-content: space-between;
-        padding: 18px;
-        border: 1px solid #1e2d44;
-        border-radius: 8px;
-        background: var(--navy);
-        color: #fff;
-      }
-      .eyebrow {
-        margin: 0 0 8px;
-        color: #a7f3d0;
-        font-size: .72rem;
-        font-weight: 900;
-        letter-spacing: .12em;
-        text-transform: uppercase;
-      }
-      h1 {
-        margin: 0;
-        font-size: clamp(1.7rem, 3vw, 2.6rem);
-        line-height: 1.08;
-        overflow-wrap: anywhere;
-      }
-      .subtitle {
-        max-width: 780px;
-        margin: 10px 0 0;
-        color: #cbd5e1;
-        line-height: 1.55;
-      }
-      .lens {
-        min-width: min(100%, 360px);
-        padding: 12px 14px;
-        border: 1px solid #334155;
-        border-radius: 8px;
-        background: #101b2e;
-      }
-      .lens strong {
-        display: block;
-        color: #a7f3d0;
-        margin-bottom: 5px;
-      }
-      .lens span {
-        display: block;
-        color: #e5e7eb;
-        font-size: .88rem;
-        line-height: 1.45;
-      }
-      .kpis {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-        margin: 12px 0;
-      }
-      .kpi {
-        min-width: 0;
-        padding: 16px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--surface);
-        box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
-      }
-      .kpi span {
-        display: block;
-        color: var(--muted);
-        font-size: .74rem;
-        font-weight: 900;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-      }
-      .kpi strong {
-        display: block;
-        margin-top: 8px;
-        font-size: clamp(1.55rem, 2.5vw, 2.15rem);
-        line-height: 1;
-      }
-      .kpi em {
-        display: block;
-        margin-top: 8px;
-        color: var(--muted);
-        font-style: normal;
-        font-size: .86rem;
-        font-weight: 800;
-      }
-      .tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin: 10px 0;
-      }
-      .tab {
-        min-height: 40px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--surface);
-        color: var(--muted);
-        padding: 9px 13px;
-        font-weight: 900;
-        cursor: pointer;
-      }
-      .tab.active {
-        background: var(--blue);
-        border-color: var(--blue);
-        color: #fff;
-      }
-      .screenshot {
-        overflow: hidden;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--surface);
-        box-shadow: 0 14px 36px rgba(15, 23, 42, .08);
-      }
-      .screenshot img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(320px, .85fr);
-        gap: 12px;
-        margin-top: 12px;
-      }
-      .panel {
-        min-width: 0;
-        padding: 18px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--surface);
-      }
-      .panel h2 {
-        margin: 0 0 12px;
-        font-size: 1.08rem;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: .9rem;
-      }
-      th, td {
-        padding: 11px 10px;
-        border-bottom: 1px solid var(--line);
-        text-align: left;
-        vertical-align: top;
-      }
-      th {
-        color: var(--muted);
-        font-size: .72rem;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-      }
-      .good { color: var(--green); font-weight: 900; }
-      .watch { color: var(--amber); font-weight: 900; }
-      .risk { color: var(--red); font-weight: 900; }
-      .notes {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 12px;
-      }
-      .notes article {
-        padding: 15px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: #fbfdff;
-      }
-      .notes strong { display: block; margin-bottom: 8px; }
-      .notes p { margin: 0; color: var(--muted); line-height: 1.55; }
-      .footnote {
-        margin: 16px 0 0;
-        color: var(--muted);
-        font-size: .86rem;
-        line-height: 1.5;
-      }
-      @media (max-width: 920px) {
-        .kpis, .grid, .notes { grid-template-columns: 1fr; }
-        .dashboard { width: min(100% - 22px, 1240px); }
-        .topbar { padding: 16px; }
-      }
-    </style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+    <title>Digital Payments Profitability Interactive Preview | Truong Dinh Anh Tu</title>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" href="../../../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
+  <body class="powerbi-standard-preview" data-project-no="08">
+    <div class="preview-frame">
+      <div class="dashboard-shell">
+        <div class="dashboard" role="application" aria-label="Digital Payments Profitability interactive dashboard">
+          <aside class="sidebar">
+            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Payments profitability</small></span></div>
+            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
+            <div class="lens-group">
+              <h2 class="lens-title">Global Lens</h2>
+              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
+              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
+            </div>
+            <div class="lens-group">
+              <h2 class="lens-title">Operating Scope</h2>
+              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
+              <label><span class="filter-label">Payment Rail</span><span class="select-wrap"><select id="regionFilter" aria-label="Payment Rail filter"></select></span></label>
+            </div>
+            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
+          </aside>
+          <main class="dashboard-content" id="content"></main>
         </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
       </div>
-    </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="dashboard" data-stage-content>
-<header class="topbar">
-        <div>
-          <p class="eyebrow">Project 08 / Power BI management pack</p>
-          <h1>Digital Payments Profitability</h1>
-          <p class="subtitle">A payments FP&amp;A dashboard rebuilt around current-lens context, KPI cards with trends, merchant margin drivers, fee bridge logic, and scenario contribution margin.</p>
-        </div>
-        <div class="lens" aria-label="Current lens">
-          <strong>Current Lens</strong>
-          <span>Latest 2026-05 | all segments | all methods | all channels</span>
-          <span>Decision focus: pricing, unit cost, and risk leakage before margin call.</span>
-        </div>
-      </header>
-
-      <section class="kpis" aria-label="Current-month KPI summary">
-        <article class="kpi"><span>GMV</span><strong style="color: var(--blue)">$41.4M</strong><em>+1.0% MoM</em></article>
-        <article class="kpi"><span>Revenue</span><strong style="color: var(--green)">$540.3K</strong><em>+2.5% MoM</em></article>
-        <article class="kpi"><span>Contribution margin</span><strong style="color: var(--violet)">$201.9K</strong><em>37.4% CM</em></article>
-        <article class="kpi"><span>Take rate</span><strong style="color: var(--teal)">1.31%</strong><em>fee revenue / GMV</em></article>
-      </section>
-
-      <nav class="tabs" aria-label="Dashboard pages">
-        <button class="tab active" type="button" data-img="assets/page_01_executive_overview.png" data-title="Executive overview">01 Overview</button>
-        <button class="tab" type="button" data-img="assets/page_02_merchant_transaction_drivers.png" data-title="Merchant and transaction drivers">02 Drivers</button>
-        <button class="tab" type="button" data-img="assets/page_03_margin_scenario_planning.png" data-title="Margin and scenario planning">03 Scenario</button>
-      </nav>
-
-      <section class="screenshot" aria-label="Dashboard screenshot preview">
-        <img id="dashboard-image" src="assets/page_01_executive_overview.png" alt="Executive overview dashboard screenshot" />
-      </section>
-
-      <section class="grid" aria-label="Decision support tables">
-        <article class="panel">
-          <h2>Scenario impact</h2>
-          <table>
-            <thead><tr><th>Scenario</th><th>Revenue logic</th><th>CM impact</th><th>Decision use</th></tr></thead>
-            <tbody>
-              <tr><td>Base</td><td>Current revenue and cost</td><td>$201.9K</td><td>Run-rate margin view</td></tr>
-              <tr><td>Raise take rate +10 bps</td><td>Scenario GMV x current take rate + 10 bps</td><td class="good">$242.3K</td><td>Pricing guardrail</td></tr>
-              <tr><td>Processor renegotiation -8%</td><td>Current volume with cost reduction</td><td class="good">Cost lever</td><td>Vendor negotiation case</td></tr>
-              <tr><td>Fraud controls -15%</td><td>Lower loss cost with light volume drag</td><td class="watch">Risk lever</td><td>Ops/risk intervention</td></tr>
-            </tbody>
-          </table>
-        </article>
-        <article class="panel">
-          <h2>Owner action queue</h2>
-          <table>
-            <thead><tr><th>Owner</th><th>Action</th><th>Metric watched</th></tr></thead>
-            <tbody>
-              <tr><td>Commercial</td><td>Review low-fee, high-volume merchant contracts.</td><td class="watch">Take rate</td></tr>
-              <tr><td>Finance</td><td>Use the bridge and scenario CM to set pricing guardrails.</td><td class="good">CM uplift</td></tr>
-              <tr><td>Risk / Ops</td><td>Work refund and chargeback leakage watchlist.</td><td class="risk">Refund and CB bps</td></tr>
-            </tbody>
-          </table>
-        </article>
-      </section>
-
-      <section class="notes" aria-label="Executive commentary">
-        <article><strong>So what</strong><p>GMV is recovering, but profitability depends on fee monetization, unit cost, refunds, and chargebacks rather than volume alone.</p></article>
-        <article><strong>Now what</strong><p>Use the scenario page to frame pricing and processor-cost moves before the next margin call.</p></article>
-        <article><strong>Governance</strong><p>The public preview uses portfolio-safe synthetic data; the source build checks P&amp;L, bridge, cash-style rollforward, and scenario tie-outs.</p></article>
-      </section>
-
-      <p class="footnote">Synthetic portfolio preview. No raw CSV, PBIX, local path, or confidential company data is required for this public mirror.</p>
-    </main>
-
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
-      </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    </div>
+    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"digital-payments-profitability","route":"digital-payments-profitability/","no":"08","folder":"Project 08 - Digital Payments Profitability","title":"Digital Payments Profitability","lens":"Payments profitability","summary":"Payments profitability dashboard linking merchant mix, transaction drivers, margin scenarios, and fee economics.","decisionQuestion":"Which merchant segments and fee changes can improve unit profit without sacrificing durable payment volume?","pages":[{"id":"performance-pulse","label":"Performance Pulse"},{"id":"merchant-unit-economics","label":"Merchant Unit Economics"},{"id":"margin-scenario-actions","label":"Margin Scenario & Actions"}],"metrics":[{"value":"$92.5M","label":"TPV","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":90650000,"prior":85100000,"series":[85100000,85772727.27272727,86445454.54545455,87118181.81818181,87790909.0909091,88463636.36363636,89136363.63636364,89809090.9090909,90481818.18181819,91154545.45454545,91827272.72727272,92500000],"sensitivity":1},{"value":"1.28%","label":"take rate","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":1.2544,"prior":1.1776,"series":[1.1776,1.186909090909091,1.1962181818181818,1.2055272727272728,1.2148363636363637,1.2241454545454546,1.2334545454545454,1.2427636363636363,1.2520727272727272,1.2613818181818182,1.270690909090909,1.28],"sensitivity":1},{"value":"38%","label":"gross margin %","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":37.24,"prior":34.96,"series":[34.96,35.236363636363635,35.512727272727275,35.78909090909091,36.06545454545454,36.341818181818184,36.61818181818182,36.89454545454546,37.17090909090909,37.447272727272725,37.723636363636366,38],"sensitivity":1},{"value":"$0.09","label":"unit profit","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":0.0882,"prior":0.0828,"series":[0.0828,0.08345454545454545,0.08410909090909091,0.08476363636363636,0.08541818181818181,0.08607272727272727,0.08672727272727272,0.08738181818181819,0.08803636363636363,0.08869090909090908,0.08934545454545455,0.09],"sensitivity":1}],"bars":[{"label":"TPV","value":90},{"label":"Take rate","value":63},{"label":"Cost to serve","value":58},{"label":"Merchant mix","value":70}],"drivers":[{"label":"Enterprise TPV","value":"+$2.2M","isRisk":false},{"label":"Processing cost","value":"-$0.7M","isRisk":true},{"label":"Fee optimization","value":"+$0.4M","isRisk":false}],"actions":[{"owner":"Commercial","action":"Review low-fee enterprise contracts."},{"owner":"Finance","action":"Model fee tiers by merchant segment."},{"owner":"Ops","action":"Track processing cost exceptions."}],"financeLogic":["Payment volume times take rate equals gross payment revenue.","Revenue less processing, incentive, and risk cost equals gross profit.","Unit profit divides gross profit by completed transactions."],"scopeLabel":"Merchant Segment","scopeOptions":["All Merchants","Enterprise","SMB","Platform Partners"],"breakdownLabel":"Payment Rail","breakdownOptions":["All Rails","Cards","Bank Transfer","Wallet","Instant Pay"],"regionOptions":["All Rails","Cards","Bank Transfer","Wallet","Instant Pay"],"governance":["Settled and reversed transactions reconcile to processor totals.","Merchant contracts map to one effective fee schedule.","Scenario changes preserve volume and cost-unit consistency.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Merchants","region":"All Rails"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Merchant Segment","options":["All Merchants","Enterprise","SMB","Platform Partners"],"default":"All Merchants"},{"id":"region","label":"Payment Rail","options":["All Rails","Cards","Bank Transfer","Wallet","Instant Pay"],"default":"All Rails"}],"dataClassification":"Synthetic public-safe preview data"});</script>
+    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
   </body>
 </html>

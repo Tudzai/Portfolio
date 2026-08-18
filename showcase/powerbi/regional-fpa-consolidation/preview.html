@@ -1,245 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta name="robots" content="index, follow">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Regional FP&A Consolidation Dashboard</title>
-  <style>
-    :root {
-      --ink:#17212b; --muted:#667085; --line:#d8dee7; --paper:#ffffff; --bg:#f4f6f8;
-      --teal:#28666e; --blue:#3d5a80; --amber:#d9902f; --olive:#6b7a3a; --rose:#b2576a;
-      --good:#28666e; --bad:#b2576a; --soft:#eef3f4;
-    }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Segoe UI, Arial, sans-serif; background:var(--bg); color:var(--ink); }
-    header { background:var(--paper); border-bottom:1px solid var(--line); padding:18px 28px 14px; position:sticky; top:0; z-index:5; }
-    .titlebar { display:flex; gap:16px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; }
-    h1 { margin:0; font-size:24px; letter-spacing:0; }
-    .subtitle { color:var(--muted); margin-top:5px; font-size:13px; }
-    .status-pill { border:1px solid var(--line); background:#f9fbfc; border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted); box-shadow:0 1px 2px rgba(23,33,43,.04); }
-    .filters { display:grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap:10px; margin-top:14px; }
-    label { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); background:#fbfcfd; border:1px solid #e5eaf0; border-radius:8px; padding:8px 10px; }
-    select { height:32px; border:1px solid var(--line); border-radius:6px; background:white; color:var(--ink); padding:0 8px; font:inherit; }
-    nav { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-    nav button { min-height:40px; border:1px solid var(--line); background:white; color:var(--ink); border-radius:6px; padding:8px 10px; cursor:pointer; font-weight:600; }
-    nav button:hover { border-color:var(--teal); color:var(--teal); }
-    nav button.active { background:var(--teal); color:white; border-color:var(--teal); }
-    main { padding:18px 28px 34px; max-width:1500px; margin:0 auto; }
-    .page { display:none; }
-    .page.active { display:block; }
-    .kpis { display:grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap:12px; margin-bottom:14px; }
-    .card, .panel { background:var(--paper); border:1px solid var(--line); border-radius:8px; box-shadow:0 7px 18px rgba(23,33,43,.07); }
-    .card { --accent:var(--teal); position:relative; display:grid; grid-template-columns:minmax(0,1fr) 76px; gap:10px; padding:15px 14px 12px; min-height:116px; overflow:hidden; }
-    .card::before { content:""; position:absolute; inset:0 0 auto; height:4px; background:var(--accent); }
-    .card.accent-blue { --accent:var(--blue); }
-    .card.accent-teal { --accent:var(--teal); }
-    .card.accent-amber { --accent:var(--amber); }
-    .card.accent-olive { --accent:var(--olive); }
-    .card.accent-rose { --accent:var(--rose); }
-    .card .label { color:var(--muted); font-size:11px; font-weight:600; }
-    .card .value { margin-top:7px; font-size:clamp(20px, 2vw, 23px); font-weight:700; color:var(--accent); line-height:1.05; overflow-wrap:anywhere; }
-    .card .delta { font-size:11px; color:var(--muted); }
-    .card .kpi-main { min-width:0; }
-    .card .delta-row { display:flex; align-items:center; gap:6px; margin-top:8px; min-width:0; }
-    .status-dot { width:8px; height:8px; border-radius:50%; background:var(--muted); flex:0 0 auto; }
-    .status-dot.good { background:var(--good); }
-    .status-dot.bad { background:var(--bad); }
-    .spark { align-self:end; height:52px; min-width:0; background:#f8fafc; border:1px solid #edf1f5; border-radius:7px; padding:6px; }
-    .sparkline-svg { width:100%; height:38px; display:block; overflow:visible; }
-    .delta.good { color:var(--good); }
-    .delta.bad { color:var(--bad); }
-    .grid { display:grid; grid-template-columns: 1.25fr .95fr; gap:14px; align-items:start; }
-    .grid.three { grid-template-columns: 1fr 1fr 1fr; }
-    .grid.story { grid-template-columns: 1.45fr .8fr; }
-    .mosaic { display:grid; grid-template-columns: 1.1fr .9fr 1fr; gap:14px; align-items:start; margin-top:14px; }
-    .rail { display:grid; gap:10px; }
-    .panel { padding:14px; min-width:0; overflow:hidden; }
-    .panel h2 { margin:0 0 4px; font-size:15px; display:flex; align-items:center; gap:8px; }
-    .panel h2::before { content:""; width:8px; height:8px; border-radius:2px; background:var(--teal); flex:0 0 auto; }
-    .panel .note { color:var(--muted); font-size:12px; margin-bottom:12px; }
-    svg { width:100%; display:block; overflow:visible; }
-    svg.chart { height:280px; background:#fbfcfd; border:1px solid #edf1f5; border-radius:7px; }
-    .empty-state { height:280px; display:grid; place-items:center; border:1px dashed #cfd8e3; border-radius:7px; color:var(--muted); background:#fbfcfd; font-size:12px; }
-    table { width:100%; border-collapse:collapse; font-size:12px; }
-    th, td { padding:8px 7px; border-bottom:1px solid #edf0f3; text-align:right; }
-    th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align:left; }
-    th { color:var(--muted); font-weight:600; background:#fafbfc; position:sticky; top:0; }
-    .table-wrap { max-height:360px; overflow:auto; border:1px solid #edf0f3; border-radius:6px; }
-    .action-strip { display:grid; grid-template-columns: 1.3fr 1fr 1fr; gap:12px; margin:14px 0; }
-    .action { --accent:var(--amber); background:#ffffff; border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:8px; padding:12px; font-size:13px; box-shadow:0 5px 14px rgba(23,33,43,.05); }
-    .action.action-blue { --accent:var(--blue); }
-    .action.action-teal { --accent:var(--teal); }
-    .action.action-rose { --accent:var(--rose); }
-    .action b { display:block; margin-bottom:4px; }
-    .legend { display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin-top:8px; }
-    .swatch { width:10px; height:10px; display:inline-block; border-radius:2px; margin-right:5px; }
-    .sources { color:var(--muted); font-size:12px; margin-top:18px; }
-    .sources a { color:var(--blue); }
-    .badge { display:inline-block; border-radius:999px; padding:3px 7px; font-size:11px; background:#eef3f4; color:var(--teal); }
-    .bullet-row { display:grid; grid-template-columns: 120px 1fr 70px; gap:8px; align-items:center; margin:10px 0; font-size:12px; }
-    .bullet-track { height:12px; background:#eef1f4; border-radius:999px; overflow:hidden; border:1px solid #d8dee7; }
-    .bullet-fill { height:100%; background:var(--teal); }
-    .story-callout { border-left:4px solid var(--teal); background:#f6fbfb; padding:12px; border-radius:6px; margin-bottom:10px; font-size:13px; }
-    .sev-High { color:#9f3148; font-weight:700; }
-    .sev-Medium { color:#a4661c; font-weight:700; }
-    .sev-Low { color:#52612c; font-weight:700; }
-    @media (max-width: 1180px) {
-      header { padding:14px; }
-      main { padding:14px; }
-      .filters, .grid, .grid.three, .grid.story, .mosaic, .action-strip { grid-template-columns:1fr; }
-      .card { grid-template-columns:minmax(0,1fr) 92px; }
-      .card .value { font-size:21px; }
-      svg.chart { height:240px; }
-    }
-    @media (max-width: 620px) {
-      .kpis { grid-template-columns:1fr; }
-      .card { grid-template-columns:minmax(0,1fr); }
-      .spark { display:none; }
-      nav button { flex:1 1 150px; }
-    }
-  </style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+  <head>
+    <meta name="robots" content="noindex, follow" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Regional FP&amp;A Consolidation Interactive Preview | Truong Dinh Anh Tu</title>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" href="../../../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
+  <body class="powerbi-standard-preview" data-project-no="13">
+    <div class="preview-frame">
+      <div class="dashboard-shell">
+        <div class="dashboard" role="application" aria-label="Regional FP&amp;A Consolidation interactive dashboard">
+          <aside class="sidebar">
+            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Regional MNC finance</small></span></div>
+            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
+            <div class="lens-group">
+              <h2 class="lens-title">Global Lens</h2>
+              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
+              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
+            </div>
+            <div class="lens-group">
+              <h2 class="lens-title">Operating Scope</h2>
+              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
+              <label><span class="filter-label">Currency</span><span class="select-wrap"><select id="regionFilter" aria-label="Currency filter"></select></span></label>
+            </div>
+            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
+          </aside>
+          <main class="dashboard-content" id="content"></main>
         </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
-      </div>
-    </header>
-<header>
-  <div class="titlebar">
-    <div>
-      <h1>Regional FP&A Consolidation</h1>
-      <div class="subtitle">Executive-ready portfolio dashboard for multi-entity P&L, FX, intercompany, and close exceptions</div>
-    </div>
-    <div class="status-pill" id="freshness"></div>
-  </div>
-  <div class="filters">
-    <label>Period<select id="periodFilter"></select></label>
-    <label>Region<select id="regionFilter"></select></label>
-    <label>Entity<select id="entityFilter"></select></label>
-    <label>Business Unit<select id="buFilter"></select></label>
-  </div>
-  <nav>
-    <button data-page="overview" class="active">Executive Summary</button>
-    <button data-page="pnl">P&L Variance</button>
-    <button data-page="fxic">FX &amp; Intercompany</button>
-    <button data-page="bu">BU Performance</button>
-    <button data-page="exceptions">Close Exceptions</button>
-    <button data-page="story">Controls & Storyboard</button>
-  </nav>
-</header>
-    <div id="main-content" tabindex="-1"></div>
-    <main data-stage-content>
-<section id="overview" class="page active">
-    <div class="kpis" id="kpiStrip"></div>
-    <div class="action-strip" id="actionStrip"></div>
-    <div class="grid">
-      <div class="panel"><h2>Revenue and EBITDA Trend</h2><div class="note">Actual, Budget, and Forecast by selected scope</div><div id="trendChart"></div><div class="legend" id="trendLegend"></div></div>
-      <div class="panel"><h2>EBITDA Variance Bridge</h2><div class="note">Actual vs Budget; drivers sum to variance</div><div id="bridgeChart"></div></div>
-    </div>
-    <div class="grid three" style="margin-top:14px">
-      <div class="panel"><h2>Entity EBITDA Variance</h2><div class="note">Top contributors to current period performance</div><div id="entityBars"></div></div>
-      <div class="panel"><h2>Regional Mix</h2><div class="note">Revenue and EBITDA by region</div><div id="regionBars"></div></div>
-      <div class="panel"><h2>Management Attention List</h2><div class="note">Largest open close exceptions in current context</div><div class="table-wrap"><table id="attentionTable"></table></div></div>
-    </div>
-  </section>
-  <section id="pnl" class="page">
-    <div class="grid">
-      <div class="panel"><h2>Country and Entity P&L Matrix</h2><div class="note">Actual, Budget, and variance at selected period</div><div class="table-wrap"><table id="pnlTable"></table></div></div>
-      <div class="panel"><h2>P&L Shape by Account Group</h2><div class="note">Revenue through Net Income view</div><div id="pnlWaterfall"></div></div>
-    </div>
-    <div class="grid" style="margin-top:14px">
-      <div class="panel"><h2>Margin Heatmap</h2><div class="note">EBITDA margin by country and business unit</div><div class="table-wrap"><table id="marginHeatmap"></table></div></div>
-      <div class="panel"><h2>Drill Detail</h2><div class="note">Rows reconcile to selected filters</div><div class="table-wrap"><table id="detailTable"></table></div></div>
-    </div>
-  </section>
-  <section id="fxic" class="page">
-    <div class="grid">
-      <div class="panel"><h2>FX Translation Exposure</h2><div class="note">Revenue exposure and EBITDA impact by currency</div><div id="fxBars"></div></div>
-      <div class="panel"><h2>Intercompany Elimination Impact</h2><div class="note">Pre/post elimination EBITDA by country</div><div id="icBars"></div></div>
-    </div>
-    <div class="panel" style="margin-top:14px"><h2>Intercompany Exception Matrix</h2><div class="note">Open mismatch value by country and issue status</div><div class="table-wrap"><table id="icMatrix"></table></div></div>
-  </section>
-  <section id="bu" class="page">
-    <div class="grid">
-      <div class="panel"><h2>Business Unit Performance</h2><div class="note">Revenue and EBITDA margin by BU</div><div id="buBars"></div></div>
-      <div class="panel"><h2>Growth vs Margin Scatter</h2><div class="note">Entity-BU observations; size approximates revenue</div><div id="scatterChart"></div></div>
-    </div>
-    <div class="panel" style="margin-top:14px"><h2>BU Driver Table</h2><div class="note">Actual vs Budget by business unit</div><div class="table-wrap"><table id="buTable"></table></div></div>
-  </section>
-  <section id="exceptions" class="page">
-    <div class="kpis" id="exceptionKpis"></div>
-    <div class="grid">
-      <div class="panel"><h2>Open Exceptions by Type</h2><div class="note">Value of unresolved close items</div><div id="exceptionBars"></div></div>
-      <div class="panel"><h2>Owner Workload</h2><div class="note">Open count and value by owner team</div><div id="ownerBars"></div></div>
-    </div>
-    <div class="panel" style="margin-top:14px"><h2>Close Commentary Log</h2><div class="note">Synthetic exceptions for portfolio demonstration</div><div class="table-wrap"><table id="exceptionTable"></table></div></div>
-  </section>
-  <section id="story" class="page">
-    <div class="grid story">
-      <div class="panel"><h2>Board Narrative Bridge</h2><div class="note">Condensed CFO storyline: budget EBITDA to actual EBITDA</div><div id="storyBridge"></div></div>
-      <div class="rail">
-        <div class="panel"><h2>Management Verdict</h2><div class="note">Automated narrative for the selected scope</div><div id="verdictPanel"></div></div>
-        <div class="panel"><h2>Target Pacing</h2><div class="note">Actual performance against budget and forecast anchors</div><div id="targetBullets"></div></div>
       </div>
     </div>
-    <div class="mosaic">
-      <div class="panel"><h2>Country Revenue Treemap</h2><div class="note">Block size approximates actual revenue</div><div id="countryTreemap"></div></div>
-      <div class="panel"><h2>Close Risk Funnel</h2><div class="note">Open issue value by severity</div><div id="riskFunnel"></div></div>
-      <div class="panel"><h2>Board Pack Extract</h2><div class="note">Compact rows to paste into month-end commentary</div><div class="table-wrap"><table id="boardTable"></table></div></div>
-    </div>
-  </section>
-  <div class="sources" id="sources"></div>
-</main>
-
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
-      </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"regional-fpa-consolidation","route":"regional-fpa-consolidation/","no":"13","folder":"Project 13 - Regional FP&A Consolidation","title":"Regional FP&A Consolidation","lens":"Regional MNC finance","summary":"Regional consolidation view for country/entity variance, FX translation, eliminations, and close exceptions.","decisionQuestion":"What is driving regional performance after FX and eliminations, and which close issues threaten the board story?","pages":[{"id":"executive-performance","label":"Executive Performance"},{"id":"pnl-fx-entity-drivers","label":"P&L, FX & Entity Drivers"},{"id":"close-controls-board-story","label":"Close Controls & Board Story"}],"metrics":[{"value":"7","label":"entities","note":"Synthetic preview value.","format":"number","higherIsBetter":null,"plan":7,"prior":7,"series":[7,7,7,7,7,7,7,7,7,7,7,7],"sensitivity":0},{"value":"3","label":"currencies","note":"Synthetic preview value.","format":"number","higherIsBetter":null,"plan":3,"prior":3,"series":[3,3,3,3,3,3,3,3,3,3,3,3],"sensitivity":0},{"value":"100%","label":"P&L tie-out","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":98,"prior":92,"series":[92,92.72727272727273,93.45454545454545,94.18181818181819,94.9090909090909,95.63636363636364,96.36363636363636,97.0909090909091,97.81818181818181,98.54545454545455,99.27272727272727,100],"sensitivity":1},{"value":"$2.6M","label":"FX translation variance","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":2652000,"prior":2834000,"series":[2834000,2812727.272727273,2791454.5454545454,2770181.8181818184,2748909.090909091,2727636.3636363638,2706363.6363636362,2685090.909090909,2663818.1818181816,2642545.4545454546,2621272.7272727275,2600000],"sensitivity":1}],"bars":[{"label":"Country A","value":78},{"label":"Country B","value":63},{"label":"Country C","value":70},{"label":"Elims","value":57}],"drivers":[{"label":"FX translation","value":"-$0.8M","isRisk":true},{"label":"Entity margin","value":"+$1.1M","isRisk":false},{"label":"Elimination timing","value":"-$0.3M","isRisk":true}],"actions":[{"owner":"Regional FP&A","action":"Lock country variance owner comments."},{"owner":"Accounting","action":"Clear elimination timing breaks."},{"owner":"CFO","action":"Review FX bridge before board pack."}],"financeLogic":["Entity P&Ls translate at the approved period exchange-rate convention.","Intercompany eliminations remove matched revenue, cost, balance, and profit.","Consolidated results equal translated entities plus approved eliminations."],"scopeLabel":"Entity","scopeOptions":["Regional Group","Country A","Country B","Country C"],"breakdownLabel":"Currency","breakdownOptions":["Reporting Currency","USD","EUR","Local Currency"],"regionOptions":["Reporting Currency","USD","EUR","Local Currency"],"governance":["Every entity passes a local-to-group P&L tie-out.","FX rates and elimination journals are version controlled.","Close exceptions include owner, materiality, and resolution status.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"Regional Group","region":"Reporting Currency"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Entity","options":["Regional Group","Country A","Country B","Country C"],"default":"Regional Group"},{"id":"region","label":"Currency","options":["Reporting Currency","USD","EUR","Local Currency"],"default":"Reporting Currency"}],"dataClassification":"Synthetic public-safe preview data"});</script>
+    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
   </body>
 </html>

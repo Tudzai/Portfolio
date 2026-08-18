@@ -45,9 +45,14 @@ for (const template of templateAdapters) {
     const css = await readCss(`templates/${template}.css`);
 
     assert.match(css, new RegExp(`body\\[data-stage-template=["']${template}["']\\]`));
-    assert.match(css, /--stage-template-section-gap:/);
-    assert.match(css, /var\(--stage-template-section-gap\)/);
-    assert.match(css, /@media \(max-width: 760px\)/);
+    if (template === "model-detail") {
+      assert.match(css, /\.model-simple-section\s*\{/);
+      assert.match(css, /padding:\s*clamp\(4rem, 8vw, 7rem\) 0/);
+    } else {
+      assert.match(css, /--stage-template-section-gap:/);
+      assert.match(css, /var\(--stage-template-section-gap\)/);
+    }
+    assert.match(css, template === "cv" ? /@media \(max-width: 560px\)/ : /@media \(max-width: 760px\)/);
     assert.doesNotMatch(css, /transition:\s*all/i);
   });
 }

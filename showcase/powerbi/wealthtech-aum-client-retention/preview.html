@@ -1,298 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta name="robots" content="index, follow">
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>WealthTech / Robo-Advisor AUM Dashboard</title>
-<style>
-:root {
-  --bg: #f5f7fa;
-  --panel: #ffffff;
-  --ink: #172033;
-  --muted: #667085;
-  --line: #d6dee8;
-  --navy: #102033;
-  --blue: #2563eb;
-  --teal: #0f8b8d;
-  --green: #16a34a;
-  --amber: #d97706;
-  --red: #dc2626;
-  --indigo: #4f46e5;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: "Segoe UI", Arial, sans-serif;
-  letter-spacing: 0;
-}
-.app { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
-.side {
-  background: var(--navy);
-  color: #f8fafc;
-  padding: 22px 18px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-.brand { display: grid; gap: 10px; margin-bottom: 24px; }
-.mark {
-  width: 42px; height: 42px; border-radius: 8px;
-  background: linear-gradient(135deg, #0f8b8d, #2563eb);
-  display: grid; place-items: center; font-weight: 800;
-}
-h1 { font-size: 18px; line-height: 1.15; margin: 0; }
-.side small { color: #c9d6e4; line-height: 1.45; }
-.tab {
-  width: 100%;
-  border: 1px solid rgba(255,255,255,.12);
-  color: #dbe7f3;
-  background: rgba(255,255,255,.04);
-  padding: 11px 12px;
-  border-radius: 7px;
-  margin-bottom: 8px;
-  text-align: left;
-  cursor: pointer;
-  font-weight: 600;
-}
-.tab.active { background: #f8fafc; color: var(--navy); border-color: #f8fafc; }
-.filters { margin-top: 18px; display: grid; gap: 10px; }
-label { color: #c9d6e4; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-select {
-  width: 100%; border: 1px solid rgba(255,255,255,.18); border-radius: 7px;
-  background: rgba(255,255,255,.08); color: #f8fafc; padding: 9px 10px;
-}
-select option { color: #172033; }
-.main { padding: 22px; min-width: 0; }
-.topbar { display:flex; justify-content:space-between; align-items:flex-start; gap: 16px; margin-bottom: 18px; }
-.topbar h2 { margin: 0 0 5px; font-size: 25px; }
-.topbar p { margin: 0; color: var(--muted); }
-.freshness { color: var(--muted); font-size: 12px; text-align:right; }
-.grid { display: grid; gap: 14px; }
-.kpis { grid-template-columns: repeat(6, minmax(136px, 1fr)); }
-.cards4 { grid-template-columns: repeat(4, minmax(170px, 1fr)); }
-.panel {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(16, 32, 51, .05);
-  min-width: 0;
-}
-.card { padding: 14px 14px 12px; min-height: 118px; position: relative; overflow: hidden; }
-.card .label { font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase; }
-.card .value { font-size: 24px; font-weight: 800; margin-top: 7px; white-space: nowrap; }
-.card .delta { font-size: 12px; color: var(--muted); margin-top: 6px; }
-.spark { width: 100%; height: 30px; margin-top: 8px; }
-.lens { margin-bottom: 14px; padding: 14px 16px; display:grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 14px; align-items:center; }
-.lens strong { display:block; font-size: 13px; }
-.lens span { color: var(--muted); font-size: 12px; }
-.lens b { color: var(--navy); font-size: 16px; }
-.blue { color: var(--blue); } .teal { color: var(--teal); } .green { color: var(--green); }
-.amber { color: var(--amber); } .red { color: var(--red); } .indigo { color: var(--indigo); }
-.layout-2 { grid-template-columns: minmax(0, 1.2fr) minmax(340px, .8fr); margin-top: 14px; }
-.layout-3 { grid-template-columns: minmax(0, .9fr) minmax(0, .9fr) minmax(330px, .7fr); margin-top: 14px; }
-.chart { padding: 14px; min-height: 280px; }
-.chart h3 { margin: 0 0 2px; font-size: 14px; }
-.chart p { margin: 0 0 10px; font-size: 12px; color: var(--muted); }
-svg { width: 100%; height: 220px; display:block; overflow: visible; }
-.legend { display:flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 12px; margin-top: 8px; }
-.legend span::before { content: ""; display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; background: var(--c); }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th, td { padding: 9px 10px; border-bottom: 1px solid #edf1f5; text-align: left; white-space: nowrap; }
-th { color: var(--muted); font-size: 11px; text-transform: uppercase; }
-td.num, th.num { text-align: right; }
-.table-wrap { overflow:auto; max-height: 310px; }
-.pill { display:inline-flex; padding: 3px 7px; border-radius: 999px; font-weight: 700; font-size: 11px; background:#eef2f7; color:#344054; }
-.pill.High { color:#991b1b; background:#fee2e2; }
-.pill.Medium { color:#92400e; background:#fef3c7; }
-.pill.Low { color:#065f46; background:#d1fae5; }
-.tabpage { display:none; } .tabpage.active { display:block; }
-.method { margin-top: 14px; padding: 12px 14px; font-size: 12px; color: var(--muted); }
-@media (max-width: 1100px) {
-  .app { grid-template-columns: 1fr; }
-  .side { position: static; height: auto; }
-  .kpis, .cards4, .layout-2, .layout-3 { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 680px) {
-  .side { padding: 16px 18px 14px; }
-  .brand { grid-template-columns: 42px 1fr; align-items: center; margin-bottom: 14px; }
-  .brand small { display: none; }
-  h1 { font-size: 17px; }
-  .tab { padding: 9px 10px; margin-bottom: 6px; }
-  .filters { margin-top: 12px; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .filters label { display: none; }
-  select { padding: 8px 9px; font-size: 12px; }
-  .main { padding: 14px; }
-  .kpis, .cards4, .layout-2, .layout-3 { grid-template-columns: 1fr; }
-  .topbar { display:block; }
-  .topbar h2 { font-size: 22px; }
-  .freshness { text-align:left; margin-top:8px; }
-  .lens { grid-template-columns: 1fr; gap: 8px; }
-  .lens div:not(:first-child) { display:flex; justify-content:space-between; gap: 10px; }
-}
-</style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+  <head>
+    <meta name="robots" content="noindex, follow" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WealthTech AUM Client Retention Interactive Preview | Truong Dinh Anh Tu</title>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" href="../../../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
+  <body class="powerbi-standard-preview" data-project-no="12">
+    <div class="preview-frame">
+      <div class="dashboard-shell">
+        <div class="dashboard" role="application" aria-label="WealthTech AUM Client Retention interactive dashboard">
+          <aside class="sidebar">
+            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Wealth analytics</small></span></div>
+            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
+            <div class="lens-group">
+              <h2 class="lens-title">Global Lens</h2>
+              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
+              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
+            </div>
+            <div class="lens-group">
+              <h2 class="lens-title">Operating Scope</h2>
+              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
+              <label><span class="filter-label">Portfolio</span><span class="select-wrap"><select id="regionFilter" aria-label="Portfolio filter"></select></span></label>
+            </div>
+            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
+          </aside>
+          <main class="dashboard-content" id="content"></main>
         </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
-      </div>
-    </header>
-<div class="app">
-  <aside class="side">
-    <div class="brand">
-      <div class="mark">WT</div>
-      <div>
-        <h1>WealthTech AUM Dashboard</h1>
-        <small>Robo-advisor growth, portfolio quality, suitability, and retention actions.</small>
       </div>
     </div>
-    <button class="tab active" data-tab="overview">AUM & Revenue Overview</button>
-    <button class="tab" data-tab="segments">Portfolio & Client Segments</button>
-    <button class="tab" data-tab="risk">Risk, Suitability & Retention</button>
-    <div class="filters">
-      <label for="segmentFilter">Client Segment</label>
-      <select id="segmentFilter"></select>
-      <label for="riskFilter">Risk Profile</label>
-      <select id="riskFilter"></select>
-      <label for="regionFilter">Region</label>
-      <select id="regionFilter"></select>
-      <label for="modelFilter">Model Portfolio</label>
-      <select id="modelFilter"></select>
-    </div>
-  </aside>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="main" data-stage-content>
-<div class="topbar">
-      <div>
-        <h2 id="pageTitle">AUM & Revenue Overview</h2>
-        <p id="pageSubtitle">Executive view of AUM, net new money, flows, revenue, and active clients.</p>
-      </div>
-      <div class="freshness">Synthetic portfolio demo<br>Latest complete month: May 2026</div>
-    </div>
-    <div class="panel lens" id="currentLens"></div>
-
-    <section id="overview" class="tabpage active">
-      <div class="grid kpis" id="overviewKpis"></div>
-      <div class="grid layout-2">
-        <div class="panel chart">
-          <h3>AUM Growth Trend</h3><p>Monthly ending AUM; advisory revenue is carried in the KPI ribbon.</p>
-          <svg id="aumTrend"></svg><div class="legend"><span style="--c:var(--blue)">AUM</span></div>
-        </div>
-        <div class="panel chart">
-          <h3>Flow Composition</h3><p>Inflows and outflows explain net new money.</p>
-          <svg id="flowBars"></svg><div class="legend"><span style="--c:var(--green)">Inflows</span><span style="--c:var(--red)">Outflows</span></div>
-        </div>
-      </div>
-      <div class="grid layout-2">
-        <div class="panel chart">
-          <h3>AUM by Client Segment</h3><p>Client mix and monetization base.</p>
-          <svg id="segmentBars"></svg>
-        </div>
-        <div class="panel chart">
-          <h3>Top Client Concentration</h3><p>Largest relationships and retention exposure.</p>
-          <div class="table-wrap"><table id="topClientTable"></table></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="segments" class="tabpage">
-      <div class="grid cards4" id="segmentKpis"></div>
-      <div class="grid layout-3">
-        <div class="panel chart">
-          <h3>Return vs Benchmark</h3><p>Weighted portfolio return versus assigned benchmark.</p>
-          <svg id="returnTrend"></svg><div class="legend"><span style="--c:var(--blue)">Portfolio</span><span style="--c:var(--amber)">Benchmark</span></div>
-        </div>
-        <div class="panel chart">
-          <h3>Asset Allocation</h3><p>Latest AUM by asset class.</p>
-          <svg id="allocationDonut"></svg>
-        </div>
-        <div class="panel chart">
-          <h3>AUM by Risk Profile</h3><p>Risk bands drive allocation and suitability monitoring.</p>
-          <svg id="riskBars"></svg>
-        </div>
-      </div>
-      <div class="panel chart">
-        <h3>Portfolio Model Detail</h3><p>Model-level AUM, alpha, and benchmark comparison.</p>
-        <div class="table-wrap"><table id="portfolioTable"></table></div>
-      </div>
-    </section>
-
-    <section id="risk" class="tabpage">
-      <div class="grid kpis" id="riskKpis"></div>
-      <div class="grid layout-3">
-        <div class="panel chart">
-          <h3>Risk Mismatch Trend</h3><p>Suitability drift and profile mismatch by month.</p>
-          <svg id="riskMismatchTrend"></svg>
-        </div>
-        <div class="panel chart">
-          <h3>Churn Risk AUM by Segment</h3><p>AUM exposed to churn-risk threshold.</p>
-          <svg id="churnSegmentBars"></svg>
-        </div>
-        <div class="panel chart">
-          <h3>Retention Action Mix</h3><p>Next-best action queue for advisors.</p>
-          <svg id="actionBars"></svg>
-        </div>
-      </div>
-      <div class="panel chart">
-        <h3>Retention Action Queue</h3><p>High-value clients needing outreach, suitability review, or rebalancing.</p>
-        <div class="table-wrap"><table id="actionsTable"></table></div>
-      </div>
-    </section>
-
-    <div class="panel method">
-      Source: deterministic synthetic dataset, seed 20260611. Definitions and DAX are in <code>model/</code>; validation is in <code>qa/</code>.
-      Design references include Tableau AUM accelerators, financial dashboard galleries, and wealth-management analytics patterns documented in <code>docs/design_research_notes.md</code>.
-    </div>
-  </main>
-
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
-      </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"wealthtech-aum-client-retention","route":"wealthtech-aum-client-retention/","no":"12","folder":"Project 12 - WealthTech AUM Client Retention","title":"WealthTech AUM Client Retention","lens":"Wealth analytics","summary":"AUM retention dashboard combining portfolio mix, client risk, suitability, and retention actions.","decisionQuestion":"Which client and portfolio exposures threaten retained AUM and fee revenue, and who should intervene?","pages":[{"id":"aum-revenue","label":"AUM & Revenue"},{"id":"portfolio-client-mix","label":"Portfolio & Client Mix"},{"id":"suitability-churn-retention","label":"Suitability, Churn & Retention"}],"metrics":[{"value":"$1.8B","label":"AUM","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":1764000000,"prior":1656000000,"series":[1656000000,1669090909.090909,1682181818.1818182,1695272727.2727273,1708363636.3636363,1721454545.4545455,1734545454.5454545,1747636363.6363637,1760727272.7272727,1773818181.8181818,1786909090.909091,1800000000],"sensitivity":1},{"value":"94.2%","label":"client retention","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":92.316,"prior":86.664,"series":[86.664,87.3490909090909,88.03418181818182,88.71927272727272,89.40436363636364,90.08945454545454,90.77454545454546,91.45963636363636,92.14472727272728,92.82981818181818,93.5149090909091,94.2],"sensitivity":1},{"value":"7.6%","label":"outflow risk","note":"Synthetic preview value.","format":"percent","higherIsBetter":false,"plan":7.752,"prior":8.284,"series":[8.284,8.221818181818183,8.159636363636364,8.097454545454546,8.035272727272728,7.973090909090909,7.910909090909091,7.848727272727273,7.786545454545454,7.724363636363636,7.662181818181818,7.6],"sensitivity":1},{"value":"$46M","label":"at-risk AUM","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":46920000,"prior":50140000,"series":[50140000,49763636.36363637,49387272.72727273,49010909.09090909,48634545.45454545,48258181.81818182,47881818.18181818,47505454.54545455,47129090.90909091,46752727.27272727,46376363.63636364,46000000],"sensitivity":1}],"bars":[{"label":"AUM","value":89},{"label":"Retention","value":84},{"label":"Suitability","value":72},{"label":"Outflow risk","value":39}],"drivers":[{"label":"Advisor coverage","value":"+$18M","isRisk":false},{"label":"Market drawdown","value":"-$11M","isRisk":true},{"label":"Suitability gap","value":"-$7M","isRisk":true}],"actions":[{"owner":"Advisory","action":"Contact high-AUM at-risk clients."},{"owner":"Risk","action":"Resolve suitability exceptions."},{"owner":"Finance","action":"Track fee revenue exposure."}],"financeLogic":["Closing AUM equals opening AUM plus net flows plus market movement.","Fee revenue applies the effective fee rate to eligible average AUM.","At-risk fee revenue uses exposed AUM and the contracted fee schedule."],"scopeLabel":"Client Segment","scopeOptions":["All Clients","Affluent","Emerging Wealth","Institutional"],"breakdownLabel":"Portfolio","breakdownOptions":["All Portfolios","Growth","Balanced","Income","Cash"],"regionOptions":["All Portfolios","Growth","Balanced","Income","Cash"],"governance":["Synthetic client records contain no personal information.","Portfolio holdings reconcile to the AUM roll-forward.","Suitability exceptions have severity, owner, and remediation date.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Clients","region":"All Portfolios"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Client Segment","options":["All Clients","Affluent","Emerging Wealth","Institutional"],"default":"All Clients"},{"id":"region","label":"Portfolio","options":["All Portfolios","Growth","Balanced","Income","Cash"],"default":"All Portfolios"}],"dataClassification":"Synthetic public-safe preview data"});</script>
+    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
   </body>
 </html>

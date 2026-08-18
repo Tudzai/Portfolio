@@ -12,11 +12,10 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = path.resolve(SCRIPT_DIR, "..");
 const STAGE_PREFIX = "Stage/agentic-finance/";
 const THEME_ROOT = "assets/agentic-home";
-const THEME_VERSION = "routes-20260810-hybrid1";
+const THEME_VERSION = "routes-20260818-responsive-all1";
 const SKIPPED_ROUTES = new Set([
   "index.html",
   "404.html",
-  "showcase/powerbi/board-investor-cfo-pack/preview.html",
 ]);
 const THEME_FILES = [
   "css/tokens.css",
@@ -51,6 +50,10 @@ const EXCLUDED_ROOT_DIRECTORIES = new Set([
 
 const toPosix = (value) => value.replaceAll(path.sep, "/");
 const normalizeRoute = (value) => toPosix(value).replace(/^\.\//, "");
+
+export function isSkippedRoute(route) {
+  return SKIPPED_ROUTES.has(route) || /^showcase\/powerbi\/[^/]+\/preview\.html$/.test(route);
+}
 
 async function walkProductionHtml(directory, repoRoot, result = []) {
   for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
@@ -191,8 +194,8 @@ async function copyThemeAssets(repoRoot) {
 
 export async function promoteAgenticFinance({ repoRoot = DEFAULT_REPO_ROOT } = {}) {
   const routes = await walkProductionHtml(repoRoot, repoRoot);
-  if (routes.length !== 85) {
-    throw new Error(`Expected 85 recruiter-facing production routes, found ${routes.length}`);
+  if (routes.length !== 86) {
+    throw new Error(`Expected 86 recruiter-facing production routes, found ${routes.length}`);
   }
 
   await copyThemeAssets(repoRoot);
@@ -200,7 +203,7 @@ export async function promoteAgenticFinance({ repoRoot = DEFAULT_REPO_ROOT } = {
   let promoted = 0;
 
   for (const sourceRoute of routes) {
-    if (SKIPPED_ROUTES.has(sourceRoute)) continue;
+    if (isSkippedRoute(sourceRoute)) continue;
     const sourceAbsolute = path.join(repoRoot, ...sourceRoute.split("/"));
     const sourceHtml = cleanExistingTheme(await fs.readFile(sourceAbsolute, "utf8"));
     const stagePath = `${STAGE_PREFIX}${sourceRoute}`;

@@ -1,220 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta name="robots" content="index, follow">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Project 17 - Logistics Trade Lane Profitability</title>
-<link rel="icon" href="data:,">
-<style>
-:root {
-  --bg:#F8FAFC;
-  --panel:#FFFFFF;
-  --panel2:#F1F5F9;
-  --border:#CBD5E1;
-  --grid:#E2E8F0;
-  --text:#0F172A;
-  --muted:#475569;
-  --dim:#64748B;
-  --blue:#2563EB;
-  --teal:#0F766E;
-  --green:#15803D;
-  --amber:#B45309;
-  --red:#DC2626;
-  --ink:#111827;
-}
-* { box-sizing:border-box; }
-body { margin:0; background:var(--bg); color:var(--text); font-family:Segoe UI,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
-button,select { font:inherit; }
-.shell { width:min(1280px,100%); min-height:720px; margin:0 auto; padding:18px 24px 20px; }
-.report-header { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:18px; align-items:end; min-height:44px; border-bottom:2px solid #6FB8AF; }
-.title-block { min-width:0; padding-bottom:8px; border-left:4px solid #6FB8AF; padding-left:18px; }
-.kicker { margin:0 0 5px; color:var(--blue); font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
-h1 { margin:0; font-size:22px; line-height:1.12; letter-spacing:0; }
-.subtitle { margin:5px 0 0; color:var(--muted); font-size:12px; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.page-nav { display:flex; gap:2px; align-self:start; }
-.nav-btn { min-width:100px; min-height:30px; border:0; border-left:1px solid rgba(255,255,255,.65); background:#6FB8AF; color:#0B2F2A; font-size:10px; font-weight:800; cursor:pointer; }
-.nav-btn.active { background:#2F766F; color:#fff; }
-.filter-lens { display:grid; grid-template-columns:86px 98px 116px 116px minmax(230px,1fr) minmax(230px,1fr); gap:12px; align-items:stretch; margin-top:10px; }
-.filter { min-width:0; height:38px; border:1px solid var(--border); border-radius:6px; background:#fff; padding:4px 8px; }
-.filter span { display:block; color:var(--dim); font-size:9px; font-weight:800; text-transform:uppercase; }
-.filter select { width:100%; border:0; outline:0; background:transparent; color:var(--text); font-size:11px; font-weight:700; }
-.mini-card { min-width:0; min-height:68px; display:flex; flex-direction:column; justify-content:center; gap:4px; border:1px solid var(--border); border-radius:8px; background:#fff; box-shadow:0 1px 2px rgba(15,23,42,.08); padding:9px 14px 9px 18px; position:relative; overflow:hidden; }
-.mini-card:before { content:""; position:absolute; left:8px; top:10px; bottom:10px; width:4px; border-radius:3px; background:#6FB8AF; }
-.mini-card.decision:before { background:#C98E2B; }
-.mini-card span { margin-left:16px; color:var(--blue); font-size:10px; font-weight:800; letter-spacing:.04em; }
-.mini-card strong { margin-left:16px; color:var(--text); font-size:13px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.mini-card em { margin-left:16px; color:var(--muted); font-style:normal; font-size:10px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.page { display:none; }
-.page.active { display:block; }
-.kpi-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-top:16px; }
-.kpi-card { min-width:0; height:152px; border:1px solid var(--border); border-radius:8px; background:#fff; box-shadow:0 8px 18px rgba(15,23,42,.16); padding:12px; display:grid; grid-template-columns:1fr 112px; grid-template-rows:auto 1fr auto; gap:6px 10px; position:relative; overflow:hidden; }
-.kpi-card:before { content:""; position:absolute; inset:7px; border:1px solid rgba(203,213,225,.9); border-radius:7px; box-shadow:0 1px 3px rgba(15,23,42,.12); pointer-events:none; }
-.kpi-title { position:relative; z-index:1; grid-column:1 / 2; color:var(--blue); font-size:11px; font-weight:800; text-transform:uppercase; line-height:1.2; }
-.kpi-value { position:relative; z-index:1; grid-column:1 / 2; align-self:center; color:var(--ink); font-size:28px; line-height:1.18; font-weight:850; overflow-wrap:anywhere; }
-.kpi-spark { position:relative; z-index:1; grid-column:2; grid-row:1 / 3; width:100%; height:72px; align-self:center; border:1px solid var(--grid); border-radius:7px; background:#F8FAFC; }
-.kpi-foot { position:relative; z-index:1; grid-column:1 / 3; display:grid; grid-template-columns:1fr 1fr 1.15fr; gap:6px; }
-.chip { min-width:0; min-height:22px; display:flex; align-items:center; justify-content:center; gap:4px; border:1px solid var(--border); border-radius:6px; background:#F8FAFC; color:var(--muted); font-size:10px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:2px 6px; }
-.chip.good { border-color:#9CC7A2; color:var(--green); background:#F6FBF5; }
-.chip.bad { border-color:#EF9992; color:var(--red); background:#FEF6F5; }
-.chip.neutral { color:var(--blue); }
-.main-row { display:grid; grid-template-columns:1.05fr .95fr .95fr; gap:12px; margin-top:16px; }
-.bottom-row { display:grid; grid-template-columns:1.08fr 1.02fr .9fr; gap:12px; margin-top:8px; }
-.chart-card { min-width:0; height:208px; border:1px solid var(--border); border-radius:6px; background:#fff; box-shadow:0 8px 18px rgba(15,23,42,.16); padding:10px 10px 8px; overflow:hidden; }
-.bottom-row .chart-card { height:194px; }
-.chart-card h3 { margin:0 0 6px; color:var(--blue); font-size:13px; line-height:1.2; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.chart-card.good h3 { color:#3B7F44; }
-.chart-card.warn h3 { color:var(--red); }
-.chart-body { height:calc(100% - 22px); min-height:0; }
-.chart-body svg { width:100%; height:100%; display:block; overflow:visible; }
-.legend { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:3px; color:var(--muted); font-size:9px; font-weight:700; }
-.swatch { width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:3px; }
-.donut-wrap { height:100%; display:grid; grid-template-columns:110px 1fr; gap:8px; align-items:center; }
-.donut { width:106px; height:106px; border-radius:50%; position:relative; background:conic-gradient(var(--teal) 0 40%, var(--blue) 40% 68%, var(--green) 68% 84%, var(--amber) 84% 100%); }
-.donut:after { content:""; position:absolute; inset:28px; border-radius:50%; background:#fff; box-shadow:inset 0 0 0 1px var(--grid); }
-.donut-legend { display:grid; gap:5px; color:var(--muted); font-size:10px; }
-.donut-legend div { display:grid; grid-template-columns:10px 1fr auto; gap:6px; align-items:center; }
-.action-table { width:100%; border-collapse:collapse; font-size:10px; }
-.action-table th,.action-table td { padding:6px 5px; border-bottom:1px solid var(--grid); text-align:left; vertical-align:top; }
-.action-table th { color:var(--dim); font-size:9px; text-transform:uppercase; }
-.status { display:inline-flex; border:1px solid var(--border); border-radius:999px; padding:2px 6px; font-weight:800; }
-.status.Open { color:var(--red); border-color:#EF9992; background:#FEF6F5; }
-.status.In { color:var(--amber); border-color:#D9B26E; background:#FFFBEB; }
-.status.Action { color:var(--green); border-color:#9CC7A2; background:#F6FBF5; }
-.qa-note { max-width:1280px; margin:10px auto 24px; padding:0 24px; color:var(--muted); font-size:11px; line-height:1.5; }
-@media (max-width:980px) {
-  .shell { padding:14px; }
-  .report-header,.filter-lens,.main-row,.bottom-row { grid-template-columns:1fr; }
-  .page-nav { width:100%; }
-  .nav-btn { flex:1; }
-  .kpi-row { grid-template-columns:1fr; }
-  .kpi-card { height:auto; min-height:148px; }
-  .chart-card,.bottom-row .chart-card { height:240px; }
-  .subtitle { white-space:normal; }
-  .qa-note { padding:0 14px; }
-}
-</style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+  <head>
+    <meta name="robots" content="noindex, follow" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logistics Trade Lane Profitability Interactive Preview | Truong Dinh Anh Tu</title>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" href="../../../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
+  <body class="powerbi-standard-preview" data-project-no="17">
+    <div class="preview-frame">
+      <div class="dashboard-shell">
+        <div class="dashboard" role="application" aria-label="Logistics Trade Lane Profitability interactive dashboard">
+          <aside class="sidebar">
+            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Commercial finance</small></span></div>
+            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
+            <div class="lens-group">
+              <h2 class="lens-title">Global Lens</h2>
+              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
+              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
+            </div>
+            <div class="lens-group">
+              <h2 class="lens-title">Operating Scope</h2>
+              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
+              <label><span class="filter-label">Region</span><span class="select-wrap"><select id="regionFilter" aria-label="Region filter"></select></span></label>
+            </div>
+            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
+          </aside>
+          <main class="dashboard-content" id="content"></main>
         </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
       </div>
-    </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="shell" data-stage-content>
-<header class="report-header">
-    <div class="title-block">
-      <p class="kicker">Project 17 / Logistics finance</p>
-      <h1 id="pageTitle">Executive Overview</h1>
-      <p class="subtitle" id="pageSubtitle">Margin status, volume, reprice value, and customer/lane concentration</p>
     </div>
-    <nav class="page-nav" aria-label="Page navigation">
-      <button class="nav-btn active" type="button" data-page="overview">01 Overview</button>
-      <button class="nav-btn" type="button" data-page="lane">02 Lane</button>
-      <button class="nav-btn" type="button" data-page="action">03 Actions</button>
-    </nav>
-  </header>
-
-  <section class="filter-lens" aria-label="Dashboard filters">
-    <label class="filter"><span>Period</span><select id="periodFilter"></select></label>
-    <label class="filter"><span>Mode</span><select id="modeFilter"></select></label>
-    <label class="filter"><span>Segment</span><select id="segmentFilter"></select></label>
-    <label class="filter"><span>Office</span><select id="officeFilter"></select></label>
-    <article class="mini-card"><span>CURRENT LENS</span><strong id="lensPrimary"></strong><em id="lensSecondary"></em></article>
-    <article class="mini-card decision"><span>NEXT ACTION</span><strong id="decisionText"></strong><em id="decisionSubtext">Owner action queue updates with filters</em></article>
-  </section>
-
-  <section class="page active" id="overviewPage" data-page="overview">
-    <div class="kpi-row" id="overviewKpis"></div>
-    <div class="main-row">
-      <article class="chart-card"><h3>Revenue and GP Trend</h3><div class="chart-body" id="overviewTrend"></div></article>
-      <article class="chart-card good"><h3>Gross Profit by Lane Cluster</h3><div class="chart-body" id="overviewCluster"></div></article>
-      <article class="chart-card"><h3>Revenue Mix by Service</h3><div class="chart-body" id="overviewService"></div></article>
-    </div>
-    <div class="bottom-row">
-      <article class="chart-card"><h3>Reprice Opportunity by Customer</h3><div class="chart-body" id="overviewCustomer"></div></article>
-      <article class="chart-card warn"><h3>Margin Gap by Lane Cluster</h3><div class="chart-body" id="overviewGap"></div></article>
-      <article class="chart-card good"><h3>Action Risk by Owner</h3><div class="chart-body" id="overviewOwner"></div></article>
-    </div>
-  </section>
-
-  <section class="page" id="lanePage" data-page="lane">
-    <div class="kpi-row" id="laneKpis"></div>
-    <div class="main-row">
-      <article class="chart-card"><h3>GP Margin by Lane Cluster</h3><div class="chart-body" id="laneMargin"></div></article>
-      <article class="chart-card"><h3>Revenue and GP by Mode</h3><div class="chart-body" id="laneMode"></div></article>
-      <article class="chart-card warn"><h3>Margin Gap Driver Bridge</h3><div class="chart-body" id="laneBridge"></div></article>
-    </div>
-    <div class="bottom-row">
-      <article class="chart-card warn"><h3>Negative Margin by Customer</h3><div class="chart-body" id="laneNegative"></div></article>
-      <article class="chart-card"><h3>Total Cost by Carrier</h3><div class="chart-body" id="laneCarrier"></div></article>
-      <article class="chart-card good"><h3>Utilization Proxy by Cluster</h3><div class="chart-body" id="laneUtil"></div></article>
-    </div>
-  </section>
-
-  <section class="page" id="actionPage" data-page="action">
-    <div class="kpi-row" id="actionKpis"></div>
-    <div class="main-row">
-      <article class="chart-card warn"><h3>Cost Driver Waterfall</h3><div class="chart-body" id="actionWaterfall"></div></article>
-      <article class="chart-card"><h3>Total Cost by Carrier</h3><div class="chart-body" id="actionCarrier"></div></article>
-      <article class="chart-card warn"><h3>Risk by Issue Type</h3><div class="chart-body" id="actionIssue"></div></article>
-    </div>
-    <div class="bottom-row">
-      <article class="chart-card"><h3>Action Queue</h3><div class="chart-body" id="actionTable"></div></article>
-      <article class="chart-card good"><h3>Recovery by Issue Type</h3><div class="chart-body" id="actionRecovery"></div></article>
-      <article class="chart-card"><h3>Open Risk by Owner</h3><div class="chart-body" id="actionOwner"></div></article>
-    </div>
-  </section>
-</main>
-
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
-      </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"logistics-trade-lane-profitability","route":"logistics-trade-lane-profitability/","no":"17","folder":"Project 17 - Logistics Trade Lane Profitability","title":"Logistics Trade Lane Profitability","lens":"Commercial finance","summary":"Lane-level profitability view showing customers, services, and lanes needing repricing or renegotiation.","decisionQuestion":"Which lanes and customers must be repriced, renegotiated, or exited to recover gross profit?","pages":[{"id":"margin-performance","label":"Margin Performance"},{"id":"lane-repricing","label":"Lane Repricing"},{"id":"recovery-actions","label":"Recovery Actions"}],"metrics":[{"value":"$62.8M","label":"lane revenue","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":61544000,"prior":57776000,"series":[57776000,58232727.27272727,58689454.54545455,59146181.81818182,59602909.09090909,60059636.36363637,60516363.63636363,60973090.90909091,61429818.18181818,61886545.45454545,62343272.72727273,62800000],"sensitivity":1},{"value":"21.6%","label":"gross margin %","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":21.168,"prior":19.872000000000003,"series":[19.872000000000003,20.02909090909091,20.186181818181822,20.34327272727273,20.500363636363637,20.65745454545455,20.814545454545456,20.971636363636367,21.128727272727275,21.285818181818183,21.442909090909094,21.6],"sensitivity":1},{"value":"37","label":"loss lanes","note":"Synthetic preview value.","format":"number","higherIsBetter":false,"plan":37.74,"prior":40.330000000000005,"series":[40.330000000000005,40.02727272727273,39.724545454545456,39.42181818181819,39.119090909090914,38.81636363636364,38.513636363636365,38.21090909090909,37.908181818181816,37.60545454545455,37.302727272727275,37],"sensitivity":1},{"value":"$2.3M","label":"gross profit recovery pool","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":2346000,"prior":2507000,"series":[2507000,2488181.8181818184,2469363.6363636362,2450545.4545454546,2431727.272727273,2412909.090909091,2394090.909090909,2375272.727272727,2356454.5454545454,2337636.3636363638,2318818.1818181816,2300000],"sensitivity":1}],"bars":[{"label":"Air","value":64},{"label":"Ocean","value":73},{"label":"Road","value":59},{"label":"Customs","value":68}],"drivers":[{"label":"Fuel surcharge","value":"-$0.6M","isRisk":true},{"label":"Lane mix","value":"+$0.8M","isRisk":false},{"label":"Loss customers","value":"-$1.1M","isRisk":true}],"actions":[{"owner":"Commercial","action":"Reprice loss lanes and low-yield accounts."},{"owner":"Ops","action":"Reduce exception cost on air lanes."},{"owner":"Finance","action":"Track customer margin action queue."}],"financeLogic":["Lane gross profit equals recognized revenue less shipment-level direct cost.","Gross margin divides lane gross profit by lane revenue.","Recovery pool is the value required to reach the approved margin floor."],"scopeLabel":"Trade Portfolio","scopeOptions":["All Trade Lanes","Air","Ocean","Road","Customs"],"breakdownLabel":"Region","breakdownOptions":["All Regions","Americas","EMEA","APAC","LATAM"],"regionOptions":["All Regions","Americas","EMEA","APAC","LATAM"],"governance":["Shipments map to one lane, customer, and service hierarchy.","Revenue and direct cost reconcile to the synthetic P&L.","Repricing actions record owner, exposure, target margin, and status.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Trade Lanes","region":"All Regions"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Trade Portfolio","options":["All Trade Lanes","Air","Ocean","Road","Customs"],"default":"All Trade Lanes"},{"id":"region","label":"Region","options":["All Regions","Americas","EMEA","APAC","LATAM"],"default":"All Regions"}],"dataClassification":"Synthetic public-safe preview data"});</script>
+    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
   </body>
 </html>

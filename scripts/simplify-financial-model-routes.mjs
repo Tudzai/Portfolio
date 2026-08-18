@@ -240,7 +240,7 @@ const page = (model) => {
     <link href="${fontStylesheet}" rel="stylesheet" />
     <link rel="stylesheet" href="../../../styles.css" />
     <link rel="stylesheet" href="../models.css" />
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1" />
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260818-responsive-all1" />
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1" />
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3" />
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1" />

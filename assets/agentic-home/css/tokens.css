@@ -90,3 +90,51 @@ body[data-stage-family="blog"] {
   --stage-accent: var(--stage-pink);
   --stage-accent-strong: var(--stage-violet-dark);
 }
+
+/* Keep the interface at a useful optical scale on large desktop displays. */
+@media (min-width: 1600px) {
+  :root {
+    --stage-shell: min(1640px, calc(100% - 96px));
+  }
+}
+
+@media (min-width: 2200px) {
+  :root {
+    --stage-shell: min(1760px, calc(100% - 144px));
+    --stage-header-height: 86px;
+  }
+
+  html {
+    font-size: 17px;
+  }
+}
+
+/*
+ * Preserve the laptop composition on high-density 16:9 displays.
+ * The shared token sheet is loaded by every Stage route, so hubs, cases,
+ * articles, model pages, CV, utilities, and dashboard previews all inherit
+ * the same optical scale as the homepage.
+ */
+@media (min-width: 2200px) and (min-height: 1200px) and (max-width: 3199px) and (max-aspect-ratio: 2/1) {
+  html {
+    zoom: 1.333333;
+    font-size: 16px;
+  }
+
+  :root {
+    --stage-shell: min(1640px, calc(100% - 96px));
+    --stage-header-height: 116px;
+  }
+}
+
+@media (min-width: 3200px) and (min-height: 1800px) and (max-aspect-ratio: 2/1) {
+  html {
+    zoom: 2;
+    font-size: 16px;
+  }
+
+  :root {
+    --stage-shell: min(1640px, calc(100% - 96px));
+    --stage-header-height: 116px;
+  }
+}

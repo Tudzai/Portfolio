@@ -1,181 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta name="robots" content="index, follow">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Manufacturing Cost FP&amp;A</title>
-  <link rel="icon" href="data:,">
-  <style>
-    :root {
-      --bg:#F6F7F9; --panel:#FFFFFF; --panel-soft:#F8FAFC; --ink:#111827; --muted:#667085;
-      --line:#D9DEE7; --grid:#E2E8F0; --steel:#2563EB; --teal:#0F766E; --amber:#D97706;
-      --red:#DC2626; --violet:#7C3AED; --green:#16A34A; --shadow:0 14px 30px rgba(15,23,42,.07);
-    }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Segoe UI, Arial, sans-serif; background:var(--bg); color:var(--ink); }
-    main { width:min(1320px, calc(100% - 40px)); margin:0 auto; padding:24px 0 34px; }
-    header { display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:22px; align-items:end; margin-bottom:12px; }
-    h1 { margin:0; font-size:30px; line-height:1.12; font-weight:800; }
-    .sub { color:var(--muted); margin-top:7px; line-height:1.45; font-size:14px; }
-    .status-note { color:var(--muted); font-size:13px; line-height:1.4; text-align:right; max-width:390px; }
-    .top-controls { display:grid; grid-template-columns:auto minmax(0, 1fr); gap:12px; align-items:start; margin:10px 0 12px; }
-    .tabs { display:flex; flex-wrap:wrap; gap:8px; }
-    .tabs button { min-height:38px; border:1px solid var(--line); background:#fff; color:var(--muted); padding:9px 13px; border-radius:8px; cursor:pointer; font-weight:750; }
-    .tabs button.active { background:var(--ink); color:#fff; border-color:var(--ink); box-shadow:var(--shadow); }
-    .filter-bar { display:grid; grid-template-columns:repeat(4, minmax(145px, 1fr)); gap:10px; }
-    .filter { min-width:0; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
-    .filter span { display:block; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; margin-bottom:4px; }
-    .filter select { width:100%; border:0; outline:0; background:transparent; color:var(--ink); font-size:13px; font-weight:750; min-height:22px; }
-    .lens { display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:14px; align-items:center; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:12px 14px; margin-bottom:12px; box-shadow:0 10px 24px rgba(15,23,42,.04); }
-    .lens-kicker { color:var(--muted); font-size:11px; font-weight:850; text-transform:uppercase; letter-spacing:.03em; }
-    .lens-text { margin-top:4px; font-size:14px; font-weight:760; line-height:1.35; overflow-wrap:anywhere; }
-    .lens-chips { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
-    .lens-chip { min-width:112px; border:1px solid var(--line); border-radius:8px; background:var(--panel-soft); padding:8px 10px; }
-    .lens-chip span { display:block; color:var(--muted); font-size:10px; font-weight:850; text-transform:uppercase; }
-    .lens-chip strong { display:block; margin-top:2px; font-size:18px; line-height:1.05; }
-    .kpi-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin-bottom:12px; }
-    .kpi { position:relative; min-width:0; min-height:132px; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:13px 14px 12px; overflow:hidden; box-shadow:0 8px 20px rgba(15,23,42,.04); }
-    .kpi::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:var(--accent, var(--steel)); }
-    .kpi-title { color:var(--muted); font-size:12px; font-weight:850; text-transform:uppercase; }
-    .kpi-value { margin-top:9px; color:var(--ink); font-size:32px; line-height:1; font-weight:850; letter-spacing:0; }
-    .kpi-spark { position:absolute; right:13px; top:31px; width:126px; height:58px; border-radius:8px; background:var(--panel-soft); border:1px solid #E8EDF4; padding:5px; }
-    .kpi-footer { position:absolute; left:14px; right:14px; bottom:12px; display:flex; align-items:center; gap:7px; font-size:11px; font-weight:800; color:var(--muted); }
-    .pill { display:inline-flex; align-items:center; min-height:22px; border-radius:999px; padding:3px 8px; background:var(--panel-soft); border:1px solid #E8EDF4; white-space:nowrap; }
-    .pill.good { color:var(--green); }
-    .pill.risk { color:var(--red); }
-    .panel-grid { display:grid; grid-template-columns:minmax(0, 1.2fr) minmax(360px, .8fr); gap:12px; margin-bottom:12px; }
-    .panel { min-width:0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:14px; overflow:hidden; }
-    .panel-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
-    .panel-label { display:block; color:var(--muted); font-size:11px; font-weight:850; text-transform:uppercase; }
-    .panel h2 { margin:4px 0 0; font-size:17px; line-height:1.18; }
-    .takeaway { color:var(--muted); font-size:12px; line-height:1.35; max-width:390px; text-align:right; }
-    .chart { width:100%; min-height:248px; }
-    .chart.small { min-height:220px; }
-    .table-panel { padding-bottom:8px; margin-bottom:0; }
-    .table-scroll { width:100%; overflow-x:auto; padding-bottom:4px; }
-    .table-scroll table { min-width:680px; }
-    table { width:100%; border-collapse:collapse; font-size:13px; }
-    th, td { padding:10px 9px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle; }
-    th { background:var(--panel-soft); color:#334155; font-size:11px; text-transform:uppercase; letter-spacing:.02em; }
-    td { line-height:1.35; }
-    .number { text-align:right; font-variant-numeric:tabular-nums; }
-    .action { color:var(--ink); font-weight:750; }
-    .good-text { color:var(--green); font-weight:850; }
-    .risk-text { color:var(--red); font-weight:850; }
-    .empty { min-height:180px; display:grid; place-items:center; color:var(--muted); font-weight:750; border:1px dashed var(--line); border-radius:8px; background:var(--panel-soft); }
-    .footnote { color:var(--muted); font-size:12px; line-height:1.45; margin-top:10px; }
-    @media (max-width:1040px) {
-      main { width:min(100% - 28px, 1320px); }
-      header, .top-controls, .panel-grid, .lens { grid-template-columns:1fr; }
-      .filter-bar, .kpi-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
-      .status-note, .takeaway { text-align:left; max-width:none; }
-      .lens-chips { justify-content:flex-start; }
-    }
-    @media (max-width:680px) {
-      main { width:min(100% - 20px, 1320px); padding-top:14px; }
-      .filter-bar, .kpi-grid { grid-template-columns:1fr; }
-      .kpi { min-height:236px; padding-bottom:14px; overflow:hidden; }
-      .kpi-value { font-size:30px; }
-      .kpi-spark { position:static; width:100%; height:66px; margin-top:10px; }
-      .kpi-footer { position:static; margin-top:10px; flex-wrap:wrap; }
-      .table-scroll { margin:0 -4px; padding:0 4px 6px; }
-      th, td { padding:8px 6px; font-size:12px; }
-    }
-  </style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+  <head>
+    <meta name="robots" content="noindex, follow" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manufacturing Cost FP&amp;A Interactive Preview | Truong Dinh Anh Tu</title>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" href="../../../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
+  <body class="powerbi-standard-preview" data-project-no="16">
+    <div class="preview-frame">
+      <div class="dashboard-shell">
+        <div class="dashboard" role="application" aria-label="Manufacturing Cost FP&amp;A interactive dashboard">
+          <aside class="sidebar">
+            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Cost FP&amp;A</small></span></div>
+            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
+            <div class="lens-group">
+              <h2 class="lens-title">Global Lens</h2>
+              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
+              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
+            </div>
+            <div class="lens-group">
+              <h2 class="lens-title">Operating Scope</h2>
+              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
+              <label><span class="filter-label">Product Family</span><span class="select-wrap"><select id="regionFilter" aria-label="Product Family filter"></select></span></label>
+            </div>
+            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
+          </aside>
+          <main class="dashboard-content" id="content"></main>
         </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
       </div>
-    </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main data-stage-content>
-<header>
-    <div>
-      <h1>Manufacturing Cost FP&amp;A</h1>
-      <div class="sub">Decision-ready manufacturing cost pack: standard cost variance, yield loss, capacity pressure, inventory working capital, and owner actions.</div>
     </div>
-    <div class="status-note">Synthetic fixed-seed data | Latest complete month: <strong id="latest-month-label"></strong><br>HTML preview mirrors the generated Project 16 source model.</div>
-  </header>
-
-  <section class="top-controls">
-    <nav class="tabs" aria-label="Dashboard pages">
-      <button class="active" type="button" data-tab="overview">Overview</button>
-      <button type="button" data-tab="variance">Cost Variance</button>
-      <button type="button" data-tab="ops">Yield &amp; WC</button>
-    </nav>
-    <div class="filter-bar" aria-label="Dashboard filters">
-      <label class="filter"><span>Month</span><select id="filter-month"></select></label>
-      <label class="filter"><span>Plant</span><select id="filter-plant"></select></label>
-      <label class="filter"><span>Product Line</span><select id="filter-product-line"></select></label>
-      <label class="filter"><span id="context-filter-name">Line</span><select id="filter-context"></select></label>
-    </div>
-  </section>
-
-  <section class="lens" aria-label="Current Lens">
-    <div>
-      <div class="lens-kicker">Current Lens</div>
-      <div class="lens-text" id="lens-text"></div>
-    </div>
-    <div class="lens-chips" id="lens-chips"></div>
-  </section>
-
-  <section class="kpi-grid" id="kpi-grid" aria-label="KPI summary"></section>
-  <section class="panel-grid" id="primary-panels"></section>
-  <section class="panel-grid" id="secondary-panels"></section>
-  <section class="panel table-panel" id="table-panel"></section>
-  <p class="footnote">Public-safe synthetic portfolio preview. No raw confidential data, PBIX internals, private source data, or machine-specific paths are embedded in this HTML artifact.</p>
-</main>
-
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
-      </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"manufacturing-cost-fpa","route":"manufacturing-cost-fpa/","no":"16","folder":"Project 16 - Manufacturing Cost FP&A","title":"Manufacturing Cost FP&A","lens":"Cost FP&A","summary":"Cost FP&A pack decomposing standard cost variance, yield, capacity, inventory days, and margin recovery actions.","decisionQuestion":"Which material, labor, yield, and capacity variances are recoverable, and what is their cash and margin impact?","pages":[{"id":"cost-performance","label":"Cost Performance"},{"id":"variance-recovery","label":"Variance Recovery"},{"id":"yield-cash","label":"Yield & Cash"}],"metrics":[{"value":"$7.3M","label":"cost variance","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":7446000,"prior":7957000.000000001,"series":[7957000.000000001,7897272.727272728,7837545.454545455,7777818.181818183,7718090.90909091,7658363.636363637,7598636.363636364,7538909.090909091,7479181.818181818,7419454.545454546,7359727.2727272725,7300000],"sensitivity":1},{"value":"86%","label":"capacity use","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":84.28,"prior":79.12,"series":[79.12,79.74545454545455,80.3709090909091,80.99636363636364,81.62181818181818,82.24727272727273,82.87272727272727,83.49818181818182,84.12363636363636,84.74909090909091,85.37454545454545,86],"sensitivity":1},{"value":"94.1%","label":"yield","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":92.21799999999999,"prior":86.572,"series":[86.572,87.25636363636364,87.94072727272727,88.62509090909091,89.30945454545454,89.99381818181818,90.67818181818181,91.36254545454545,92.04690909090908,92.73127272727272,93.41563636363635,94.1],"sensitivity":1},{"value":"48","label":"inventory days","note":"Synthetic preview value.","format":"days","higherIsBetter":false,"plan":48.96,"prior":52.32000000000001,"series":[52.32000000000001,51.92727272727274,51.53454545454546,51.14181818181819,50.74909090909092,50.35636363636364,49.96363636363637,49.57090909090909,49.17818181818182,48.78545454545455,48.39272727272727,48],"sensitivity":1}],"bars":[{"label":"Material","value":66},{"label":"Labor","value":58},{"label":"Overhead","value":61},{"label":"Yield","value":76}],"drivers":[{"label":"Material price","value":"-$1.2M","isRisk":true},{"label":"Yield recovery","value":"+$0.5M","isRisk":false},{"label":"Idle capacity","value":"-$0.7M","isRisk":true}],"actions":[{"owner":"Operations","action":"Recover yield on underperforming lines."},{"owner":"Procurement","action":"Negotiate material price variance."},{"owner":"Finance","action":"Track margin recovery by plant."}],"financeLogic":["Standard cost variance separates price, usage, labor, and overhead effects.","Yield divides good output by total input at the same production stage.","Inventory days use average inventory divided by annualized cost of goods sold."],"scopeLabel":"Plant","scopeOptions":["All Plants","Plant North","Plant Central","Plant South"],"breakdownLabel":"Product Family","breakdownOptions":["All Products","Alpha","Beta","Gamma","Custom"],"regionOptions":["All Products","Alpha","Beta","Gamma","Custom"],"governance":["Production quantities reconcile to inventory movement.","Standard-cost versions are effective-dated and approved.","Recovery actions identify plant, owner, value, and due date.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Plants","region":"All Products"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Plant","options":["All Plants","Plant North","Plant Central","Plant South"],"default":"All Plants"},{"id":"region","label":"Product Family","options":["All Products","Alpha","Beta","Gamma","Custom"],"default":"All Products"}],"dataClassification":"Synthetic public-safe preview data"});</script>
+    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
   </body>
 </html>

@@ -1,243 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta name="robots" content="index, follow">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Finance Data Quality BI Governance</title>
-<style>
-:root {
-  --ink:#17202a;
-  --muted:#5d6875;
-  --line:#d8ded8;
-  --panel:#ffffff;
-  --canvas:#f5f7f8;
-  --navy:#1b4d89;
-  --teal:#2a9d8f;
-  --amber:#d99a2b;
-  --plum:#8e5572;
-  --slate:#44546a;
-  --risk:#c44e52;
-  --good:#247a5a;
-}
-* { box-sizing:border-box; }
-body { margin:0; font-family:Segoe UI, Arial, sans-serif; background:var(--canvas); color:var(--ink); -webkit-font-smoothing:antialiased; }
-header { background:#fff; border-bottom:1px solid var(--line); padding:18px 28px 14px; position:sticky; top:0; z-index:10; }
-.topline { display:grid; grid-template-columns:minmax(260px, 1fr) minmax(520px, .95fr); gap:18px; align-items:start; }
-h1 { margin:0; font-size:24px; line-height:1.15; font-weight:700; letter-spacing:0; }
-.sub { color:var(--muted); font-size:12px; margin-top:5px; }
-.rail { display:grid; grid-template-columns:repeat(auto-fit, minmax(118px, 1fr)); gap:8px; min-width:0; }
-label { display:grid; gap:3px; font-size:10px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0; }
-select { height:32px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); padding:0 8px; font-size:12px; }
-.lens { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; align-items:center; }
-.lens span, .chip { border:1px solid var(--line); border-radius:999px; padding:4px 8px; background:#fff; color:var(--muted); font-size:11px; font-weight:700; }
-.chip.good { color:var(--good); border-color:#b9d8c9; background:#f1f8f4; }
-.chip.bad { color:var(--risk); border-color:#e4b6ba; background:#fff4f4; }
-.tabs { display:flex; flex-wrap:wrap; gap:8px; padding:14px 28px 0; }
-.tab { min-height:40px; border:1px solid var(--line); background:#fff; color:var(--slate); border-radius:6px; padding:8px 12px; font-weight:700; cursor:pointer; }
-.tab:hover { border-color:var(--navy); color:var(--navy); }
-.tab.active { background:var(--navy); color:#fff; border-color:var(--navy); }
-main { padding:14px 28px 30px; }
-.page { display:none; }
-.page.active { display:block; }
-.kpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(175px, 1fr)); gap:12px; margin-bottom:12px; }
-.kpi-card { background:#fff; border:1px solid var(--line); border-radius:8px; min-height:138px; padding:11px 12px 9px; position:relative; overflow:hidden; }
-.kpi-card:before { content:""; position:absolute; inset:0 auto 0 0; width:5px; background:var(--accent, var(--navy)); }
-.kpi-head { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; min-height:22px; }
-.kpi-title { font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0; }
-.kpi-value { font-size:clamp(22px, 2.2vw, 27px); line-height:1.22; font-weight:800; color:var(--ink); margin:7px 0 3px; padding:1px 0; overflow-wrap:anywhere; }
-.spark { width:100%; height:38px; display:block; margin:2px 0; }
-.kpi-foot { display:flex; justify-content:space-between; gap:8px; color:var(--muted); font-size:11px; font-weight:700; }
-.grid { display:grid; grid-template-columns:repeat(12, 1fr); gap:12px; }
-.panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:13px; min-height:210px; overflow:auto; }
-.span-4 { grid-column:span 4; }
-.span-5 { grid-column:span 5; }
-.span-6 { grid-column:span 6; }
-.span-7 { grid-column:span 7; }
-.span-8 { grid-column:span 8; }
-.span-12 { grid-column:span 12; }
-h2 { margin:0 0 10px; font-size:14px; line-height:1.2; }
-.chart { width:100%; height:240px; display:block; }
-.short { height:174px; }
-.bar-list { display:grid; gap:7px; }
-.bar-row { display:grid; grid-template-columns:minmax(92px, 180px) 1fr 76px; gap:9px; align-items:center; font-size:12px; }
-.bar-track { height:13px; border-radius:999px; background:#edf1f3; overflow:hidden; }
-.bar-fill { height:13px; border-radius:999px; width:0; background:var(--bar, var(--teal)); }
-.bar-value { text-align:right; font-weight:800; }
-table { width:100%; min-width:720px; border-collapse:collapse; font-size:12px; table-layout:auto; }
-th, td { border-bottom:1px solid #e6ebee; padding:7px 8px; vertical-align:top; overflow-wrap:anywhere; }
-th { text-align:left; color:var(--muted); background:#f7fafb; font-size:11px; text-transform:uppercase; letter-spacing:0; }
-td.num, th.num { text-align:right; }
-td.center, th.center { text-align:center; }
-.status { display:inline-block; min-width:52px; text-align:center; border-radius:999px; padding:3px 7px; font-weight:800; font-size:11px; }
-.status.Pass, .status.Gold { color:var(--good); background:#edf7f1; }
-.status.Watch, .status.Silver { color:#8a6400; background:#fff7df; }
-.status.Fail, .status.Bronze, .status.Critical, .status.High { color:var(--risk); background:#fff0f0; }
-.empty { color:var(--muted); font-size:12px; padding:22px; text-align:center; border:1px dashed var(--line); border-radius:8px; }
-.methodology { margin:0 28px 28px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--muted); font-size:12px; line-height:1.55; }
-.methodology strong { color:var(--ink); }
-@media (max-width:1180px) {
-  .topline { grid-template-columns:1fr; }
-  .rail { grid-template-columns:repeat(3, minmax(120px, 1fr)); }
-  .span-4,.span-5,.span-6,.span-7,.span-8,.span-12 { grid-column:span 12; }
-}
-@media (max-width:680px) {
-  header, main { padding-left:16px; padding-right:16px; }
-  .tabs { padding-left:16px; padding-right:16px; }
-  .tab { flex:1 1 150px; }
-  .rail { grid-template-columns:1fr; }
-  .kpi-grid { grid-template-columns:1fr; }
-  .bar-row { grid-template-columns:1fr; }
-  .bar-value { text-align:left; }
-  .methodology { margin-left:16px; margin-right:16px; }
-}
-</style>
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
-    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/dashboard-preview.css?v=routes-20260810-hybrid1">
-      <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+  <head>
+    <meta name="robots" content="noindex, follow" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Finance Data Quality BI Governance Interactive Preview | Truong Dinh Anh Tu</title>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" href="../../../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
+    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-<body data-stage-family="powerbi" data-stage-template="dashboard-preview">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header stage-shell-header" data-stage-shell data-header>
-      <div class="page-shell header-inner stage-shell-inner">
-        <a class="brand stage-shell-brand" href="../../../index.html#hero" aria-label="Truong Dinh Anh Tu, homepage">
-          <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
-          <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
-        </a>
-        <div class="header-actions stage-shell-actions">
-          <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
-            aria-controls="primary-navigation" aria-label="Open capabilities menu">
-            <span>Capabilities</span><i aria-hidden="true"></i>
-          </button>
-          <a class="header-link" href="../../../index.html#experience">Experience</a>
-          <a class="header-link" href="../../../index.html#contact">Contact</a>
-          <a class="header-link" href="../../../blog/index.html">Blog</a>
-          <a class="nav-cv" href="../../../cv.html">View CV</a>
+  <body class="powerbi-standard-preview" data-project-no="19">
+    <div class="preview-frame">
+      <div class="dashboard-shell">
+        <div class="dashboard" role="application" aria-label="Finance Data Quality BI Governance interactive dashboard">
+          <aside class="sidebar">
+            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Finance governance</small></span></div>
+            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
+            <div class="lens-group">
+              <h2 class="lens-title">Global Lens</h2>
+              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
+              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
+            </div>
+            <div class="lens-group">
+              <h2 class="lens-title">Operating Scope</h2>
+              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
+              <label><span class="filter-label">Source System</span><span class="select-wrap"><select id="regionFilter" aria-label="Source System filter"></select></span></label>
+            </div>
+            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
+          </aside>
+          <main class="dashboard-content" id="content"></main>
         </div>
-        <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
-          <p class="nav-panel-label">Capabilities</p>
-          <div class="capability-nav stage-shell-capabilities">
-            <a href="../../fpa-decision-cases/index.html"><span>01</span>FP&amp;A <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../python-automation/index.html"><span>02</span>Automation <i aria-hidden="true">&rarr;</i></a>
-            <a href="../index.html" aria-current="page"><span>03</span>BI Dashboards <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../financial-models/index.html"><span>04</span>Financial Models <i aria-hidden="true">&rarr;</i></a>
-            <a href="../../../index.html#case-agentic"><span>05</span>Agentic AI <i aria-hidden="true">&rarr;</i></a>
-          </div>
-          <div class="nav-utility-links stage-shell-utilities">
-            <a href="../../../index.html#demo">Demo</a>
-            <a href="../../../index.html#experience">Experience</a>
-            <a href="../../../index.html#contact">Contact</a>
-            <a href="../../../blog/index.html">Blog</a>
-            <a href="../../../cv.html">View CV</a>
-          </div>
-        </nav>
       </div>
-    </header>
-<header>
-  <div class="topline">
-    <div>
-      <h1>Finance Data Quality BI Governance</h1>
-      <div class="sub">Enhanced QA preview | Latest complete month: May 2026 | As of 2026-06-15</div>
-      <div class="lens" id="current-lens"></div>
     </div>
-    <div class="rail" aria-label="Dashboard filters">
-      <label>Year<select id="filter-year"></select></label>
-      <label>Domain<select id="filter-domain"></select></label>
-      <label>Criticality<select id="filter-criticality"></select></label>
-      <label>Workspace<select id="filter-workspace"></select></label>
-      <label>Sensitivity<select id="filter-sensitivity"></select></label>
-    </div>
-  </div>
-</header>
-<nav class="tabs" aria-label="Pages">
-  <button class="tab active" data-page="overview">Governance Overview</button>
-  <button class="tab" data-page="reliability">Reliability & Quality</button>
-  <button class="tab" data-page="adoption">Adoption & Controls</button>
-  <button class="tab" data-page="risk">Risk & Action Queue</button>
-</nav>
-    <div id="main-content" tabindex="-1"></div>
-    <main data-stage-content>
-<section class="page active" id="page-overview">
-    <div class="kpi-grid">
-      <article class="kpi-card" style="--accent:var(--navy)"><div class="kpi-head"><span class="kpi-title">DQ Score</span><span id="kpi-dq-chip" class="chip">YoY</span></div><div id="kpi-dq" class="kpi-value"></div><svg id="spark-dq" class="spark"></svg><div class="kpi-foot"><span id="kpi-dq-py"></span><span>Target 92.0</span></div></article>
-      <article class="kpi-card" style="--accent:var(--teal)"><div class="kpi-head"><span class="kpi-title">Freshness SLA</span><span id="kpi-fresh-chip" class="chip">YoY</span></div><div id="kpi-fresh" class="kpi-value"></div><svg id="spark-fresh" class="spark"></svg><div class="kpi-foot"><span id="kpi-fresh-py"></span><span>Target 95%</span></div></article>
-      <article class="kpi-card" style="--accent:var(--good)"><div class="kpi-head"><span class="kpi-title">Refresh Success</span><span id="kpi-refresh-chip" class="chip">YoY</span></div><div id="kpi-refresh" class="kpi-value"></div><svg id="spark-refresh" class="spark"></svg><div class="kpi-foot"><span id="kpi-refresh-py"></span><span>Target 97%</span></div></article>
-      <article class="kpi-card" style="--accent:var(--risk)"><div class="kpi-head"><span class="kpi-title">Open Incidents</span><span id="kpi-open-chip" class="chip">YoY</span></div><div id="kpi-open" class="kpi-value"></div><svg id="spark-open" class="spark"></svg><div class="kpi-foot"><span id="kpi-open-py"></span><span>Guardrail 30</span></div></article>
-      <article class="kpi-card" style="--accent:var(--amber)"><div class="kpi-head"><span class="kpi-title">Rec Variance</span><span id="kpi-rec-chip" class="chip">YoY</span></div><div id="kpi-rec" class="kpi-value"></div><svg id="spark-rec" class="spark"></svg><div class="kpi-foot"><span id="kpi-rec-py"></span><span>Lower is better</span></div></article>
-    </div>
-    <div class="grid">
-      <section class="panel span-7"><h2>Quality and Freshness Trend</h2><svg id="overview-trend" class="chart"></svg></section>
-      <section class="panel span-5"><h2>Quality by Finance Domain</h2><div id="domain-bars" class="bar-list"></div></section>
-      <section class="panel span-8"><h2>Dataset Watchlist</h2><div id="watchlist-table"></div></section>
-      <section class="panel span-4"><h2>Open Incidents by Root Cause</h2><div id="rootcause-bars" class="bar-list"></div></section>
-      <section class="panel span-4"><h2>Reconciliation Exposure Mix</h2><div id="rec-status-bars" class="bar-list"></div></section>
-      <section class="panel span-8"><h2>Source System Coverage</h2><div id="coverage-table"></div></section>
-    </div>
-  </section>
-  <section class="page" id="page-reliability">
-    <div class="kpi-grid">
-      <article class="kpi-card" style="--accent:var(--risk)"><div class="kpi-head"><span class="kpi-title">Failed Refreshes</span><span id="kpi-fail-chip" class="chip">YoY</span></div><div id="kpi-fail" class="kpi-value"></div><svg id="spark-fail" class="spark"></svg><div class="kpi-foot"><span id="kpi-fail-py"></span><span>Lower is better</span></div></article>
-      <article class="kpi-card" style="--accent:var(--teal)"><div class="kpi-head"><span class="kpi-title">Completeness</span><span id="kpi-comp-chip" class="chip">YoY</span></div><div id="kpi-comp" class="kpi-value"></div><svg id="spark-comp" class="spark"></svg><div class="kpi-foot"><span id="kpi-comp-py"></span><span>Target 99%</span></div></article>
-      <article class="kpi-card" style="--accent:var(--good)"><div class="kpi-head"><span class="kpi-title">Rec Pass Rate</span><span id="kpi-pass-chip" class="chip">YoY</span></div><div id="kpi-pass" class="kpi-value"></div><svg id="spark-pass" class="spark"></svg><div class="kpi-foot"><span id="kpi-pass-py"></span><span>Target 90%</span></div></article>
-      <article class="kpi-card" style="--accent:var(--plum)"><div class="kpi-head"><span class="kpi-title">Avg MTTR Hrs</span><span id="kpi-mttr-chip" class="chip">YoY</span></div><div id="kpi-mttr" class="kpi-value"></div><svg id="spark-mttr" class="spark"></svg><div class="kpi-foot"><span id="kpi-mttr-py"></span><span>Lower is better</span></div></article>
-      <article class="kpi-card" style="--accent:var(--amber)"><div class="kpi-head"><span class="kpi-title">DQ Issues</span><span id="kpi-issues-chip" class="chip">YoY</span></div><div id="kpi-issues" class="kpi-value"></div><svg id="spark-issues" class="spark"></svg><div class="kpi-foot"><span id="kpi-issues-py"></span><span>Lower is better</span></div></article>
-    </div>
-    <div class="grid">
-      <section class="panel span-7"><h2>Refresh and Completeness Trend</h2><svg id="reliability-trend" class="chart"></svg></section>
-      <section class="panel span-5"><h2>Refresh Failures by Cause</h2><div id="failure-bars" class="bar-list"></div></section>
-      <section class="panel span-5"><h2>Reconciliation Variance by Domain</h2><div id="variance-bars" class="bar-list"></div></section>
-      <section class="panel span-7"><h2>Incident Exception Queue</h2><div id="incident-table"></div></section>
-      <section class="panel span-12"><h2>Aged Reconciliation Exposure</h2><div id="aging-bars" class="bar-list"></div></section>
-    </div>
-  </section>
-  <section class="page" id="page-adoption">
-    <div class="kpi-grid">
-      <article class="kpi-card" style="--accent:var(--navy)"><div class="kpi-head"><span class="kpi-title">Report Views</span><span id="kpi-views-chip" class="chip">YoY</span></div><div id="kpi-views" class="kpi-value"></div><svg id="spark-views" class="spark"></svg><div class="kpi-foot"><span id="kpi-views-py"></span><span>Usage</span></div></article>
-      <article class="kpi-card" style="--accent:var(--teal)"><div class="kpi-head"><span class="kpi-title">Viewer Days</span><span id="kpi-viewers-chip" class="chip">YoY</span></div><div id="kpi-viewers" class="kpi-value"></div><svg id="spark-viewers" class="spark"></svg><div class="kpi-foot"><span id="kpi-viewers-py"></span><span>Reach</span></div></article>
-      <article class="kpi-card" style="--accent:var(--amber)"><div class="kpi-head"><span class="kpi-title">Avg Load Sec</span><span id="kpi-load-chip" class="chip">YoY</span></div><div id="kpi-load" class="kpi-value"></div><svg id="spark-load" class="spark"></svg><div class="kpi-foot"><span id="kpi-load-py"></span><span>Lower is better</span></div></article>
-      <article class="kpi-card" style="--accent:var(--risk)"><div class="kpi-head"><span class="kpi-title">Access Risk</span><span id="kpi-risk-chip" class="chip">YoY</span></div><div id="kpi-risk" class="kpi-value"></div><svg id="spark-risk" class="spark"></svg><div class="kpi-foot"><span id="kpi-risk-py"></span><span>Lower is better</span></div></article>
-      <article class="kpi-card" style="--accent:var(--good)"><div class="kpi-head"><span class="kpi-title">Control Score</span><span id="kpi-control-chip" class="chip">YoY</span></div><div id="kpi-control" class="kpi-value"></div><svg id="spark-control" class="spark"></svg><div class="kpi-foot"><span id="kpi-control-py"></span><span>Target 92.0</span></div></article>
-    </div>
-    <div class="grid">
-      <section class="panel span-5"><h2>Adoption by Report</h2><div id="report-bars" class="bar-list"></div></section>
-      <section class="panel span-7"><h2>Report Performance Trend</h2><svg id="load-trend" class="chart"></svg></section>
-      <section class="panel span-5"><h2>Access Control Exceptions</h2><div id="access-bars" class="bar-list"></div></section>
-      <section class="panel span-7"><h2>Access Review Detail</h2><div id="access-table"></div></section>
-      <section class="panel span-12"><h2>Export Activity by Sensitivity</h2><div id="export-bars" class="bar-list"></div></section>
-    </div>
-  </section>
-  <section class="page" id="page-risk">
-    <div class="kpi-grid">
-      <article class="kpi-card" style="--accent:var(--risk)"><div class="kpi-head"><span class="kpi-title">Open Incidents</span><span id="kpi-action-open-chip" class="chip">YoY</span></div><div id="kpi-action-open" class="kpi-value"></div><svg id="spark-action-open" class="spark"></svg><div class="kpi-foot"><span id="kpi-action-open-py"></span><span>Guardrail 30</span></div></article>
-      <article class="kpi-card" style="--accent:var(--risk)"><div class="kpi-head"><span class="kpi-title">Access Risk</span><span id="kpi-action-risk-chip" class="chip">YoY</span></div><div id="kpi-action-risk" class="kpi-value"></div><svg id="spark-action-risk" class="spark"></svg><div class="kpi-foot"><span id="kpi-action-risk-py"></span><span>Lower is better</span></div></article>
-      <article class="kpi-card" style="--accent:var(--amber)"><div class="kpi-head"><span class="kpi-title">Pending Reviews</span><span id="kpi-action-pending-chip" class="chip">YoY</span></div><div id="kpi-action-pending" class="kpi-value"></div><svg id="spark-action-pending" class="spark"></svg><div class="kpi-foot"><span id="kpi-action-pending-py"></span><span>Owner follow-up</span></div></article>
-      <article class="kpi-card" style="--accent:var(--plum)"><div class="kpi-head"><span class="kpi-title">Rec Variance</span><span id="kpi-action-rec-chip" class="chip">YoY</span></div><div id="kpi-action-rec" class="kpi-value"></div><svg id="spark-action-rec" class="spark"></svg><div class="kpi-foot"><span id="kpi-action-rec-py"></span><span>Lower is better</span></div></article>
-      <article class="kpi-card" style="--accent:var(--navy)"><div class="kpi-head"><span class="kpi-title">Export Events</span><span id="kpi-action-export-chip" class="chip">YoY</span></div><div id="kpi-action-export" class="kpi-value"></div><svg id="spark-action-export" class="spark"></svg><div class="kpi-foot"><span id="kpi-action-export-py"></span><span>Monitor sensitivity</span></div></article>
-    </div>
-    <div class="grid">
-      <section class="panel span-7"><h2>Risk Trend: Incidents and Access Events</h2><svg id="risk-trend" class="chart"></svg></section>
-      <section class="panel span-5"><h2>Access Risk by Department</h2><div id="action-dept-bars" class="bar-list"></div></section>
-      <section class="panel span-5"><h2>Aged Reconciliation Queue</h2><div id="action-aging-bars" class="bar-list"></div></section>
-      <section class="panel span-7"><h2>Incident Action Queue</h2><div id="action-incident-table"></div></section>
-      <section class="panel span-8"><h2>Access Review Action Queue</h2><div id="action-access-table"></div></section>
-      <section class="panel span-4"><h2>Sensitive Export Activity</h2><div id="action-export-bars" class="bar-list"></div></section>
-    </div>
-  </section>
-</main>
-
-    <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
-      <div class="page-shell stage-shell-footer-inner">
-        <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="../../../index.html#hero" aria-label="Back to top" tabindex="-1">
-          <span aria-hidden="true">&uarr;</span>
-        </a>
-      </div>
-    </footer>
-      <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=routes-20260810-hybrid1"></script>
+    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"finance-data-quality-bi-governance","route":"finance-data-quality-bi-governance/","no":"19","folder":"Project 19 - Finance Data Quality BI Governance","title":"Finance Data Quality BI Governance","lens":"Finance governance","summary":"Governance BI monitoring reconciliation breaks, data quality risk, refresh reliability, and owner action queues.","decisionQuestion":"Can finance trust the reporting pack, and which control failures must be resolved before close sign-off?","pages":[{"id":"close-confidence","label":"Close Confidence"},{"id":"reliability-controls","label":"Reliability & Controls"},{"id":"risk-owner-actions","label":"Risk & Owner Actions"}],"metrics":[{"value":"99.6%","label":"refresh SLA","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":97.60799999999999,"prior":91.632,"series":[91.632,92.35636363636364,93.08072727272727,93.80509090909091,94.52945454545454,95.25381818181818,95.97818181818181,96.70254545454546,97.42690909090909,98.15127272727273,98.87563636363636,99.6],"sensitivity":1},{"value":"42","label":"data checks","note":"Synthetic preview value.","format":"number","higherIsBetter":null,"plan":42,"prior":42,"series":[42,42,42,42,42,42,42,42,42,42,42,42],"sensitivity":0},{"value":"8","label":"recon breaks","note":"Synthetic preview value.","format":"number","higherIsBetter":false,"plan":8.16,"prior":8.72,"series":[8.72,8.654545454545454,8.58909090909091,8.523636363636363,8.458181818181819,8.392727272727273,8.327272727272728,8.261818181818182,8.196363636363637,8.13090909090909,8.065454545454546,8],"sensitivity":1},{"value":"3","label":"owner escalations","note":"Synthetic preview value.","format":"number","higherIsBetter":false,"plan":3.06,"prior":3.2700000000000005,"series":[3.2700000000000005,3.245454545454546,3.220909090909091,3.1963636363636367,3.1718181818181823,3.1472727272727274,3.122727272727273,3.098181818181818,3.0736363636363637,3.0490909090909093,3.0245454545454544,3],"sensitivity":1}],"bars":[{"label":"Refresh","value":91},{"label":"Completeness","value":84},{"label":"Reconciliation","value":67},{"label":"Ownership","value":74}],"drivers":[{"label":"Refresh reliability","value":"+6 pts","isRisk":false},{"label":"Mapping gaps","value":"-4 pts","isRisk":true},{"label":"Owner SLA","value":"+3 pts","isRisk":false}],"actions":[{"owner":"Data owner","action":"Resolve high-risk mapping gaps."},{"owner":"Finance","action":"Review recon breaks before close."},{"owner":"BI","action":"Monitor refresh exceptions and alerts."}],"financeLogic":["Control pass rate divides passed checks by executed eligible checks.","Reconciliation variance compares source, model, and reported totals at common grain.","Close confidence weights material control status, freshness, and unresolved exposure."],"scopeLabel":"Control Domain","scopeOptions":["All Controls","Refresh","Completeness","Reconciliation","Ownership"],"breakdownLabel":"Source System","breakdownOptions":["All Sources","ERP","CRM","Planning","Data Platform"],"regionOptions":["All Sources","ERP","CRM","Planning","Data Platform"],"governance":["Every control has definition, threshold, owner, and evidence timestamp.","Refresh and reconciliation failures are retained in an audit trail.","Material exceptions require disposition before finance sign-off.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Controls","region":"All Sources"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Control Domain","options":["All Controls","Refresh","Completeness","Reconciliation","Ownership"],"default":"All Controls"},{"id":"region","label":"Source System","options":["All Sources","ERP","CRM","Planning","Data Platform"],"default":"All Sources"}],"dataClassification":"Synthetic public-safe preview data"});</script>
+    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
   </body>
 </html>

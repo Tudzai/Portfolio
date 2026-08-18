@@ -11,7 +11,6 @@ const EXCLUDED_THEME_ROUTES = new Set([
   "index.html",
   "404.html",
   "blog/predictive-collections-agent/deck/index.html",
-  "showcase/powerbi/board-investor-cfo-pack/preview.html",
 ]);
 const EXCLUDED_REFERENCE_ROUTES = new Set(["index.html", "404.html"]);
 const EXCLUDED_ROOT_DIRECTORIES = new Set([
@@ -29,6 +28,7 @@ const EXCLUDED_ROOT_DIRECTORIES = new Set([
 ]);
 
 const toPosix = (value) => value.replaceAll(path.sep, "/");
+const isExcludedThemeRoute = (route) => EXCLUDED_THEME_ROUTES.has(route) || /^showcase\/powerbi\/[^/]+\/preview\.html$/.test(route);
 
 async function walkHtml(directory, result = []) {
   for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
@@ -85,6 +85,26 @@ test("keeps the canonical recruiter-facing route inventory at 86 pages", async (
   assert.equal(routes.includes("showcase/workspace-hub/index.html"), true);
 });
 
+test("applies the shared high-density responsive tokens to every Stage route", async () => {
+  const stageRoutes = [];
+
+  for (const route of await walkHtml(REPO_ROOT)) {
+    const html = await fs.readFile(path.join(REPO_ROOT, route), "utf8");
+    if (!/data-stage-template=/.test(html)) continue;
+    stageRoutes.push(route);
+    assert.match(
+      html,
+      /tokens\.css\?v=routes-20260818-responsive-all1/,
+      `${route}: responsive token cache key`,
+    );
+  }
+
+  const tokenCss = await fs.readFile(path.join(THEMED_ASSET_ROOT, "css", "tokens.css"), "utf8");
+  assert.equal(stageRoutes.length, 64);
+  assert.match(tokenCss, /min-width:\s*2200px[^}]*min-height:\s*1200px[^}]*zoom:\s*1\.333333/s);
+  assert.match(tokenCss, /min-width:\s*3200px[^}]*min-height:\s*1800px[^}]*zoom:\s*2/s);
+});
+
 test("ships the enlarged AT mark through one fresh shared shell cache key", async () => {
   const shellConsumers = [];
 
@@ -100,7 +120,7 @@ test("ships the enlarged AT mark through one fresh shared shell cache key", asyn
   }
 
   const shellCss = await fs.readFile(path.join(THEMED_ASSET_ROOT, "css", "shell.css"), "utf8");
-  assert.equal(shellConsumers.length, 83);
+  assert.equal(shellConsumers.length, 64);
   assert.match(
     shellCss,
     /body\[data-stage-template\] \.stage-shell-brand-mark\s*\{[^}]*position:\s*relative/s,
@@ -112,8 +132,8 @@ test("ships the enlarged AT mark through one fresh shared shell cache key", asyn
 });
 
 test("serves every shell-managed branch route with the approved purple production shell", async () => {
-  const routes = (await walkHtml(REPO_ROOT)).filter((route) => !EXCLUDED_THEME_ROUTES.has(route));
-  assert.equal(routes.length, 82);
+  const routes = (await walkHtml(REPO_ROOT)).filter((route) => !isExcludedThemeRoute(route));
+  assert.equal(routes.length, 63);
 
   for (const route of routes) {
     const html = await fs.readFile(path.join(REPO_ROOT, route), "utf8");
@@ -130,7 +150,11 @@ test("serves every shell-managed branch route with the approved purple productio
     assert.match(html, new RegExp(`assets/agentic-home/css/templates/${template}\\.css`), `${route}: adapter`);
     assert.match(html, /assets\/agentic-home\/js\/navigation\.js/, `${route}: navigation`);
     assert.match(html, /assets\/agentic-home\/js\/site\.js/, `${route}: site behavior`);
-    assert.match(html, /[?&]v=routes-20260810-hybrid1/, `${route}: current theme cache key`);
+    assert.match(
+      html,
+      /tokens\.css\?v=routes-20260818-responsive-all1/,
+      `${route}: shared responsive token cache key`,
+    );
     assert.match(html, /<meta\b[^>]*name=["']robots["'][^>]*content=["']index, follow["']/i, `${route}: robots`);
     assert.match(html, /analytics\.js/i, `${route}: analytics`);
     assert.doesNotMatch(html, /Stage\/agentic-finance/i, `${route}: Stage URL leak`);
@@ -150,7 +174,7 @@ test("keeps the board CFO preview as a self-contained interactive dashboard", as
   assert.match(indexHtml, /<main\b[^>]*id=["']main-content["'][^>]*class=["']board-case["']/i);
   assert.equal((indexHtml.match(/\bid=["']main-content["']/gi) || []).length, 1);
   assert.match(indexHtml, /id=["']interactive-preview["']/);
-  assert.match(indexHtml, /<iframe\b[^>]*id=["']board-pack-preview["'][^>]*src=["']preview\.html\?v=interactive-20260817["'][^>]*title=["']Board Investor CFO Pack interactive preview["']/i);
+  assert.match(indexHtml, /<iframe\b[^>]*id=["']board-pack-preview["'][^>]*src=["']preview\.html\?v=interactive-20260818-responsive1["'][^>]*title=["']Board Investor CFO Pack interactive preview["']/i);
   assert.match(indexHtml, /<h1\b[^>]*>Board Investor\s*<span>CFO Pack<\/span><\/h1>/i);
   assert.match(indexHtml, /class=["']board-overview["']/);
   assert.match(indexHtml, /class=["']board-metrics["']/);
