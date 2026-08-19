@@ -7,21 +7,20 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' https://us-assets.i.posthog.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://us.i.posthog.com; object-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
-    <meta name="theme-color" content="#0a1118" />
+    <meta name="theme-color" content="#090812" />
     <meta
       name="description"
-      content="An encrypted personal knowledge library for FinTech, Finance, the Road to CFO, and other subjects I learn."
+      content="An encrypted personal knowledge vault with clear, source-backed learning paths."
     />
     <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260727-road-to-cfo" />
-    <script src="../analytics.js?v=posthog-replay-fix-20260816"></script>
-    <script src="vault-data.js?v=20260727-road-to-cfo" defer></script>
-    <script src="vault.js?v=20260727-road-to-cfo" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260819-ethereal-vault" />
+    <script src="vault-data.js?v=20260819-ethereal-vault" defer></script>
+    <script src="vault.js?v=20260819-ethereal-vault" defer></script>
   </head>
-  <body class="is-locked ph-no-capture" data-ph-no-autocapture>
+  <body class="is-locked">
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <header class="site-header">
@@ -41,37 +40,36 @@
     <main id="main-content">
       <section class="unlock-view" data-unlock-view aria-labelledby="unlock-title">
         <div class="unlock-intro">
-          <p class="eyebrow"><span aria-hidden="true"></span> Encrypted learning space</p>
-          <h1 id="unlock-title">A private library for everything I am learning.</h1>
+          <p class="eyebrow"><span aria-hidden="true"></span> Private knowledge vault</p>
+          <h1 id="unlock-title">Learn one clear idea at a time.</h1>
           <p class="unlock-intro__lede">
-            Existing notes stay intact. FinTech, Finance, Road to CFO, Breaking, and muscle recovery each have a
-            structured, beginner-first learning path that can grow lesson by lesson.
+            Choose a subject, begin with the basics, and follow a calm path toward deeper understanding.
           </p>
 
           <div class="unlock-pillars" aria-label="Library principles">
             <article>
               <span>01</span>
-              <h2>Decision-grade</h2>
-              <p>Distinguishes facts, practices, opinions, assumptions, and emerging trends.</p>
+              <h2>Clear</h2>
+              <p>Short explanations begin with what a new learner needs.</p>
             </article>
             <article>
               <span>02</span>
-              <h2>Source-backed</h2>
-              <p>Cross-checks official, professional, cultural, and peer-reviewed sources for each subject.</p>
+              <h2>Verified</h2>
+              <p>Every learning path keeps its sources close at hand.</p>
             </article>
             <article>
               <span>03</span>
-              <h2>Private by design</h2>
-              <p>The password and decrypted content never leave this browser.</p>
+              <h2>Private</h2>
+              <p>Your password and decrypted reading stay on this device.</p>
             </article>
           </div>
         </div>
 
         <div class="unlock-card" data-unlock-card>
           <div class="unlock-card__icon" aria-hidden="true"><span></span></div>
-          <p class="unlock-card__kicker">Owner access</p>
-          <h2>Open the knowledge library</h2>
-          <p class="unlock-card__copy">Enter the password to derive the decryption key on this device.</p>
+          <p class="unlock-card__kicker">The threshold</p>
+          <h2>Enter the vault</h2>
+          <p class="unlock-card__copy">Use your library password. Decryption happens only in this browser.</p>
 
           <form class="unlock-form" data-unlock-form novalidate>
             <input type="text" name="username" value="vault-owner" autocomplete="username" hidden />
@@ -85,18 +83,19 @@
                 autocapitalize="none"
                 spellcheck="false"
                 required
+                aria-describedby="vault-unlock-status"
                 data-password-input
               />
               <button type="button" data-password-toggle aria-label="Show password">Show</button>
             </div>
             <button class="primary-button" type="submit" data-unlock-button>
-              <span>Open library</span>
+              <span>Enter the vault</span>
               <span aria-hidden="true">→</span>
             </button>
-            <p class="unlock-status" data-unlock-status aria-live="polite"></p>
+            <p id="vault-unlock-status" class="unlock-status" data-unlock-status aria-live="polite"></p>
           </form>
 
-          <p class="local-note"><span aria-hidden="true">●</span> No password, content, or search query is ever sent away.</p>
+          <p class="local-note"><span aria-hidden="true">●</span> No analytics. No background requests. No decrypted content stored.</p>
         </div>
       </section>
 
@@ -163,7 +162,11 @@
                   <input
                     id="lesson-search"
                     type="search"
-                    placeholder="Search lessons, notes, concepts…"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-expanded="false"
+                    aria-controls="vault-search-results"
+                    placeholder="Search any idea…"
                     autocomplete="off"
                     data-search-input
                   />
@@ -172,6 +175,16 @@
               </div>
 
               <div class="workspace-actions">
+                <button
+                  type="button"
+                  class="text-button text-button--compass"
+                  data-tools-toggle
+                  aria-label="Open learning tools"
+                  aria-expanded="false"
+                  aria-controls="vault-tools"
+                >
+                  <span aria-hidden="true">✦</span><span>Compass</span>
+                </button>
                 <button type="button" class="text-button" data-theme-toggle aria-label="Switch to light mode">
                   <span aria-hidden="true">◐</span><span data-theme-label>Light</span>
                 </button>
@@ -180,13 +193,72 @@
                 </button>
               </div>
 
-              <div class="search-results" data-search-results hidden aria-label="Search results"></div>
+              <div
+                id="vault-search-results"
+                class="search-results"
+                data-search-results
+                hidden
+                role="listbox"
+                aria-label="Search results"
+              ></div>
+
+              <aside id="vault-tools" class="tools-popover" data-tools-panel hidden aria-label="Learning tools">
+                <div class="tools-popover__head">
+                  <div>
+                    <span>Learning compass</span>
+                    <strong>Choose your next step</strong>
+                  </div>
+                  <button type="button" class="icon-button" data-tools-close aria-label="Close learning tools">×</button>
+                </div>
+                <div class="tools-grid">
+                  <button type="button" class="tool-card" data-resume-button>
+                    <span aria-hidden="true">↗</span>
+                    <strong>Continue reading</strong>
+                    <small data-resume-meta>Find your next lesson</small>
+                  </button>
+                  <button type="button" class="tool-card" data-random-button>
+                    <span aria-hidden="true">✦</span>
+                    <strong>Surprise me</strong>
+                    <small>Open an unread idea</small>
+                  </button>
+                  <button type="button" class="tool-card" data-bookmarks-button>
+                    <span aria-hidden="true">◇</span>
+                    <strong>Saved lessons</strong>
+                    <small data-bookmarks-meta>0 saved</small>
+                  </button>
+                  <button type="button" class="tool-card" data-reading-mode-button aria-pressed="false">
+                    <span aria-hidden="true">≋</span>
+                    <strong data-reading-mode-label>Essential view</strong>
+                    <small data-reading-mode-meta>Show the clearest sections</small>
+                  </button>
+                  <button type="button" class="tool-card" data-text-size-button aria-label="Reading size: Comfortable. Activate to change.">
+                    <span aria-hidden="true">Aa</span>
+                    <strong>Reading size</strong>
+                    <small data-text-size-meta>Comfortable</small>
+                  </button>
+                  <button type="button" class="tool-card" data-theme-tool-button aria-label="Switch to light mode">
+                    <span aria-hidden="true">◐</span>
+                    <strong>Theme</strong>
+                    <small data-theme-tool-meta>Dark theme active</small>
+                  </button>
+                  <button type="button" class="tool-card" data-focus-button aria-pressed="false">
+                    <span aria-hidden="true">◌</span>
+                    <strong data-focus-label>Focus mode</strong>
+                    <small>Quiet the navigation</small>
+                  </button>
+                </div>
+                <button type="button" class="shortcuts-link" data-shortcuts-button>
+                  Keyboard shortcuts <span aria-hidden="true">?</span>
+                </button>
+              </aside>
             </header>
 
-            <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+            <div class="reading-progress" aria-hidden="true">
+              <progress data-reading-progress max="100" value="0"></progress>
+            </div>
 
             <div class="reader-wrap">
-              <article class="lesson-reader" data-lesson-reader aria-live="polite"></article>
+              <article class="lesson-reader" data-lesson-reader></article>
             </div>
           </div>
         </div>
@@ -199,6 +271,28 @@
     </footer>
 
     <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
+    <div class="modal-layer" data-shortcuts-dialog hidden>
+      <div class="modal-scrim" data-shortcuts-close aria-hidden="true"></div>
+      <section class="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title">
+        <div class="shortcut-dialog__head">
+          <div>
+            <span>Move without breaking focus</span>
+            <h2 id="shortcut-title">Keyboard shortcuts</h2>
+          </div>
+          <button type="button" class="icon-button" data-shortcuts-close aria-label="Close keyboard shortcuts">×</button>
+        </div>
+        <dl class="shortcut-list">
+          <div><dt><kbd>Ctrl</kbd> <kbd>K</kbd></dt><dd>Search the vault</dd></div>
+          <div><dt><kbd>G</kbd> <kbd>H</kbd></dt><dd>Go to the library home</dd></div>
+          <div><dt><kbd>G</kbd> <kbd>S</kbd></dt><dd>Open saved lessons</dd></div>
+          <div><dt><kbd>R</kbd></dt><dd>Open a surprise lesson</dd></div>
+          <div><dt><kbd>F</kbd></dt><dd>Toggle focus mode</dd></div>
+          <div><dt><kbd>E</kbd></dt><dd>Toggle essential view</dd></div>
+          <div><dt><kbd>Esc</kbd></dt><dd>Close the active panel</dd></div>
+        </dl>
+      </section>
+    </div>
 
     <noscript>
       <div class="noscript-message">JavaScript must be enabled to decrypt the library on this device.</div>

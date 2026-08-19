@@ -1,6 +1,7 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { access, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { webcrypto } from "node:crypto";
-import { dirname, join, resolve } from "node:path";
+import { spawnSync } from "node:child_process";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const { subtle } = webcrypto;
@@ -15,6 +16,9 @@ const additionalData = encoder.encode("knowledge-vault:v1");
 
 if (!password) {
   throw new Error("VAULT_PASSWORD is required. Use the PowerShell wrapper for a hidden password prompt.");
+}
+if (inputPath.toLocaleLowerCase("en-US") === outputPath.toLocaleLowerCase("en-US")) {
+  throw new Error("The plaintext input and encrypted output must be different files.");
 }
 
 function toBase64(bytes) {
@@ -74,7 +78,7 @@ function validateDomain(domain, domainIndex, globalIds) {
     if (source.url !== undefined) {
       try {
         const url = new URL(source.url);
-        if (!new Set(["http:", "https:"]).has(url.protocol)) throw new Error();
+        if (url.protocol !== "https:") throw new Error();
       } catch {
         throw new Error(`Source ${sourceId} requires a valid HTTP(S) URL.`);
       }
@@ -175,9 +179,45 @@ function validateSource(value) {
   }
 }
 
-const sourceText = await readFile(inputPath, "utf8");
-const source = JSON.parse(sourceText);
-validateSource(source);
+const validatorEnvironment = Object.fromEntries(
+  Object.entries(process.env).filter(([key]) => !new Set(["VAULT_PASSWORD", "VAULT_CURRENT_PASSWORD"]).has(key)),
+);
+let outputExists = true;
+try {
+  await access(outputPath);
+} catch {
+  outputExists = false;
+}
+if (outputExists) {
+  const existingPassword = process.env.VAULT_CURRENT_PASSWORD || password;
+  const existingVerification = spawnSync(
+    process.execPath,
+    [join(scriptDirectory, "verify-vault-password.mjs"), outputPath],
+    {
+      env: { ...validatorEnvironment, VAULT_PASSWORD: existingPassword },
+      stdio: ["ignore", "inherit", "inherit"],
+    },
+  );
+  if (existingVerification.status !== 0) {
+    throw new Error("The existing vault password could not be verified; the encrypted payload was not changed.");
+  }
+}
+const validation = spawnSync(
+  process.execPath,
+  [join(scriptDirectory, "validate-vault.mjs"), inputPath],
+  { env: validatorEnvironment, stdio: ["ignore", "inherit", "inherit"] },
+);
+if (validation.status !== 0) throw new Error("The knowledge source did not pass the release-schema gate.");
+
+let sourceText;
+let source;
+try {
+  sourceText = await readFile(inputPath, "utf8");
+  source = JSON.parse(sourceText);
+  validateSource(source);
+} catch {
+  throw new Error("The knowledge source failed encryption validation.");
+}
 
 const salt = webcrypto.getRandomValues(new Uint8Array(16));
 const iv = webcrypto.getRandomValues(new Uint8Array(12));
@@ -216,7 +256,11 @@ const verifiedPlaintext = await subtle.decrypt(
   key,
   ciphertext,
 );
-validateSource(JSON.parse(new TextDecoder().decode(verifiedPlaintext)));
+try {
+  validateSource(JSON.parse(new TextDecoder().decode(verifiedPlaintext)));
+} catch {
+  throw new Error("The encrypted round trip failed its private-safe schema verification.");
+}
 
 const wrongSourceKey = await subtle.importKey(
   "raw",
@@ -271,5 +315,12 @@ const payload = {
   ciphertext: toBase64(new Uint8Array(ciphertext)),
 };
 
-await writeFile(outputPath, `window.__KNOWLEDGE_VAULT_DATA__ = ${JSON.stringify(payload, null, 2)};\n`, "utf8");
+const temporaryOutputPath = join(dirname(outputPath), `.${basename(outputPath)}.${process.pid}.tmp`);
+try {
+  await writeFile(temporaryOutputPath, `window.__KNOWLEDGE_VAULT_DATA__ = ${JSON.stringify(payload, null, 2)};\n`, { encoding: "utf8", flag: "wx" });
+  await rename(temporaryOutputPath, outputPath);
+} catch {
+  await rm(temporaryOutputPath, { force: true });
+  throw new Error("The verified encrypted payload could not be published atomically.");
+}
 console.log(`Encrypted and verified the knowledge source into ${outputPath}`);
