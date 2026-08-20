@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-theme-preset="midnight">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -16,9 +16,9 @@
     />
     <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260819-ethereal-vault" />
-    <script src="vault-data.js?v=20260819-ethereal-vault" defer></script>
-    <script src="vault.js?v=20260819-ethereal-vault" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260820-theme-studio" />
+    <script src="vault-data.js?v=20260820-theme-studio" defer></script>
+    <script src="vault.js?v=20260820-theme-studio" defer></script>
   </head>
   <body class="is-locked">
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -185,8 +185,8 @@
                 >
                   <span aria-hidden="true">✦</span><span>Compass</span>
                 </button>
-                <button type="button" class="text-button" data-theme-toggle aria-label="Switch to light mode">
-                  <span aria-hidden="true">◐</span><span data-theme-label>Light</span>
+                <button type="button" class="text-button" data-theme-toggle aria-label="Choose theme. Midnight active.">
+                  <span aria-hidden="true">◐</span><span data-theme-label>Midnight</span>
                 </button>
                 <button type="button" class="text-button text-button--danger" data-lock-button aria-label="Lock library">
                   <span aria-hidden="true">↙</span><span>Lock</span>
@@ -236,10 +236,10 @@
                     <strong>Reading size</strong>
                     <small data-text-size-meta>Comfortable</small>
                   </button>
-                  <button type="button" class="tool-card" data-theme-tool-button aria-label="Switch to light mode">
+                  <button type="button" class="tool-card" data-theme-tool-button aria-label="Choose theme. Midnight active.">
                     <span aria-hidden="true">◐</span>
                     <strong>Theme</strong>
-                    <small data-theme-tool-meta>Dark theme active</small>
+                    <small data-theme-tool-meta>Midnight active</small>
                   </button>
                   <button type="button" class="tool-card" data-focus-button aria-pressed="false">
                     <span aria-hidden="true">◌</span>
@@ -271,6 +271,48 @@
     </footer>
 
     <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
+    <div class="modal-layer" data-theme-dialog hidden>
+      <div class="modal-scrim" data-theme-close aria-hidden="true"></div>
+      <section class="theme-dialog" role="dialog" aria-modal="true" aria-labelledby="theme-title" aria-describedby="theme-description">
+        <div class="theme-dialog__head">
+          <div>
+            <span>Shape the atmosphere</span>
+            <h2 id="theme-title">Theme studio</h2>
+          </div>
+          <button type="button" class="icon-button" data-theme-close aria-label="Close theme studio">×</button>
+        </div>
+        <p id="theme-description" class="theme-dialog__intro">
+          Choose a reading atmosphere. Your choice stays on this device and never leaves the vault.
+        </p>
+        <div class="theme-grid" role="radiogroup" aria-label="Vault theme" data-theme-options>
+          <button type="button" class="theme-option" role="radio" aria-checked="true" data-theme-option="midnight">
+            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="theme-option__copy"><strong>Midnight</strong><small>Ink, lavender, quiet stars</small></span>
+            <span class="theme-option__check" aria-hidden="true">✓</span>
+          </button>
+          <button type="button" class="theme-option" role="radio" aria-checked="false" tabindex="-1" data-theme-option="pearl">
+            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="theme-option__copy"><strong>Pearl</strong><small>Soft paper, daylight, clarity</small></span>
+            <span class="theme-option__check" aria-hidden="true">✓</span>
+          </button>
+          <button type="button" class="theme-option" role="radio" aria-checked="false" tabindex="-1" data-theme-option="nebula">
+            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="theme-option__copy"><strong>Nebula</strong><small>Plum space, rose light, wonder</small></span>
+            <span class="theme-option__check" aria-hidden="true">✓</span>
+          </button>
+          <button type="button" class="theme-option" role="radio" aria-checked="false" tabindex="-1" data-theme-option="aurora">
+            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="theme-option__copy"><strong>Aurora</strong><small>Deep teal, mint glow, calm</small></span>
+            <span class="theme-option__check" aria-hidden="true">✓</span>
+          </button>
+        </div>
+        <div class="theme-dialog__footer">
+          <span>Theme changes apply immediately.</span>
+          <button type="button" class="theme-done" data-theme-close>Done</button>
+        </div>
+      </section>
+    </div>
 
     <div class="modal-layer" data-shortcuts-dialog hidden>
       <div class="modal-scrim" data-shortcuts-close aria-hidden="true"></div>

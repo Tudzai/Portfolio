@@ -4,7 +4,8 @@
   const VAULT_AAD = "knowledge-vault:v1";
   const STORAGE_COMPLETED = "knowledge-library:completed:v2";
   const STORAGE_COMPLETED_LEGACY = "fintech-domain:completed:v1";
-  const STORAGE_THEME = "fintech-domain:theme:v1";
+  const STORAGE_THEME = "knowledge-library:theme-preset:v2";
+  const STORAGE_THEME_LEGACY = "fintech-domain:theme:v1";
   const STORAGE_SIDEBAR_WIDTH = "knowledge-library:sidebar-width:v1";
   const STORAGE_SIDEBAR_COLLAPSED = "knowledge-library:sidebar-collapsed:v1";
   const STORAGE_BOOKMARKS = "knowledge-library:bookmarks:v1";
@@ -33,6 +34,12 @@
     "Tóm tắt bài học",
     "Nguồn tham khảo",
   ];
+  const THEME_PRESETS = Object.freeze({
+    midnight: { label: "Midnight", mode: "dark", color: "#090812" },
+    pearl: { label: "Pearl", mode: "light", color: "#f5f2f8" },
+    nebula: { label: "Nebula", mode: "dark", color: "#10091e" },
+    aurora: { label: "Aurora", mode: "dark", color: "#061615" },
+  });
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
@@ -57,6 +64,9 @@
   const themeLabel = document.querySelector("[data-theme-label]");
   const themeToolButton = document.querySelector("[data-theme-tool-button]");
   const themeToolMeta = document.querySelector("[data-theme-tool-meta]");
+  const themeDialog = document.querySelector("[data-theme-dialog]");
+  const themeCloseButtons = document.querySelectorAll("[data-theme-close]");
+  const themeOptions = document.querySelectorAll("[data-theme-option]");
   const sidebarOpenButton = document.querySelector("[data-sidebar-open]");
   const sidebarCloseButton = document.querySelector("[data-sidebar-close]");
   const sidebarCollapseButton = document.querySelector("[data-sidebar-collapse]");
@@ -1026,6 +1036,41 @@
     else closeTools({ restoreFocus: true });
   }
 
+  function trapModalFocus(event, layer, panelSelector) {
+    const controls = Array.from(layer.querySelectorAll(`${panelSelector} button:not([disabled]), ${panelSelector} [href], ${panelSelector} [tabindex]:not([tabindex="-1"])`))
+      .filter((control) => control.getClientRects().length > 0);
+    if (!controls.length) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function openThemeDialog(trigger = document.activeElement) {
+    if (!themeDialog) return;
+    state.previousFocus = toolsPanel?.contains(trigger) ? toolsToggle : trigger;
+    closeTools();
+    themeDialog.hidden = false;
+    document.body.classList.add("modal-open");
+    if (vaultView) vaultView.inert = true;
+    const activeTheme = document.documentElement.dataset.themePreset || "midnight";
+    themeDialog.querySelector(`[data-theme-option="${activeTheme}"]`)?.focus();
+  }
+
+  function closeThemeDialog({ restoreFocus = true } = {}) {
+    if (!themeDialog || themeDialog.hidden) return;
+    themeDialog.hidden = true;
+    document.body.classList.remove("modal-open");
+    if (vaultView) vaultView.inert = false;
+    if (restoreFocus) state.previousFocus?.focus?.({ preventScroll: true });
+    state.previousFocus = null;
+  }
+
   function openShortcuts() {
     if (!shortcutsDialog) return;
     state.previousFocus = toolsPanel?.contains(document.activeElement) ? toolsToggle : document.activeElement;
@@ -1054,16 +1099,25 @@
   }
 
   function setTheme(theme, persist = true) {
-    const next = theme === "light" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f5f2f8" : "#090812");
-    themeLabel.textContent = next === "light" ? "Dark" : "Light";
-    themeToggle.setAttribute("aria-label", next === "light" ? "Switch to dark mode" : "Switch to light mode");
-    if (themeToolMeta) themeToolMeta.textContent = next === "light" ? "Light theme active" : "Dark theme active";
-    themeToolButton?.setAttribute("aria-label", next === "light" ? "Switch to dark mode" : "Switch to light mode");
+    const migrated = theme === "light" ? "pearl" : theme === "dark" ? "midnight" : theme;
+    const next = THEME_PRESETS[migrated] ? migrated : "midnight";
+    const preset = THEME_PRESETS[next];
+    document.documentElement.dataset.theme = preset.mode;
+    document.documentElement.dataset.themePreset = next;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", preset.color);
+    if (themeLabel) themeLabel.textContent = preset.label;
+    themeToggle?.setAttribute("aria-label", `Choose theme. ${preset.label} active.`);
+    if (themeToolMeta) themeToolMeta.textContent = `${preset.label} active`;
+    themeToolButton?.setAttribute("aria-label", `Choose theme. ${preset.label} active.`);
+    themeOptions.forEach((option) => {
+      const selected = option.dataset.themeOption === next;
+      option.setAttribute("aria-checked", String(selected));
+      option.tabIndex = selected ? 0 : -1;
+    });
     if (persist) {
       try {
         window.localStorage.setItem(STORAGE_THEME, next);
+        window.localStorage.removeItem(STORAGE_THEME_LEGACY);
       } catch {
         // Theme remains applied for the current session.
       }
@@ -1073,12 +1127,28 @@
   function initializeTheme() {
     let stored = null;
     try {
-      stored = window.localStorage.getItem(STORAGE_THEME);
+      stored = window.localStorage.getItem(STORAGE_THEME) || window.localStorage.getItem(STORAGE_THEME_LEGACY);
     } catch {
       stored = null;
     }
-    const preferred = window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    const preferred = window.matchMedia?.("(prefers-color-scheme: light)").matches ? "pearl" : "midnight";
     setTheme(stored || preferred, false);
+  }
+
+  function handleThemeOptionKeydown(event) {
+    if (!new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"]).has(event.key)) return;
+    const options = Array.from(themeOptions);
+    const currentIndex = options.indexOf(event.currentTarget);
+    if (currentIndex < 0) return;
+    event.preventDefault();
+    let nextIndex = currentIndex;
+    if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = options.length - 1;
+    else if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (currentIndex + 1) % options.length;
+    else nextIndex = (currentIndex - 1 + options.length) % options.length;
+    const nextOption = options[nextIndex];
+    setTheme(nextOption.dataset.themeOption);
+    nextOption.focus();
   }
 
   function isCompactSidebar() {
@@ -2394,10 +2464,6 @@
     }
   }
 
-  function toggleTheme() {
-    setTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
-  }
-
   function toggleBookmark(lessonId) {
     const entry = validStoredLesson(lessonId);
     if (!entry) return;
@@ -2623,6 +2689,7 @@
     document.body.classList.remove("is-resizing-sidebar");
     state.sidebarResize = null;
     closeTools();
+    closeThemeDialog({ restoreFocus: false });
     closeShortcuts({ restoreFocus: false });
     sidebarScrim.hidden = true;
     if (workspace) workspace.inert = false;
@@ -2831,8 +2898,13 @@
     const result = event.target.closest("[data-lesson-id]");
     if (result) selectLesson(result.dataset.lessonId);
   });
-  themeToggle?.addEventListener("click", toggleTheme);
-  themeToolButton?.addEventListener("click", toggleTheme);
+  themeToggle?.addEventListener("click", () => openThemeDialog(themeToggle));
+  themeToolButton?.addEventListener("click", () => openThemeDialog(themeToolButton));
+  themeCloseButtons.forEach((button) => button.addEventListener("click", closeThemeDialog));
+  themeOptions.forEach((option) => {
+    option.addEventListener("click", () => setTheme(option.dataset.themeOption));
+    option.addEventListener("keydown", handleThemeOptionKeydown);
+  });
   toolsToggle?.addEventListener("click", toggleTools);
   toolsClose?.addEventListener("click", () => closeTools({ restoreFocus: true }));
   resumeButton?.addEventListener("click", openResumeLesson);
@@ -2875,26 +2947,22 @@
   });
   workspace?.addEventListener("scroll", updateReadingProgress, { passive: true });
   document.addEventListener("keydown", (event) => {
+    if (!themeDialog?.hidden) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeThemeDialog();
+      } else if (event.key === "Tab") {
+        trapModalFocus(event, themeDialog, ".theme-dialog");
+      }
+      return;
+    }
     if (!shortcutsDialog?.hidden) {
       if (event.key === "Escape") {
         event.preventDefault();
         closeShortcuts();
         return;
       }
-      if (event.key === "Tab") {
-        const controls = Array.from(shortcutsDialog.querySelectorAll('.shortcut-dialog button:not([disabled]), .shortcut-dialog [href], .shortcut-dialog [tabindex]:not([tabindex="-1"])'));
-        if (controls.length) {
-          const first = controls[0];
-          const last = controls[controls.length - 1];
-          if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-          } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-          }
-        }
-      }
+      if (event.key === "Tab") trapModalFocus(event, shortcutsDialog, ".shortcut-dialog");
       return;
     }
     if (document.body.classList.contains("is-locked")) return;

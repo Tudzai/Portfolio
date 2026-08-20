@@ -69,7 +69,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260819-ethereal-vault|vault.js?v=20260819-ethereal-vault") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260820-theme-studio|vault.js?v=20260820-theme-studio") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -77,7 +77,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260819-ethereal-vault") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260820-theme-studio") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -210,6 +210,12 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "data-reading-mode-button",
   "data-text-size-button",
   "data-theme-tool-button",
+  "data-theme-dialog",
+  "data-theme-option=\"midnight\"",
+  "data-theme-option=\"pearl\"",
+  "data-theme-option=\"nebula\"",
+  "data-theme-option=\"aurora\"",
+  "role=\"radiogroup\"",
   "data-focus-button",
   "data-shortcuts-dialog",
   "role=\"combobox\"",
@@ -227,6 +233,9 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "setFocusMode",
   "setReadingMode",
   "cycleTextSize",
+  "openThemeDialog",
+  "closeThemeDialog",
+  "handleThemeOptionKeydown",
 ].forEach((token) => requireMatch(js, new RegExp(`function ${token}\\b`), `missing behavior contract: ${token}`));
 
 [
@@ -238,6 +247,10 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "body.focus-mode",
   "prefers-reduced-motion",
   "data-domain-tone",
+  ".theme-dialog",
+  ".theme-grid",
+  "data-theme-preset=\"nebula\"",
+  "data-theme-preset=\"aurora\"",
 ].forEach((token) => requireMatch(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `missing style contract: ${token}`));
 
 requireMatch(js, /document\.createTextNode|\.textContent\s*=/, "safe text rendering");

@@ -44,6 +44,8 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
   reader and keeps the beginner sections visible; full view restores all eleven authored sections and references.
 - The Learning Compass provides continue reading, surprise discovery, saved lessons, reading size, essential/full
   view, focus mode, and keyboard shortcuts without crowding the main reading surface.
+- Theme Studio offers Midnight, Pearl, Nebula, and Aurora palettes. The selected preset is saved only in local
+  browser storage and can be changed from the header or Learning Compass.
 - Search is accent-insensitive and keyboard navigable. Lesson pages include a section outline, estimated reading time,
   completion, bookmarks, previous/next navigation, and a reading-progress indicator.
 - Each domain receives a restrained accent tone while sharing the same quiet, high-contrast visual system.
