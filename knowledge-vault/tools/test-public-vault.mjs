@@ -5,11 +5,14 @@ import { fileURLToPath } from "node:url";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const vaultDirectory = resolve(scriptDirectory, "..");
-const [html, css, js, encryptedData] = await Promise.all([
+const [html, css, js, encryptedData, schemaValidator, encryptTool, passwordVerifier] = await Promise.all([
   readFile(join(vaultDirectory, "index.html"), "utf8"),
   readFile(join(vaultDirectory, "vault.css"), "utf8"),
   readFile(join(vaultDirectory, "vault.js"), "utf8"),
   readFile(join(vaultDirectory, "vault-data.js"), "utf8"),
+  readFile(join(scriptDirectory, "validate-vault.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "encrypt-vault.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "verify-vault-password.mjs"), "utf8"),
 ]);
 
 const failures = [];
@@ -69,7 +72,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260820-theme-studio-expanded|vault.js?v=20260820-theme-studio-expanded") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260820-uniform-review|vault.js?v=20260820-uniform-review") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -77,7 +80,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260820-theme-studio-expanded") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260820-uniform-review") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -95,6 +98,88 @@ try {
 } catch {
   failures.push("vault JavaScript syntax");
 }
+const schemaValidatorSyntax = spawnSync(process.execPath, ["--check", join(scriptDirectory, "validate-vault.mjs")], {
+  encoding: "utf8",
+});
+if (schemaValidatorSyntax.status !== 0) failures.push("release-schema validator syntax");
+[
+  ["encrypt-vault.mjs", "encryption tool syntax"],
+  ["verify-vault-password.mjs", "password verifier syntax"],
+].forEach(([file, label]) => {
+  const syntax = spawnSync(process.execPath, ["--check", join(scriptDirectory, file)], { encoding: "utf8" });
+  if (syntax.status !== 0) failures.push(label);
+});
+
+const uniformReleaseManifest = [
+  { id: "fintech-domain", modules: 12, lessons: 67, sources: 179 },
+  { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
+  { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
+  { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
+  { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
+  { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+  { id: "photography", modules: 6, lessons: 18, sources: 12 },
+  { id: "cooking", modules: 6, lessons: 18, sources: 12 },
+];
+uniformReleaseManifest.forEach(({ id, modules, lessons, sources }) => {
+  const entry = new RegExp(
+    `\\{\\s*id:\\s*"${id}",\\s*modules:\\s*${modules},\\s*lessons:\\s*${lessons},\\s*sources:\\s*${sources}\\s*\\}`,
+  );
+  [schemaValidator, js, encryptTool, passwordVerifier].forEach((artifact) => {
+    requireMatch(artifact, entry, "uniform release manifest");
+  });
+});
+[
+  "function isIsoDate",
+  "canonical lesson section order",
+  "lesson review metadata",
+  "module release framing",
+  "lesson source diversity",
+  "inline citation coverage",
+  "domain source use",
+].forEach((token) => requireMatch(
+  schemaValidator,
+  new RegExp(token),
+  `uniform release-schema contract: ${token}`,
+));
+forbidMatch(
+  schemaValidator,
+  /\bcanonicalSections\b/,
+  "domain-conditional release-schema quality gate",
+);
+forbidMatch(js, /\b(?:LEGACY_RELEASE_MANIFEST|canonicalSections)\b/, "legacy or domain-conditional runtime gate");
+forbidMatch(encryptTool, /\bcanonicalSections\b/, "domain-conditional encryption gate");
+forbidMatch(passwordVerifier, /\bcanonicalSections\b/, "domain-conditional password-verification gate");
+requireMatch(
+  passwordVerifier,
+  /function\s+matchesPreviousEightDomainRelease\s*\(/,
+  "migration-only previous eight-domain password compatibility",
+);
+forbidMatch(js, /matchesPreviousEightDomainRelease/, "historical compatibility leaking into runtime");
+forbidMatch(encryptTool, /matchesPreviousEightDomainRelease/, "historical compatibility leaking into source validation");
+[
+  [js, "runtime"],
+  [encryptTool, "encryption"],
+  [passwordVerifier, "password verification"],
+].forEach(([artifact, label]) => {
+  requireMatch(artifact, /Date\.UTC\([^)]+\)/, `${label} actual ISO-date validation`);
+  requireMatch(artifact, /usedSources\.size\s*!==\s*sourceMap\.size/, `${label} all-source-use gate`);
+  requireMatch(
+    artifact,
+    /\.trim\(\)\.replace\(\/\\s\+\/gu, " "\)\.toLocaleLowerCase\("en-US"\)/,
+    `${label} normalized source organizations`,
+  );
+  requireMatch(artifact, /new Set\(references\)\.size\s*!==\s*references\.length|uniqueReferences\.size\s*!==\s*lesson\.references\.length/, `${label} unique source references`);
+});
+[
+  [schemaValidator, "release-schema validator"],
+  [js, "runtime"],
+  [encryptTool, "encryption"],
+  [passwordVerifier, "password verification"],
+].forEach(([artifact, label]) => {
+  requireMatch(artifact, /function\s+visibleBlockStrings\s*\(/, `${label} rendered-field citation extraction`);
+  requireMatch(artifact, /section\.blocks\.flatMap\(visibleBlockStrings\)/, `${label} rendered-block citation coverage`);
+  forbidMatch(artifact, /JSON\.stringify\([^\n]*sections[^\n]*\)\.matchAll/, `${label} hidden-field citation coverage`);
+});
 
 const envelopeMatch = encryptedData.trim().match(/^window\.__KNOWLEDGE_VAULT_DATA__\s*=\s*(\{[\s\S]*\});$/);
 let envelope = null;
@@ -197,7 +282,7 @@ if (
 ) failures.push("Git private-file publish boundary");
 const trackedAuthoringWorkspace = spawnSync(
   "git",
-  ["ls-files", "--cached", "--", "tmp/knowledge-vault-new-domains"],
+  ["ls-files", "--cached", "--", "tmp"],
   { cwd: repositoryRoot, encoding: "utf8" },
 );
 if (trackedAuthoringWorkspace.status !== 0 || trackedAuthoringWorkspace.stdout.trim()) {
@@ -271,4 +356,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("Public vault static checks passed: resource allowlist, CSP, JavaScript syntax, encrypted-envelope plausibility, Git privacy boundary, and interface markers are valid; browser behavior was not exercised.");
+console.log("Public vault static checks passed: resource allowlist, CSP, JavaScript and validator syntax, uniform eight-domain schema-gate markers, encrypted-envelope plausibility, Git privacy boundary, and interface markers are valid; browser behavior was not exercised.");

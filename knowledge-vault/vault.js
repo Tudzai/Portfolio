@@ -29,19 +29,17 @@
     "thuat-ngu",
     "tom-tat",
   ];
-  const LEGACY_RELEASE_MANIFEST = [
-    { modules: 12, lessons: 67, sources: 179 },
-    { modules: 15, lessons: 74, sources: 97 },
-    { modules: 18, lessons: 89, sources: 68 },
-    { modules: 14, lessons: 68, sources: 41 },
-    { modules: 15, lessons: 60, sources: 56 },
-  ];
   const RELEASE_MANIFEST = [
-    ...LEGACY_RELEASE_MANIFEST,
-    { id: "personal-style", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
-    { id: "photography", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
-    { id: "cooking", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
+    { id: "fintech-domain", modules: 12, lessons: 67, sources: 179 },
+    { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
+    { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
+    { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
+    { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
+    { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+    { id: "photography", modules: 6, lessons: 18, sources: 12 },
+    { id: "cooking", modules: 6, lessons: 18, sources: 12 },
   ];
+  const SOURCE_DATE_FIELDS = ["publishedAt", "adoptedAt", "updatedAt", "reviewedAt", "accessedAt"];
   const SIDEBAR_MIN_WIDTH = 260;
   const SIDEBAR_MAX_WIDTH = 460;
   const SIDEBAR_DEFAULT_WIDTH = 328;
@@ -287,18 +285,57 @@
     return null;
   }
 
+  function visibleBlockStrings(block) {
+    if (!block || typeof block !== "object") return [];
+    if (block.type === "paragraph") return [block.text];
+    if (block.type === "list") return Array.isArray(block.items) ? block.items : [];
+    if (block.type === "callout") return [block.text];
+    if (block.type === "table") {
+      return [
+        ...(Array.isArray(block.headers) ? block.headers : []),
+        ...(Array.isArray(block.rows) ? block.rows.flatMap((row) => Array.isArray(row) ? row : []) : []),
+      ];
+    }
+    if (block.type === "flow") {
+      return Array.isArray(block.steps)
+        ? block.steps.flatMap((step) => [step?.label, step?.title, step?.detail])
+        : [];
+    }
+    return [];
+  }
+
+  function inlineCitationIds(sections) {
+    const renderedText = (Array.isArray(sections) ? sections : [])
+      .flatMap((section) => Array.isArray(section?.blocks) ? section.blocks.flatMap(visibleBlockStrings) : [])
+      .filter((value) => typeof value === "string")
+      .join("\n");
+    return [...renderedText.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
+  }
+
   function validateRawVaultData(value) {
     const claimedIds = new Set();
     const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
     let invalid = false;
-    const present = (item) => typeof item === "string" && item === item.trim() && Boolean(item);
+    const present = (item) => typeof item === "string" && Boolean(item.trim());
     const claimId = (item) => {
-      if (!present(item) || !idPattern.test(item) || claimedIds.has(item)) {
+      if (!present(item) || item !== item.trim() || !idPattern.test(item) || claimedIds.has(item)) {
         invalid = true;
         return false;
       }
       claimedIds.add(item);
       return true;
+    };
+    const normalizedOrganization = (item) => present(item)
+      ? item.trim().replace(/\s+/gu, " ").toLocaleLowerCase("en-US")
+      : "";
+    const isIsoDate = (item) => {
+      if (!present(item) || !datePattern.test(item)) return false;
+      const [year, month, day] = item.split("-").map(Number);
+      const parsed = new Date(Date.UTC(year, month - 1, day));
+      return parsed.getUTCFullYear() === year
+        && parsed.getUTCMonth() === month - 1
+        && parsed.getUTCDate() === day;
     };
     const validBlock = (block) => {
       if (!block || typeof block !== "object") return false;
@@ -336,11 +373,6 @@
       return false;
     };
 
-    const releaseManifest = Array.isArray(value?.domains) && value.domains.length === RELEASE_MANIFEST.length
-      ? RELEASE_MANIFEST
-      : Array.isArray(value?.domains) && value.domains.length === LEGACY_RELEASE_MANIFEST.length
-        ? LEGACY_RELEASE_MANIFEST
-        : null;
     if (
       !value
       || typeof value !== "object"
@@ -350,22 +382,39 @@
       || !Array.isArray(value.archivedVault.notes)
       || value.archivedVault.notes.length === 0
       || !Array.isArray(value.domains)
-      || !releaseManifest
+      || value.domains.length !== RELEASE_MANIFEST.length
     ) {
       throw new Error("The decrypted library source is incomplete.");
     }
 
+    claimId("personal-notes");
+    claimId("legacy-notes");
+    value.archivedVault.notes.forEach((note, index) => {
+      if (
+        !note
+        || typeof note !== "object"
+        || !claimId(note.id)
+        || !present(note.title)
+        || !Array.isArray(note.content)
+        || !note.content.length
+        || !note.content.every(present)
+        || (note.sourceUrl !== undefined && note.sourceUrl !== "" && !safeExternalUrl(note.sourceUrl))
+      ) invalid = true;
+      if (present(note?.sourceLabel) || present(note?.sourceUrl)) claimId(`legacy-source-${index + 1}`);
+    });
+
     value.domains.forEach((domain, domainIndex) => {
-      const expected = releaseManifest[domainIndex];
+      const expected = RELEASE_MANIFEST[domainIndex];
       if (
         !domain
         || typeof domain !== "object"
         || !claimId(domain.id)
-        || (expected.id && domain.id !== expected.id)
+        || !expected
+        || domain.id !== expected.id
         || !present(domain.mark)
         || !present(domain.title)
         || !present(domain.description)
-        || !present(domain.reviewedAt)
+        || !isIsoDate(domain.reviewedAt)
         || !Array.isArray(domain.mentalModel)
         || domain.mentalModel.length < 3
         || !domain.mentalModel.every(present)
@@ -381,18 +430,23 @@
       const sourceMap = new Map();
       const usedSources = new Set();
       domain.primarySources?.forEach((source) => {
+        if (!source || typeof source !== "object" || !claimId(source.id)) {
+          invalid = true;
+          return;
+        }
+        sourceMap.set(source.id, source);
+        const sourceDates = SOURCE_DATE_FIELDS
+          .map((field) => source[field])
+          .filter((item) => item !== undefined && item !== null && item !== "");
         if (
-          !source
-          || typeof source !== "object"
-          || !claimId(source.id)
-          || !present(source.title)
+          !present(source.title)
           || !present(source.organization)
           || !present(source.scope)
           || !present(source.sourceType)
           || !safeExternalUrl(source.url)
-          || ![source.publishedAt, source.adoptedAt, source.updatedAt, source.reviewedAt, source.accessedAt].some(present)
+          || sourceDates.length === 0
+          || sourceDates.some((item) => !isIsoDate(item))
         ) invalid = true;
-        else sourceMap.set(source.id, source);
       });
 
       const moduleNumbers = new Set();
@@ -409,9 +463,8 @@
           || !present(module.title)
           || !present(module.level)
           || !present(module.description)
-          || (expected.canonicalSections
-            && (!present(module.evidenceOutcome)
-              || String(module.number).padStart(2, "0") !== String(moduleIndex + 1).padStart(2, "0")))
+          || !present(module.evidenceOutcome)
+          || String(module.number).padStart(2, "0") !== String(moduleIndex + 1).padStart(2, "0")
           || !Array.isArray(module.lessons)
           || module.lessons.length === 0
         ) invalid = true;
@@ -427,22 +480,17 @@
             || !present(lesson.title)
             || !present(lesson.summary)
             || lesson.status !== "published"
-            || (lesson.estimatedMinutes !== undefined
-              && lesson.estimatedMinutes !== null
-              && (!Number.isFinite(lesson.estimatedMinutes) || lesson.estimatedMinutes <= 0))
             || sectionIds.length !== EXPECTED_SECTION_COUNT
             || new Set(sectionIds).size !== EXPECTED_SECTION_COUNT
-            || sectionIds.some((id) => !present(id) || !idPattern.test(id))
-            || (expected.canonicalSections
-              && lesson.sections.some((section, sectionIndex) =>
-                section?.id !== CANONICAL_SECTION_IDS[sectionIndex]
-                || section?.title !== SECTION_TITLES[sectionIndex],
-              ))
-            || (expected.canonicalSections
-              && (!/^\d{4}-\d{2}-\d{2}$/.test(lesson.lastReviewed || "")
-                || !Number.isInteger(lesson.estimatedMinutes)
-                || lesson.estimatedMinutes < 5
-                || lesson.estimatedMinutes > 20))
+            || sectionIds.some((id) => !present(id) || id !== id.trim() || !idPattern.test(id))
+            || lesson.sections.some((section, sectionIndex) =>
+              section?.id !== CANONICAL_SECTION_IDS[sectionIndex]
+              || section?.title !== SECTION_TITLES[sectionIndex]
+            )
+            || !isIsoDate(lesson.lastReviewed)
+            || !Number.isInteger(lesson.estimatedMinutes)
+            || lesson.estimatedMinutes < 5
+            || lesson.estimatedMinutes > 20
             || !lesson.sections.every((section) =>
               present(section?.title)
               && Array.isArray(section.blocks)
@@ -450,25 +498,25 @@
               && section.blocks.every(validBlock),
             )
             || new Set(references).size < 3
+            || new Set(references).size !== references.length
             || references.some((sourceId) => !sourceMap.has(sourceId))
           ) invalid = true;
-          references.forEach((sourceId) => usedSources.add(sourceId));
+          references.filter((sourceId) => sourceMap.has(sourceId)).forEach((sourceId) => usedSources.add(sourceId));
 
-          const serialized = JSON.stringify(lesson?.sections || []);
-          const citations = [...serialized.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
+          const citations = new Set(inlineCitationIds(lesson?.sections));
           const organizations = new Set(
             references
-              .map((sourceId) => sourceMap.get(sourceId)?.organization?.trim().toLocaleLowerCase("en-US"))
+              .map((sourceId) => normalizedOrganization(sourceMap.get(sourceId)?.organization))
               .filter(Boolean),
           );
           if (
-            references.some((sourceId) => !citations.includes(sourceId))
-            || citations.some((sourceId) => !references.includes(sourceId))
+            references.some((sourceId) => !citations.has(sourceId))
+            || [...citations].some((sourceId) => !references.includes(sourceId))
             || organizations.size < 2
           ) invalid = true;
         });
       });
-      if (lessonCount !== expected.lessons || (expected.canonicalSections && usedSources.size !== sourceMap.size)) {
+      if (lessonCount !== expected.lessons || usedSources.size !== sourceMap.size) {
         invalid = true;
       }
     });

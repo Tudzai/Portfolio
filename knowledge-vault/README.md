@@ -62,10 +62,10 @@ The decrypted source contains:
 3. domain metadata — a stable ID, short mark, title, description, review date, mental model, and source policy;
 4. `primarySources` — a source library owned by that domain;
 5. `modules` — the ordered beginner-to-advanced roadmap and its nested lessons;
-6. `evidenceOutcome` — an observable work product or decision artifact that demonstrates each module's capability;
-   older modules without this field receive a short beginner-safe outcome in the renderer until the source is revised;
-7. lesson content — a planned lesson may expose its roadmap outcome and source mapping; a published lesson uses 11
-   authored sections and the renderer adds section 12 from the lesson's source IDs.
+6. `evidenceOutcome` — a required observable work product or decision artifact that demonstrates each module's
+   capability;
+7. lesson content — every released lesson uses the same 11 canonical authored sections, and the renderer adds section
+   12 from the lesson's source IDs.
 
 The library currently contains the preserved personal-note collection plus fully published, beginner-first curricula
 for FinTech, Finance, Road to CFO, Breaking, muscle recovery, personal style, photography, and home cooking. The three
@@ -86,29 +86,52 @@ practices must be rechecked periodically against their linked authoritative sour
 
 Across the eight structured collections, the library now contains 92 modules, 412 published lessons, and 477 saved
 sources. Every lesson contains 11 authored sections, renders its references as section 12, and maps to at least three
-distinct sources.
+distinct sources from at least two organizations.
+
+### Uniform eight-domain release gate
+
+The same release criteria apply to all eight structured collections; none is treated as a legacy exception:
+
+- domain identity, order, module count, lesson count, and source count must match the release manifest;
+- every module has sequential numbering, framing metadata, and an `evidenceOutcome`;
+- every lesson is published, has all 11 canonical section IDs and Vietnamese titles in order, has a valid ISO review
+  date, and declares an estimated reading time from 5 to 20 minutes;
+- every lesson maps to at least three unique HTTPS sources from at least two organizations, cites every mapped source
+  inline, and does not cite a source outside its reference list;
+- every saved source has title, organization, scope, source type, and at least one valid ISO publication, adoption,
+  update, review, or access date; every saved source must be used by at least one lesson;
+- validation failures report category names only; they never print private titles, IDs, prose, URLs, or source data.
+
+These checks establish consistent structure and evidence metadata, not semantic truth. Editorial review must still
+confirm that a source directly supports the nearby claim, links remain reachable, time-sensitive guidance is current,
+Vietnamese prose is genuinely clear for a beginner, terminology is explained at first use, and advice is safe and
+appropriately qualified. The release-schema gate performs no network requests and cannot make those judgments.
+
+Reading time is calculated from all authored lesson text at 180 Vietnamese words per minute, rounded up, then bounded
+to the release range of 5–20 minutes. When a review changes an existing estimate, the encrypted private source keeps
+the prior value in `durationReviewNotes`; this audit note is never exposed as a public plaintext file.
 
 ## Add or edit library knowledge
 
 1. Edit `private/knowledge.json`. Keep every note, module, lesson, and source `id` unique. Preserve `archivedVault`
-   when adding or updating a structured domain so older notes remain available. Use `evidenceOutcome` when the roadmap
-   should show the observable work product or decision artifact expected from a module.
+   when adding or updating a structured domain so older notes remain available. Every released module must include an
+   `evidenceOutcome` describing the observable work product or decision artifact expected from that module.
 2. For a planned lesson, use `"status": "planned"`; sections may be omitted. Every roadmap lesson must already map to
    at least three distinct, valid source IDs so the planned scope can be audited without being mistaken
    for a published lesson. Planned lessons are an authoring state; the current release gate rejects them until they are
    fully published.
 3. For a published lesson:
    - use `"status": "published"`;
-   - provide 11 content sections in the required lesson order;
-   - provide at least three valid source IDs when sufficient reliable sources exist;
-   - include `lastReviewed` for time-sensitive content;
-   - use `[[source-id]]` inside text for inline citations.
+   - provide all 11 canonical content sections in the required ID and title order;
+   - provide at least three unique valid source IDs from at least two organizations;
+   - include an ISO `lastReviewed` date and an integer `estimatedMinutes` value from 5 to 20;
+   - use `[[source-id]]` inside text for every mapped source and keep citations within the lesson's reference list;
    - keep `publishedAt` for the original publication date; use `adoptedAt`, `updatedAt`, `reviewedAt`, or `accessedAt`
      for those distinct dates instead of relabeling a later page update as publication.
 4. Run the read-only release-schema gate. It reports only pass/fail categories and never prints private content or IDs.
-   It checks the public release counts, canonical identifiers, 11-section structure, safe block shapes,
-   source mapping, HTTPS sources, and source-organization diversity. Plain-language quality still requires editorial
-   review:
+   It applies the uniform eight-domain contract above, including exact identity and counts, canonical sections, review
+   and reading-time metadata, safe block shapes, source mapping and use, HTTPS URLs, dates, inline citations, and
+   source-organization diversity. Plain-language and claim-level evidence quality still require editorial review:
 
    ```powershell
    node .\knowledge-vault\tools\validate-vault.mjs

@@ -13,6 +13,46 @@ const outputPath = process.argv[3] ? resolve(process.cwd(), process.argv[3]) : j
 const password = process.env.VAULT_PASSWORD;
 const iterations = 600_000;
 const additionalData = encoder.encode("knowledge-vault:v1");
+const expectedSectionCount = 11;
+const canonicalSectionIds = [
+  "muc-tieu",
+  "khai-niem",
+  "vi-sao-quan-trong",
+  "cach-hoat-dong",
+  "ben-lien-quan",
+  "vi-du",
+  "tac-dong",
+  "rui-ro",
+  "khac-biet",
+  "thuat-ngu",
+  "tom-tat",
+];
+const canonicalSectionTitles = [
+  "Mục tiêu của bài học",
+  "Khái niệm chính",
+  "Vì sao nội dung này quan trọng",
+  "Cách nó hoạt động",
+  "Các bên liên quan",
+  "Ví dụ thực tế đơn giản",
+  "Mô hình doanh thu hoặc tác động tài chính",
+  "Rủi ro và hạn chế",
+  "Sự khác biệt giữa các thị trường hoặc quy định",
+  "Các thuật ngữ cần nhớ",
+  "Tóm tắt bài học",
+];
+const releaseManifest = [
+  { id: "fintech-domain", modules: 12, lessons: 67, sources: 179 },
+  { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
+  { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
+  { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
+  { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
+  { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+  { id: "photography", modules: 6, lessons: 18, sources: 12 },
+  { id: "cooking", modules: 6, lessons: 18, sources: 12 },
+];
+const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+const sourceDateFields = ["publishedAt", "adoptedAt", "updatedAt", "reviewedAt", "accessedAt"];
 
 if (!password) {
   throw new Error("VAULT_PASSWORD is required. Use the PowerShell wrapper for a hidden password prompt.");
@@ -25,158 +65,257 @@ function toBase64(bytes) {
   return Buffer.from(bytes).toString("base64");
 }
 
-function validateId(value, label) {
-  if (typeof value !== "string" || !value.trim()) throw new Error(`${label} requires an id.`);
-  const id = value.trim();
-  if (value !== id) throw new Error(`${label} id must not include leading or trailing whitespace: ${JSON.stringify(value)}`);
-  return id;
+function present(value) {
+  return typeof value === "string" && Boolean(value.trim());
 }
 
-function validateNotes(notes, label = "Note") {
-  if (!Array.isArray(notes)) throw new Error(`${label} collection must be an array.`);
-  const ids = new Set();
-  notes.forEach((note, index) => {
-    if (!note || typeof note !== "object") throw new Error(`${label} ${index + 1} must be an object.`);
-    const noteId = validateId(note.id, `${label} ${index + 1}`);
-    if (ids.has(noteId)) throw new Error(`Duplicate ${label.toLowerCase()} id: ${noteId}`);
-    ids.add(noteId);
-    if (typeof note.title !== "string" || !note.title.trim()) throw new Error(`${label} ${noteId} requires a title.`);
-    if (!Array.isArray(note.content)) throw new Error(`${label} ${noteId} content must be an array of paragraphs.`);
-  });
-  return ids;
+function claimId(value, claimedIds, issues, category) {
+  if (!present(value) || value !== value.trim() || !idPattern.test(value) || claimedIds.has(value)) {
+    issues.add(category);
+    return false;
+  }
+  claimedIds.add(value);
+  return true;
 }
 
-function validateDomain(domain, domainIndex, globalIds) {
-  if (!domain || typeof domain !== "object") throw new Error(`Domain ${domainIndex + 1} must be an object.`);
-  const domainId = validateId(domain.id, `Domain ${domainIndex + 1}`);
-  if (globalIds.domains.has(domainId)) throw new Error(`Duplicate domain id: ${domainId}`);
-  globalIds.domains.add(domainId);
-  if (typeof domain.title !== "string" || !domain.title.trim()) throw new Error(`Domain ${domainId} requires a title.`);
-  if (!Array.isArray(domain.primarySources)) throw new Error(`Domain ${domainId} must include primarySources.`);
-  if (!Array.isArray(domain.modules) || domain.modules.length === 0) {
-    throw new Error(`Domain ${domainId} requires at least one module.`);
+function isHttps(value) {
+  if (!present(value)) return false;
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function isIsoDate(value) {
+  if (!present(value) || !datePattern.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return parsed.getUTCFullYear() === year
+    && parsed.getUTCMonth() === month - 1
+    && parsed.getUTCDate() === day;
+}
+
+function validateBlock(block) {
+  if (!block || typeof block !== "object" || !present(block.type)) return false;
+  if (block.type === "paragraph") return present(block.text) && block.text.length <= 1_600;
+  if (block.type === "list") {
+    return Array.isArray(block.items)
+      && block.items.length > 0
+      && block.items.every((item) => present(item) && item.length <= 1_000);
+  }
+  if (block.type === "callout") {
+    return present(block.label)
+      && present(block.text)
+      && block.text.length <= 1_600
+      && new Set(["note", "caution"]).has(block.tone);
+  }
+  if (block.type === "table") {
+    return Array.isArray(block.headers)
+      && block.headers.length > 0
+      && block.headers.every(present)
+      && Array.isArray(block.rows)
+      && block.rows.length > 0
+      && block.rows.every((row) =>
+        Array.isArray(row) && row.length === block.headers.length && row.every((cell) => present(cell) && cell.length <= 800),
+      );
+  }
+  if (block.type === "flow") {
+    return Array.isArray(block.steps)
+      && block.steps.length > 0
+      && block.steps.every((step) =>
+        present(step?.label) && present(step?.title) && present(step?.detail) && step.detail.length <= 900,
+      );
+  }
+  return false;
+}
+
+function visibleBlockStrings(block) {
+  if (!block || typeof block !== "object") return [];
+  if (block.type === "paragraph") return [block.text];
+  if (block.type === "list") return Array.isArray(block.items) ? block.items : [];
+  if (block.type === "callout") return [block.text];
+  if (block.type === "table") {
+    return [
+      ...(Array.isArray(block.headers) ? block.headers : []),
+      ...(Array.isArray(block.rows) ? block.rows.flatMap((row) => Array.isArray(row) ? row : []) : []),
+    ];
+  }
+  if (block.type === "flow") {
+    return Array.isArray(block.steps)
+      ? block.steps.flatMap((step) => [step?.label, step?.title, step?.detail])
+      : [];
+  }
+  return [];
+}
+
+function inlineCitationIds(sections) {
+  const renderedText = (Array.isArray(sections) ? sections : [])
+    .flatMap((section) => Array.isArray(section?.blocks) ? section.blocks.flatMap(visibleBlockStrings) : [])
+    .filter((value) => typeof value === "string")
+    .join("\n");
+  return [...renderedText.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
+}
+
+function normalizedOrganization(value) {
+  return present(value) ? value.trim().replace(/\s+/gu, " ").toLocaleLowerCase("en-US") : "";
+}
+
+function validateDomain(domain, domainIndex, claimedIds, issues) {
+  if (!domain || typeof domain !== "object" || !claimId(domain.id, claimedIds, issues, "domain identifiers")) return;
+  const expected = releaseManifest[domainIndex];
+  if (!expected || domain.id !== expected.id) issues.add("release manifest identity");
+  if (
+    !present(domain.mark)
+    || !present(domain.title)
+    || !present(domain.description)
+    || !isIsoDate(domain.reviewedAt)
+  ) issues.add("domain framing");
+  if (!Array.isArray(domain.mentalModel) || domain.mentalModel.length < 3 || !domain.mentalModel.every(present)) {
+    issues.add("domain mental model");
+  }
+  if (
+    !Array.isArray(domain.sourcePolicy)
+    || domain.sourcePolicy.length < 3
+    || !domain.sourcePolicy.every((item) => present(item?.title) && present(item?.description))
+  ) issues.add("domain source policy");
+
+  const sourceMap = new Map();
+  const usedSources = new Set();
+  if (!Array.isArray(domain.primarySources) || !domain.primarySources.length) {
+    issues.add("domain sources");
+  } else {
+    domain.primarySources.forEach((source) => {
+      if (!source || typeof source !== "object" || !claimId(source.id, claimedIds, issues, "source identifiers")) return;
+      sourceMap.set(source.id, source);
+      if (
+        !present(source.title)
+        || !present(source.organization)
+        || !present(source.scope)
+        || !present(source.sourceType)
+        || !isHttps(source.url)
+      ) issues.add("source completeness");
+      const dates = sourceDateFields
+        .map((field) => source[field])
+        .filter((date) => date !== undefined && date !== null && date !== "");
+      if (!dates.length || dates.some((date) => !isIsoDate(date))) issues.add("source dates");
+    });
   }
 
-  const sourceIds = new Set();
-  domain.primarySources.forEach((source, index) => {
-    if (!source || typeof source !== "object") throw new Error(`Source ${index + 1} in ${domainId} must be an object.`);
-    const sourceId = validateId(source.id, `Source ${index + 1} in ${domainId}`);
-    if (sourceIds.has(sourceId) || globalIds.sources.has(sourceId)) throw new Error(`Duplicate source id: ${sourceId}`);
-    sourceIds.add(sourceId);
-    globalIds.sources.add(sourceId);
-    if (typeof source.title !== "string" || !source.title.trim()) throw new Error(`Source ${sourceId} requires a title.`);
-    if (typeof source.organization !== "string" || !source.organization.trim()) {
-      throw new Error(`Source ${sourceId} requires an organization.`);
-    }
-    const sourceDate = source.publishedAt || source.adoptedAt || source.updatedAt || source.reviewedAt || source.accessedAt;
-    if (typeof sourceDate !== "string" || !sourceDate.trim()) {
-      throw new Error(`Source ${sourceId} requires a publication, review, update, adoption, or access date.`);
-    }
-    if (typeof source.publishedAt === "string" && /^accessed:?\s+/i.test(source.publishedAt.trim())) {
-      throw new Error(`Source ${sourceId} must store access dates in accessedAt, not publishedAt.`);
-    }
-    if (source.url !== undefined) {
-      try {
-        const url = new URL(source.url);
-        if (url.protocol !== "https:") throw new Error();
-      } catch {
-        throw new Error(`Source ${sourceId} requires a valid HTTP(S) URL.`);
+  let lessonCount = 0;
+  if (!Array.isArray(domain.modules) || !domain.modules.length) {
+    issues.add("domain modules");
+  } else {
+    domain.modules.forEach((module, moduleIndex) => {
+      if (!module || typeof module !== "object" || !claimId(module.id, claimedIds, issues, "module identifiers")) return;
+      if (!(present(module.number) || Number.isFinite(module.number))) issues.add("module numbering");
+      if (!present(module.title)) issues.add("module titles");
+      if (!present(module.level)) issues.add("module levels");
+      if (!present(module.description)) issues.add("module descriptions");
+      if (
+        !present(module.evidenceOutcome)
+        || String(module.number).padStart(2, "0") !== String(moduleIndex + 1).padStart(2, "0")
+      ) issues.add("module release framing");
+      if (!Array.isArray(module.lessons) || !module.lessons.length) {
+        issues.add("module lesson coverage");
+        return;
       }
-    }
-  });
+      lessonCount += module.lessons.length;
+      module.lessons.forEach((lesson) => {
+        if (!lesson || typeof lesson !== "object" || !claimId(lesson.id, claimedIds, issues, "lesson identifiers")) return;
+        if (!present(lesson.title) || !present(lesson.summary)) issues.add("lesson framing");
+        if (lesson.status !== "published") issues.add("publication coverage");
+        if (!Array.isArray(lesson.sections) || lesson.sections.length !== expectedSectionCount) {
+          issues.add("lesson section coverage");
+          return;
+        }
+        const sectionIds = lesson.sections.map((section) => section?.id);
+        if (
+          new Set(sectionIds).size !== expectedSectionCount
+          || sectionIds.some((id) => !present(id) || id !== id.trim() || !idPattern.test(id))
+        ) issues.add("lesson section identifiers");
+        if (lesson.sections.some((section, sectionIndex) =>
+          section?.id !== canonicalSectionIds[sectionIndex]
+          || section?.title !== canonicalSectionTitles[sectionIndex]
+        )) issues.add("canonical lesson section order");
+        if (
+          !isIsoDate(lesson.lastReviewed)
+          || !Number.isInteger(lesson.estimatedMinutes)
+          || lesson.estimatedMinutes < 5
+          || lesson.estimatedMinutes > 20
+        ) issues.add("lesson review metadata");
+        lesson.sections.forEach((section) => {
+          if (!present(section?.title) || !Array.isArray(section.blocks) || !section.blocks.length) {
+            issues.add("lesson section content");
+          } else if (!section.blocks.every(validateBlock)) {
+            issues.add("content block shape");
+          }
+        });
 
-  domain.modules.forEach((module, moduleIndex) => {
-    if (!module || typeof module !== "object") throw new Error(`Module ${moduleIndex + 1} in ${domainId} must be an object.`);
-    const moduleId = validateId(module.id, `Module ${moduleIndex + 1} in ${domainId}`);
-    if (globalIds.modules.has(moduleId)) throw new Error(`Duplicate module id: ${moduleId}`);
-    globalIds.modules.add(moduleId);
-    if (typeof module.title !== "string" || !module.title.trim()) throw new Error(`Module ${moduleId} requires a title.`);
-    if (!Array.isArray(module.lessons) || module.lessons.length === 0) {
-      throw new Error(`Module ${moduleId} requires at least one lesson.`);
-    }
-
-    module.lessons.forEach((lesson, lessonIndex) => {
-      if (!lesson || typeof lesson !== "object") throw new Error(`Lesson ${lessonIndex + 1} in ${moduleId} must be an object.`);
-      const lessonId = validateId(lesson.id, `Lesson ${lessonIndex + 1} in ${moduleId}`);
-      if (globalIds.lessons.has(lessonId)) throw new Error(`Duplicate lesson id: ${lessonId}`);
-      globalIds.lessons.add(lessonId);
-      if (typeof lesson.title !== "string" || !lesson.title.trim()) throw new Error(`Lesson ${lessonId} requires a title.`);
-      if (!new Set(["published", "planned"]).has(lesson.status)) {
-        throw new Error(`Lesson ${lessonId} status must be published or planned.`);
-      }
-      if (lesson.status === "published" && (!Array.isArray(lesson.sections) || lesson.sections.length !== 11)) {
-        throw new Error(`Published lesson ${lessonId} must contain 11 content sections; references render as section 12.`);
-      }
-      if (!Array.isArray(lesson.references)) {
-        throw new Error(`Lesson ${lessonId} must use at least three distinct references.`);
-      }
-      const referenceIds = lesson.references.map((sourceId, referenceIndex) =>
-        validateId(sourceId, `Reference ${referenceIndex + 1} in lesson ${lessonId}`),
-      );
-      if (new Set(referenceIds).size < 3) {
-        throw new Error(`Lesson ${lessonId} must use at least three distinct references.`);
-      }
-      referenceIds.forEach((sourceId) => {
-        if (!sourceIds.has(sourceId)) throw new Error(`Lesson ${lessonId} references unknown source: ${sourceId}`);
+        const uniqueReferences = Array.isArray(lesson.references) ? new Set(lesson.references) : new Set();
+        if (
+          !Array.isArray(lesson.references)
+          || uniqueReferences.size < 3
+          || uniqueReferences.size !== lesson.references.length
+        ) {
+          issues.add("lesson source coverage");
+          return;
+        }
+        if (lesson.references.some((sourceId) => !sourceMap.has(sourceId))) issues.add("lesson source mapping");
+        lesson.references.filter((sourceId) => sourceMap.has(sourceId)).forEach((sourceId) => usedSources.add(sourceId));
+        const organizations = new Set(
+          lesson.references
+            .map((sourceId) => normalizedOrganization(sourceMap.get(sourceId)?.organization))
+            .filter(Boolean),
+        );
+        if (organizations.size < 2) issues.add("lesson source diversity");
+        const citations = new Set(inlineCitationIds(lesson.sections));
+        if (lesson.references.some((sourceId) => !citations.has(sourceId))) issues.add("inline citation coverage");
+        if ([...citations].some((sourceId) => !lesson.references.includes(sourceId))) issues.add("inline citation mapping");
       });
     });
-  });
+  }
+  if (usedSources.size !== sourceMap.size) issues.add("domain source use");
+  if (
+    !expected
+    || domain.primarySources?.length !== expected.sources
+    || domain.modules?.length !== expected.modules
+    || lessonCount !== expected.lessons
+  ) issues.add("release manifest counts");
 }
 
 function validateSource(value) {
-  if (!value || typeof value !== "object") throw new Error("Knowledge source must be a JSON object.");
-  if (Array.isArray(value.notes) && !Array.isArray(value.modules) && !Array.isArray(value.domains)) {
-    if (value.notes.length === 0) throw new Error("A notes-only knowledge source requires at least one note.");
-    validateNotes(value.notes);
-    return;
+  const issues = new Set();
+  const claimedIds = new Set();
+  if (!value || typeof value !== "object" || !present(value.title) || !present(value.description)) {
+    issues.add("library framing");
   }
-
-  const domains = Array.isArray(value.domains)
-    ? value.domains
-    : Array.isArray(value.modules)
-      ? [
-          {
-            id: "fintech-domain",
-            title: value.title,
-            primarySources: value.primarySources,
-            modules: value.modules,
-          },
-        ]
-      : [];
-  if (!domains.length) throw new Error("Knowledge source must include at least one domain, module list, or note collection.");
-
-  const globalIds = {
-    domains: new Set(),
-    sources: new Set(),
-    modules: new Set(),
-    lessons: new Set(),
-  };
-  domains.forEach((domain, index) => validateDomain(domain, index, globalIds));
-
-  if (value.archivedVault !== undefined) {
-    if (!value.archivedVault || typeof value.archivedVault !== "object") {
-      throw new Error("archivedVault must be an object when provided.");
-    }
-    const archivedIds = validateNotes(value.archivedVault.notes, "Archived note");
-    if (archivedIds.size > 0) {
-      if (globalIds.domains.has("personal-notes")) {
-        throw new Error("Domain id personal-notes is reserved for the archived note collection.");
+  if (!value?.archivedVault || !Array.isArray(value.archivedVault.notes) || !value.archivedVault.notes.length) {
+    issues.add("archived note preservation");
+  } else {
+    claimId("personal-notes", claimedIds, issues, "archived note identifiers");
+    claimId("legacy-notes", claimedIds, issues, "archived note identifiers");
+    value.archivedVault.notes.forEach((note, index) => {
+      if (!note || typeof note !== "object" || !claimId(note.id, claimedIds, issues, "archived note identifiers")) return;
+      if (
+        !present(note.title)
+        || !Array.isArray(note.content)
+        || !note.content.length
+        || !note.content.every(present)
+        || (note.sourceUrl !== undefined && note.sourceUrl !== "" && !isHttps(note.sourceUrl))
+      ) issues.add("archived note completeness");
+      if (present(note.sourceLabel) || present(note.sourceUrl)) {
+        claimId(`legacy-source-${index + 1}`, claimedIds, issues, "archived source identifiers");
       }
-      if (globalIds.modules.has("legacy-notes")) {
-        throw new Error("Module id legacy-notes is reserved for the archived note collection.");
-      }
-      value.archivedVault.notes.forEach((note, index) => {
-        if (!note.sourceLabel && !note.sourceUrl) return;
-        const generatedSourceId = `legacy-source-${index + 1}`;
-        if (globalIds.sources.has(generatedSourceId)) {
-          throw new Error(`Source id ${generatedSourceId} is reserved for an archived note source.`);
-        }
-      });
-    }
-    archivedIds.forEach((id) => {
-      if (globalIds.lessons.has(id)) throw new Error(`Archived note id conflicts with lesson id: ${id}`);
     });
   }
+  if (!Array.isArray(value?.domains) || value.domains.length !== releaseManifest.length) {
+    issues.add("domain coverage");
+  } else {
+    value.domains.forEach((domain, domainIndex) => validateDomain(domain, domainIndex, claimedIds, issues));
+  }
+  if (issues.size) throw new Error("The knowledge source failed its uniform release-schema validation.");
+  return value;
 }
 
 const validatorEnvironment = Object.fromEntries(

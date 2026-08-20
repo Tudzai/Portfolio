@@ -36,17 +36,18 @@ const canonicalSectionTitles = [
   "Tóm tắt bài học",
 ];
 const releaseManifest = [
-  { modules: 12, lessons: 67, sources: 179 },
-  { modules: 15, lessons: 74, sources: 97 },
-  { modules: 18, lessons: 89, sources: 68 },
-  { modules: 14, lessons: 68, sources: 41 },
-  { modules: 15, lessons: 60, sources: 56 },
-  { id: "personal-style", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
-  { id: "photography", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
-  { id: "cooking", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
+  { id: "fintech-domain", modules: 12, lessons: 67, sources: 179 },
+  { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
+  { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
+  { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
+  { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
+  { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+  { id: "photography", modules: 6, lessons: 18, sources: 12 },
+  { id: "cooking", modules: 6, lessons: 18, sources: 12 },
 ];
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+const sourceDateFields = ["publishedAt", "adoptedAt", "updatedAt", "reviewedAt", "accessedAt"];
 
 const issues = new Set();
 const globalIds = new Set();
@@ -71,6 +72,15 @@ function isHttps(value) {
   } catch {
     return false;
   }
+}
+
+function isIsoDate(value) {
+  if (!present(value) || !datePattern.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return parsed.getUTCFullYear() === year
+    && parsed.getUTCMonth() === month - 1
+    && parsed.getUTCDate() === day;
 }
 
 function validateBlock(block) {
@@ -110,9 +120,31 @@ function validateBlock(block) {
   return false;
 }
 
+function visibleBlockStrings(block) {
+  if (!block || typeof block !== "object") return [];
+  if (block.type === "paragraph") return [block.text];
+  if (block.type === "list") return Array.isArray(block.items) ? block.items : [];
+  if (block.type === "callout") return [block.text];
+  if (block.type === "table") {
+    return [
+      ...(Array.isArray(block.headers) ? block.headers : []),
+      ...(Array.isArray(block.rows) ? block.rows.flatMap((row) => Array.isArray(row) ? row : []) : []),
+    ];
+  }
+  if (block.type === "flow") {
+    return Array.isArray(block.steps)
+      ? block.steps.flatMap((step) => [step?.label, step?.title, step?.detail])
+      : [];
+  }
+  return [];
+}
+
 function inlineCitationIds(sections) {
-  const serialized = JSON.stringify(sections);
-  return [...serialized.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
+  const renderedText = (Array.isArray(sections) ? sections : [])
+    .flatMap((section) => Array.isArray(section?.blocks) ? section.blocks.flatMap(visibleBlockStrings) : [])
+    .filter((value) => typeof value === "string")
+    .join("\n");
+  return [...renderedText.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
 }
 
 function validateSource(source, sourceMap) {
@@ -125,12 +157,19 @@ function validateSource(source, sourceMap) {
     || !present(source.sourceType)
     || !isHttps(source.url)
   ) issues.add("source completeness");
-  if (![source.publishedAt, source.adoptedAt, source.updatedAt, source.reviewedAt, source.accessedAt].some(present)) {
+  const sourceDates = sourceDateFields
+    .map((field) => source[field])
+    .filter((value) => value !== undefined && value !== null && value !== "");
+  if (!sourceDates.length || sourceDates.some((value) => !isIsoDate(value))) {
     issues.add("source dates");
   }
 }
 
-function validateLesson(lesson, sourceMap, requirements, usedSources) {
+function normalizedOrganization(value) {
+  return present(value) ? value.trim().replace(/\s+/gu, " ").toLocaleLowerCase("en-US") : "";
+}
+
+function validateLesson(lesson, sourceMap, usedSources) {
   if (!lesson || typeof lesson !== "object" || !claimId(lesson.id, "lesson identifiers")) return;
   if (!present(lesson.title) || !present(lesson.summary)) issues.add("lesson framing");
   if (lesson.status !== "published") issues.add("publication coverage");
@@ -146,20 +185,16 @@ function validateLesson(lesson, sourceMap, requirements, usedSources) {
   ) {
     issues.add("lesson section identifiers");
   }
-  if (
-    requirements?.canonicalSections
-    && lesson.sections.some((section, index) =>
-      section?.id !== canonicalSectionIds[index] || section?.title !== canonicalSectionTitles[index],
-    )
-  ) {
+  if (lesson.sections.some((section, index) =>
+    section?.id !== canonicalSectionIds[index] || section?.title !== canonicalSectionTitles[index],
+  )) {
     issues.add("canonical lesson section order");
   }
   if (
-    requirements?.canonicalSections
-    && (!datePattern.test(lesson.lastReviewed || "")
-      || !Number.isInteger(lesson.estimatedMinutes)
-      || lesson.estimatedMinutes < 5
-      || lesson.estimatedMinutes > 20)
+    !isIsoDate(lesson.lastReviewed)
+    || !Number.isInteger(lesson.estimatedMinutes)
+    || lesson.estimatedMinutes < 5
+    || lesson.estimatedMinutes > 20
   ) {
     issues.add("lesson review metadata");
   }
@@ -171,15 +206,20 @@ function validateLesson(lesson, sourceMap, requirements, usedSources) {
     if (!section.blocks.every(validateBlock)) issues.add("content block shape");
   });
 
-  if (!Array.isArray(lesson.references) || new Set(lesson.references).size < 3) {
+  const uniqueReferences = Array.isArray(lesson.references) ? new Set(lesson.references) : new Set();
+  if (
+    !Array.isArray(lesson.references)
+    || uniqueReferences.size < 3
+    || uniqueReferences.size !== lesson.references.length
+  ) {
     issues.add("lesson source coverage");
     return;
   }
   if (lesson.references.some((sourceId) => !sourceMap.has(sourceId))) issues.add("lesson source mapping");
-  lesson.references.forEach((sourceId) => usedSources.add(sourceId));
+  lesson.references.filter((sourceId) => sourceMap.has(sourceId)).forEach((sourceId) => usedSources.add(sourceId));
   const organizations = new Set(
     lesson.references
-      .map((sourceId) => sourceMap.get(sourceId)?.organization?.trim().toLocaleLowerCase("en-US"))
+      .map((sourceId) => normalizedOrganization(sourceMap.get(sourceId)?.organization))
       .filter(Boolean),
   );
   if (organizations.size < 2) issues.add("lesson source diversity");
@@ -188,7 +228,7 @@ function validateLesson(lesson, sourceMap, requirements, usedSources) {
   if ([...citations].some((sourceId) => !lesson.references.includes(sourceId))) issues.add("inline citation mapping");
 }
 
-function validateModule(module, sourceMap, requirements, moduleIndex, usedSources) {
+function validateModule(module, sourceMap, moduleIndex, usedSources) {
   if (!module || typeof module !== "object" || !claimId(module.id, "module identifiers")) return;
   const hasNumber = present(module.number) || Number.isFinite(module.number);
   if (!hasNumber) issues.add("module numbering");
@@ -196,28 +236,27 @@ function validateModule(module, sourceMap, requirements, moduleIndex, usedSource
   if (!present(module.level)) issues.add("module levels");
   if (!present(module.description)) issues.add("module descriptions");
   if (
-    requirements?.canonicalSections
-    && (!present(module.evidenceOutcome) || String(module.number).padStart(2, "0") !== String(moduleIndex + 1).padStart(2, "0"))
+    !present(module.evidenceOutcome)
+    || String(module.number).padStart(2, "0") !== String(moduleIndex + 1).padStart(2, "0")
   ) {
     issues.add("module release framing");
   }
-  // The renderer supplies a short beginner-safe outcome when legacy modules omit this optional field.
   if (!Array.isArray(module.lessons) || !module.lessons.length) {
     issues.add("module lesson coverage");
     return;
   }
-  module.lessons.forEach((lesson) => validateLesson(lesson, sourceMap, requirements, usedSources));
+  module.lessons.forEach((lesson) => validateLesson(lesson, sourceMap, usedSources));
 }
 
 function validateDomain(domain, domainIndex) {
   if (!domain || typeof domain !== "object" || !claimId(domain.id, "domain identifiers")) return;
   const expected = releaseManifest[domainIndex];
-  if (expected?.id && domain.id !== expected.id) issues.add("release manifest identity");
+  if (!expected || domain.id !== expected.id) issues.add("release manifest identity");
   if (
     !present(domain.mark)
     || !present(domain.title)
     || !present(domain.description)
-    || !present(domain.reviewedAt)
+    || !isIsoDate(domain.reviewedAt)
   ) {
     issues.add("domain framing");
   }
@@ -242,9 +281,9 @@ function validateDomain(domain, domainIndex) {
   if (!Array.isArray(domain.modules) || !domain.modules.length) {
     issues.add("domain modules");
   } else {
-    domain.modules.forEach((module, moduleIndex) => validateModule(module, sourceMap, expected, moduleIndex, usedSources));
+    domain.modules.forEach((module, moduleIndex) => validateModule(module, sourceMap, moduleIndex, usedSources));
   }
-  if (expected?.canonicalSections && usedSources.size !== sourceMap.size) issues.add("domain source use");
+  if (usedSources.size !== sourceMap.size) issues.add("domain source use");
   const lessonCount = Array.isArray(domain.modules)
     ? domain.modules.reduce((total, module) => total + (Array.isArray(module?.lessons) ? module.lessons.length : 0), 0)
     : 0;
@@ -271,6 +310,22 @@ if (!source || typeof source !== "object" || !present(source.title) || !present(
 }
 if (!source.archivedVault || !Array.isArray(source.archivedVault.notes) || !source.archivedVault.notes.length) {
   issues.add("archived note preservation");
+} else {
+  claimId("personal-notes", "archived note identifiers");
+  claimId("legacy-notes", "archived note identifiers");
+  source.archivedVault.notes.forEach((note, index) => {
+    if (!note || typeof note !== "object" || !claimId(note.id, "archived note identifiers")) return;
+    if (
+      !present(note.title)
+      || !Array.isArray(note.content)
+      || !note.content.length
+      || !note.content.every(present)
+      || (note.sourceUrl !== undefined && note.sourceUrl !== "" && !isHttps(note.sourceUrl))
+    ) issues.add("archived note completeness");
+    if (present(note.sourceLabel) || present(note.sourceUrl)) {
+      claimId(`legacy-source-${index + 1}`, "archived source identifiers");
+    }
+  });
 }
 if (!Array.isArray(source.domains) || source.domains.length !== releaseManifest.length) issues.add("domain coverage");
 else source.domains.forEach(validateDomain);
@@ -280,4 +335,4 @@ if (issues.size) {
   process.exit(1);
 }
 
-console.log("Vault release-schema validation passed: eight-domain counts, 11-section structures, block shapes, and source mappings are valid.");
+console.log("Vault release-schema validation passed: all eight domains meet the same identity, review-metadata, canonical-section, block-shape, and source-coverage contract.");
