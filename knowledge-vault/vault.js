@@ -13,9 +13,35 @@
   const STORAGE_LAST_READ = "knowledge-library:last-read:v1";
   const STORAGE_READING_MODE = "knowledge-library:reading-mode:v1";
   const STORAGE_TEXT_SIZE = "knowledge-library:text-size:v1";
-  const DOMAIN_TONES = ["violet", "cyan", "gold", "rose", "mint", "indigo"];
+  const DOMAIN_TONES = ["violet", "cyan", "gold", "rose", "mint", "indigo", "coral", "azure", "amber"];
   const ESSENTIAL_SECTION_INDEXES = new Set([0, 1, 2, 5, 9, 10]);
   const EXPECTED_SECTION_COUNT = 11;
+  const CANONICAL_SECTION_IDS = [
+    "muc-tieu",
+    "khai-niem",
+    "vi-sao-quan-trong",
+    "cach-hoat-dong",
+    "ben-lien-quan",
+    "vi-du",
+    "tac-dong",
+    "rui-ro",
+    "khac-biet",
+    "thuat-ngu",
+    "tom-tat",
+  ];
+  const LEGACY_RELEASE_MANIFEST = [
+    { modules: 12, lessons: 67, sources: 179 },
+    { modules: 15, lessons: 74, sources: 97 },
+    { modules: 18, lessons: 89, sources: 68 },
+    { modules: 14, lessons: 68, sources: 41 },
+    { modules: 15, lessons: 60, sources: 56 },
+  ];
+  const RELEASE_MANIFEST = [
+    ...LEGACY_RELEASE_MANIFEST,
+    { id: "personal-style", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
+    { id: "photography", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
+    { id: "cooking", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
+  ];
   const SIDEBAR_MIN_WIDTH = 260;
   const SIDEBAR_MAX_WIDTH = 460;
   const SIDEBAR_DEFAULT_WIDTH = 328;
@@ -262,13 +288,6 @@
   }
 
   function validateRawVaultData(value) {
-    const releaseCounts = [
-      { modules: 12, lessons: 67, sources: 179 },
-      { modules: 15, lessons: 74, sources: 97 },
-      { modules: 18, lessons: 89, sources: 68 },
-      { modules: 14, lessons: 68, sources: 41 },
-      { modules: 15, lessons: 60, sources: 56 },
-    ];
     const claimedIds = new Set();
     const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
     let invalid = false;
@@ -317,6 +336,11 @@
       return false;
     };
 
+    const releaseManifest = Array.isArray(value?.domains) && value.domains.length === RELEASE_MANIFEST.length
+      ? RELEASE_MANIFEST
+      : Array.isArray(value?.domains) && value.domains.length === LEGACY_RELEASE_MANIFEST.length
+        ? LEGACY_RELEASE_MANIFEST
+        : null;
     if (
       !value
       || typeof value !== "object"
@@ -326,17 +350,18 @@
       || !Array.isArray(value.archivedVault.notes)
       || value.archivedVault.notes.length === 0
       || !Array.isArray(value.domains)
-      || value.domains.length !== releaseCounts.length
+      || !releaseManifest
     ) {
       throw new Error("The decrypted library source is incomplete.");
     }
 
     value.domains.forEach((domain, domainIndex) => {
-      const expected = releaseCounts[domainIndex];
+      const expected = releaseManifest[domainIndex];
       if (
         !domain
         || typeof domain !== "object"
         || !claimId(domain.id)
+        || (expected.id && domain.id !== expected.id)
         || !present(domain.mark)
         || !present(domain.title)
         || !present(domain.description)
@@ -354,6 +379,7 @@
       ) invalid = true;
 
       const sourceMap = new Map();
+      const usedSources = new Set();
       domain.primarySources?.forEach((source) => {
         if (
           !source
@@ -371,7 +397,7 @@
 
       const moduleNumbers = new Set();
       let lessonCount = 0;
-      domain.modules?.forEach((module) => {
+      domain.modules?.forEach((module, moduleIndex) => {
         lessonCount += Array.isArray(module?.lessons) ? module.lessons.length : 0;
         const number = typeof module?.number === "number" ? String(module.number) : module?.number;
         if (
@@ -383,6 +409,9 @@
           || !present(module.title)
           || !present(module.level)
           || !present(module.description)
+          || (expected.canonicalSections
+            && (!present(module.evidenceOutcome)
+              || String(module.number).padStart(2, "0") !== String(moduleIndex + 1).padStart(2, "0")))
           || !Array.isArray(module.lessons)
           || module.lessons.length === 0
         ) invalid = true;
@@ -404,6 +433,16 @@
             || sectionIds.length !== EXPECTED_SECTION_COUNT
             || new Set(sectionIds).size !== EXPECTED_SECTION_COUNT
             || sectionIds.some((id) => !present(id) || !idPattern.test(id))
+            || (expected.canonicalSections
+              && lesson.sections.some((section, sectionIndex) =>
+                section?.id !== CANONICAL_SECTION_IDS[sectionIndex]
+                || section?.title !== SECTION_TITLES[sectionIndex],
+              ))
+            || (expected.canonicalSections
+              && (!/^\d{4}-\d{2}-\d{2}$/.test(lesson.lastReviewed || "")
+                || !Number.isInteger(lesson.estimatedMinutes)
+                || lesson.estimatedMinutes < 5
+                || lesson.estimatedMinutes > 20))
             || !lesson.sections.every((section) =>
               present(section?.title)
               && Array.isArray(section.blocks)
@@ -413,6 +452,7 @@
             || new Set(references).size < 3
             || references.some((sourceId) => !sourceMap.has(sourceId))
           ) invalid = true;
+          references.forEach((sourceId) => usedSources.add(sourceId));
 
           const serialized = JSON.stringify(lesson?.sections || []);
           const citations = [...serialized.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
@@ -428,7 +468,9 @@
           ) invalid = true;
         });
       });
-      if (lessonCount !== expected.lessons) invalid = true;
+      if (lessonCount !== expected.lessons || (expected.canonicalSections && usedSources.size !== sourceMap.size)) {
+        invalid = true;
+      }
     });
 
     if (invalid) throw new Error("The decrypted library did not pass its release schema checks.");

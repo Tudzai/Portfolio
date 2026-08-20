@@ -9,14 +9,44 @@ const inputPath = process.argv[2]
   : join(vaultDirectory, "private", "knowledge.json");
 
 const expectedSectionCount = 11;
-const releaseCounts = [
+const canonicalSectionIds = [
+  "muc-tieu",
+  "khai-niem",
+  "vi-sao-quan-trong",
+  "cach-hoat-dong",
+  "ben-lien-quan",
+  "vi-du",
+  "tac-dong",
+  "rui-ro",
+  "khac-biet",
+  "thuat-ngu",
+  "tom-tat",
+];
+const canonicalSectionTitles = [
+  "Mục tiêu của bài học",
+  "Khái niệm chính",
+  "Vì sao nội dung này quan trọng",
+  "Cách nó hoạt động",
+  "Các bên liên quan",
+  "Ví dụ thực tế đơn giản",
+  "Mô hình doanh thu hoặc tác động tài chính",
+  "Rủi ro và hạn chế",
+  "Sự khác biệt giữa các thị trường hoặc quy định",
+  "Các thuật ngữ cần nhớ",
+  "Tóm tắt bài học",
+];
+const releaseManifest = [
   { modules: 12, lessons: 67, sources: 179 },
   { modules: 15, lessons: 74, sources: 97 },
   { modules: 18, lessons: 89, sources: 68 },
   { modules: 14, lessons: 68, sources: 41 },
   { modules: 15, lessons: 60, sources: 56 },
+  { id: "personal-style", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
+  { id: "photography", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
+  { id: "cooking", modules: 6, lessons: 18, sources: 12, canonicalSections: true },
 ];
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 
 const issues = new Set();
 const globalIds = new Set();
@@ -100,7 +130,7 @@ function validateSource(source, sourceMap) {
   }
 }
 
-function validateLesson(lesson, sourceMap) {
+function validateLesson(lesson, sourceMap, requirements, usedSources) {
   if (!lesson || typeof lesson !== "object" || !claimId(lesson.id, "lesson identifiers")) return;
   if (!present(lesson.title) || !present(lesson.summary)) issues.add("lesson framing");
   if (lesson.status !== "published") issues.add("publication coverage");
@@ -116,6 +146,23 @@ function validateLesson(lesson, sourceMap) {
   ) {
     issues.add("lesson section identifiers");
   }
+  if (
+    requirements?.canonicalSections
+    && lesson.sections.some((section, index) =>
+      section?.id !== canonicalSectionIds[index] || section?.title !== canonicalSectionTitles[index],
+    )
+  ) {
+    issues.add("canonical lesson section order");
+  }
+  if (
+    requirements?.canonicalSections
+    && (!datePattern.test(lesson.lastReviewed || "")
+      || !Number.isInteger(lesson.estimatedMinutes)
+      || lesson.estimatedMinutes < 5
+      || lesson.estimatedMinutes > 20)
+  ) {
+    issues.add("lesson review metadata");
+  }
   lesson.sections.forEach((section) => {
     if (!present(section?.title) || !Array.isArray(section.blocks) || !section.blocks.length) {
       issues.add("lesson section content");
@@ -129,6 +176,7 @@ function validateLesson(lesson, sourceMap) {
     return;
   }
   if (lesson.references.some((sourceId) => !sourceMap.has(sourceId))) issues.add("lesson source mapping");
+  lesson.references.forEach((sourceId) => usedSources.add(sourceId));
   const organizations = new Set(
     lesson.references
       .map((sourceId) => sourceMap.get(sourceId)?.organization?.trim().toLocaleLowerCase("en-US"))
@@ -140,23 +188,31 @@ function validateLesson(lesson, sourceMap) {
   if ([...citations].some((sourceId) => !lesson.references.includes(sourceId))) issues.add("inline citation mapping");
 }
 
-function validateModule(module, sourceMap) {
+function validateModule(module, sourceMap, requirements, moduleIndex, usedSources) {
   if (!module || typeof module !== "object" || !claimId(module.id, "module identifiers")) return;
   const hasNumber = present(module.number) || Number.isFinite(module.number);
   if (!hasNumber) issues.add("module numbering");
   if (!present(module.title)) issues.add("module titles");
   if (!present(module.level)) issues.add("module levels");
   if (!present(module.description)) issues.add("module descriptions");
-  // The renderer supplies a short beginner-safe outcome when older modules omit this optional field.
+  if (
+    requirements?.canonicalSections
+    && (!present(module.evidenceOutcome) || String(module.number).padStart(2, "0") !== String(moduleIndex + 1).padStart(2, "0"))
+  ) {
+    issues.add("module release framing");
+  }
+  // The renderer supplies a short beginner-safe outcome when legacy modules omit this optional field.
   if (!Array.isArray(module.lessons) || !module.lessons.length) {
     issues.add("module lesson coverage");
     return;
   }
-  module.lessons.forEach((lesson) => validateLesson(lesson, sourceMap));
+  module.lessons.forEach((lesson) => validateLesson(lesson, sourceMap, requirements, usedSources));
 }
 
 function validateDomain(domain, domainIndex) {
   if (!domain || typeof domain !== "object" || !claimId(domain.id, "domain identifiers")) return;
+  const expected = releaseManifest[domainIndex];
+  if (expected?.id && domain.id !== expected.id) issues.add("release manifest identity");
   if (
     !present(domain.mark)
     || !present(domain.title)
@@ -177,6 +233,7 @@ function validateDomain(domain, domainIndex) {
   }
 
   const sourceMap = new Map();
+  const usedSources = new Set();
   if (!Array.isArray(domain.primarySources) || !domain.primarySources.length) {
     issues.add("domain sources");
   } else {
@@ -185,9 +242,9 @@ function validateDomain(domain, domainIndex) {
   if (!Array.isArray(domain.modules) || !domain.modules.length) {
     issues.add("domain modules");
   } else {
-    domain.modules.forEach((module) => validateModule(module, sourceMap));
+    domain.modules.forEach((module, moduleIndex) => validateModule(module, sourceMap, expected, moduleIndex, usedSources));
   }
-  const expected = releaseCounts[domainIndex];
+  if (expected?.canonicalSections && usedSources.size !== sourceMap.size) issues.add("domain source use");
   const lessonCount = Array.isArray(domain.modules)
     ? domain.modules.reduce((total, module) => total + (Array.isArray(module?.lessons) ? module.lessons.length : 0), 0)
     : 0;
@@ -215,7 +272,7 @@ if (!source || typeof source !== "object" || !present(source.title) || !present(
 if (!source.archivedVault || !Array.isArray(source.archivedVault.notes) || !source.archivedVault.notes.length) {
   issues.add("archived note preservation");
 }
-if (!Array.isArray(source.domains) || source.domains.length !== releaseCounts.length) issues.add("domain coverage");
+if (!Array.isArray(source.domains) || source.domains.length !== releaseManifest.length) issues.add("domain coverage");
 else source.domains.forEach(validateDomain);
 
 if (issues.size) {
@@ -223,4 +280,4 @@ if (issues.size) {
   process.exit(1);
 }
 
-console.log("Vault release-schema validation passed: published counts, 11-section structures, block shapes, and source mappings are valid.");
+console.log("Vault release-schema validation passed: eight-domain counts, 11-section structures, block shapes, and source mappings are valid.");

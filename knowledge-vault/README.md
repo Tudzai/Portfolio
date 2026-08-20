@@ -3,8 +3,8 @@
 This folder is a private-reading layer inside the public Portfolio site. The browser derives an AES-256-GCM key from
 the owner password, decrypts `vault-data.js` locally, and renders a multi-domain personal library without sending the
 password, plaintext content, completion state, or search activity to a server. FinTech, Finance, Road to CFO,
-Breaking, and muscle recovery are separate structured collections; existing personal notes remain available as their
-own collection.
+Breaking, muscle recovery, personal style, photography, and home cooking are separate structured collections;
+existing personal notes remain available as their own collection.
 
 The page is intentionally unlinked and marked `noindex`. The URL is not a security boundary: encrypted data remains
 publicly downloadable when the Portfolio site is deployed, so a strong unique password is essential.
@@ -68,8 +68,10 @@ The decrypted source contains:
    authored sections and the renderer adds section 12 from the lesson's source IDs.
 
 The library currently contains the preserved personal-note collection plus fully published, beginner-first curricula
-for FinTech, Finance, Road to CFO, Breaking, and muscle recovery. Time-sensitive regulation, competition rules,
-medical guidance, and emerging practices must be rechecked periodically against their linked authoritative sources.
+for FinTech, Finance, Road to CFO, Breaking, muscle recovery, personal style, photography, and home cooking. The three
+lifestyle collections cover practical outfit building across multiple styles, camera and phone photography, and safe
+everyday cooking. Time-sensitive regulation, competition rules, medical or food-safety guidance, and emerging
+practices must be rechecked periodically against their linked authoritative sources.
 
 | Structured collection | Modules | Reading items | Saved sources | Status |
 |---|---:|---:|---:|---|
@@ -78,8 +80,11 @@ medical guidance, and emerging practices must be rechecked periodically against 
 | Road to CFO | 18 | 89 | 68 | Published |
 | Breaking / Breakdance | 14 | 68 | 41 | Published |
 | Muscle recovery | 15 | 60 | 56 | Published |
+| Personal style | 6 | 18 | 12 | Published |
+| Photography | 6 | 18 | 12 | Published |
+| Home cooking | 6 | 18 | 12 | Published |
 
-Across the five structured collections, the library now contains 74 modules, 358 published lessons, and 441 saved
+Across the eight structured collections, the library now contains 92 modules, 412 published lessons, and 477 saved
 sources. Every lesson contains 11 authored sections, renders its references as section 12, and maps to at least three
 distinct sources.
 
