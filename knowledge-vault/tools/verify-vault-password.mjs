@@ -7,12 +7,18 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const vaultDirectory = resolve(scriptDirectory, "..");
 const inputPath = process.argv[2] ? resolve(process.cwd(), process.argv[2]) : join(vaultDirectory, "vault-data.js");
 const password = process.env.VAULT_PASSWORD;
-const expectedCounts = [
+const legacyReleaseManifest = [
   { modules: 12, lessons: 67, sources: 179 },
   { modules: 15, lessons: 74, sources: 97 },
   { modules: 18, lessons: 89, sources: 68 },
   { modules: 14, lessons: 68, sources: 41 },
   { modules: 15, lessons: 60, sources: 56 },
+];
+const expandedReleaseManifest = [
+  ...legacyReleaseManifest,
+  { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+  { id: "photography", modules: 6, lessons: 18, sources: 12 },
+  { id: "cooking", modules: 6, lessons: 18, sources: 12 },
 ];
 
 function exactKeys(value, keys) {
@@ -22,35 +28,40 @@ function exactKeys(value, keys) {
     && Object.keys(value).sort().join("|") === [...keys].sort().join("|");
 }
 
+function matchesReleaseManifest(value, releaseManifest) {
+  return value.domains.length === releaseManifest.length
+    && value.domains.every((domain, domainIndex) => {
+      const expected = releaseManifest[domainIndex];
+      if (
+        (expected.id && domain?.id !== expected.id)
+        || !Array.isArray(domain?.primarySources)
+        || domain.primarySources.length !== expected.sources
+        || !Array.isArray(domain.modules)
+        || domain.modules.length !== expected.modules
+      ) return false;
+      const lessons = domain.modules.flatMap((module) => Array.isArray(module?.lessons) ? module.lessons : []);
+      return lessons.length === expected.lessons
+        && lessons.every((lesson) =>
+          lesson?.status === "published"
+          && Array.isArray(lesson.sections)
+          && lesson.sections.length === 11
+          && Array.isArray(lesson.references)
+          && new Set(lesson.references).size >= 3,
+        );
+    });
+}
+
 function verifyReleaseShape(value) {
   if (
     !value
     || typeof value !== "object"
     || !Array.isArray(value.domains)
-    || value.domains.length !== expectedCounts.length
     || !value.archivedVault
     || !Array.isArray(value.archivedVault.notes)
     || !value.archivedVault.notes.length
   ) return false;
-
-  return value.domains.every((domain, domainIndex) => {
-    const expected = expectedCounts[domainIndex];
-    if (
-      !Array.isArray(domain?.primarySources)
-      || domain.primarySources.length !== expected.sources
-      || !Array.isArray(domain.modules)
-      || domain.modules.length !== expected.modules
-    ) return false;
-    const lessons = domain.modules.flatMap((module) => Array.isArray(module?.lessons) ? module.lessons : []);
-    return lessons.length === expected.lessons
-      && lessons.every((lesson) =>
-        lesson?.status === "published"
-        && Array.isArray(lesson.sections)
-        && lesson.sections.length === 11
-        && Array.isArray(lesson.references)
-        && new Set(lesson.references).size >= 3,
-      );
-  });
+  return [legacyReleaseManifest, expandedReleaseManifest]
+    .some((releaseManifest) => matchesReleaseManifest(value, releaseManifest));
 }
 
 try {

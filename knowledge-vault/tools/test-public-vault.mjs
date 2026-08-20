@@ -69,7 +69,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260819-ethereal-vault|vault.js?v=20260819-ethereal-vault") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260819-expanded-domains|vault.js?v=20260819-expanded-domains") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -77,7 +77,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260819-ethereal-vault") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260819-expanded-domains") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -195,6 +195,14 @@ if (
   trackedPrivate.status !== 0
   || trackedPrivateFiles.some((file) => file !== "knowledge-vault/private/.gitignore")
 ) failures.push("Git private-file publish boundary");
+const trackedAuthoringWorkspace = spawnSync(
+  "git",
+  ["ls-files", "--cached", "--", "tmp/knowledge-vault-new-domains"],
+  { cwd: repositoryRoot, encoding: "utf8" },
+);
+if (trackedAuthoringWorkspace.status !== 0 || trackedAuthoringWorkspace.stdout.trim()) {
+  failures.push("Git plaintext authoring-workspace boundary");
+}
 const ignoredPlaintext = spawnSync(
   "git",
   ["check-ignore", "--quiet", "--no-index", "knowledge-vault/private/knowledge.json"],

@@ -93,6 +93,27 @@ html[data-domain-tone="indigo"] {
   --accent-glow: rgba(112, 126, 244, 0.17);
 }
 
+html[data-domain-tone="coral"] {
+  --accent: #f3ae9b;
+  --accent-ink: #35150f;
+  --accent-soft: rgba(243, 174, 155, 0.12);
+  --accent-glow: rgba(240, 141, 114, 0.16);
+}
+
+html[data-domain-tone="azure"] {
+  --accent: #9bc9f6;
+  --accent-ink: #0d2438;
+  --accent-soft: rgba(155, 201, 246, 0.12);
+  --accent-glow: rgba(91, 164, 232, 0.16);
+}
+
+html[data-domain-tone="amber"] {
+  --accent: #f4c778;
+  --accent-ink: #302007;
+  --accent-soft: rgba(244, 199, 120, 0.12);
+  --accent-glow: rgba(225, 159, 55, 0.16);
+}
+
 html[data-theme="light"][data-domain-tone="cyan"] {
   --accent: #267581;
   --accent-ink: #ffffff;
@@ -115,6 +136,21 @@ html[data-theme="light"][data-domain-tone="mint"] {
 
 html[data-theme="light"][data-domain-tone="indigo"] {
   --accent: #515fa7;
+  --accent-ink: #ffffff;
+}
+
+html[data-theme="light"][data-domain-tone="coral"] {
+  --accent: #a64f3d;
+  --accent-ink: #ffffff;
+}
+
+html[data-theme="light"][data-domain-tone="azure"] {
+  --accent: #346e9f;
+  --accent-ink: #ffffff;
+}
+
+html[data-theme="light"][data-domain-tone="amber"] {
+  --accent: #8b5d0d;
   --accent-ink: #ffffff;
 }
 
@@ -2717,41 +2753,62 @@ html[data-theme="light"] .workspace-bar {
   background: var(--surface);
 }
 
-.collection-card:nth-child(6n + 2) {
+.collection-card:nth-child(9n + 2) {
   --accent: #8ddde3;
   --accent-soft: rgba(87, 203, 214, 0.12);
   --accent-glow: rgba(70, 206, 219, 0.16);
 }
 
-.collection-card:nth-child(6n + 3) {
+.collection-card:nth-child(9n + 3) {
   --accent: #f0d28f;
   --accent-soft: rgba(240, 210, 143, 0.12);
   --accent-glow: rgba(237, 190, 97, 0.15);
 }
 
-.collection-card:nth-child(6n + 4) {
+.collection-card:nth-child(9n + 4) {
   --accent: #efb2d1;
   --accent-soft: rgba(239, 178, 209, 0.12);
   --accent-glow: rgba(225, 111, 174, 0.15);
 }
 
-.collection-card:nth-child(6n + 5) {
+.collection-card:nth-child(9n + 5) {
   --accent: #a8dfc2;
   --accent-soft: rgba(168, 223, 194, 0.12);
   --accent-glow: rgba(92, 201, 146, 0.14);
 }
 
-.collection-card:nth-child(6n) {
+.collection-card:nth-child(9n + 6) {
   --accent: #b9c1ff;
   --accent-soft: rgba(185, 193, 255, 0.13);
   --accent-glow: rgba(112, 126, 244, 0.17);
 }
 
-html[data-theme="light"] .collection-card:nth-child(6n + 2) { --accent: #267581; }
-html[data-theme="light"] .collection-card:nth-child(6n + 3) { --accent: #80601f; }
-html[data-theme="light"] .collection-card:nth-child(6n + 4) { --accent: #964f75; }
-html[data-theme="light"] .collection-card:nth-child(6n + 5) { --accent: #317653; }
-html[data-theme="light"] .collection-card:nth-child(6n) { --accent: #515fa7; }
+.collection-card:nth-child(9n + 7) {
+  --accent: #f3ae9b;
+  --accent-soft: rgba(243, 174, 155, 0.12);
+  --accent-glow: rgba(240, 141, 114, 0.16);
+}
+
+.collection-card:nth-child(9n + 8) {
+  --accent: #9bc9f6;
+  --accent-soft: rgba(155, 201, 246, 0.12);
+  --accent-glow: rgba(91, 164, 232, 0.16);
+}
+
+.collection-card:nth-child(9n) {
+  --accent: #f4c778;
+  --accent-soft: rgba(244, 199, 120, 0.12);
+  --accent-glow: rgba(225, 159, 55, 0.16);
+}
+
+html[data-theme="light"] .collection-card:nth-child(9n + 2) { --accent: #267581; }
+html[data-theme="light"] .collection-card:nth-child(9n + 3) { --accent: #80601f; }
+html[data-theme="light"] .collection-card:nth-child(9n + 4) { --accent: #964f75; }
+html[data-theme="light"] .collection-card:nth-child(9n + 5) { --accent: #317653; }
+html[data-theme="light"] .collection-card:nth-child(9n + 6) { --accent: #515fa7; }
+html[data-theme="light"] .collection-card:nth-child(9n + 7) { --accent: #a64f3d; }
+html[data-theme="light"] .collection-card:nth-child(9n + 8) { --accent: #346e9f; }
+html[data-theme="light"] .collection-card:nth-child(9n) { --accent: #8b5d0d; }
 
 .quick-guide span {
   color: var(--accent);
