@@ -1,39 +1,346 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta name="robots" content="noindex, follow" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SaaS CFO Metrics Interactive Preview | Truong Dinh Anh Tu</title>
-    <link rel="canonical" href="index.html" />
-    <link rel="icon" href="../../../assets/favicon.svg" />
-    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
-    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-  <body class="powerbi-standard-preview" data-project-no="15">
-    <div class="preview-frame">
-      <div class="dashboard-shell">
-        <div class="dashboard" role="application" aria-label="SaaS CFO Metrics interactive dashboard">
-          <aside class="sidebar">
-            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>CFO metrics</small></span></div>
-            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
-            <div class="lens-group">
-              <h2 class="lens-title">Global Lens</h2>
-              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
-              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
-            </div>
-            <div class="lens-group">
-              <h2 class="lens-title">Operating Scope</h2>
-              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
-              <label><span class="filter-label">Product</span><span class="select-wrap"><select id="regionFilter" aria-label="Product filter"></select></span></label>
-            </div>
-            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
-          </aside>
-          <main class="dashboard-content" id="content"></main>
-        </div>
-      </div>
-    </div>
-    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"saas-cfo-metrics","route":"saas-cfo-metrics/","no":"15","folder":"Project 15 - SaaS CFO Metrics","title":"SaaS CFO Metrics","lens":"CFO metrics","summary":"CFO metrics pack for ARR, NRR/GRR, churn, CAC payback, cohort economics, and forecast health.","decisionQuestion":"Is recurring growth durable and efficient enough to support the plan, and which cohorts need intervention?","pages":[{"id":"growth-vs-plan","label":"Growth vs Plan"},{"id":"retention-cohorts","label":"Retention & Cohorts"},{"id":"efficiency-forecast","label":"Efficiency & Forecast"}],"metrics":[{"value":"$18.4M","label":"ARR","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":18032000,"prior":16928000,"series":[16928000,17061818.181818184,17195636.363636363,17329454.545454547,17463272.727272727,17597090.90909091,17730909.09090909,17864727.272727273,17998545.454545453,18132363.636363637,18266181.818181816,18400000],"sensitivity":1},{"value":"112%","label":"NRR","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":109.75999999999999,"prior":103.04,"series":[103.04,103.85454545454546,104.66909090909091,105.48363636363636,106.29818181818182,107.11272727272727,107.92727272727274,108.74181818181819,109.55636363636364,110.3709090909091,111.18545454545455,112],"sensitivity":1},{"value":"14","label":"CAC payback months","note":"Synthetic preview value.","format":"days","higherIsBetter":false,"plan":14.280000000000001,"prior":15.260000000000002,"series":[15.260000000000002,15.145454545454546,15.030909090909093,14.916363636363638,14.801818181818183,14.687272727272727,14.572727272727274,14.458181818181819,14.343636363636364,14.229090909090909,14.114545454545455,14],"sensitivity":1},{"value":"7.1%","label":"logo churn","note":"Synthetic preview value.","format":"percent","higherIsBetter":false,"plan":7.242,"prior":7.739,"series":[7.739,7.680909090909091,7.6228181818181815,7.564727272727272,7.506636363636363,7.448545454545454,7.390454545454546,7.332363636363636,7.274272727272727,7.216181818181818,7.158090909090909,7.1],"sensitivity":1}],"bars":[{"label":"ARR","value":80},{"label":"NRR","value":75},{"label":"CAC payback","value":56},{"label":"Churn","value":42}],"drivers":[{"label":"Expansion ARR","value":"+$1.1M","isRisk":false},{"label":"SMB churn","value":"-$0.4M","isRisk":true},{"label":"Sales efficiency","value":"+0.2x","isRisk":false}],"actions":[{"owner":"Sales","action":"Prioritize expansion in healthy cohorts."},{"owner":"CS","action":"Target SMB churn accounts."},{"owner":"Finance","action":"Connect ARR bridge to board forecast."}],"financeLogic":["Closing ARR equals opening ARR plus new and expansion less contraction and churn.","NRR divides retained and expanded recurring revenue by opening recurring revenue.","CAC payback divides acquisition cost by monthly gross-margin contribution."],"scopeLabel":"Revenue Segment","scopeOptions":["All Revenue","Enterprise","Mid-market","SMB"],"breakdownLabel":"Product","breakdownOptions":["All Products","Core","Analytics","Automation","Services"],"regionOptions":["All Products","Core","Analytics","Automation","Services"],"governance":["Subscription events use one effective-date convention.","ARR excludes one-time services and non-recurring fees.","Customer and logo retention use consistent cohort denominators.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Revenue","region":"All Products"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Revenue Segment","options":["All Revenue","Enterprise","Mid-market","SMB"],"default":"All Revenue"},{"id":"region","label":"Product","options":["All Products","Core","Analytics","Automation","Services"],"default":"All Products"}],"dataClassification":"Synthetic public-safe preview data"});</script>
-    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
-  </body>
-</html>
+<!doctype html><html><head><meta charset='utf-8'>
+<meta name="robots" content="noindex, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>SaaS CFO Metrics Dashboard</title><style id="p15-polish">*{box-sizing:border-box!important}.preview-frame{overflow-x:hidden!important}.dashboard-shell{min-width:0!important}.canvas{width:100%!important;height:auto!important;min-height:720px!important;grid-template-columns:184px minmax(0,1fr)!important}main{min-width:0!important}.head{height:auto!important;min-height:38px}.chips{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}.chips span{margin-left:0!important}.cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}.card,.panel{min-width:0}.grid{grid-template-columns:minmax(0,1.42fr) minmax(0,1fr) minmax(0,.98fr)!important}@media(max-width:760px){.dashboard-shell{min-width:0!important}.canvas{min-height:0!important;grid-template-columns:1fr!important}aside{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:16px!important}aside h2{grid-column:1/-1;margin:0 0 4px!important}aside button{margin:0!important;min-height:48px;padding:9px!important;font-size:12px}.lens{grid-column:1/-1;margin-top:4px!important;display:grid;grid-template-columns:1fr 1fr;gap:8px}.lens>b,.lens>small{grid-column:1/-1}.lens label,.lens small{margin-top:0!important}.preview-reset{grid-column:1/-1;margin-top:0!important}main{padding:16px!important}.head{display:block!important}.chips{justify-content:flex-start;margin-top:12px}.chips span{padding:6px 8px!important}.cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.grid{grid-template-columns:1fr!important;gap:10px!important}.bottom{margin-top:10px!important}.panel{overflow-x:auto}table{min-width:520px}}@media(max-width:460px){.cards{grid-template-columns:1fr!important}}</style><style>
+body{margin:0;background:#F6F8FB;font:13px Segoe UI,Arial;color:#111827}.canvas{width:1280px;height:720px;display:grid;grid-template-columns:184px 1fr;background:#F6F8FB}aside{background:#0B1726;color:#fff;padding:18px}aside h2{margin:0 0 24px;font-size:18px}button{display:block;width:100%;margin:8px 0;padding:10px;border:1px solid #17395F;border-radius:6px;background:#10243A;color:#D8E2EF;text-align:left}button.active{background:#17395F;color:#fff}.lens{margin-top:28px;padding:12px;border:1px solid #2563EB;border-radius:8px;background:#10243A;color:#D8E2EF}main{padding:18px 24px}.head{display:flex;align-items:center;justify-content:space-between;gap:18px;height:38px}h1{margin:0;font-size:23px}.head p{margin:4px 0 0;color:#64748B}.chips span{display:inline-block;background:#E7F0FF;border-radius:7px;padding:8px 12px;margin-left:8px;font-weight:700}.cards{display:grid;grid-template-columns:repeat(4,252px);gap:16px;margin-top:16px}.card,.panel{background:#fff;border:1px solid #DCE3EC;border-radius:8px;padding:14px;box-shadow:0 8px 20px #0f172a0d}.card b{display:block;font-size:26px;margin-top:8px;color:#2563EB}.card small{display:block;color:#64748B;margin-top:6px}.grid{display:grid;grid-template-columns:424px 300px 292px;gap:18px;margin-top:16px}.bottom{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px}.panel h3{margin:0 0 10px;font-size:14px}.spark{height:86px;background:linear-gradient(180deg,#fff,#F8FAFC);border:1px solid #E8EEF5;border-radius:8px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:7px 8px;border-bottom:1px solid #E8EEF5;text-align:left}th{background:#EEF3F9;font-size:11px}.tab{display:none}.tab.active{display:block}.lens label{display:block;margin-top:10px;font-size:11px}.lens select{width:100%;margin-top:4px;padding:7px;border:1px solid #31547a;border-radius:5px;background:#0b1726;color:#fff}.lens small{display:block;margin-top:10px;color:#9fb1c6}.spark svg{width:100%;height:100%}.preview-reset{width:100%;margin-top:10px}</style><link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:auto}.dashboard-shell{position:relative}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}@media(max-width:760px){.dashboard-shell{min-width:1100px}}</style></head><body data-project-number="15" data-layout-source="project-15-own-dashboard"><div class="preview-frame"><div class="dashboard-shell"><div class='canvas'><aside><h2>SaaS CFO<br><small>Project 15</small></h2><button class='active' data-tab='e'>Executive Overview</button><button data-tab='r'>Revenue & Retention</button><button data-tab='f'>Efficiency & Forecast</button><div class='lens'><b>Current Lens</b><label>Scenario<select id='scenarioFilter'><option>Base</option><option>Upside</option><option>Downside</option></select></label><label>Segment<select id='segmentFilter'><option>All Segments</option><option>Enterprise</option><option>Mid-Market</option><option>SMB</option></select></label><small id='lensText'>Base | All Segments</small></div></aside><main><div class='head'><div><h1>SaaS CFO Metrics</h1><p>Latest complete month: May 2026 | synthetic demo data</p></div><div class='chips'><span>ARR $25.3M</span><span>NRR 99.5%</span><span>Forecast 99.9%</span></div></div><section id='e' class='tab active'><div class='cards'><div class='card'>ARR<b>$25.3M</b><small>PY, YoY, target-band sparkline</small></div><div class='card'>Net New ARR<b>$-24.8K</b><small>Latest selected month</small></div><div class='card'>NRR<b>99.5%</b><small>Retention health</small></div><div class='card'>Rule of 40<b>18.1%</b><small>Growth + margin</small></div></div><div class='grid'><div class='panel'><h3>ARR and Net New ARR Trend</h3><div class='spark'></div></div><div class='panel'><h3>ARR Movement Bridge</h3><table><tbody><tr><td>New ARR</td><td>$108.6K</td></tr><tr><td>Expansion ARR</td><td>$673.7K</td></tr><tr><td>Contraction ARR</td><td>$-135.3K</td></tr><tr><td>Churn ARR</td><td>$-671.8K</td></tr></tbody></table></div><div class='panel'><h3>ARR by Segment</h3><div class='spark'></div></div></div><div class='bottom'><div class='panel'><h3>Plan Scorecard</h3><table><thead><tr><th>Plan</th><th>Segment</th><th>ARR</th><th>Active</th></tr></thead><tbody><tr><td>Enterprise</td><td>Enterprise</td><td>$9.9M</td><td>31</td></tr><tr><td>Scale</td><td>Mid-Market</td><td>$6.8M</td><td>50</td></tr><tr><td>Business</td><td>Mid-Market</td><td>$5.4M</td><td>67</td></tr><tr><td>Growth</td><td>SMB</td><td>$2.4M</td><td>91</td></tr><tr><td>Starter</td><td>SMB</td><td>$808.7K</td><td>67</td></tr></tbody></table></div></div></section><section id='r' class='tab'><div class='cards'><div class='card'>NRR<b>99.5%</b></div><div class='card'>GRR<b>96.8%</b></div><div class='card'>Expansion ARR<b>$673.7K</b></div><div class='card'>Logo Churn<b>2.9%</b></div></div><div class='bottom'><div class='panel'><h3>Account Renewal Risk Queue</h3><table><thead><tr><th>Account</th><th>Risk</th><th>Signal</th><th>Action</th><th>ARR</th></tr></thead><tbody><tr><td>Manufacturing Cloud 349</td><td>Healthy</td><td>64</td><td>Monitor</td><td>$844.8K</td></tr><tr><td>Financial Cloud 197</td><td>Healthy</td><td>88</td><td>CSM expansion plan</td><td>$696.7K</td></tr><tr><td>Software Cloud 478</td><td>Healthy</td><td>92</td><td>CSM expansion plan</td><td>$476.6K</td></tr><tr><td>Healthcare Cloud 049</td><td>Healthy</td><td>74</td><td>Monitor</td><td>$460.6K</td></tr><tr><td>Manufacturing Cloud 316</td><td>Healthy</td><td>86</td><td>CSM expansion plan</td><td>$450.1K</td></tr></tbody></table></div></div></section><section id='f' class='tab'><div class='cards'><div class='card'>Payback<b>1.2</b></div><div class='card'>LTV:CAC<b>12.3x</b></div><div class='card'>Burn Multiple<b>33.5x</b></div><div class='card'>Forecast Accuracy<b>99.9%</b></div></div><div class='bottom'><div class='panel'><h3>Forecast and Cash Discipline</h3><table><thead><tr><th>Month</th><th>Accuracy</th><th>Net Burn</th><th>Cash</th></tr></thead><tbody><tr><td>Jan 2026</td><td>97.3%</td><td>$0</td><td>$13.3M</td></tr><tr><td>Feb 2026</td><td>98.7%</td><td>$0</td><td>$13.3M</td></tr><tr><td>Mar 2026</td><td>97.7%</td><td>$0</td><td>$13.4M</td></tr><tr><td>Apr 2026</td><td>98.3%</td><td>$53.8K</td><td>$13.4M</td></tr><tr><td>May 2026</td><td>99.9%</td><td>$69.1K</td><td>$13.4M</td></tr></tbody></table></div></div></section></main></div><script>
+const p15Segments = {
+  Enterprise: { arr: 9.9, newArr: 28.4, expansion: 331.8, contraction: -48.2, churn: -190.5, rule40: 24.5, logoChurn: 2.5, payback: 1.4, ltvCac: 14.8, burnMultiple: 4.2 },
+  "Mid-Market": { arr: 12.2, newArr: 52.7, expansion: 247.4, contraction: -61.6, churn: -318.7, rule40: 16.5, logoChurn: 3.1, payback: 1.15, ltvCac: 12.2, burnMultiple: 39.6 },
+  SMB: { arr: 3.2087, newArr: 27.5, expansion: 94.5, contraction: -25.5, churn: -162.6, rule40: 4.6, logoChurn: 3.7, payback: .8, ltvCac: 5.1, burnMultiple: 52.8 }
+};
+const p15Scenarios = {
+  Base: { newArr: 1, expansion: 1, contraction: 1, churn: 1, rule40: 0, signal: 0, active: 1, burn: 1, accuracy: [0,0,0,0,0], cash: [0,0,0,0,0] },
+  Upside: { newArr: 1.18, expansion: 1.12, contraction: .9, churn: .82, rule40: 4.2, signal: 8, active: 1.04, burn: .65, accuracy: [.4,.3,.5,.7,.5], cash: [0,.02,.05,.08,.12] },
+  Downside: { newArr: .8, expansion: .84, contraction: 1.18, churn: 1.28, rule40: -5.4, signal: -12, active: .94, burn: 1.5, accuracy: [-1.2,-1.6,-1.4,-2,-2.4], cash: [0,-.03,-.07,-.12,-.18] }
+};
+const p15Trends = {
+  Enterprise: [9.42,9.51,9.61,9.72,9.78,9.86,9.89,9.9],
+  "Mid-Market": [11.91,11.99,12.05,12.09,12.16,12.24,12.28,12.2],
+  SMB: [3.12,3.15,3.19,3.21,3.23,3.24,3.23,3.2087]
+};
+const p15Plans = [
+  { plan:"Enterprise", segment:"Enterprise", arr:9.9, active:31 },
+  { plan:"Scale", segment:"Mid-Market", arr:6.8, active:50 },
+  { plan:"Business", segment:"Mid-Market", arr:5.4, active:67 },
+  { plan:"Growth", segment:"SMB", arr:2.4, active:91 },
+  { plan:"Starter", segment:"SMB", arr:.8087, active:67 }
+];
+const p15Renewals = [
+  { account:"Manufacturing Cloud 349", segment:"Enterprise", signal:64, arr:844.8 },
+  { account:"Financial Cloud 197", segment:"Enterprise", signal:88, arr:696.7 },
+  { account:"Software Cloud 478", segment:"Mid-Market", signal:92, arr:476.6 },
+  { account:"Healthcare Cloud 049", segment:"Mid-Market", signal:74, arr:460.6 },
+  { account:"Manufacturing Cloud 316", segment:"SMB", signal:86, arr:450.1 },
+  { account:"Retail Cloud 228", segment:"SMB", signal:52, arr:382.4 },
+  { account:"Energy Cloud 411", segment:"Enterprise", signal:47, arr:338.2 },
+  { account:"Media Cloud 083", segment:"Mid-Market", signal:39, arr:291.5 }
+];
+const p15ForecastBase = [
+  { month:"Jan 2026", accuracy:97.3, burn:0, cash:13.3 },
+  { month:"Feb 2026", accuracy:98.7, burn:0, cash:13.3 },
+  { month:"Mar 2026", accuracy:97.7, burn:0, cash:13.4 },
+  { month:"Apr 2026", accuracy:98.3, burn:53.8, cash:13.4 },
+  { month:"May 2026", accuracy:99.9, burn:69.1, cash:13.4 }
+];
+const p15Context = {
+  e: ["Recurring run-rate at May close", "New + expansion - contraction - churn", "Revenue retained after churn and expansion", "ARR growth + EBITDA margin; target >= 40%"],
+  r: ["Revenue retention incl. expansion", "Revenue retained before expansion", "May expansion from existing accounts", "Logo churn in the selected lens"],
+  f: ["CAC payback period; lower is better", "Lifetime value / acquisition cost", "Net burn / net new ARR; lower is better", "Forecast vs actual recurring revenue"]
+};
+const p15PanelNotes = {
+  e: ["Eight-month ARR run-rate; scenario variance is driven by the movement bridge", "May additions less contraction and churn; components tie to Net New ARR", "Closing ARR by customer segment under the selected scenario", "Recurring revenue and active-account mix by plan"],
+  r: ["ARR at risk combines renewal signal and account value; scenario changes the health assumption"],
+  f: ["Forecast accuracy and net burn by month; closing cash follows the selected scenario"]
+};
+let p15Page = "e";
+const p15AllSegments = Object.keys(p15Segments);
+const p15TotalArr = p15AllSegments.reduce((sum,key)=>sum+p15Segments[key].arr,0);
+const p15MoneyM = value => "$"+value.toFixed(1)+"M";
+const p15MoneyK = value => (value<0?"-$":"$")+Math.abs(value).toFixed(1)+"K";
+const p15Pct = value => value.toFixed(1)+"%";
+const p15Lens = () => {
+  const scenario=document.getElementById("scenarioFilter").value;
+  const segment=document.getElementById("segmentFilter").value;
+  return {scenario,segment,driver:p15Scenarios[scenario],segments:segment==="All Segments"?p15AllSegments:[segment]};
+};
+const p15Weighted = (lens,key) => {
+  const arr=lens.segments.reduce((sum,name)=>sum+p15Segments[name].arr,0);
+  return lens.segments.reduce((sum,name)=>sum+p15Segments[name][key]*p15Segments[name].arr,0)/arr;
+};
+function p15Movement(lens){
+  const base=lens.segments.reduce((out,name)=>{const row=p15Segments[name];out.newArr+=row.newArr;out.expansion+=row.expansion;out.contraction+=row.contraction;out.churn+=row.churn;return out;},{newArr:0,expansion:0,contraction:0,churn:0});
+  const adjusted={newArr:base.newArr*lens.driver.newArr,expansion:base.expansion*lens.driver.expansion,contraction:base.contraction*lens.driver.contraction,churn:base.churn*lens.driver.churn};
+  adjusted.netNew=adjusted.newArr+adjusted.expansion+adjusted.contraction+adjusted.churn;
+  base.netNew=base.newArr+base.expansion+base.contraction+base.churn;
+  return {base,adjusted};
+}
+function p15Metrics(lens){
+  const arrBase=lens.segments.reduce((sum,name)=>sum+p15Segments[name].arr,0);
+  const movement=p15Movement(lens);
+  const arr=arrBase+(movement.adjusted.netNew-movement.base.netNew)/1000;
+  const nrr=(arrBase+(movement.adjusted.expansion+movement.adjusted.contraction+movement.adjusted.churn)/1000)/arrBase*100;
+  const grr=(arrBase+(movement.adjusted.contraction+movement.adjusted.churn)/1000)/arrBase*100;
+  const rule40=p15Weighted(lens,"rule40")+lens.driver.rule40;
+  const logoChurn=p15Weighted(lens,"logoChurn")*lens.driver.churn;
+  const payback=Math.max(.4,p15Weighted(lens,"payback")+(lens.scenario==="Upside"?-.15:lens.scenario==="Downside"?.25:0));
+  const ltvCac=Math.max(1,p15Weighted(lens,"ltvCac")+(lens.scenario==="Upside"?1.3:lens.scenario==="Downside"?-2.1:0));
+  const burnMultiple=lens.segment==="All Segments"?33.5:p15Weighted(lens,"burnMultiple");
+  return {arrBase,arr,movement,nrr,grr,rule40,logoChurn,payback,ltvCac,burnMultiple:burnMultiple*lens.driver.burn};
+}
+function p15Forecast(lens){
+  const share=lens.segment==="All Segments"?1:p15Metrics(lens).arrBase/p15TotalArr;
+  const segmentAccuracy=lens.segment==="Enterprise"?.4:lens.segment==="SMB"?-1.1:0;
+  const segmentBurn=lens.segment==="Enterprise"?.78:lens.segment==="SMB"?1.35:1;
+  return p15ForecastBase.map((row,index)=>({
+    ...row,
+    accuracy:Math.max(90,Math.min(100,row.accuracy+lens.driver.accuracy[index]+segmentAccuracy)),
+    burn:row.burn*share*segmentBurn*lens.driver.burn,
+    cash:row.cash+lens.driver.cash[index]
+  }));
+}
+function p15SvgLine(node,values,label){
+  const width=420,height=86,left=14,right=14,top=10,bottom=17;
+  const min=Math.min(...values),max=Math.max(...values),span=Math.max(.001,max-min);
+  const points=values.map((value,index)=>`${(left+index*(width-left-right)/Math.max(1,values.length-1)).toFixed(1)},${(height-bottom-(value-min)/span*(height-top-bottom)).toFixed(1)}`);
+  node.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${label}"><title>${label}</title><line x1="${left}" x2="${width-right}" y1="${height-bottom}" y2="${height-bottom}" stroke="#dce3ec"/><polyline fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" points="${points.join(" ")}"/>${points.map((point,index)=>{const [x,y]=point.split(",");return `<circle cx="${x}" cy="${y}" r="${index===points.length-1?4:2.4}" fill="#2563eb"/>`;}).join("")}<text x="${left}" y="82" font-size="9" fill="#64748b">Oct</text><text x="${width-right}" y="82" text-anchor="end" font-size="9" fill="#64748b">May</text></svg>`;
+}
+function p15RenderTrend(lens){
+  const movement=p15Movement(lens),progress=[0,.04,.1,.2,.36,.55,.76,1];
+  const values=progress.map((ratio,index)=>lens.segments.reduce((sum,name)=>sum+p15Trends[name][index],0)+(movement.adjusted.netNew-movement.base.netNew)/1000*ratio);
+  p15SvgLine(document.querySelector("#e .grid .panel:first-child .spark"),values,`ARR trend, ${lens.scenario}, ${lens.segment}`);
+}
+function p15RenderSegmentBars(lens){
+  const rows=lens.segments.map(name=>{const segmentLens={...lens,segment:name,segments:[name]};return {name,value:p15Metrics(segmentLens).arr};}).sort((a,b)=>b.value-a.value);
+  const node=document.querySelector("#e .grid .panel:nth-child(3) .spark"),width=300,height=86,left=92,max=13;
+  node.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Closing ARR by segment, ${lens.scenario}"><title>Closing ARR by segment, ${lens.scenario}</title>${rows.map((row,index)=>{const y=8+index*25,bw=Math.max(4,row.value/max*185);return `<text x="4" y="${y+12}" font-size="10" fill="#64748b">${row.name}</text><rect x="${left}" y="${y}" width="${bw}" height="15" rx="3" fill="#2563eb"/><text x="${Math.min(270,left+bw+5)}" y="${y+12}" font-size="10" fill="#334155">${p15MoneyM(row.value)}</text>`;}).join("")}</svg>`;
+}
+function p15EnsureVisual(panel,id){
+  let node=document.getElementById(id);
+  if(!node){node=document.createElement("div");node.id=id;node.className="spark metric-visual";panel.querySelector("table")?.before(node);}
+  return node;
+}
+function p15RenderMovement(lens){
+  const m=p15Metrics(lens).movement.adjusted;
+  const rows=[["New ARR",m.newArr],["Expansion ARR",m.expansion],["Contraction ARR",m.contraction],["Churn ARR",m.churn],["Net New ARR",m.netNew]];
+  document.querySelector("#e .grid .panel:nth-child(2) tbody").innerHTML=rows.map((row,index)=>`<tr${index===rows.length-1?' style="font-weight:800"':''}><td>${row[0]}</td><td>${p15MoneyK(row[1])}</td></tr>`).join("");
+}
+function p15RenderPlans(lens){
+  const segmentRatios=Object.fromEntries(p15AllSegments.map(name=>{const segLens={...lens,segment:name,segments:[name]};return [name,p15Metrics(segLens).arr/p15Segments[name].arr];}));
+  const rows=p15Plans.filter(row=>lens.segment==="All Segments"||row.segment===lens.segment);
+  document.querySelector("#e .bottom tbody").innerHTML=rows.map(row=>`<tr><td>${row.plan}</td><td>${row.segment}</td><td>${p15MoneyM(row.arr*segmentRatios[row.segment])}</td><td>${Math.max(1,Math.round(row.active*lens.driver.active))}</td></tr>`).join("");
+}
+function p15RenewalRows(lens){
+  return p15Renewals.filter(row=>lens.segment==="All Segments"||row.segment===lens.segment).map(row=>{
+    const signal=Math.max(20,Math.min(99,row.signal+lens.driver.signal));
+    const risk=signal>=60?"Healthy":signal>=45?"Watch":"At risk";
+    const action=risk==="Healthy"?(signal>=80?"CSM expansion plan":"Monitor"):risk==="Watch"?"Exec sponsor review":"90-day save plan";
+    const arr=row.arr*(lens.scenario==="Upside"?1.03:lens.scenario==="Downside"?.96:1);
+    return {...row,signal,risk,action,arr,exposure:arr*(100-signal)/100};
+  }).sort((a,b)=>b.exposure-a.exposure);
+}
+function p15RenderRenewals(lens){
+  const rows=p15RenewalRows(lens),panel=document.querySelector("#r .panel"),node=p15EnsureVisual(panel,"renewalRiskChart"),width=720,height=94,left=156,max=Math.max(250,...rows.map(row=>row.exposure));
+  node.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Renewal ARR at risk, ${lens.scenario}, ${lens.segment}"><title>Renewal ARR at risk</title>${rows.slice(0,4).map((row,index)=>{const y=7+index*21,bw=Math.max(4,row.exposure/max*470);return `<text x="4" y="${y+11}" font-size="10" fill="#64748b">${row.account}</text><rect x="${left}" y="${y}" width="${bw}" height="13" rx="3" fill="${row.risk==='At risk'?'#dc2626':row.risk==='Watch'?'#d97706':'#2563eb'}"/><text x="${Math.min(680,left+bw+6)}" y="${y+11}" font-size="10" fill="#334155">${p15MoneyK(row.exposure)}</text>`;}).join("")}</svg>`;
+  document.querySelector("#r tbody").innerHTML=rows.slice(0,6).map(row=>`<tr><td>${row.account}</td><td>${row.risk}</td><td>${row.signal}</td><td>${row.action}</td><td>${p15MoneyK(row.arr)}</td></tr>`).join("");
+}
+function p15RenderForecast(lens){
+  const rows=p15Forecast(lens),panel=document.querySelector("#f .panel"),node=p15EnsureVisual(panel,"forecastDisciplineChart"),width=720,height=108,left=38,right=18,base=92;
+  const points=rows.map((row,index)=>`${(left+index*(width-left-right)/Math.max(1,rows.length-1)).toFixed(1)},${(12+(100-row.accuracy)*8).toFixed(1)}`);
+  node.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Forecast accuracy and net burn, ${lens.scenario}, ${lens.segment}"><title>Forecast accuracy and net burn</title><line x1="${left}" x2="${width-right}" y1="${base}" y2="${base}" stroke="#dce3ec"/>${rows.map((row,index)=>{const x=left+index*(width-left-right)/Math.max(1,rows.length-1)-15,h=Math.min(34,row.burn/120*34);return `<rect x="${x}" y="${base-h}" width="30" height="${h}" rx="2" fill="#bfdbfe"><title>${row.month}: ${p15MoneyK(row.burn)} net burn</title></rect>`;}).join("")}<polyline fill="none" stroke="#2563eb" stroke-width="3" points="${points.join(" ")}"/>${points.map(point=>{const [x,y]=point.split(",");return `<circle cx="${x}" cy="${y}" r="3" fill="#2563eb"/>`;}).join("")}${rows.map((row,index)=>`<text x="${left+index*(width-left-right)/Math.max(1,rows.length-1)}" y="104" text-anchor="middle" font-size="9" fill="#64748b">${row.month.slice(0,3)}</text>`).join("")}</svg>`;
+  document.querySelector("#f tbody").innerHTML=rows.map(row=>`<tr><td>${row.month}</td><td>${p15Pct(row.accuracy)}</td><td>${p15MoneyK(row.burn)}</td><td>${p15MoneyM(row.cash)}</td></tr>`).join("");
+}
+function p15SetCards(page,values){
+  document.querySelectorAll(`#${page} .card b`).forEach((node,index)=>{if(values[index]!==undefined)node.textContent=values[index];});
+}
+function p15Render(){
+  document.querySelectorAll("main .tab").forEach((section)=>section.classList.toggle("active",section.id===p15Page));
+  document.querySelectorAll("aside button[data-tab]").forEach((button)=>button.classList.toggle("active",button.dataset.tab===p15Page));
+  const lens=p15Lens(),metrics=p15Metrics(lens),forecast=p15Forecast(lens);
+  p15SetCards("e",[p15MoneyM(metrics.arr),p15MoneyK(metrics.movement.adjusted.netNew),p15Pct(metrics.nrr),p15Pct(metrics.rule40)]);
+  p15SetCards("r",[p15Pct(metrics.nrr),p15Pct(metrics.grr),p15MoneyK(metrics.movement.adjusted.expansion),p15Pct(metrics.logoChurn)]);
+  p15SetCards("f",[metrics.payback.toFixed(1),metrics.ltvCac.toFixed(1)+"x",metrics.burnMultiple.toFixed(1)+"x",p15Pct(forecast.at(-1).accuracy)]);
+  document.querySelectorAll("#"+p15Page+" .card").forEach((card,index)=>{
+    let note=card.querySelector("small");
+    if(!note){ note=document.createElement("small"); card.appendChild(note); }
+    note.textContent=p15Context[p15Page][index] || "Selected lens";
+  });
+  document.querySelectorAll("#"+p15Page+" .panel").forEach((panel,index)=>{
+    let note=panel.querySelector(".panel-note");
+    if(!note){ note=document.createElement("p"); note.className="panel-note"; panel.querySelector("h3")?.insertAdjacentElement("afterend",note); }
+    note.textContent=p15PanelNotes[p15Page][index] || "";
+  });
+  document.getElementById("lensText").textContent=document.getElementById("scenarioFilter").value+" | "+document.getElementById("segmentFilter").value;
+  p15RenderTrend(lens);p15RenderMovement(lens);p15RenderSegmentBars(lens);p15RenderPlans(lens);p15RenderRenewals(lens);p15RenderForecast(lens);
+  const chips=document.querySelectorAll(".chips span"); if(chips[0])chips[0].textContent="ARR "+p15MoneyM(metrics.arr); if(chips[1])chips[1].textContent="NRR "+p15Pct(metrics.nrr); if(chips[2])chips[2].textContent="Forecast "+p15Pct(forecast.at(-1).accuracy);
+}
+document.querySelectorAll("aside button[data-tab]").forEach((button)=>button.addEventListener("click",()=>{p15Page=button.dataset.tab;p15Render();}));
+document.getElementById("scenarioFilter").addEventListener("change",p15Render);
+document.getElementById("segmentFilter").addEventListener("change",p15Render);
+p15Render();
+</script><script>
+(() => {
+  const projectNumber = "15";
+  const layoutSource = "project-15-own-dashboard";
+  const selects = Array.from(document.querySelectorAll("select"));
+  let defaults = {};
+  const publicState = {};
+  const normalizedValue = (select) => select.value || select.options[select.selectedIndex]?.textContent.trim() || "All";
+  const captureDefaults = () => { defaults = Object.fromEntries(selects.map((select) => [select.id, select.value])); };
+  const activePage = () => {
+    const button = document.querySelector("button[data-page].active, button[data-tab].active");
+    return button ? (button.dataset.page || button.dataset.tab) : "overview";
+  };
+  const sync = () => {
+    Object.keys(publicState).forEach((key) => delete publicState[key]);
+    publicState.projectNumber = projectNumber;
+    publicState.layoutSource = layoutSource;
+    publicState.page = activePage();
+    selects.forEach((select) => { publicState[select.id] = normalizedValue(select); });
+    return publicState;
+  };
+  const pageButtons = () => Array.from(document.querySelectorAll("button[data-page], button[data-tab]")).filter((button, index, all) => all.findIndex((item) => (item.dataset.page || item.dataset.tab) === (button.dataset.page || button.dataset.tab)) === index);
+  const reset = document.createElement("button");
+  reset.id = "previewReset";
+  reset.type = "button";
+  reset.textContent = "Reset Lens";
+  reset.className = "preview-reset";
+  const resetHosts = {
+    "13": "header nav",
+    "14": ".tabs",
+    "15": "aside",
+    "16": ".tabs",
+    "17": ".page-nav",
+    "18": ".page-nav",
+    "19": ".tabs",
+  };
+  const resetHost = document.querySelector(resetHosts[projectNumber] || ".filters, .filter-bar, .slicers, .rail, aside");
+  if (resetHost) resetHost.appendChild(reset);
+  const setPage = (page) => {
+    const button = pageButtons().find((item) => (item.dataset.page || item.dataset.tab) === page);
+    if (!button) return false;
+    button.click();
+    sync();
+    return true;
+  };
+  const setFilter = (id, value) => {
+    const aliases = { year: "yearFilter", scenario: "scenarioFilter", region: "regionFilter", entity: "entityFilter", period: "periodFilter", scope: "scopeFilter", business: "businessFilter", plant: "filter-plant", productLine: "filter-product-line", workspace: "filter-workspace", domain: "filter-domain" };
+    const select = document.getElementById(id) || document.getElementById(aliases[id]);
+    if (!select) return false;
+    const option = Array.from(select.options).find((item) => (item.value || item.textContent.trim() || "All") === String(value));
+    if (!option) return false;
+    select.value = option.value;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    sync();
+    return true;
+  };
+  const resetFilters = () => {
+    selects.forEach((select) => {
+      const requested = defaults[select.id];
+      const hasRequested = Array.from(select.options).some((option) => option.value === requested);
+      select.value = hasRequested ? requested : (select.options[0]?.value || "");
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    const first = pageButtons()[0];
+    if (first) first.click();
+    sync();
+    return getSummary();
+  };
+  const getRows = () => Array.from(document.querySelectorAll(".page.active table tbody tr, .dashboard-page.active table tbody tr, .tab.active table tbody tr, main > section:not([hidden]) table tbody tr"))
+    .filter((row) => row.offsetParent !== null)
+    .map((row) => Array.from(row.cells).map((cell) => cell.textContent.trim()));
+  const getSummary = () => ({
+    projectNumber,
+    layoutSource,
+    page: activePage(),
+    filters: Object.fromEntries(selects.map((select) => [select.id, normalizedValue(select)])),
+    kpis: Array.from(document.querySelectorAll(".kpi, .kpi-card, .card")).filter((node) => node.offsetParent !== null).slice(0, 8).map((node) => node.textContent.replace(/\s+/g, " ").trim()),
+    visibleRows: getRows().length,
+  });
+  const chartFingerprint = () => {
+    const visible = (node) => {
+      const style = getComputedStyle(node);
+      const rect = node.getBoundingClientRect();
+      return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+    };
+    const page = activePage();
+    const roots = Array.from(document.querySelectorAll(".page.active,.dashboard-page.active,section.tab.active,[role='tabpanel'][aria-hidden='false']"));
+    const root = roots.find(visible) || document.getElementById("page-" + page) || document.getElementById(page) || document.querySelector("main") || document.body;
+    const attrs = ["d","points","x","y","width","height","cx","cy","r","x1","x2","y1","y2","transform","viewBox"];
+    const geometry = Array.from(root.querySelectorAll("svg")).filter(visible).filter((svg) => !svg.closest(".kpi,.kpi-card,.card:not(.panel)")).map((svg) => [
+      svg.id || svg.getAttribute("aria-label") || "svg",
+      svg.getAttribute("viewBox") || "",
+      ...Array.from(svg.querySelectorAll("path,polyline,polygon,rect,circle,line,ellipse")).map((shape) =>
+        shape.tagName + ":" + attrs.map((name) => shape.getAttribute(name) || "").join(",") + ":" + (shape.getAttribute("style") || "")
+      )
+    ]);
+    const bars = Array.from(root.querySelectorAll(".bar-fill,.mini-bar,.bar,.bar-segment,[class*='heat-cell']")).filter(visible).map((node) => {
+      const rect = node.getBoundingClientRect();
+      return [String(node.className), node.getAttribute("style") || "", Math.round(rect.width * 10) / 10, Math.round(rect.height * 10) / 10];
+    });
+    const rows = Array.from(root.querySelectorAll("table tbody tr")).filter(visible).map((row) => Array.from(row.cells).map((cell) => cell.textContent.replace(/\s+/g, " ").trim()));
+    const raw = JSON.stringify({ geometry, bars, rows });
+    let hash = 2166136261;
+    for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
+    return (hash >>> 0).toString(16).padStart(8, "0");
+  };
++  reset.addEventListener("click", resetFilters);
+  document.addEventListener("change", sync);
+  document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
+  window.previewState = publicState;
+  window.previewActions = { setPage, setFilter, resetFilters, getSummary, getRows };
+  const publicQa = {
+    ready: true,
+    projectNumber,
+    layoutSource,
+    getState: () => ({ ...sync() }),
+    getSummary,
+    geometry: () => ({
+      bodyOverflowX: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      bodyOverflowY: Math.max(0, document.documentElement.scrollHeight - document.documentElement.clientHeight),
+      shellHeight: Math.round(document.querySelector(".dashboard-shell")?.getBoundingClientRect().height || 0),
+    }),
+  };
+  Object.defineProperty(publicQa, "pages", { enumerable: true, get: () => pageButtons().map((button) => ({ id: button.dataset.page || button.dataset.tab, label: button.textContent.trim() })) });
+  Object.defineProperty(publicQa, "filters", { enumerable: true, get: () => selects.map((select) => ({ id: select.id, options: Array.from(select.options).map((option) => option.value || option.textContent.trim() || "All") })) });
+  Object.defineProperty(publicQa, "chartFingerprint", { enumerable: true, get: chartFingerprint });
+  const nativeQa = window.__dashboardQa;
+  Object.defineProperty(window, "__dashboardQa", {
+    configurable: true,
+    get: () => publicQa,
+    set: (value) => { publicQa.native = value; },
+  });
+  if (nativeQa) publicQa.native = nativeQa;
+  const initializePublicApi = () => {
+    selects.forEach((select) => { if (select.selectedIndex < 0 && select.options.length) select.value = select.options[0].value; });
+    captureDefaults();
+    sync();
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializePublicApi);
+  else initializePublicApi();
+  window.addEventListener("load", initializePublicApi, { once: true });
+  if (projectNumber === "13") {
+    const sourceNode = document.getElementById("sources");
+    if (sourceNode) {
+      const clearEmptyReferences = () => { if (sourceNode.textContent.trim()) sourceNode.replaceChildren(); };
+      new MutationObserver(clearEmptyReferences).observe(sourceNode, { childList: true, subtree: true, characterData: true });
+      requestAnimationFrame(clearEmptyReferences);
+    }
+  }
+  sync();
+})();
+</script><style id="decision-accessibility-style">button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #60a5fa!important;outline-offset:2px!important}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style><script id="decision-accessibility">
+(() => {
+  const labels = {scenarioFilter:"Scenario",segmentFilter:"Customer segment"};
+  const panelFor = key => document.getElementById(key) || document.getElementById(`page-${key}`) || document.getElementById(`${key}Page`) || document.querySelector(`.page[data-page="${key}"],.dashboard-page[data-page="${key}"]`);
+  const enhance = () => {
+    document.querySelectorAll("select").forEach(select => select.setAttribute("aria-label", labels[select.id] || "Dashboard filter"));
+    const buttons = Array.from(document.querySelectorAll("button[data-page],button[data-tab]"));
+    buttons.forEach((button, index) => { const key = button.dataset.page || button.dataset.tab; const active = button.classList.contains("active"); const panel = panelFor(key); button.id ||= `p15-view-${key}-${index + 1}`; button.setAttribute("role", "tab"); button.setAttribute("aria-selected", String(active)); button.setAttribute("aria-pressed", String(active)); if (panel) { panel.id ||= `p15-panel-${key}`; panel.setAttribute("role", "tabpanel"); panel.setAttribute("aria-hidden", String(!active)); panel.setAttribute("aria-labelledby", button.id); button.setAttribute("aria-controls", panel.id); } });
+    const reset = document.getElementById("previewReset"); if (reset) reset.setAttribute("aria-label", "Reset all dashboard filters and return to the first view");
+    document.querySelectorAll(".kpi-card svg,.kpi svg").forEach(svg => svg.setAttribute("aria-hidden", "true"));
+    document.querySelectorAll("svg:not([aria-hidden='true'])").forEach(svg => { const host = svg.closest(".panel,.chart-card,.section-card,.table-card"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", host?.querySelector("h2,h3")?.textContent.trim() || "Dashboard chart"); });
+    document.querySelectorAll("table:not(:has(caption))").forEach(table => { const caption = document.createElement("caption"); caption.className = "sr-only"; caption.textContent = `${table.closest(".panel,.chart-card,.section-card,.table-card")?.querySelector("h2,h3")?.textContent.trim() || "Dashboard detail"} table`; table.prepend(caption); });
+  };
+  document.addEventListener("keydown", event => { const button = event.target.closest("button[data-page],button[data-tab]"); if (!button || !["ArrowLeft","ArrowRight"].includes(event.key)) return; const buttons = Array.from(document.querySelectorAll("button[data-page],button[data-tab]")); const step = event.key === "ArrowRight" ? 1 : -1; const next = buttons[(buttons.indexOf(button) + step + buttons.length) % buttons.length]; event.preventDefault(); next.focus(); next.click(); });
+  const queue = () => requestAnimationFrame(enhance); document.addEventListener("click", queue); document.addEventListener("change", queue); new MutationObserver(queue).observe(document.querySelector(".dashboard-shell") || document.body, {childList:true,subtree:true}); enhance();
+})();
+</script></div></div></body></html>

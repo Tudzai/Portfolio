@@ -176,7 +176,7 @@ test("keeps the board CFO preview as a self-contained interactive dashboard", as
     fs.readFile(path.join(routeRoot, "board-pack-page.css"), "utf8"),
   ]);
 
-  assert.match(indexHtml, /board-pack-page\.css\?v=board-borderless-20260817/);
+  assert.match(indexHtml, /board-pack-page\.css\?v=standard-20260818-polish2/);
   assert.match(indexHtml, /<main\b[^>]*id=["']main-content["'][^>]*class=["']board-case["']/i);
   assert.equal((indexHtml.match(/\bid=["']main-content["']/gi) || []).length, 1);
   assert.match(indexHtml, /id=["']interactive-preview["']/);

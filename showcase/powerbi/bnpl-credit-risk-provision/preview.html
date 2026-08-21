@@ -1,39 +1,115 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta name="robots" content="noindex, follow" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>BNPL Credit Risk Provision Interactive Preview | Truong Dinh Anh Tu</title>
-    <link rel="canonical" href="index.html" />
-    <link rel="icon" href="../../../assets/favicon.svg" />
-    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
-    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-  <body class="powerbi-standard-preview" data-project-no="09">
-    <div class="preview-frame">
-      <div class="dashboard-shell">
-        <div class="dashboard" role="application" aria-label="BNPL Credit Risk Provision interactive dashboard">
-          <aside class="sidebar">
-            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Credit risk</small></span></div>
-            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
-            <div class="lens-group">
-              <h2 class="lens-title">Global Lens</h2>
-              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
-              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
-            </div>
-            <div class="lens-group">
-              <h2 class="lens-title">Operating Scope</h2>
-              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
-              <label><span class="filter-label">Delinquency Bucket</span><span class="select-wrap"><select id="regionFilter" aria-label="Delinquency Bucket filter"></select></span></label>
-            </div>
-            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
-          </aside>
-          <main class="dashboard-content" id="content"></main>
-        </div>
-      </div>
+<head>
+  <meta name="robots" content="noindex, follow">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="index.html">
+  <link rel="icon" href="../../../assets/favicon.svg">
+  <title>BNPL Credit Risk Command Center</title>
+  <style>
+    :root{--navy:#10223f;--ink:#172033;--muted:#687385;--bg:#f5f7fb;--panel:#fff;--border:#d8dee9;--red:#b42318;--amber:#d99b35;--blue:#4f6db8;--purple:#745cc7;--teal:#2b8f85;--shadow:0 10px 22px rgba(16,34,63,.08)}
+    *{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}button,select{font:inherit}button:focus-visible,select:focus-visible,[role="button"]:focus-visible{outline:3px solid #69b7b1;outline-offset:2px}.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.canvas{padding:26px 28px 38px;min-height:100vh}
+    .command{display:grid;grid-template-columns:minmax(300px,1.25fr) auto minmax(390px,.9fr);gap:16px;align-items:center;background:#eef3fa;border:1px solid var(--border);border-left:4px solid #69b7b1;padding:16px 18px;box-shadow:var(--shadow)}
+    h1{margin:0;font-size:26px}.sub{margin-top:6px;color:var(--muted);font-size:12px}.nav{display:flex;gap:8px}.nav button{border:1px solid var(--border);background:#fff;color:var(--ink);padding:10px 15px;border-radius:7px;font-weight:700;cursor:pointer}.nav button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .filters{display:grid;grid-template-columns:minmax(106px,1.15fr) repeat(3,minmax(86px,1fr));gap:8px}.field{display:grid;gap:4px}.field>span{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.04em}.field select{min-width:0;border:1px solid var(--border);border-radius:6px;background:#fff;height:36px;padding:0 8px}.reset{grid-column:span 4;height:34px;border:1px solid var(--navy);border-radius:6px;background:#fff;color:var(--navy);font-weight:800;cursor:pointer}
+    .lens{margin:12px 0 16px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:13px 18px;box-shadow:var(--shadow);font-weight:700}.lens span{color:var(--muted);font-weight:500}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.kpi{position:relative;background:#fff;border:1px solid var(--border);border-radius:8px;min-height:122px;padding:15px;box-shadow:var(--shadow);overflow:hidden}.kpi:before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--accent)}.kpi label{color:var(--muted);font-size:12px}.kpi strong{display:block;margin:14px 0 6px;font-size:27px;color:var(--accent)}.kpi small{color:var(--muted)}
+    .page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}.grid.equal{grid-template-columns:1fr 1fr}.panel{background:#fff;border:1px solid var(--border);border-radius:8px;padding:15px;box-shadow:var(--shadow);min-width:0}.panel h2{margin:0;font-size:15px}.caption{margin:4px 0 10px;color:var(--muted);font-size:12px}.chart{min-height:220px}.chart svg{display:block;width:100%;height:auto;max-height:250px}.axis{stroke:#cfd7e4}.tick{font-size:10px;fill:#687385}.table-wrap{overflow:auto;max-height:280px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px 8px;border-bottom:1px solid #e8edf4;text-align:left;white-space:nowrap}th{font-size:10px;text-transform:uppercase;color:var(--muted);background:#f3f6fa}.risk-row{cursor:pointer}.risk-row:hover{background:#eef3fa}.heat{display:grid;grid-template-columns:110px repeat(6,1fr);gap:4px;align-items:center}.heat span{min-height:34px;border-radius:4px;display:grid;place-items:center;font-size:10px}.heat .head{background:transparent;color:var(--muted)}.heat .cell{color:#fff}.matrix{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}.matrix span{padding:10px 4px;text-align:center;border-radius:4px;background:#edf1f7;font-size:11px}.matrix .hot{background:#f7d3cc;color:#8f2519}.matrix .warm{background:#f7e6bd;color:#7d5913}
+    @media(max-width:1050px){.command{grid-template-columns:1fr}.filters{grid-template-columns:repeat(4,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.canvas{padding:14px}.nav{display:grid;grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.reset{grid-column:span 2}.grid,.grid.equal{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+  </style>
+  <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+</head>
+<body data-project-number="09" data-layout-source="project-09-own-dashboard">
+<div class="preview-frame"><div class="dashboard-shell"><div class="canvas" role="application" aria-label="BNPL Credit Risk Command Center">
+  <header class="command">
+    <div><h1>BNPL Credit Risk Command Center</h1><div class="sub">Credit risk overview · deterministic synthetic portfolio through May 2026</div></div>
+    <nav class="nav" id="pageNav" role="tablist" aria-label="BNPL risk dashboard pages">
+      <button id="tab-overview" class="active" data-page="overview" role="tab" aria-controls="overview" aria-selected="true" aria-label="Credit Risk Overview">Overview</button><button id="tab-vintage" data-page="vintage" role="tab" aria-controls="vintage" aria-selected="false" aria-label="Delinquency and Vintage Analysis">Vintage</button><button id="tab-collections" data-page="collections" role="tab" aria-controls="collections" aria-selected="false" aria-label="Collections and Provision Forecast">Provision</button>
+    </nav>
+    <div class="filters">
+      <label class="field"><span>Month</span><select id="monthFilter"><option>May 2026</option><option>Apr 2026</option><option>Mar 2026</option></select></label>
+      <label class="field"><span>Product</span><select id="productFilter"><option>All</option><option>Pay-in-4</option><option>Pay Monthly</option></select></label>
+      <label class="field"><span>Risk</span><select id="riskFilter"><option>All</option><option>A Prime</option><option>B Near Prime</option><option>C Mid</option><option>D Subprime</option><option>E Deep Subprime</option></select></label>
+      <label class="field"><span>Scenario</span><select id="scenarioFilter"><option>Base</option><option>Risk tightening</option><option>Stress</option></select></label>
+      <button class="reset" id="resetFilters" type="button">Reset lens</button>
     </div>
-    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"bnpl-credit-risk-provision","route":"bnpl-credit-risk-provision/","no":"09","folder":"Project 09 - BNPL Credit Risk Provision","title":"BNPL Credit Risk Provision","lens":"Credit risk","summary":"Credit-risk provision dashboard for loan book trend, delinquency, collections SLA, and provision pressure.","decisionQuestion":"Where is credit quality deteriorating, and how should collections and provision assumptions change?","pages":[{"id":"credit-risk-overview","label":"Credit Risk Overview"},{"id":"vintage-migration","label":"Vintage & Migration"},{"id":"collections-provision","label":"Collections & Provision"}],"metrics":[{"value":"$41.6M","label":"loan book","note":"Synthetic preview value.","format":"currency","higherIsBetter":null,"plan":41600000,"prior":41600000,"series":[41600000,41600000,41600000,41600000,41600000,41600000,41600000,41600000,41600000,41600000,41600000,41600000],"sensitivity":0},{"value":"6.7%","label":"30+ DPD","note":"Synthetic preview value.","format":"percent","higherIsBetter":false,"plan":6.8340000000000005,"prior":7.303000000000001,"series":[7.303000000000001,7.248181818181819,7.193363636363637,7.138545454545455,7.083727272727273,7.028909090909091,6.97409090909091,6.919272727272728,6.864454545454546,6.809636363636364,6.754818181818182,6.7],"sensitivity":1},{"value":"2.9%","label":"loss rate","note":"Synthetic preview value.","format":"percent","higherIsBetter":false,"plan":2.9579999999999997,"prior":3.161,"series":[3.161,3.137272727272727,3.1135454545454544,3.089818181818182,3.066090909090909,3.0423636363636364,3.0186363636363636,2.9949090909090907,2.971181818181818,2.9474545454545455,2.9237272727272727,2.9],"sensitivity":1},{"value":"$1.1M","label":"ECL provision gap","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":1122000,"prior":1199000,"series":[1199000,1190000,1181000,1172000,1163000,1154000,1145000,1136000,1127000,1118000,1109000,1100000],"sensitivity":1}],"bars":[{"label":"Current","value":82},{"label":"1-30 DPD","value":54},{"label":"31-60 DPD","value":31},{"label":"60+ DPD","value":18}],"drivers":[{"label":"Vintage mix","value":"-$0.5M","isRisk":true},{"label":"Collections lift","value":"+$0.3M","isRisk":false},{"label":"Merchant cohort","value":"-$0.2M","isRisk":true}],"actions":[{"owner":"Risk","action":"Tighten exposure for weak merchant cohorts."},{"owner":"Collections","action":"Focus accounts before 60+ DPD migration."},{"owner":"Finance","action":"Update provision sensitivity for CFO review."}],"financeLogic":["Expected credit loss equals exposure times probability of default times loss given default.","Roll rates measure balance migration between delinquency buckets.","Provision gap equals modeled expected loss less booked provision."],"scopeLabel":"Credit Portfolio","scopeOptions":["Total Book","Prime","Near-prime","New-to-credit"],"breakdownLabel":"Delinquency Bucket","breakdownOptions":["All Buckets","Current","1-30 DPD","31-60 DPD","60+ DPD"],"regionOptions":["All Buckets","Current","1-30 DPD","31-60 DPD","60+ DPD"],"governance":["Loan balances reconcile to the servicing ledger.","Vintage assignment is fixed at origination month.","Risk assumptions and overlays carry version and approver metadata.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"Total Book","region":"All Buckets"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Credit Portfolio","options":["Total Book","Prime","Near-prime","New-to-credit"],"default":"Total Book"},{"id":"region","label":"Delinquency Bucket","options":["All Buckets","Current","1-30 DPD","31-60 DPD","60+ DPD"],"default":"All Buckets"}],"dataClassification":"Synthetic public-safe preview data"});</script>
-    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
-  </body>
-</html>
+  </header>
+  <div class="lens" id="currentLens" aria-live="polite"></div>
+  <section class="page active" id="overview" role="tabpanel" aria-labelledby="tab-overview"><div class="kpis" id="overviewKpis"></div><div class="grid">
+    <article class="panel"><h2>Loan book and delinquency trend</h2><p class="caption">Monthly receivables, 30+ DPD and expected-loss movement.</p><div class="chart" id="bookTrend"></div></article>
+    <article class="panel"><h2>Exposure by risk band</h2><p class="caption">Click a row to cross-filter the full command center.</p><div class="table-wrap"><table id="riskTable"></table></div></article>
+  </div></section>
+  <section class="page" id="vintage" role="tabpanel" aria-labelledby="tab-vintage"><div class="kpis" id="vintageKpis"></div><div class="grid equal">
+    <article class="panel"><h2>DPD bucket exposure mix</h2><p class="caption">Current balance by delinquency stage.</p><div class="chart" id="dpdBars"></div></article>
+    <article class="panel"><h2>Vintage heatmap</h2><p class="caption">30+ DPD rate by origination cohort and months-on-book.</p><div class="heat" id="vintageHeat" role="img" aria-label="Vintage delinquency heatmap"></div></article>
+    <article class="panel"><h2>Roll-rate matrix</h2><p class="caption">Forward migration between delinquency states.</p><div class="matrix" id="rollMatrix" role="img" aria-label="Delinquency roll-rate matrix"></div></article>
+    <article class="panel"><h2>Vintage action queue</h2><p class="caption">Cohorts requiring underwriting or collections action.</p><div class="table-wrap"><table id="vintageTable"></table></div></article>
+  </div></section>
+  <section class="page" id="collections" role="tabpanel" aria-labelledby="tab-collections"><div class="kpis" id="collectionsKpis"></div><div class="grid equal">
+    <article class="panel"><h2>Recovery and SLA by queue</h2><p class="caption">Collections performance and operational service level.</p><div class="chart" id="recoveryBars"></div></article>
+    <article class="panel"><h2>Provision forecast scenarios</h2><p class="caption">Base, tightening and stress reserve trajectory.</p><div class="chart" id="provisionTrend"></div></article>
+    <article class="panel" style="grid-column:1/-1"><h2>Owner action queue</h2><p class="caption">Finance, Risk and Collections follow-through.</p><div class="table-wrap"><table id="actionTable"></table></div></article>
+  </div></section>
+</div></div></div>
+<script>
+(() => {
+  const state={page:"overview",month:"May 2026",product:"All",risk:"All",scenario:"Base"};
+  const months=["Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr","May"];
+  const baseBook=[1.18,1.22,1.27,1.31,1.36,1.41,1.45,1.48,1.51,1.55,1.58,1.62];
+  const bands=[["A Prime",299100,0.243,743],["B Near Prime",337400,0.229,1600],["C Mid",434700,0.296,4100],["D Subprime",360100,0.251,6300],["E Deep Subprime",160800,0.189,4100]];
+  const baseLoanBook=bands.reduce((a,b)=>a+b[1],0),baseExpectedLoss=bands.reduce((a,b)=>a+b[3],0);
+  const fmtMoney=n=>Math.abs(n)>=1e6?"$"+(n/1e6).toFixed(1)+"M":"$"+(n/1e3).toFixed(1)+"K";
+  const pct=n=>(n*100).toFixed(1)+"%";
+  function exposureFactor(){const m={"May 2026":1,"Apr 2026":.975,"Mar 2026":.95}[state.month]||1;const p=state.product==="Pay-in-4"?.63:state.product==="Pay Monthly"?.37:1;const q=state.scenario==="Risk tightening"?.94:1;return m*p*q}
+  function riskFactor(){return state.scenario==="Risk tightening"?.91:state.scenario==="Stress"?1.18:1}
+  function selectedBands(){return bands.filter(b=>state.risk==="All"||b[0]===state.risk)}
+  function scopedTotals(){const volume=exposureFactor(),risk=riskFactor(),rows=selectedBands();return {loanBook:rows.reduce((a,b)=>a+b[1],0)*volume,expectedLoss:rows.reduce((a,b)=>a+b[3],0)*volume*risk,dpd:rows.reduce((a,b)=>a+b[1]*b[2],0)/Math.max(1,rows.reduce((a,b)=>a+b[1],0))*risk}}
+  function factor(){return exposureFactor()*selectedBands().reduce((a,b)=>a+b[1],0)/baseLoanBook}
+  function riskIndex(){if(state.risk==="All")return bands.reduce((a,b,i)=>a+i*b[1],0)/baseLoanBook;return Math.max(0,bands.findIndex(b=>b[0]===state.risk))}
+  function trendShape(i,kind="book"){
+    const t=i/Math.max(1,baseBook.length-1),period={"Mar 2026":9,"Apr 2026":10,"May 2026":11}[state.month]??11,phase=(period-11)*.6;
+    const product=state.product==="Pay-in-4"?1+.035*Math.sin(i*.85+phase):state.product==="Pay Monthly"?1-.025*Math.sin(i*.72+phase):1;
+    const band=1+(riskIndex()-2)*.018*(t-.45);
+    const scenario=state.scenario==="Risk tightening"?1-(kind==="risk"?.12:.045)*t*t:state.scenario==="Stress"?1+(kind==="risk"?.18:.065)*t*t:1;
+    const periodShape=1+(period-11)*.006*(i-5.5);
+    return product*band*scenario*periodShape;
+  }
+  function dpdDistribution(){
+    const base=[1000000,310000,174000,84000,42000],late=1+(riskIndex()-2)*.10+(state.scenario==="Stress"?.24:state.scenario==="Risk tightening"?-.16:0)+(state.product==="Pay Monthly"?.07:state.product==="Pay-in-4"?-.04:0)+(state.month==="Mar 2026"?.05:state.month==="Apr 2026"?.025:0);
+    const vals=base.map((v,i)=>v*factor()*(i===0?Math.max(.72,2-late):1+(late-1)*(i/4)));
+    const total=vals.reduce((a,v)=>a+v,0)||1,labels=["Current","1-29 DPD","30-59 DPD","60-89 DPD","90+ DPD"];
+    return labels.map((label,i)=>[label,vals[i],pct(vals[i]/total)]);
+  }
+  function cohortRate(i,j){const base=(i+j+3)*.021,band=1+(riskIndex()-2)*.055,product=state.product==="Pay Monthly"?1.07:state.product==="Pay-in-4"?.96:1,period=state.month==="Mar 2026"?1.05:state.month==="Apr 2026"?1.025:1;return Math.max(0,base*riskFactor()*band*product*period*(1+(j-2.5)*.012));}
+  function lineSvg(series,second,label="Portfolio trend"){const w=720,h=220,p=34;const all=second?series.concat(second):series;const min=Math.min(...all),max=Math.max(...all),range=max-min||1;const x=i=>p+i*(w-2*p)/(series.length-1);const y=v=>h-p-(v-min)/range*(h-2*p);const path=a=>a.map((v,i)=>(i?"L":"M")+x(i)+","+y(v)).join(" ");let out='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+label+'"><line class="axis" x1="'+p+'" y1="'+(h-p)+'" x2="'+(w-p)+'" y2="'+(h-p)+'"/><path d="'+path(series)+'" fill="none" stroke="#4f6db8" stroke-width="4"/>';if(second)out+='<path d="'+path(second)+'" fill="none" stroke="#d99b35" stroke-width="3"/>';months.forEach((m,i)=>{if(i%2===0)out+='<text class="tick" x="'+x(i)+'" y="'+(h-9)+'" text-anchor="middle">'+m+'</text>'});return out+"</svg>"}
+  function barSvg(rows,color,label="Portfolio distribution"){const w=560,h=220,p=34,max=Math.max(...rows.map(r=>r[1]),1),step=(h-2*p)/rows.length;let o='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+label+'">';rows.forEach((r,i)=>{const y=p+i*step,bw=r[1]/max*(w-190);o+='<text class="tick" x="4" y="'+(y+12)+'">'+r[0]+'</text><rect x="118" y="'+y+'" width="'+bw+'" height="16" rx="4" fill="'+color+'"/><text class="tick" x="'+(124+bw)+'" y="'+(y+12)+'">'+r[2]+'</text>'});return o+"</svg>"}
+  function card(label,value,note,color){return '<article class="kpi" style="--accent:'+color+'"><label>'+label+'</label><strong>'+value+'</strong><small>'+note+'</small></article>'}
+  function render(){
+    const f=factor(),stress=riskFactor(),totals=scopedTotals(),volume=exposureFactor();
+    document.getElementById("currentLens").innerHTML='<span>'+state.month+' | '+state.product+' | '+state.risk+' | '+state.scenario+'</span> &nbsp; 30+ DPD '+pct(totals.dpd)+' | ECL '+fmtMoney(totals.expectedLoss);
+    document.getElementById("overviewKpis").innerHTML=[card("Loan book",fmtMoney(totals.loanBook),"risk-band balances tie out","var(--blue)"),card("Approval rate",pct(.627*(state.scenario==="Risk tightening"?.96:1)),"underwriting decision rate","var(--purple)"),card("30+ DPD",pct(totals.dpd),"balance-weighted delinquency","var(--amber)"),card("Expected loss",fmtMoney(totals.expectedLoss),"sum of risk-band ECL","var(--red)")].join("");
+    document.getElementById("vintageKpis").innerHTML=[card("30+ DPD",pct(totals.dpd),"balance-weighted rate","var(--amber)"),card("NPL",pct(.032*stress),"90+ DPD","var(--red)"),card("Autopay failures",Math.round(4332*f).toLocaleString(),"collections trigger","var(--purple)"),card("Cure rate",pct(.214/stress),"30+ to current","var(--teal)")].join("");
+    document.getElementById("collectionsKpis").innerHTML=[card("Recovery rate",pct(.213/stress),"cash collected / due","var(--teal)"),card("SLA",pct(.745/(stress*.98)),"contacts within target","var(--blue)"),card("Provision",fmtMoney(18500*f*stress),"booked reserve incl. overlay","var(--red)"),card("Forecast provision",fmtMoney(641000*f*stress),"12-month outlook","var(--amber)")].join("");
+    document.getElementById("bookTrend").innerHTML=lineSvg(baseBook.map((v,i)=>v*f*trendShape(i,"book")),baseBook.map((v,i)=>v*f*(.83+i*.016)*trendShape(i,"risk")),"Loan book and delinquency trend");
+    const shown=selectedBands();document.getElementById("riskTable").innerHTML='<thead><tr><th>Risk band</th><th>Balance</th><th>30+ DPD</th><th>ECL</th></tr></thead><tbody>'+shown.map(b=>'<tr class="risk-row" tabindex="0" role="button" aria-label="Filter dashboard to '+b[0]+'" data-risk="'+b[0]+'"><td>'+b[0]+'</td><td>'+fmtMoney(b[1]*volume)+'</td><td>'+pct(b[2]*stress)+'</td><td>'+fmtMoney(b[3]*volume*stress)+'</td></tr>').join("")+"</tbody>";
+    document.getElementById("dpdBars").innerHTML=barSvg(dpdDistribution(),"#d99b35","DPD bucket exposure mix");
+    const cohorts=["Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26"];let heat='<span class="head">Cohort</span>'+["M1","M2","M3","M4","M5","M6"].map(x=>'<span class="head">'+x+'</span>').join("");cohorts.forEach((c,i)=>{heat+='<span class="head">'+c+'</span>';for(let j=0;j<6;j++){const v=cohortRate(i,j);heat+='<span class="cell" style="background:rgba(180,35,24,'+(0.22+Math.min(.75,v/.32))+')">'+pct(v)+'</span>'}});document.getElementById("vintageHeat").innerHTML=heat;
+    const migration=1+(riskIndex()-2)*.04+(state.scenario==="Stress"?.12:state.scenario==="Risk tightening"?-.10:0)+(state.product==="Pay Monthly"?.04:0)+(state.month==="Mar 2026"?.03:0),roll=[83.4/migration,9.2*migration,3.8*migration,1.4*migration,2.2*migration,36.8/migration,31.5,17.2*migration,7.1*migration,7.4*migration,12.4/migration,18.7/migration,33.1,20.5*migration,15.3*migration];
+    document.getElementById("rollMatrix").innerHTML=["Current","1-29","30-59","60-89","90+","Cured",...roll.flatMap((v,i)=>i%5===4?[v.toFixed(1)+"%","—"]:[v.toFixed(1)+"%"])].slice(0,24).map((x,i)=>'<span class="'+(i>5&&Number.parseFloat(x)>25?"hot":i>5?"warm":"")+'">'+x+'</span>').join("");
+    document.getElementById("vintageTable").innerHTML='<thead><tr><th>Cohort</th><th>Balance</th><th>30+ DPD</th><th>Action</th></tr></thead><tbody>'+cohorts.map((c,i)=>'<tr><td>'+c+'</td><td>'+fmtMoney((180000-i*17000)*f)+'</td><td>'+((16+i*2.1)*stress).toFixed(1)+'%</td><td>'+(i>3?"Tighten score cut":"Monitor")+'</td></tr>').join("")+"</tbody>";
+    const recoveryBase=[74,61,49,68],recovery=recoveryBase.map((v,i)=>{const scenario=state.scenario==="Risk tightening"?1.06-i*.01:state.scenario==="Stress"?.92-i*.012:1,product=state.product==="Pay Monthly"?.97+i*.008:state.product==="Pay-in-4"?1.02-i*.005:1,band=1-(riskIndex()-2)*.018*(i+1),period=state.month==="Mar 2026"?.96:state.month==="Apr 2026"?.98:1,value=Math.max(20,Math.min(96,v*scenario*product*band*period));return [["Early","Mid","Late","Hardship"][i],value,value.toFixed(0)+"% SLA"]});
+    document.getElementById("recoveryBars").innerHTML=barSvg(recovery,"#2b8f85","Recovery and SLA by queue");
+    document.getElementById("provisionTrend").innerHTML=lineSvg(baseBook.map((v,i)=>(36+i*4.5)*f*trendShape(i,"book")),baseBook.map((v,i)=>(42+i*6.2)*f*stress*trendShape(i,"risk")),"Provision forecast scenarios");
+    document.getElementById("actionTable").innerHTML='<thead><tr><th>Owner</th><th>Decision</th><th>Signal</th><th>Due</th></tr></thead><tbody><tr><td>Credit Risk</td><td>Review score cut on Pay Monthly</td><td>'+pct(.251*stress)+' 30+ DPD</td><td>Next policy forum</td></tr><tr><td>Collections</td><td>Rebalance early-stage queue</td><td>'+pct(.745/stress)+' SLA</td><td>48 hours</td></tr><tr><td>Finance</td><td>Book scenario reserve overlay</td><td>'+fmtMoney(18400*f*stress)+'</td><td>Month end</td></tr></tbody>';
+    document.querySelectorAll(".risk-row").forEach(r=>{const activate=()=>setFilter("risk",r.dataset.risk);r.addEventListener("click",activate);r.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate()}})});
+  }
+  function setPage(page){const v=String(page||"").toLowerCase();const b=Array.from(document.querySelectorAll("#pageNav button")).find(x=>x.dataset.page===page||x.textContent.toLowerCase().includes(v));if(!b)return state.page;document.querySelectorAll("#pageNav button").forEach(x=>{const selected=x===b;x.classList.toggle("active",selected);x.setAttribute("aria-selected",String(selected))});document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.page).classList.add("active");state.page=b.dataset.page;render();return state.page}
+  function setFilter(key,value){const ids={month:"monthFilter",product:"productFilter",risk:"riskFilter",scenario:"scenarioFilter"};if(!ids[key])return false;document.getElementById(ids[key]).value=value;state[key]=value;render();return true}
+  function resetFilters(){Object.assign(state,{month:"May 2026",product:"All",risk:"All",scenario:"Base"});Object.entries({month:"monthFilter",product:"productFilter",risk:"riskFilter",scenario:"scenarioFilter"}).forEach(([k,id])=>document.getElementById(id).value=state[k]);render();return {...state}}
+  document.querySelectorAll("#pageNav button").forEach(b=>b.addEventListener("click",()=>setPage(b.dataset.page)));["month","product","risk","scenario"].forEach(k=>document.getElementById(k+"Filter").addEventListener("change",e=>{state[k]=e.target.value;render()}));document.getElementById("resetFilters").addEventListener("click",resetFilters);
+  function chartFingerprint(){const signature=root=>Array.from(root.querySelectorAll("svg path,svg polyline,svg rect,svg circle,svg text,.heat .cell,.matrix span,table tbody tr")).map(el=>[el.tagName,el.getAttribute("d"),el.getAttribute("points"),el.getAttribute("x"),el.getAttribute("y"),el.getAttribute("cx"),el.getAttribute("cy"),el.getAttribute("r"),el.getAttribute("width"),el.getAttribute("height"),el.getAttribute("style"),el.textContent.trim()].join("|")).join("~"),hash=value=>{let h=2166136261;for(let i=0;i<value.length;i++)h=Math.imul(h^value.charCodeAt(i),16777619);return(h>>>0).toString(16)};return Object.fromEntries(Array.from(document.querySelectorAll("[role=tabpanel]")).map(root=>[root.id,hash(signature(root))]));}
+  window.previewState=state;window.previewActions=Object.freeze({setPage,setFilter,resetFilters,getSummary:()=>{const t=scopedTotals();return {project:"09",...state,...t,checks:{balanceTieOut:Math.abs(t.loanBook-selectedBands().reduce((a,b)=>a+b[1]*exposureFactor(),0))<.01,eclTieOut:Math.abs(t.expectedLoss-selectedBands().reduce((a,b)=>a+b[3]*exposureFactor()*riskFactor(),0))<.01}}},getRows:()=>selectedBands().map(b=>({risk:b[0],balance:b[1]*exposureFactor(),dpd:b[2]*riskFactor(),ecl:b[3]*exposureFactor()*riskFactor()})),getChartFingerprint:chartFingerprint});const qa={ready:true,project:"09",layoutSource:"project-09-own-dashboard",pageCount:3,filterCount:4,kpiCount:4,hasReset:true,hasTable:true,baseLoanBook,baseExpectedLoss};Object.defineProperty(qa,"chartFingerprint",{enumerable:true,get:()=>{const active=document.querySelector('[role="tabpanel"].active');return chartFingerprint()[active?.id]||"";}});window.__dashboardQa=qa;render();
+})();
+</script>
+</body></html>

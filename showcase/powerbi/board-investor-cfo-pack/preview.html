@@ -2039,6 +2039,21 @@
       const headerOverlapPx = chipRow && titleRect && packRect
         ? Math.max(0, Math.round(titleRect.right - chipRow.left), Math.round(chipRow.right - packRect.left))
         : 0;
+      const chartFingerprint = Array.from(content.querySelectorAll("svg path,svg polyline,svg polygon,svg rect,svg circle,.bar-fill"))
+        .map((node) => [
+          node.tagName,
+          node.getAttribute("d") || "",
+          node.getAttribute("points") || "",
+          node.getAttribute("x") || "",
+          node.getAttribute("y") || "",
+          node.getAttribute("width") || "",
+          node.getAttribute("height") || "",
+          node.getAttribute("cx") || "",
+          node.getAttribute("cy") || "",
+          node.getAttribute("r") || "",
+          node.getAttribute("style") || ""
+        ].join(":"))
+        .join("|");
 
       window.__dashboardQa = {
         project: 20,
@@ -2047,6 +2062,7 @@
         pages: pageOrder.length,
         navigationButtons: document.querySelectorAll(".nav button").length,
         filterControls: document.querySelectorAll("select").length,
+        chartFingerprint,
         kpiCards: document.querySelectorAll(".kpi-card").length,
         panels: document.querySelectorAll(".panel").length,
         tables: document.querySelectorAll("table").length,
