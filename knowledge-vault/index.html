@@ -16,9 +16,9 @@
     />
     <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260820-uniform-review" />
-    <script src="vault-data.js?v=20260820-uniform-review" defer></script>
-    <script src="vault.js?v=20260820-uniform-review" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260821-vault-polish7" />
+    <script src="vault-data.js?v=20260821-vault-polish7" defer></script>
+    <script src="vault.js?v=20260821-vault-polish7" defer></script>
   </head>
   <body class="is-locked">
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -40,36 +40,20 @@
     <main id="main-content">
       <section class="unlock-view" data-unlock-view aria-labelledby="unlock-title">
         <div class="unlock-intro">
-          <p class="eyebrow"><span aria-hidden="true"></span> Private knowledge vault</p>
-          <h1 id="unlock-title">Learn one clear idea at a time.</h1>
-          <p class="unlock-intro__lede">
-            Choose a subject, begin with the basics, and follow a calm path toward deeper understanding.
-          </p>
+          <p class="eyebrow"><span aria-hidden="true"></span> Beyond the threshold</p>
+          <h1 id="unlock-title">A quiet world of ideas waits inside.</h1>
+          <p class="unlock-intro__lede">Open one door. Follow your curiosity.</p>
 
-          <div class="unlock-pillars" aria-label="Library principles">
-            <article>
-              <span>01</span>
-              <h2>Clear</h2>
-              <p>Short explanations begin with what a new learner needs.</p>
-            </article>
-            <article>
-              <span>02</span>
-              <h2>Verified</h2>
-              <p>Every learning path keeps its sources close at hand.</p>
-            </article>
-            <article>
-              <span>03</span>
-              <h2>Private</h2>
-              <p>Your password and decrypted reading stay on this device.</p>
-            </article>
+          <div class="unlock-constellation" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
           </div>
         </div>
 
         <div class="unlock-card" data-unlock-card>
           <div class="unlock-card__icon" aria-hidden="true"><span></span></div>
           <p class="unlock-card__kicker">The threshold</p>
-          <h2>Enter the vault</h2>
-          <p class="unlock-card__copy">Use your library password. Decryption happens only in this browser.</p>
+          <h2>Enter quietly</h2>
+          <p class="unlock-card__copy">The library opens locally in this browser.</p>
 
           <form class="unlock-form" data-unlock-form novalidate>
             <input type="text" name="username" value="vault-owner" autocomplete="username" hidden />
@@ -95,7 +79,7 @@
             <p id="vault-unlock-status" class="unlock-status" data-unlock-status aria-live="polite"></p>
           </form>
 
-          <p class="local-note"><span aria-hidden="true">●</span> No analytics. No background requests. No decrypted content stored.</p>
+          <p class="local-note"><span aria-hidden="true">●</span> Local. Encrypted. Yours.</p>
         </div>
       </section>
 
@@ -221,15 +205,26 @@
                     <strong>Surprise me</strong>
                     <small>Open an unread idea</small>
                   </button>
+                  <button type="button" class="tool-card" data-daily-button>
+                    <span aria-hidden="true">☼</span>
+                    <strong>Daily spark</strong>
+                    <small>One idea chosen for today</small>
+                  </button>
                   <button type="button" class="tool-card" data-bookmarks-button>
                     <span aria-hidden="true">◇</span>
                     <strong>Saved lessons</strong>
                     <small data-bookmarks-meta>0 saved</small>
                   </button>
-                  <button type="button" class="tool-card" data-reading-mode-button aria-pressed="false">
+                  <button
+                    type="button"
+                    class="tool-card"
+                    data-reading-mode-button
+                    aria-label="Essential reading view"
+                    aria-pressed="false"
+                  >
                     <span aria-hidden="true">≋</span>
-                    <strong data-reading-mode-label>Essential view</strong>
-                    <small data-reading-mode-meta>Show the clearest sections</small>
+                    <strong data-reading-mode-label>Reading view</strong>
+                    <small data-reading-mode-meta>Full lesson · Show essentials</small>
                   </button>
                   <button type="button" class="tool-card" data-text-size-button aria-label="Reading size: Comfortable. Activate to change.">
                     <span aria-hidden="true">Aa</span>
@@ -241,10 +236,27 @@
                     <strong>Theme</strong>
                     <small data-theme-tool-meta>Midnight active</small>
                   </button>
-                  <button type="button" class="tool-card" data-focus-button aria-pressed="false">
+                  <button
+                    type="button"
+                    class="tool-card"
+                    data-focus-button
+                    aria-label="Focus mode"
+                    aria-pressed="false"
+                  >
                     <span aria-hidden="true">◌</span>
                     <strong data-focus-label>Focus mode</strong>
-                    <small>Quiet the navigation</small>
+                    <small data-focus-meta>Off · Quiet the navigation</small>
+                  </button>
+                  <button
+                    type="button"
+                    class="tool-card"
+                    data-focus-timer-button
+                    aria-label="15-minute focus timer"
+                    aria-pressed="false"
+                  >
+                    <span aria-hidden="true">◷</span>
+                    <strong data-focus-timer-label>Focus timer</strong>
+                    <small data-focus-timer-meta>Stopped · Start 15 minutes</small>
                   </button>
                 </div>
                 <button type="button" class="shortcuts-link" data-shortcuts-button>
@@ -256,6 +268,13 @@
             <div class="reading-progress" aria-hidden="true">
               <progress data-reading-progress max="100" value="0"></progress>
             </div>
+
+            <div class="focus-timer-chip" data-focus-timer-chip hidden role="group" aria-label="Focus timer active">
+              <span class="focus-timer-chip__icon" aria-hidden="true">◷</span>
+              <span class="focus-timer-chip__time" data-focus-timer-countdown aria-hidden="true"></span>
+              <button type="button" data-focus-timer-stop aria-label="Stop focus timer">Stop</button>
+            </div>
+            <output class="sr-only" data-focus-timer-live aria-live="polite" aria-atomic="true"></output>
 
             <div class="reader-wrap">
               <article class="lesson-reader" data-lesson-reader></article>
@@ -285,30 +304,10 @@
         <p id="theme-description" class="theme-dialog__intro">
           Choose a reading atmosphere. Your choice stays on this device and never leaves the vault.
         </p>
-        <div class="theme-grid" role="radiogroup" aria-label="Vault theme" data-theme-options>
-          <button type="button" class="theme-option" role="radio" aria-checked="true" data-theme-option="midnight">
-            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="theme-option__copy"><strong>Midnight</strong><small>Ink, lavender, quiet stars</small></span>
-            <span class="theme-option__check" aria-hidden="true">✓</span>
-          </button>
-          <button type="button" class="theme-option" role="radio" aria-checked="false" tabindex="-1" data-theme-option="pearl">
-            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="theme-option__copy"><strong>Pearl</strong><small>Soft paper, daylight, clarity</small></span>
-            <span class="theme-option__check" aria-hidden="true">✓</span>
-          </button>
-          <button type="button" class="theme-option" role="radio" aria-checked="false" tabindex="-1" data-theme-option="nebula">
-            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="theme-option__copy"><strong>Nebula</strong><small>Plum space, rose light, wonder</small></span>
-            <span class="theme-option__check" aria-hidden="true">✓</span>
-          </button>
-          <button type="button" class="theme-option" role="radio" aria-checked="false" tabindex="-1" data-theme-option="aurora">
-            <span class="theme-option__swatch" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="theme-option__copy"><strong>Aurora</strong><small>Deep teal, mint glow, calm</small></span>
-            <span class="theme-option__check" aria-hidden="true">✓</span>
-          </button>
-        </div>
+        <div class="theme-grid" role="radiogroup" aria-label="Vault theme" data-theme-options></div>
         <div class="theme-dialog__footer">
           <span>Theme changes apply immediately.</span>
+          <button type="button" class="theme-shuffle" data-theme-shuffle>Shuffle mood ✦</button>
           <button type="button" class="theme-done" data-theme-close>Done</button>
         </div>
       </section>
@@ -329,6 +328,7 @@
           <div><dt><kbd>G</kbd> <kbd>H</kbd></dt><dd>Go to the library home</dd></div>
           <div><dt><kbd>G</kbd> <kbd>S</kbd></dt><dd>Open saved lessons</dd></div>
           <div><dt><kbd>R</kbd></dt><dd>Open a surprise lesson</dd></div>
+          <div><dt><kbd>D</kbd></dt><dd>Open today's daily spark</dd></div>
           <div><dt><kbd>F</kbd></dt><dd>Toggle focus mode</dd></div>
           <div><dt><kbd>E</kbd></dt><dd>Toggle essential view</dd></div>
           <div><dt><kbd>Esc</kbd></dt><dd>Close the active panel</dd></div>

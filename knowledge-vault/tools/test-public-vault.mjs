@@ -72,7 +72,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260820-uniform-review|vault.js?v=20260820-uniform-review") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260821-vault-polish7|vault.js?v=20260821-vault-polish7") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -80,7 +80,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260820-uniform-review") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260821-vault-polish7") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -119,14 +119,32 @@ const uniformReleaseManifest = [
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
+  { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
+  { id: "coffee", modules: 6, lessons: 18, sources: 12 },
 ];
-uniformReleaseManifest.forEach(({ id, modules, lessons, sources }) => {
-  const entry = new RegExp(
-    `\\{\\s*id:\\s*"${id}",\\s*modules:\\s*${modules},\\s*lessons:\\s*${lessons},\\s*sources:\\s*${sources}\\s*\\}`,
-  );
-  [schemaValidator, js, encryptTool, passwordVerifier].forEach((artifact) => {
-    requireMatch(artifact, entry, "uniform release manifest");
-  });
+function extractLiteralManifest(artifact, constantName) {
+  const literal = artifact.match(new RegExp(`const\\s+${constantName}\\s*=\\s*\\[([\\s\\S]*?)\\];`));
+  if (!literal) return null;
+  const entryPattern = /\{\s*id:\s*"([a-z0-9-]+)",\s*modules:\s*(\d+),\s*lessons:\s*(\d+),\s*sources:\s*(\d+)\s*\}/gu;
+  const entries = [...literal[1].matchAll(entryPattern)].map((match) => ({
+    id: match[1],
+    modules: Number(match[2]),
+    lessons: Number(match[3]),
+    sources: Number(match[4]),
+  }));
+  const residue = literal[1].replace(entryPattern, "").replace(/[\s,]/gu, "");
+  return residue ? null : entries;
+}
+[
+  [schemaValidator, "releaseManifest", "release-schema validator"],
+  [js, "RELEASE_MANIFEST", "runtime"],
+  [encryptTool, "releaseManifest", "encryption"],
+  [passwordVerifier, "releaseManifest", "password verification"],
+].forEach(([artifact, constantName, label]) => {
+  const manifest = extractLiteralManifest(artifact, constantName);
+  if (JSON.stringify(manifest) !== JSON.stringify(uniformReleaseManifest)) {
+    failures.push(`exact uniform ten-domain manifest: ${label}`);
+  }
 });
 [
   "function isIsoDate",
@@ -154,8 +172,93 @@ requireMatch(
   /function\s+matchesPreviousEightDomainRelease\s*\(/,
   "migration-only previous eight-domain password compatibility",
 );
+requireMatch(
+  passwordVerifier,
+  /function\s+matchesLegacyRelease\s*\(/,
+  "migration-only legacy five-domain password compatibility",
+);
+requireMatch(
+  passwordVerifier,
+  /const\s+previousEightDomainReleaseManifest\s*=\s*releaseManifest\.slice\(0, 8\)/,
+  "exact previous eight-domain password manifest",
+);
+requireMatch(
+  passwordVerifier,
+  /const\s+legacyReleaseManifest\s*=\s*releaseManifest\.slice\(0, 5\)/,
+  "exact legacy five-domain password manifest",
+);
+requireMatch(
+  passwordVerifier,
+  /const\s+requireCurrentRelease\s*=\s*commandArguments\.includes\("--require-current"\)/,
+  "strict current-release password-verification mode",
+);
+requireMatch(
+  passwordVerifier,
+  /if\s*\(requireCurrentRelease\)\s*return\s+matchesCurrentRelease\(value\)/,
+  "strict mode bypasses historical migration shapes",
+);
+requireMatch(
+  encryptTool,
+  /temporaryOutputPath,\s*"--require-current"/,
+  "serialized ciphertext current-release verification",
+);
+forbidMatch(schemaValidator, /matchesPreviousEightDomainRelease|previousEightDomainReleaseManifest|legacyReleaseManifest/, "historical compatibility leaking into plaintext validation");
 forbidMatch(js, /matchesPreviousEightDomainRelease/, "historical compatibility leaking into runtime");
 forbidMatch(encryptTool, /matchesPreviousEightDomainRelease/, "historical compatibility leaking into source validation");
+
+const collectionToneManifest = [
+  ["personal-notes", "violet"],
+  ["fintech-domain", "cyan"],
+  ["fin-domain", "gold"],
+  ["rtcfo-domain", "rose"],
+  ["brk-domain-breaking", "mint"],
+  ["mrel-domain", "indigo"],
+  ["personal-style", "coral"],
+  ["photography", "azure"],
+  ["cooking", "amber"],
+  ["bar-drinks", "crimson"],
+  ["coffee", "mocha"],
+];
+collectionToneManifest.forEach(([id, tone]) => {
+  requireMatch(js, new RegExp(`"${id}"\\s*:\\s*"${tone}"`), `collection tone mapping: ${id}`);
+  requireMatch(css, new RegExp(`\\.collection-card\\[data-domain-tone="${tone}"\\]`), `collection card tone: ${tone}`);
+  requireMatch(
+    css,
+    new RegExp(`html\\[data-theme="light"\\] \\.collection-card\\[data-domain-tone="${tone}"\\]`),
+    `light collection card tone: ${tone}`,
+  );
+});
+requireMatch(
+  js,
+  /card\.dataset\.domainTone\s*=\s*collectionTone\(collection\.id\)/,
+  "deterministic home-card tone assignment",
+);
+forbidMatch(css, /\.collection-card:nth-child\(9n/, "order-dependent home-card tone mapping");
+const collectionGroups = [
+  ["personal-space", ["personal-notes"]],
+  ["money-leadership", ["fintech-domain", "fin-domain", "rtcfo-domain"]],
+  ["movement-recovery", ["brk-domain-breaking", "mrel-domain"]],
+  ["everyday-craft", ["personal-style", "photography", "cooking"]],
+  ["taste-ritual", ["bar-drinks", "coffee"]],
+];
+collectionGroups.forEach(([groupId, collectionIds]) => {
+  requireMatch(js, new RegExp(`id:\\s*"${groupId}"`), `collection group: ${groupId}`);
+  collectionIds.forEach((collectionId) => {
+    requireMatch(js, new RegExp(`"${collectionId}"`), `grouped collection: ${collectionId}`);
+  });
+});
+requireMatch(js, /validateCollectionGroupManifest\(data\.collections\)/, "runtime collection-group coverage gate");
+requireMatch(js, /GROUPED_COLLECTION_ORDER\.join\("\|"\)\s*!==\s*EXPECTED_COLLECTION_ORDER\.join\("\|"\)/, "exact collection-group order gate");
+[
+  [schemaValidator, "release-schema validator"],
+  [js, "runtime"],
+  [encryptTool, "encryption"],
+  [passwordVerifier, "password verification"],
+].forEach(([artifact, label]) => {
+  if (!artifact.includes("&& !/\\[\\[|\\]\\]/u.test(block.label)")) {
+    failures.push(label + " literal callout-label citation guard");
+  }
+});
 [
   [js, "runtime"],
   [encryptTool, "encryption"],
@@ -299,17 +402,22 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "data-tools-toggle",
   "data-resume-button",
   "data-random-button",
+  "data-daily-button",
   "data-bookmarks-button",
   "data-reading-mode-button",
   "data-text-size-button",
   "data-theme-tool-button",
   "data-theme-dialog",
-  "data-theme-option=\"midnight\"",
-  "data-theme-option=\"pearl\"",
-  "data-theme-option=\"nebula\"",
-  "data-theme-option=\"aurora\"",
+  "data-theme-options",
+  "data-theme-shuffle",
   "role=\"radiogroup\"",
   "data-focus-button",
+  "data-focus-meta",
+  "data-focus-timer-button",
+  "data-focus-timer-chip",
+  "data-focus-timer-countdown",
+  "data-focus-timer-stop",
+  "data-focus-timer-live",
   "data-shortcuts-dialog",
   "role=\"combobox\"",
   "role=\"listbox\"",
@@ -319,23 +427,73 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "validateLibraryCompleteness",
   "renderBookmarksHome",
   "selectRandomLesson",
+  "openDailySpark",
+  "toggleFocusTimer",
+  "announceFocusTimer",
+  "displaySectionTitle",
+  "shuffleTheme",
+  "renderThemeOptions",
+  "createCollectionNavigation",
+  "createCollectionCard",
   "createLessonOutline",
   "createQuickGuide",
   "readableChunks",
   "handleSearchKeydown",
   "setFocusMode",
   "setReadingMode",
+  "syncReadingTimes",
+  "lessonHasLearningLayer",
+  "createFirstUseHintState",
+  "findTermMatch",
+  "ensureTermHintTooltip",
+  "showTermHintTooltip",
+  "hideTermHintTooltip",
   "cycleTextSize",
   "openThemeDialog",
   "closeThemeDialog",
   "handleThemeOptionKeydown",
 ].forEach((token) => requireMatch(js, new RegExp(`function ${token}\\b`), `missing behavior contract: ${token}`));
 
+["midnight", "pearl", "nebula", "aurora", "ember", "tide", "sakura", "solstice"].forEach((theme) => {
+  requireMatch(js, new RegExp(`^\\s*${theme}:\\s*\\{`, "m"), `theme preset config: ${theme}`);
+  if (!new Set(["midnight", "pearl"]).has(theme)) {
+    requireMatch(css, new RegExp(`data-theme-preset="${theme}"`), `theme preset variables: ${theme}`);
+  }
+  requireMatch(css, new RegExp(`data-theme-option="${theme}"`), `theme preset swatch: ${theme}`);
+});
+requireMatch(js, /renderThemeOptions\(\);\s*\n\s*themeToggle/, "config-driven theme option initialization");
+requireMatch(js, /const\s+ESSENTIAL_SECTION_INDEXES\s*=\s*new Set\(\[0, 1, 2, 3, 5, 7, 9, 10\]\)/, "beginner essential-view safety sections");
+requireMatch(js, /behavior:\s*preferredScrollBehavior\(\)/, "reduced-motion-aware section navigation");
+forbidMatch(js, /behavior:\s*"smooth"/, "unconditional smooth scrolling");
+requireMatch(js, /stopFocusTimer\(\);/, "lock clears focus timer");
+requireMatch(js, /stopFocusTimer\(\);\s*\n\s*hideTermHintTooltip\(\);/, "lock clears private term tooltip");
+requireMatch(js, /function\s+setReadingMode[\s\S]*?syncReadingTimes\(\);[\s\S]*?updateReadingProgress\(\);[\s\S]*?\n\s*}/, "reading mode updates duration, focus, and progress");
+requireMatch(js, /function\s+essentialEstimatedMinutes[\s\S]*?ESSENTIAL_SECTION_INDEXES\.has\(index\)/, "essential view computes a visible-section duration fallback");
+requireMatch(js, /index\s*<\s*9\s*\?\s*firstUseHintState\s*:\s*null/, "term hints stay before the glossary");
+requireMatch(js, /document\.addEventListener\("scroll", hideTermHintTooltip, \{ capture: true, passive: true \}\)/, "term tooltip closes on nested scrolling");
+requireMatch(js, /renderBlock\(block, entry\.lesson, sectionHintState\)/, "lesson renderer uses beginner term hints");
+requireMatch(js, /block\.learningLayer\s*===\s*"detail"/, "lesson renderer honors detail layer");
+requireMatch(js, /readingModeLabel\.textContent\s*=\s*"Reading view"/, "stable reading-view toggle label");
+requireMatch(js, /focusLabel\.textContent\s*=\s*"Focus mode"/, "stable focus-mode toggle label");
+requireMatch(js, /focusTimerLabel\.textContent\s*=\s*"Focus timer"/, "stable focus-timer toggle label");
+requireMatch(js, /"ben-lien-quan":\s*"Ai hoặc yếu tố nào liên quan"/, "lifestyle stakeholder section alias");
+requireMatch(js, /"tac-dong":\s*"Chi phí, tác động và lựa chọn thực tế"/, "lifestyle impact section alias");
+requireMatch(js, /"khac-biet":\s*"Khác biệt theo bối cảnh"/, "lifestyle context section alias");
+
 [
   ".tools-popover",
   ".path-panel",
   ".quick-guide",
   ".lesson-outline",
+  ".outline-group",
+  ".section-phase",
+  ".collection-nav-group",
+  ".topic-group",
+  ".unlock-constellation",
+  ".focus-timer-chip",
+  ".first-use-hint",
+  ".first-use-tooltip",
+  ".learning-layer-detail",
   "body.essentials-mode",
   "body.focus-mode",
   "prefers-reduced-motion",
@@ -344,7 +502,36 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   ".theme-grid",
   "data-theme-preset=\"nebula\"",
   "data-theme-preset=\"aurora\"",
+  "data-theme-preset=\"ember\"",
+  "data-theme-preset=\"tide\"",
+  "data-theme-preset=\"sakura\"",
+  "data-theme-preset=\"solstice\"",
 ].forEach((token) => requireMatch(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `missing style contract: ${token}`));
+
+requireMatch(css, /@media\s*\(max-width:\s*720px\)\s*and\s*\(max-height:\s*760px\)/, "short-height mobile unlock layout");
+requireMatch(css, /body\.essentials-mode\s+\.learning-layer-detail\s*\{[\s\S]*?display:\s*none\s*!important/, "essential view hides detail-only blocks");
+
+[js, schemaValidator, encryptTool, passwordVerifier].forEach((artifact, index) => {
+  const label = ["runtime", "schema validator", "encryptor", "password verifier"][index];
+  requireMatch(artifact, /coreEstimatedMinutes/, `${label} core reading duration contract`);
+  requireMatch(artifact, /firstUseHints/, `${label} beginner term-hint contract`);
+  requireMatch(artifact, /learningLayer/, `${label} core-detail block contract`);
+});
+requireMatch(js, /preGlossaryFields\.some\(\(field\)\s*=>\s*hasRenderableExactTerm\(field, hint\.term\)\)/, "runtime validates term hints per rendered field");
+requireMatch(js, /function\s+hasRenderableExactTerm[\s\S]*?split\(\/\\\[\\\[\[a-z0-9-\]\+\\\]\\\]\//, "runtime validates term hints within citation-free rendered segments");
+[schemaValidator, encryptTool, passwordVerifier].forEach((artifact, index) => {
+  const label = ["schema validator", "encryptor", "password verifier"][index];
+  requireMatch(artifact, /preGlossaryFields\.some\(\(field\)\s*=>\s*hasExactTerm\(field, hint\.term\)\)/, `${label} validates term hints per rendered field`);
+  requireMatch(artifact, /function\s+hasExactTerm[\s\S]*?split\(\/\\\[\\\[\[a-z0-9-\]\+\\\]\\\]\//, `${label} validates hints within citation-free rendered segments`);
+});
+requireMatch(js, /layeredBlocks\.length\s*===\s*blocks\.length\s*&&\s*Array\.isArray\(hints\)/, "runtime restricts hints to layered lessons");
+[schemaValidator, encryptTool, passwordVerifier].forEach((artifact, index) => {
+  const label = ["schema validator", "encryptor", "password verifier"][index];
+  requireMatch(artifact, /layeredBlocks\.length\s*!==\s*blocks\.length/, `${label} restricts hints to layered lessons`);
+});
+forbidMatch(css, /\.first-use-hint::after/, "clipped pseudo-element term tooltip");
+
+forbidMatch(html, /unlock-pillars/, "verbose unlock-page pillars");
 
 requireMatch(js, /document\.createTextNode|\.textContent\s*=/, "safe text rendering");
 requireMatch(js, /window\.crypto\.subtle\.decrypt/, "local cryptographic decryption");
@@ -356,4 +543,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("Public vault static checks passed: resource allowlist, CSP, JavaScript and validator syntax, uniform eight-domain schema-gate markers, encrypted-envelope plausibility, Git privacy boundary, and interface markers are valid; browser behavior was not exercised.");
+console.log("Public vault static checks passed: resource allowlist, CSP, JavaScript and validator syntax, uniform ten-domain schema-gate markers, encrypted-envelope plausibility, Git privacy boundary, and interface markers are valid; browser behavior was not exercised.");

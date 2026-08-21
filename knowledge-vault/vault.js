@@ -13,8 +13,70 @@
   const STORAGE_LAST_READ = "knowledge-library:last-read:v1";
   const STORAGE_READING_MODE = "knowledge-library:reading-mode:v1";
   const STORAGE_TEXT_SIZE = "knowledge-library:text-size:v1";
-  const DOMAIN_TONES = ["violet", "cyan", "gold", "rose", "mint", "indigo", "coral", "azure", "amber"];
-  const ESSENTIAL_SECTION_INDEXES = new Set([0, 1, 2, 5, 9, 10]);
+  const COLLECTION_TONES = Object.freeze({
+    "personal-notes": "violet",
+    "fintech-domain": "cyan",
+    "fin-domain": "gold",
+    "rtcfo-domain": "rose",
+    "brk-domain-breaking": "mint",
+    "mrel-domain": "indigo",
+    "personal-style": "coral",
+    "photography": "azure",
+    "cooking": "amber",
+    "bar-drinks": "crimson",
+    "coffee": "mocha",
+  });
+  const COLLECTION_GROUPS = Object.freeze([
+    {
+      id: "personal-space",
+      mark: "01",
+      title: "Personal space",
+      description: "Notes and ideas worth keeping close.",
+      collectionIds: ["personal-notes"],
+    },
+    {
+      id: "money-leadership",
+      mark: "02",
+      title: "Money & leadership",
+      description: "Finance, technology, and the path to better decisions.",
+      collectionIds: ["fintech-domain", "fin-domain", "rtcfo-domain"],
+    },
+    {
+      id: "movement-recovery",
+      mark: "03",
+      title: "Movement & recovery",
+      description: "Build skill, understand the body, and recover well.",
+      collectionIds: ["brk-domain-breaking", "mrel-domain"],
+    },
+    {
+      id: "everyday-craft",
+      mark: "04",
+      title: "Everyday craft",
+      description: "Style, images, and practical skills for daily life.",
+      collectionIds: ["personal-style", "photography", "cooking"],
+    },
+    {
+      id: "taste-ritual",
+      mark: "05",
+      title: "Taste & ritual",
+      description: "Learn what is in the glass, cup, and moment.",
+      collectionIds: ["bar-drinks", "coffee"],
+    },
+  ]);
+  const SECTION_PHASES = Object.freeze([
+    "Start",
+    "Start",
+    "Start",
+    "Understand",
+    "Understand",
+    "Apply",
+    "Apply",
+    "Apply",
+    "Apply",
+    "Remember",
+    "Remember",
+  ]);
+  const ESSENTIAL_SECTION_INDEXES = new Set([0, 1, 2, 3, 5, 7, 9, 10]);
   const EXPECTED_SECTION_COUNT = 11;
   const CANONICAL_SECTION_IDS = [
     "muc-tieu",
@@ -38,7 +100,11 @@
     { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
     { id: "photography", modules: 6, lessons: 18, sources: 12 },
     { id: "cooking", modules: 6, lessons: 18, sources: 12 },
+    { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
+    { id: "coffee", modules: 6, lessons: 18, sources: 12 },
   ];
+  const EXPECTED_COLLECTION_ORDER = Object.freeze(["personal-notes", ...RELEASE_MANIFEST.map(({ id }) => id)]);
+  const GROUPED_COLLECTION_ORDER = Object.freeze(COLLECTION_GROUPS.flatMap(({ collectionIds }) => collectionIds));
   const SOURCE_DATE_FIELDS = ["publishedAt", "adoptedAt", "updatedAt", "reviewedAt", "accessedAt"];
   const SIDEBAR_MIN_WIDTH = 260;
   const SIDEBAR_MAX_WIDTH = 460;
@@ -58,11 +124,21 @@
     "Tóm tắt bài học",
     "Nguồn tham khảo",
   ];
+  const LIFESTYLE_COLLECTION_IDS = new Set(["personal-style", "photography", "cooking", "bar-drinks", "coffee"]);
+  const LIFESTYLE_SECTION_ALIASES = Object.freeze({
+    "ben-lien-quan": "Ai hoặc yếu tố nào liên quan",
+    "tac-dong": "Chi phí, tác động và lựa chọn thực tế",
+    "khac-biet": "Khác biệt theo bối cảnh",
+  });
   const THEME_PRESETS = Object.freeze({
-    midnight: { label: "Midnight", mode: "dark", color: "#090812" },
-    pearl: { label: "Pearl", mode: "light", color: "#f5f2f8" },
-    nebula: { label: "Nebula", mode: "dark", color: "#10091e" },
-    aurora: { label: "Aurora", mode: "dark", color: "#061615" },
+    midnight: { label: "Midnight", description: "Ink, lavender, quiet stars", mode: "dark", color: "#090812" },
+    pearl: { label: "Pearl", description: "Soft paper, daylight, clarity", mode: "light", color: "#f5f2f8" },
+    nebula: { label: "Nebula", description: "Plum space, rose light, wonder", mode: "dark", color: "#10091e" },
+    aurora: { label: "Aurora", description: "Deep teal, mint glow, calm", mode: "dark", color: "#061615" },
+    ember: { label: "Ember", description: "Charcoal, copper, late-night warmth", mode: "dark", color: "#17100d" },
+    tide: { label: "Tide", description: "Mist, ocean blue, open air", mode: "light", color: "#eef5f7" },
+    sakura: { label: "Sakura", description: "Blush paper, plum ink, softness", mode: "light", color: "#faf1f4" },
+    solstice: { label: "Solstice", description: "Night blue, quiet gold, depth", mode: "dark", color: "#071326" },
   });
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -90,7 +166,10 @@
   const themeToolMeta = document.querySelector("[data-theme-tool-meta]");
   const themeDialog = document.querySelector("[data-theme-dialog]");
   const themeCloseButtons = document.querySelectorAll("[data-theme-close]");
-  const themeOptions = document.querySelectorAll("[data-theme-option]");
+  const themeOptionsContainer = document.querySelector("[data-theme-options]");
+  let themeOptions = [];
+  let termHintTooltip = null;
+  let activeTermHint = null;
   const sidebarOpenButton = document.querySelector("[data-sidebar-open]");
   const sidebarCloseButton = document.querySelector("[data-sidebar-close]");
   const sidebarCollapseButton = document.querySelector("[data-sidebar-collapse]");
@@ -106,6 +185,7 @@
   const resumeButton = document.querySelector("[data-resume-button]");
   const resumeMeta = document.querySelector("[data-resume-meta]");
   const randomButton = document.querySelector("[data-random-button]");
+  const dailyButton = document.querySelector("[data-daily-button]");
   const bookmarksButton = document.querySelector("[data-bookmarks-button]");
   const bookmarksMeta = document.querySelector("[data-bookmarks-meta]");
   const readingModeButton = document.querySelector("[data-reading-mode-button]");
@@ -115,6 +195,15 @@
   const textSizeMeta = document.querySelector("[data-text-size-meta]");
   const focusButton = document.querySelector("[data-focus-button]");
   const focusLabel = document.querySelector("[data-focus-label]");
+  const focusMeta = document.querySelector("[data-focus-meta]");
+  const focusTimerButton = document.querySelector("[data-focus-timer-button]");
+  const focusTimerLabel = document.querySelector("[data-focus-timer-label]");
+  const focusTimerMeta = document.querySelector("[data-focus-timer-meta]");
+  const focusTimerChip = document.querySelector("[data-focus-timer-chip]");
+  const focusTimerCountdown = document.querySelector("[data-focus-timer-countdown]");
+  const focusTimerStopButton = document.querySelector("[data-focus-timer-stop]");
+  const focusTimerLive = document.querySelector("[data-focus-timer-live]");
+  const themeShuffleButton = document.querySelector("[data-theme-shuffle]");
   const shortcutsButton = document.querySelector("[data-shortcuts-button]");
   const shortcutsDialog = document.querySelector("[data-shortcuts-dialog]");
   const shortcutsCloseButtons = document.querySelectorAll("[data-shortcuts-close]");
@@ -133,6 +222,9 @@
     readingMode: "full",
     textSize: "comfortable",
     focusMode: false,
+    focusTimerEnd: null,
+    focusTimerInterval: null,
+    focusTimerAnnouncedMinute: null,
     searchMatches: [],
     searchIndex: -1,
     shortcutPrefix: "",
@@ -253,25 +345,29 @@
   function normalizeBlock(block) {
     if (!block || typeof block !== "object") return null;
     const type = normalizeString(block.type);
-    if (type === "paragraph") return { type, text: normalizeString(block.text) };
-    if (type === "list") return { type, items: normalizeStringArray(block.items), ordered: Boolean(block.ordered) };
+    const learningLayer = new Set(["core", "detail"]).has(block.learningLayer) ? block.learningLayer : null;
+    const withLearningLayer = (normalized) => learningLayer ? { ...normalized, learningLayer } : normalized;
+    if (type === "paragraph") return withLearningLayer({ type, text: normalizeString(block.text) });
+    if (type === "list") {
+      return withLearningLayer({ type, items: normalizeStringArray(block.items), ordered: Boolean(block.ordered) });
+    }
     if (type === "callout") {
-      return {
+      return withLearningLayer({
         type,
         label: normalizeString(block.label, "Lưu ý"),
         text: normalizeString(block.text),
         tone: normalizeString(block.tone, "note"),
-      };
+      });
     }
     if (type === "table") {
-      return {
+      return withLearningLayer({
         type,
         headers: normalizeStringArray(block.headers),
         rows: Array.isArray(block.rows) ? block.rows.map((row) => normalizeStringArray(row)) : [],
-      };
+      });
     }
     if (type === "flow") {
-      return {
+      return withLearningLayer({
         type,
         steps: Array.isArray(block.steps)
           ? block.steps.map((step, index) => ({
@@ -280,9 +376,17 @@
               detail: normalizeString(step?.detail),
             }))
           : [],
-      };
+      });
     }
     return null;
+  }
+
+  function normalizeFirstUseHints(value) {
+    if (!Array.isArray(value)) return [];
+    return value.map((hint) => ({
+      term: normalizeString(hint?.term),
+      explanation: normalizeString(hint?.explanation),
+    })).filter((hint) => hint.term && hint.explanation);
   }
 
   function visibleBlockStrings(block) {
@@ -302,6 +406,11 @@
         : [];
     }
     return [];
+  }
+
+  function learningBlockStrings(block) {
+    if (block?.type === "callout") return [block.label, block.text];
+    return visibleBlockStrings(block);
   }
 
   function inlineCitationIds(sections) {
@@ -339,6 +448,7 @@
     };
     const validBlock = (block) => {
       if (!block || typeof block !== "object") return false;
+      if (block.learningLayer !== undefined && !new Set(["core", "detail"]).has(block.learningLayer)) return false;
       if (block.type === "paragraph") return present(block.text) && block.text.length <= 1_600;
       if (block.type === "list") {
         return Array.isArray(block.items)
@@ -347,6 +457,7 @@
       }
       if (block.type === "callout") {
         return present(block.label)
+          && !/\[\[|\]\]/u.test(block.label)
           && present(block.text)
           && block.text.length <= 1_600
           && new Set(["note", "caution"]).has(block.tone);
@@ -473,6 +584,46 @@
         module.lessons?.forEach((lesson) => {
           const sectionIds = Array.isArray(lesson?.sections) ? lesson.sections.map((section) => section?.id) : [];
           const references = Array.isArray(lesson?.references) ? lesson.references : [];
+          const blocks = Array.isArray(lesson?.sections)
+            ? lesson.sections.flatMap((section) => Array.isArray(section?.blocks) ? section.blocks : [])
+            : [];
+          const hasValidBlockArrays = Array.isArray(lesson?.sections)
+            && lesson.sections.every((section) => Array.isArray(section?.blocks));
+          const layeredBlocks = blocks.filter((block) => block?.learningLayer !== undefined);
+          const hints = lesson?.firstUseHints;
+          const normalizedHintTerms = Array.isArray(hints)
+            ? hints.map((hint) => normalizeString(hint?.term).toLocaleLowerCase("vi"))
+            : [];
+          const preGlossaryFields = Array.isArray(lesson?.sections)
+            ? lesson.sections.slice(0, 9).flatMap((section) =>
+                Array.isArray(section?.blocks) ? section.blocks.flatMap(learningBlockStrings) : [],
+              ).filter((item) => typeof item === "string")
+            : [];
+          const validHints = hints === undefined || (
+            layeredBlocks.length === blocks.length
+            && Array.isArray(hints)
+            && hints.length <= 24
+            && new Set(normalizedHintTerms).size === hints.length
+            && hints.every((hint) =>
+              present(hint?.term)
+              && hint.term.length <= 80
+              && present(hint?.explanation)
+              && hint.explanation.length <= 600
+              && !/\[\[|\]\]/u.test(`${hint.term} ${hint.explanation}`)
+              && preGlossaryFields.some((field) => hasRenderableExactTerm(field, hint.term)),
+            )
+          );
+          const validLearningLayer = hasValidBlockArrays && (
+            layeredBlocks.length === 0
+              ? lesson?.coreEstimatedMinutes === undefined
+              : layeredBlocks.length === blocks.length
+                && Number.isInteger(lesson?.coreEstimatedMinutes)
+                && lesson.coreEstimatedMinutes >= 4
+                && lesson.coreEstimatedMinutes <= 20
+                && lesson.sections.every((section) => section.blocks.some((block) => block.learningLayer === "core"))
+                && lesson.sections[7].blocks.every((block) => block.learningLayer === "core")
+                && blocks.every((block) => block.type !== "callout" || block.tone !== "caution" || block.learningLayer === "core")
+          );
           if (
             !lesson
             || typeof lesson !== "object"
@@ -497,6 +648,8 @@
               && section.blocks.length > 0
               && section.blocks.every(validBlock),
             )
+            || !validLearningLayer
+            || !validHints
             || new Set(references).size < 3
             || new Set(references).size !== references.length
             || references.some((sourceId) => !sourceMap.has(sourceId))
@@ -540,8 +693,10 @@
       summary: normalizeString(lesson?.summary, "Nội dung sẽ được nghiên cứu và bổ sung theo lộ trình."),
       status: lesson?.status === "published" ? "published" : "planned",
       estimatedMinutes: Number.isFinite(lesson?.estimatedMinutes) ? lesson.estimatedMinutes : null,
+      coreEstimatedMinutes: Number.isFinite(lesson?.coreEstimatedMinutes) ? lesson.coreEstimatedMinutes : null,
       lastReviewed: normalizeString(lesson?.lastReviewed),
       keywords: normalizeStringArray(lesson?.keywords),
+      firstUseHints: normalizeFirstUseHints(lesson?.firstUseHints),
       sections,
       references: normalizeStringArray(lesson?.references),
     };
@@ -732,6 +887,7 @@
     if (new Set(collectionIds).size !== collectionIds.length) {
       throw new Error("Every collection must have a unique ID.");
     }
+    validateCollectionGroupManifest(data.collections);
 
     const ids = [];
     data.modules.forEach((module) => module.lessons.forEach((lesson) => ids.push(lesson.id)));
@@ -937,10 +1093,46 @@
     ].join(" ");
   }
 
-  function estimatedMinutes(lesson) {
+  function fullEstimatedMinutes(lesson) {
     if (lesson.estimatedMinutes) return lesson.estimatedMinutes;
     const words = lessonPlainText(lesson).trim().split(/\s+/u).filter(Boolean).length;
     return Math.max(3, Math.round(words / 210));
+  }
+
+  function essentialEstimatedMinutes(lesson) {
+    if (lessonHasLearningLayer(lesson) && lesson.coreEstimatedMinutes) return lesson.coreEstimatedMinutes;
+    const visibleSections = Array.isArray(lesson?.sections)
+      ? lesson.sections.filter((_, index) => ESSENTIAL_SECTION_INDEXES.has(index))
+      : [];
+    if (!visibleSections.length) return fullEstimatedMinutes(lesson);
+    const visibleText = [
+      lesson.title,
+      lesson.summary,
+      ...visibleSections.flatMap((section) => section.blocks.map(blockSearchText)),
+    ].join(" ");
+    const words = visibleText.trim().split(/\s+/u).filter(Boolean).length;
+    return Math.max(3, Math.round(words / 210));
+  }
+
+  function lessonHasLearningLayer(lesson) {
+    return lesson?.sections?.some((section) =>
+      section.blocks?.some((block) => new Set(["core", "detail"]).has(block.learningLayer)),
+    ) ?? false;
+  }
+
+  function readingMinutes(lesson, mode = state.readingMode) {
+    if (mode === "essentials") return essentialEstimatedMinutes(lesson);
+    return fullEstimatedMinutes(lesson);
+  }
+
+  function syncReadingTimes() {
+    document.querySelectorAll("[data-reading-time]").forEach((element) => {
+      const full = Number(element.dataset.fullMinutes);
+      const core = Number(element.dataset.coreMinutes);
+      const value = state.readingMode === "essentials" && Number.isFinite(core) && core > 0 ? core : full;
+      const suffix = element.dataset.readingTimeSuffix || "min";
+      element.textContent = `${value} ${suffix}`;
+    });
   }
 
   function collectionProgress(collection) {
@@ -1040,28 +1232,74 @@
     }, 2600);
   }
 
+  function collectionTone(collectionId) {
+    return COLLECTION_TONES[collectionId] ?? COLLECTION_TONES["personal-notes"];
+  }
+
+  function collectionsForGroup(group) {
+    if (!state.data) return [];
+    return group.collectionIds
+      .map((collectionId) => state.data.collections.find((collection) => collection.id === collectionId))
+      .filter(Boolean);
+  }
+
+  function sectionPhase(index) {
+    return SECTION_PHASES[index] || "Verify";
+  }
+
+  function displaySectionTitle(collectionId, section) {
+    if (!LIFESTYLE_COLLECTION_IDS.has(collectionId)) return section.title;
+    return LIFESTYLE_SECTION_ALIASES[section.id] || section.title;
+  }
+
+  function preferredScrollBehavior() {
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  }
+
+  function validateCollectionGroupManifest(collections = null) {
+    const unique = new Set(GROUPED_COLLECTION_ORDER);
+    if (
+      unique.size !== GROUPED_COLLECTION_ORDER.length
+      || GROUPED_COLLECTION_ORDER.join("|") !== EXPECTED_COLLECTION_ORDER.join("|")
+      || (collections && collections.map(({ id }) => id).join("|") !== EXPECTED_COLLECTION_ORDER.join("|"))
+    ) {
+      throw new Error("The collection-group manifest is incomplete.");
+    }
+  }
+
   function applyCollectionTone(collectionId = null) {
-    const index = collectionId
-      ? state.data?.collections.findIndex((collection) => collection.id === collectionId) ?? -1
-      : 0;
-    document.documentElement.dataset.domainTone = DOMAIN_TONES[index >= 0 ? index % DOMAIN_TONES.length : 0];
+    document.documentElement.dataset.domainTone = collectionTone(collectionId ?? "personal-notes");
   }
 
   function setReadingMode(mode, persist = true) {
+    const focusedReaderControl = document.activeElement instanceof HTMLElement
+      && lessonReader?.contains(document.activeElement)
+      ? document.activeElement
+      : null;
     state.readingMode = mode === "essentials" ? "essentials" : "full";
     document.body.classList.toggle("essentials-mode", state.readingMode === "essentials");
-    if (readingModeLabel) readingModeLabel.textContent = state.readingMode === "essentials" ? "Full lesson" : "Essential view";
+    if (readingModeLabel) readingModeLabel.textContent = "Reading view";
+    readingModeButton?.setAttribute("aria-label", "Essential reading view");
     readingModeButton?.setAttribute("aria-pressed", String(state.readingMode === "essentials"));
     if (readingModeMeta) {
       readingModeMeta.textContent = state.readingMode === "essentials"
-        ? "Reveal every section"
-        : "Show the clearest sections";
+        ? "Essentials on · Show full lesson"
+        : "Full lesson · Show essentials";
     }
     lessonReader?.querySelectorAll("[data-reader-mode]").forEach((button) => {
+      button.setAttribute("aria-label", "Essential reading view");
       button.setAttribute("aria-pressed", String(state.readingMode === "essentials"));
-      button.textContent = state.readingMode === "essentials" ? "Show full lesson" : "Essential view";
+      button.textContent = "Essential view";
     });
+    syncReadingTimes();
     if (persist) writeStorage(STORAGE_READING_MODE, state.readingMode);
+    window.requestAnimationFrame(() => {
+      if (focusedReaderControl && focusedReaderControl.offsetParent === null) {
+        const visibleModeControl = lessonReader?.querySelector("[data-reader-mode]");
+        visibleModeControl?.focus({ preventScroll: true });
+      }
+      updateReadingProgress();
+    });
   }
 
   function toggleReadingMode() {
@@ -1089,7 +1327,9 @@
   function setFocusMode(enabled) {
     state.focusMode = Boolean(enabled);
     document.body.classList.toggle("focus-mode", state.focusMode);
-    if (focusLabel) focusLabel.textContent = state.focusMode ? "Leave focus mode" : "Focus mode";
+    if (focusLabel) focusLabel.textContent = "Focus mode";
+    if (focusMeta) focusMeta.textContent = state.focusMode ? "On · Show navigation" : "Off · Quiet the navigation";
+    focusButton?.setAttribute("aria-label", "Focus mode");
     focusButton?.setAttribute("aria-pressed", String(state.focusMode));
     if (sidebarOpenButton) {
       sidebarOpenButton.textContent = state.focusMode ? "←" : "☰";
@@ -1103,6 +1343,94 @@
     }
     syncSidebarToggle();
     syncCurriculumInteractivity();
+  }
+
+  function localDateKey(date = new Date()) {
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+      .map((part, index) => index ? String(part).padStart(2, "0") : String(part))
+      .join("-");
+  }
+
+  function openDailySpark() {
+    const choices = publishedLessons();
+    if (!choices.length) return;
+    const seed = localDateKey();
+    let hash = 2166136261;
+    for (const character of seed) {
+      hash ^= character.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    }
+    const entry = choices[(hash >>> 0) % choices.length];
+    closeTools();
+    selectLesson(entry.lesson.id);
+    showToast("Today's spark is ready.");
+  }
+
+  function announceFocusTimer(message) {
+    if (focusTimerLive) focusTimerLive.textContent = message;
+  }
+
+  function syncFocusTimer({ announce = false } = {}) {
+    const remaining = state.focusTimerEnd ? Math.max(0, state.focusTimerEnd - Date.now()) : 0;
+    const active = remaining > 0;
+    const totalSeconds = Math.ceil(remaining / 1_000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const countdown = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    if (focusTimerLabel) focusTimerLabel.textContent = "Focus timer";
+    if (focusTimerMeta) {
+      focusTimerMeta.textContent = active
+        ? `${countdown} left · Stop timer`
+        : "Stopped · Start 15 minutes";
+    }
+    focusTimerButton?.setAttribute("aria-label", "15-minute focus timer");
+    focusTimerButton?.setAttribute("aria-pressed", String(active));
+    if (focusTimerChip) focusTimerChip.hidden = !active;
+    if (focusTimerCountdown) focusTimerCountdown.textContent = active ? countdown : "";
+    if (active) {
+      const announcedMinute = Math.max(1, Math.ceil(remaining / 60_000));
+      if (announce || state.focusTimerAnnouncedMinute !== announcedMinute) {
+        state.focusTimerAnnouncedMinute = announcedMinute;
+        announceFocusTimer(`Focus timer: ${announcedMinute} ${announcedMinute === 1 ? "minute" : "minutes"} remaining.`);
+      }
+    }
+    if (!active && state.focusTimerEnd) {
+      window.clearInterval(state.focusTimerInterval);
+      state.focusTimerInterval = null;
+      state.focusTimerEnd = null;
+      state.focusTimerAnnouncedMinute = null;
+      announceFocusTimer("Focus session complete.");
+      showToast("Focus session complete. Take a breath.");
+    }
+  }
+
+  function stopFocusTimer({ announce = false } = {}) {
+    const wasActive = Boolean(state.focusTimerEnd && state.focusTimerEnd > Date.now());
+    window.clearInterval(state.focusTimerInterval);
+    state.focusTimerInterval = null;
+    state.focusTimerEnd = null;
+    state.focusTimerAnnouncedMinute = null;
+    syncFocusTimer();
+    if (announce && wasActive) {
+      announceFocusTimer("Focus timer stopped.");
+      showToast("Focus timer stopped.");
+    } else if (!announce) {
+      announceFocusTimer("");
+    }
+  }
+
+  function toggleFocusTimer() {
+    if (state.focusTimerEnd && state.focusTimerEnd > Date.now()) {
+      stopFocusTimer({ announce: true });
+      return;
+    }
+    state.focusTimerEnd = Date.now() + 15 * 60_000;
+    state.focusTimerAnnouncedMinute = null;
+    window.clearInterval(state.focusTimerInterval);
+    state.focusTimerInterval = window.setInterval(syncFocusTimer, 1_000);
+    syncFocusTimer({ announce: true });
+    setFocusMode(true);
+    showToast("A 15-minute focus session has started.");
   }
 
   function openTools() {
@@ -1186,6 +1514,39 @@
     const next = last || nextLesson();
     if (resumeMeta) resumeMeta.textContent = next ? shortText(next.lesson.title, 48) : "All available lessons completed";
     if (bookmarksMeta) bookmarksMeta.textContent = `${state.bookmarks.size} saved`;
+    syncFocusTimer();
+  }
+
+  function renderThemeOptions() {
+    if (!themeOptionsContainer) return;
+    themeOptionsContainer.replaceChildren();
+    Object.entries(THEME_PRESETS).forEach(([id, preset], index) => {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "theme-option";
+      option.setAttribute("role", "radio");
+      option.setAttribute("aria-checked", String(index === 0));
+      option.tabIndex = index === 0 ? 0 : -1;
+      option.dataset.themeOption = id;
+      const swatch = document.createElement("span");
+      swatch.className = "theme-option__swatch";
+      swatch.setAttribute("aria-hidden", "true");
+      swatch.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
+      const copy = document.createElement("span");
+      copy.className = "theme-option__copy";
+      const label = document.createElement("strong");
+      label.textContent = preset.label;
+      const description = document.createElement("small");
+      description.textContent = preset.description;
+      copy.append(label, description);
+      const check = document.createElement("span");
+      check.className = "theme-option__check";
+      check.setAttribute("aria-hidden", "true");
+      check.textContent = "✓";
+      option.append(swatch, copy, check);
+      themeOptionsContainer.append(option);
+    });
+    themeOptions = Array.from(themeOptionsContainer.querySelectorAll("[data-theme-option]"));
   }
 
   function setTheme(theme, persist = true) {
@@ -1223,6 +1584,17 @@
     }
     const preferred = window.matchMedia?.("(prefers-color-scheme: light)").matches ? "pearl" : "midnight";
     setTheme(stored || preferred, false);
+  }
+
+  function shuffleTheme() {
+    const current = document.documentElement.dataset.themePreset || "midnight";
+    const choices = Object.keys(THEME_PRESETS).filter((theme) => theme !== current);
+    const random = new Uint32Array(1);
+    window.crypto.getRandomValues(random);
+    const next = choices[random[0] % choices.length];
+    setTheme(next);
+    showToast(`${THEME_PRESETS[next].label} mood selected`);
+    themeShuffleButton?.focus({ preventScroll: true });
   }
 
   function handleThemeOptionKeydown(event) {
@@ -1396,129 +1768,319 @@
     setSidebarWidth(nextWidth);
   }
 
-  function renderNavigation() {
-    moduleList.replaceChildren();
-    state.data.collections.forEach((collection) => {
-      const collectionGroup = document.createElement("section");
-      collectionGroup.className = "collection-nav";
-      const collectionExpanded = state.openCollections.has(collection.id);
+  function createCollectionNavigation(collection) {
+    const collectionGroup = document.createElement("section");
+    collectionGroup.className = "collection-nav";
+    const collectionExpanded = state.openCollections.has(collection.id);
 
-      const collectionButton = document.createElement("button");
-      collectionButton.type = "button";
-      collectionButton.className = "collection-nav__head";
-      collectionButton.dataset.collectionId = collection.id;
-      collectionButton.setAttribute("aria-expanded", String(collectionExpanded));
-      if (collection.id === state.selectedCollectionId) {
-        collectionButton.classList.add("is-current");
-        collectionButton.setAttribute("aria-current", "page");
-      }
-      const mark = document.createElement("span");
-      mark.className = "collection-nav__mark";
-      mark.textContent = collection.mark;
-      const collectionCopy = document.createElement("span");
-      const collectionTitle = document.createElement("strong");
-      collectionTitle.textContent = collection.title;
-      markVietnamese(collectionTitle);
-      const collectionMeta = document.createElement("small");
-      const collectionEntries = collection.modules.reduce((total, module) => total + module.lessons.length, 0);
-      const collectionLive = collection.modules.reduce(
-        (total, module) => total + module.lessons.filter((lesson) => lesson.status === "published").length,
-        0,
-      );
-      const progress = collectionProgress(collection);
-      collectionMeta.textContent = collection.kind === "notes"
-        ? `${collectionEntries} preserved ${collectionEntries === 1 ? "note" : "notes"}`
-        : `${collection.modules.length} modules · ${progress.completed}/${collectionLive} complete`;
-      collectionCopy.append(collectionTitle, collectionMeta);
-      const collectionArrow = document.createElement("span");
-      collectionArrow.className = "collection-nav__chevron";
-      collectionArrow.setAttribute("aria-hidden", "true");
-      collectionArrow.textContent = "›";
-      collectionButton.append(mark, collectionCopy, collectionArrow);
+    const collectionButton = document.createElement("button");
+    collectionButton.type = "button";
+    collectionButton.className = "collection-nav__head";
+    collectionButton.dataset.collectionId = collection.id;
+    collectionButton.setAttribute("aria-expanded", String(collectionExpanded));
+    if (collection.id === state.selectedCollectionId) {
+      collectionButton.classList.add("is-current");
+      collectionButton.setAttribute("aria-current", "page");
+    }
+    const mark = document.createElement("span");
+    mark.className = "collection-nav__mark";
+    mark.textContent = collection.mark;
+    const collectionCopy = document.createElement("span");
+    const collectionTitle = document.createElement("strong");
+    collectionTitle.textContent = collection.title;
+    markVietnamese(collectionTitle);
+    const collectionMeta = document.createElement("small");
+    const collectionEntries = collection.modules.reduce((total, module) => total + module.lessons.length, 0);
+    const collectionLive = collection.modules.reduce(
+      (total, module) => total + module.lessons.filter((lesson) => lesson.status === "published").length,
+      0,
+    );
+    const progress = collectionProgress(collection);
+    collectionMeta.textContent = collection.kind === "notes"
+      ? `${collectionEntries} preserved ${collectionEntries === 1 ? "note" : "notes"}`
+      : `${collection.modules.length} modules · ${progress.completed}/${collectionLive} complete`;
+    collectionCopy.append(collectionTitle, collectionMeta);
+    const collectionArrow = document.createElement("span");
+    collectionArrow.className = "collection-nav__chevron";
+    collectionArrow.setAttribute("aria-hidden", "true");
+    collectionArrow.textContent = "›";
+    collectionButton.append(mark, collectionCopy, collectionArrow);
 
-      const collectionBody = document.createElement("div");
-      collectionBody.className = "collection-nav__body";
-      collectionBody.id = `collection-${collection.id}`;
-      collectionBody.hidden = !collectionExpanded;
-      collectionButton.setAttribute("aria-controls", collectionBody.id);
+    const collectionBody = document.createElement("div");
+    collectionBody.className = "collection-nav__body";
+    collectionBody.id = `collection-${collection.id}`;
+    collectionBody.hidden = !collectionExpanded;
+    collectionButton.setAttribute("aria-controls", collectionBody.id);
 
-      collection.modules.forEach((module) => {
-        const group = document.createElement("section");
-        group.className = "module-group";
+    collection.modules.forEach((module) => {
+      const group = document.createElement("section");
+      group.className = "module-group";
 
-        const toggle = document.createElement("button");
-        toggle.type = "button";
-        toggle.className = "module-toggle";
-        toggle.dataset.moduleId = module.id;
-        const expanded = state.openModules.has(module.id);
-        toggle.setAttribute("aria-expanded", String(expanded));
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "module-toggle";
+      toggle.dataset.moduleId = module.id;
+      const expanded = state.openModules.has(module.id);
+      toggle.setAttribute("aria-expanded", String(expanded));
 
-        const number = document.createElement("span");
-        number.className = "module-number";
-        number.textContent = module.number;
-        const copy = document.createElement("span");
-        copy.className = "module-toggle__copy";
-        const title = document.createElement("strong");
-        title.textContent = module.title;
-        markVietnamese(title);
-        const meta = document.createElement("small");
-        const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
-        const completedCount = module.lessons.filter((lesson) => state.completed.has(lesson.id)).length;
-        const sourceMapped = module.lessons.every((lesson) => lesson.references.length >= 3);
-        meta.textContent = collection.kind === "notes"
-          ? `${module.lessons.length} ${module.lessons.length === 1 ? "note" : "notes"}`
-          : `${module.lessons.length} lessons${
-              liveCount
-                ? ` · ${completedCount}/${liveCount} complete`
-                : sourceMapped
-                  ? " · source-mapped roadmap"
-                  : " · lesson planning"
-            }`;
-        copy.append(title, meta);
-        const chevron = document.createElement("span");
-        chevron.className = "module-chevron";
-        chevron.setAttribute("aria-hidden", "true");
-        chevron.textContent = "›";
-        toggle.append(number, copy, chevron);
+      const number = document.createElement("span");
+      number.className = "module-number";
+      number.textContent = module.number;
+      const copy = document.createElement("span");
+      copy.className = "module-toggle__copy";
+      const title = document.createElement("strong");
+      title.textContent = module.title;
+      markVietnamese(title);
+      const meta = document.createElement("small");
+      const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
+      const completedCount = module.lessons.filter((lesson) => state.completed.has(lesson.id)).length;
+      const sourceMapped = module.lessons.every((lesson) => lesson.references.length >= 3);
+      meta.textContent = collection.kind === "notes"
+        ? `${module.lessons.length} ${module.lessons.length === 1 ? "note" : "notes"}`
+        : `${module.lessons.length} lessons${
+            liveCount
+              ? ` · ${completedCount}/${liveCount} complete`
+              : sourceMapped
+                ? " · source-mapped roadmap"
+                : " · lesson planning"
+          }`;
+      copy.append(title, meta);
+      const chevron = document.createElement("span");
+      chevron.className = "module-chevron";
+      chevron.setAttribute("aria-hidden", "true");
+      chevron.textContent = "›";
+      toggle.append(number, copy, chevron);
 
-        const lessons = document.createElement("div");
-        lessons.className = "lesson-list";
-        lessons.hidden = !expanded;
-        lessons.id = `lessons-${module.id}`;
-        toggle.setAttribute("aria-controls", lessons.id);
+      const lessons = document.createElement("div");
+      lessons.className = "lesson-list";
+      lessons.hidden = !expanded;
+      lessons.id = `lessons-${module.id}`;
+      toggle.setAttribute("aria-controls", lessons.id);
 
-        module.lessons.forEach((lesson) => {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = `lesson-link ${lesson.status === "planned" ? "is-planned" : ""} ${state.completed.has(lesson.id) ? "is-complete" : ""} ${state.bookmarks.has(lesson.id) ? "is-bookmarked" : ""}`;
-          button.dataset.lessonId = lesson.id;
-          if (lesson.id === state.selectedId) button.setAttribute("aria-current", "page");
-          const label = document.createElement("span");
-          label.textContent = lesson.title;
-          markVietnamese(label);
-          const lessonState = document.createElement("span");
-          lessonState.className = "lesson-link__state";
-          lessonState.setAttribute("aria-hidden", "true");
-          lessonState.textContent = state.completed.has(lesson.id) ? "✓" : state.bookmarks.has(lesson.id) ? "✦" : "";
-          button.append(label, lessonState);
-          lessons.append(button);
-        });
-
-        group.append(toggle, lessons);
-        collectionBody.append(group);
+      module.lessons.forEach((lesson) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `lesson-link ${lesson.status === "planned" ? "is-planned" : ""} ${state.completed.has(lesson.id) ? "is-complete" : ""} ${state.bookmarks.has(lesson.id) ? "is-bookmarked" : ""}`;
+        button.dataset.lessonId = lesson.id;
+        if (lesson.id === state.selectedId) button.setAttribute("aria-current", "page");
+        const label = document.createElement("span");
+        label.textContent = lesson.title;
+        markVietnamese(label);
+        const lessonState = document.createElement("span");
+        lessonState.className = "lesson-link__state";
+        lessonState.setAttribute("aria-hidden", "true");
+        lessonState.textContent = state.completed.has(lesson.id) ? "✓" : state.bookmarks.has(lesson.id) ? "✦" : "";
+        button.append(label, lessonState);
+        lessons.append(button);
       });
 
-      collectionGroup.append(collectionButton, collectionBody);
-      moduleList.append(collectionGroup);
+      group.append(toggle, lessons);
+      collectionBody.append(group);
+    });
+
+    collectionGroup.append(collectionButton, collectionBody);
+    return collectionGroup;
+  }
+
+  function renderNavigation() {
+    moduleList.replaceChildren();
+    COLLECTION_GROUPS.forEach((group) => {
+      const collections = collectionsForGroup(group);
+      if (!collections.length) return;
+      const groupSection = document.createElement("section");
+      groupSection.className = "collection-nav-group";
+      groupSection.dataset.collectionGroup = group.id;
+      groupSection.setAttribute("aria-labelledby", `collection-group-${group.id}`);
+      const groupLabel = document.createElement("div");
+      groupLabel.className = "collection-nav-group__label";
+      const mark = document.createElement("span");
+      mark.textContent = group.mark;
+      mark.setAttribute("aria-hidden", "true");
+      const copy = document.createElement("h2");
+      copy.id = `collection-group-${group.id}`;
+      copy.textContent = group.title;
+      const count = document.createElement("small");
+      count.textContent = String(collections.length);
+      groupLabel.append(mark, copy, count);
+      groupSection.append(groupLabel, ...collections.map(createCollectionNavigation));
+      moduleList.append(groupSection);
     });
   }
 
-  function appendRichText(element, text, lesson) {
+  function isWordCharacter(value) {
+    return Boolean(value && /[\p{L}\p{N}]/u.test(value));
+  }
+
+  function exactTermIndex(text, term, fromIndex = 0) {
+    const haystack = text.toLocaleLowerCase("vi");
+    const needle = term.toLocaleLowerCase("vi");
+    let index = haystack.indexOf(needle, fromIndex);
+    while (index >= 0) {
+      const before = index > 0 ? haystack[index - 1] : "";
+      const after = index + needle.length < haystack.length ? haystack[index + needle.length] : "";
+      const startsWithWord = isWordCharacter(needle[0]);
+      const endsWithWord = isWordCharacter(needle[needle.length - 1]);
+      if ((!startsWithWord || !isWordCharacter(before)) && (!endsWithWord || !isWordCharacter(after))) return index;
+      index = haystack.indexOf(needle, index + Math.max(1, needle.length));
+    }
+    return -1;
+  }
+
+  function hasRenderableExactTerm(field, term) {
+    return String(field ?? "")
+      .split(/\[\[[a-z0-9-]+\]\]/gi)
+      .some((segment) => exactTermIndex(segment, term) >= 0);
+  }
+
+  function foldHintText(value, withMap = false) {
+    let text = "";
+    const map = [];
+    const source = String(value ?? "");
+    for (let index = 0; index < source.length; index += 1) {
+      const folded = source[index]
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/gu, "")
+        .replace(/[đĐ]/gu, "d")
+        .toLocaleLowerCase("en-US")
+        .replace(/[^a-z0-9&/]+/gu, " ");
+      for (const character of folded) {
+        if (character === " " && text.endsWith(" ")) continue;
+        text += character;
+        if (withMap) map.push(index);
+      }
+    }
+    return withMap ? { text, map } : text.trim();
+  }
+
+  function findTermMatch(text, term, fromIndex = 0) {
+    const exactIndex = exactTermIndex(text, term, fromIndex);
+    if (exactIndex >= 0) return { index: exactIndex, length: term.length };
+    const foldedText = foldHintText(text, true);
+    const foldedTerm = foldHintText(term);
+    if (!foldedTerm) return null;
+    let foldedFrom = foldedText.map.findIndex((sourceIndex) => sourceIndex >= fromIndex);
+    if (foldedFrom < 0) foldedFrom = foldedText.text.length;
+    let index = exactTermIndex(foldedText.text, foldedTerm, foldedFrom);
+    while (index >= 0) {
+      const start = foldedText.map[index];
+      const last = foldedText.map[index + foldedTerm.length - 1];
+      if (Number.isInteger(start) && Number.isInteger(last) && start >= fromIndex) {
+        return { index: start, length: last - start + 1 };
+      }
+      index = exactTermIndex(foldedText.text, foldedTerm, index + Math.max(1, foldedTerm.length));
+    }
+    return null;
+  }
+
+  function createFirstUseHintState(lesson) {
+    const hints = Array.isArray(lesson?.firstUseHints) ? lesson.firstUseHints : [];
+    if (!hints.length) return null;
+    const coreText = lesson.sections.slice(0, 9).flatMap((section) =>
+      section.blocks
+        .filter((block) => block.learningLayer !== "detail")
+        .map(blockSearchText),
+    ).join(" ").replace(/\[\[[a-z0-9-]+\]\]/gi, " ");
+    return {
+      hints: hints.map((hint, index) => ({
+        ...hint,
+        key: `${index}:${hint.term.toLocaleLowerCase("vi")}`,
+        preferCore: Boolean(findTermMatch(coreText, hint.term)),
+      })),
+      used: new Set(),
+    };
+  }
+
+  function ensureTermHintTooltip() {
+    if (termHintTooltip?.isConnected) return termHintTooltip;
+    termHintTooltip = document.createElement("div");
+    termHintTooltip.id = "first-use-tooltip";
+    termHintTooltip.className = "first-use-tooltip";
+    termHintTooltip.setAttribute("role", "tooltip");
+    termHintTooltip.hidden = true;
+    document.body.append(termHintTooltip);
+    return termHintTooltip;
+  }
+
+  function positionTermHintTooltip() {
+    if (!activeTermHint?.isConnected || !termHintTooltip || termHintTooltip.hidden) return;
+    const margin = 12;
+    const gap = 10;
+    const targetRect = activeTermHint.getBoundingClientRect();
+    const tooltipRect = termHintTooltip.getBoundingClientRect();
+    const left = Math.min(
+      Math.max(margin, targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2)),
+      Math.max(margin, window.innerWidth - tooltipRect.width - margin),
+    );
+    let top = targetRect.top - tooltipRect.height - gap;
+    if (top < margin) top = targetRect.bottom + gap;
+    if (top + tooltipRect.height > window.innerHeight - margin) {
+      top = Math.max(margin, window.innerHeight - tooltipRect.height - margin);
+    }
+    termHintTooltip.style.left = `${Math.round(left)}px`;
+    termHintTooltip.style.top = `${Math.round(top)}px`;
+  }
+
+  function showTermHintTooltip(target) {
+    if (!target?.matches?.(".first-use-hint") || !target.dataset.explanation) return;
+    const tooltip = ensureTermHintTooltip();
+    if (activeTermHint && activeTermHint !== target) activeTermHint.removeAttribute("aria-describedby");
+    activeTermHint = target;
+    tooltip.textContent = target.dataset.explanation;
+    tooltip.hidden = false;
+    target.setAttribute("aria-describedby", tooltip.id);
+    window.requestAnimationFrame(positionTermHintTooltip);
+  }
+
+  function hideTermHintTooltip({ clear = true } = {}) {
+    activeTermHint?.removeAttribute("aria-describedby");
+    activeTermHint = null;
+    if (!termHintTooltip) return;
+    termHintTooltip.hidden = true;
+    termHintTooltip.style.left = "";
+    termHintTooltip.style.top = "";
+    if (clear) termHintTooltip.textContent = "";
+  }
+
+  function appendHintedText(element, text, hintState, block) {
+    if (!hintState || !text) {
+      element.append(document.createTextNode(text));
+      return;
+    }
+    let cursor = 0;
+    while (cursor < text.length) {
+      let selected = null;
+      hintState.hints.forEach((hint) => {
+        if (hintState.used.has(hint.key)) return;
+        if (block?.learningLayer === "detail" && hint.preferCore) return;
+        const match = findTermMatch(text, hint.term, cursor);
+        if (!match) return;
+        if (!selected || match.index < selected.index || (match.index === selected.index && hint.term.length > selected.hint.term.length)) {
+          selected = { hint, ...match };
+        }
+      });
+      if (!selected) {
+        element.append(document.createTextNode(text.slice(cursor)));
+        break;
+      }
+      if (selected.index > cursor) element.append(document.createTextNode(text.slice(cursor, selected.index)));
+      const visibleTerm = text.slice(selected.index, selected.index + selected.length);
+      const definition = document.createElement("dfn");
+      definition.className = "first-use-hint";
+      definition.tabIndex = 0;
+      definition.textContent = visibleTerm;
+      definition.dataset.explanation = selected.hint.explanation;
+      element.append(definition);
+      hintState.used.add(selected.hint.key);
+      cursor = selected.index + selected.length;
+    }
+  }
+
+  function appendRichText(element, text, lesson, hintState = null, block = null) {
     const pattern = /\[\[([a-z0-9-]+)\]\]/gi;
     let cursor = 0;
     let match;
     while ((match = pattern.exec(text)) !== null) {
-      if (match.index > cursor) element.append(document.createTextNode(text.slice(cursor, match.index)));
+      if (match.index > cursor) appendHintedText(element, text.slice(cursor, match.index), hintState, block);
       const sourceId = match[1];
       const source = state.sourceMap.get(sourceId);
       const referenceIndex = lesson?.references.indexOf(sourceId) ?? -1;
@@ -1535,7 +2097,7 @@
       }
       cursor = pattern.lastIndex;
     }
-    if (cursor < text.length) element.append(document.createTextNode(text.slice(cursor)));
+    if (cursor < text.length) appendHintedText(element, text.slice(cursor), hintState, block);
   }
 
   function readableChunks(value, maximum = 380) {
@@ -1574,37 +2136,45 @@
     return chunks;
   }
 
-  function renderBlock(block, lesson) {
+  function renderBlock(block, lesson, hintState = null) {
+    const finish = (node) => {
+      const elements = node.nodeType === Node.DOCUMENT_FRAGMENT_NODE ? Array.from(node.children) : [node];
+      elements.forEach((element) => {
+        if (block.learningLayer === "core") element.classList.add("learning-layer-core");
+        if (block.learningLayer === "detail") element.classList.add("learning-layer-detail");
+      });
+      return node;
+    };
     if (block.type === "paragraph") {
       const fragment = document.createDocumentFragment();
       readableChunks(block.text).forEach((chunk) => {
         const paragraph = document.createElement("p");
         paragraph.className = "content-block content-paragraph";
-        appendRichText(paragraph, chunk, lesson);
+        appendRichText(paragraph, chunk, lesson, hintState, block);
         fragment.append(paragraph);
       });
-      return fragment;
+      return finish(fragment);
     }
     if (block.type === "list") {
       const list = document.createElement(block.ordered ? "ol" : "ul");
       list.className = "content-block content-list";
       block.items.forEach((item) => {
         const row = document.createElement("li");
-        appendRichText(row, item, lesson);
+        appendRichText(row, item, lesson, hintState, block);
         list.append(row);
       });
-      return list;
+      return finish(list);
     }
     if (block.type === "callout") {
       const callout = document.createElement("aside");
       callout.className = "content-block content-callout";
       callout.dataset.tone = block.tone;
       const label = document.createElement("strong");
-      label.textContent = block.label;
+      appendHintedText(label, block.label, hintState, block);
       const paragraph = document.createElement("p");
-      appendRichText(paragraph, block.text, lesson);
+      appendRichText(paragraph, block.text, lesson, hintState, block);
       callout.append(label, paragraph);
-      return callout;
+      return finish(callout);
     }
     if (block.type === "table") {
       const wrap = document.createElement("div");
@@ -1618,7 +2188,7 @@
       block.headers.forEach((header) => {
         const cell = document.createElement("th");
         cell.scope = "col";
-        appendRichText(cell, header, lesson);
+        appendRichText(cell, header, lesson, hintState, block);
         headRow.append(cell);
       });
       head.append(headRow);
@@ -1627,14 +2197,14 @@
         const tableRow = document.createElement("tr");
         row.forEach((value) => {
           const cell = document.createElement("td");
-          appendRichText(cell, value, lesson);
+          appendRichText(cell, value, lesson, hintState, block);
           tableRow.append(cell);
         });
         body.append(tableRow);
       });
       table.append(head, body);
       wrap.append(table);
-      return wrap;
+      return finish(wrap);
     }
     if (block.type === "flow") {
       const flow = document.createElement("ol");
@@ -1644,15 +2214,15 @@
         const card = document.createElement("li");
         card.className = "flow-step";
         const label = document.createElement("span");
-        appendRichText(label, step.label, lesson);
+        appendRichText(label, step.label, lesson, hintState, block);
         const title = document.createElement("strong");
-        appendRichText(title, step.title, lesson);
+        appendRichText(title, step.title, lesson, hintState, block);
         const detail = document.createElement("small");
-        appendRichText(detail, step.detail, lesson);
+        appendRichText(detail, step.detail, lesson, hintState, block);
         card.append(label, title, detail);
         flow.append(card);
       });
-      return flow;
+      return finish(flow);
     }
     return document.createDocumentFragment();
   }
@@ -1698,9 +2268,17 @@
     markVietnamese(level);
     meta.append(status, level);
     const duration = document.createElement("span");
-    duration.textContent = lesson.status === "published"
-      ? `${estimatedMinutes(lesson)} min read`
-      : `Target: ${estimatedMinutes(lesson)} min lesson`;
+    const fullMinutes = fullEstimatedMinutes(lesson);
+    const coreMinutes = essentialEstimatedMinutes(lesson);
+    if (lesson.status === "published") {
+      duration.dataset.readingTime = "true";
+      duration.dataset.fullMinutes = String(fullMinutes);
+      duration.dataset.coreMinutes = String(coreMinutes);
+      duration.dataset.readingTimeSuffix = "min read";
+      duration.textContent = `${readingMinutes(lesson)} min read`;
+    } else {
+      duration.textContent = `Target: ${fullMinutes} min lesson`;
+    }
     meta.append(duration);
     if (lesson.lastReviewed) {
       const reviewed = document.createElement("span");
@@ -1739,8 +2317,9 @@
     readingMode.type = "button";
     readingMode.className = "reader-action";
     readingMode.dataset.readerMode = "true";
+    readingMode.setAttribute("aria-label", "Essential reading view");
     readingMode.setAttribute("aria-pressed", String(state.readingMode === "essentials"));
-    readingMode.textContent = state.readingMode === "essentials" ? "Show full lesson" : "Essential view";
+    readingMode.textContent = "Essential view";
     const policy = document.createElement("button");
     policy.type = "button";
     policy.className = "source-policy-link";
@@ -1757,15 +2336,22 @@
     const section = document.createElement("section");
     section.className = "lesson-section";
     section.id = "section-references";
+    section.dataset.lessonPhase = "verify";
     const heading = document.createElement("div");
     heading.className = "section-heading";
     const number = document.createElement("span");
     const referenceSectionNumber = lesson.status === "planned" ? SECTION_TITLES.length : lesson.sections.length + 1;
     number.textContent = String(referenceSectionNumber).padStart(2, "0");
+    const headingCopy = document.createElement("div");
+    headingCopy.className = "section-heading__copy";
+    const phase = document.createElement("span");
+    phase.className = "section-phase";
+    phase.textContent = "Verify";
     const title = document.createElement("h2");
     title.textContent = "Nguồn tham khảo";
     title.lang = "vi";
-    heading.append(number, title);
+    headingCopy.append(phase, title);
+    heading.append(number, headingCopy);
     const list = document.createElement("ol");
     list.className = "reference-list";
     lesson.references.forEach((sourceId, index) => {
@@ -1840,7 +2426,7 @@
   }
 
   function stripCitationTokens(value) {
-    return normalizeString(value).replace(/\s*\[\[[a-z0-9-]+\]\]/gi, "").replace(/\s{2,}/g, " ").trim();
+    return normalizeString(value).replace(/\[\[[a-z0-9-]+\]\]/gi, " ").replace(/\s{2,}/g, " ").trim();
   }
 
   function firstSectionText(section) {
@@ -1870,9 +2456,10 @@
     guide.setAttribute("aria-label", "Quick lesson guide");
     const summary = document.createElement("div");
     const summaryLabel = document.createElement("span");
-    summaryLabel.textContent = "In one sentence";
+    summaryLabel.textContent = "What you will learn";
     const summaryText = document.createElement("p");
-    summaryText.textContent = shortText(stripCitationTokens(entry.lesson.summary), 220);
+    const goalText = firstSectionText(entry.lesson.sections[0]) || entry.lesson.summary;
+    summaryText.textContent = shortText(stripCitationTokens(goalText), 220);
     markVietnamese(summaryText);
     summary.append(summaryLabel, summaryText);
 
@@ -1911,17 +2498,38 @@
     const label = document.createElement("span");
     label.textContent = "On this page";
     outline.append(label);
+    const phaseGroups = new Map();
+    const groupForPhase = (phase) => {
+      if (phaseGroups.has(phase)) return phaseGroups.get(phase);
+      const group = document.createElement("div");
+      group.className = "outline-group";
+      group.dataset.lessonPhase = phase.toLocaleLowerCase("en-US");
+      const groupLabel = document.createElement("strong");
+      groupLabel.className = "outline-group__label";
+      groupLabel.textContent = phase;
+      group.append(groupLabel);
+      phaseGroups.set(phase, group);
+      outline.append(group);
+      return group;
+    };
+    const hasLearningLayer = lessonHasLearningLayer(entry.lesson);
     entry.lesson.sections.forEach((section, index) => {
+      const group = groupForPhase(sectionPhase(index));
       const button = document.createElement("button");
       button.type = "button";
       button.dataset.scrollSection = `section-${section.id}`;
-      if (ESSENTIAL_SECTION_INDEXES.has(index)) button.classList.add("is-essential");
+      if (hasLearningLayer || ESSENTIAL_SECTION_INDEXES.has(index)) {
+        button.classList.add("is-essential");
+        group.classList.add("has-essential");
+      }
       const number = document.createElement("span");
       number.textContent = String(index + 1).padStart(2, "0");
-      button.append(number, document.createTextNode(section.title));
+      button.append(number, document.createTextNode(displaySectionTitle(entry.collection.id, section)));
       markVietnamese(button);
-      outline.append(button);
+      group.append(button);
     });
+    const referenceGroup = groupForPhase("Verify");
+    referenceGroup.classList.add("has-essential");
     const references = document.createElement("button");
     references.type = "button";
     references.className = "is-essential";
@@ -1930,7 +2538,7 @@
     referenceNumber.textContent = String(entry.lesson.sections.length + 1).padStart(2, "0");
     references.append(referenceNumber, document.createTextNode("Nguồn tham khảo"));
     references.lang = "vi";
-    outline.append(references);
+    referenceGroup.append(references);
     return outline;
   }
 
@@ -1942,21 +2550,31 @@
     const body = document.createElement("div");
     body.className = "lesson-body";
     body.append(createQuickGuide(entry));
+    const hasLearningLayer = lessonHasLearningLayer(entry.lesson);
+    const firstUseHintState = createFirstUseHintState(entry.lesson);
     entry.lesson.sections.forEach((sectionData, index) => {
       const section = document.createElement("section");
       section.className = "lesson-section";
       section.lang = "vi";
-      if (ESSENTIAL_SECTION_INDEXES.has(index)) section.classList.add("is-essential");
+      section.dataset.lessonPhase = sectionPhase(index).toLocaleLowerCase("en-US");
+      if (hasLearningLayer || ESSENTIAL_SECTION_INDEXES.has(index)) section.classList.add("is-essential");
       section.id = `section-${sectionData.id}`;
       const heading = document.createElement("div");
       heading.className = "section-heading";
       const number = document.createElement("span");
       number.textContent = String(index + 1).padStart(2, "0");
+      const headingCopy = document.createElement("div");
+      headingCopy.className = "section-heading__copy";
+      const phase = document.createElement("span");
+      phase.className = "section-phase";
+      phase.textContent = sectionPhase(index);
       const title = document.createElement("h2");
-      title.textContent = sectionData.title;
-      heading.append(number, title);
+      title.textContent = displaySectionTitle(entry.collection.id, sectionData);
+      headingCopy.append(phase, title);
+      heading.append(number, headingCopy);
       section.append(heading);
-      sectionData.blocks.forEach((block) => section.append(renderBlock(block, entry.lesson)));
+      const sectionHintState = index < 9 ? firstUseHintState : null;
+      sectionData.blocks.forEach((block) => section.append(renderBlock(block, entry.lesson, sectionHintState)));
       body.append(section);
     });
     const references = renderReferences(entry.lesson, entry.collection.kind);
@@ -2042,6 +2660,7 @@
   }
 
   function finishHomeRender({ focusHeading = false } = {}) {
+    hideTermHintTooltip();
     renderNavigation();
     workspace.scrollTo({ top: 0, behavior: "auto" });
     updateReadingProgress();
@@ -2095,6 +2714,13 @@
     surprise.dataset.randomLesson = collection?.id || "all";
     surprise.textContent = "Surprise me ✦";
     actions.append(surprise);
+    if (!collection) {
+      const daily = document.createElement("button");
+      daily.type = "button";
+      daily.dataset.dailySpark = "true";
+      daily.textContent = "Today's spark ☼";
+      actions.append(daily);
+    }
     primary.append(kicker, title, description, actions);
 
     const secondary = document.createElement("article");
@@ -2132,6 +2758,44 @@
     return panel;
   }
 
+  function createCollectionCard(collection) {
+    const entries = collection.modules.flatMap((module) => module.lessons);
+    const liveCount = entries.filter((lesson) => lesson.status === "published").length;
+    const card = document.createElement("article");
+    card.className = "collection-card";
+    card.dataset.domainTone = collectionTone(collection.id);
+    const top = document.createElement("div");
+    top.className = "collection-card__top";
+    const mark = document.createElement("span");
+    mark.textContent = collection.mark;
+    const type = document.createElement("span");
+    type.textContent = collection.kind === "notes" ? "Personal notes" : "Learning domain";
+    top.append(mark, type);
+    const title = document.createElement("h3");
+    title.textContent = collection.title;
+    const description = document.createElement("p");
+    description.textContent = shortText(collection.description, 145);
+    markVietnamese(title, description);
+    const metrics = document.createElement("div");
+    metrics.className = "collection-card__metrics";
+    metrics.append(
+      Object.assign(document.createElement("span"), { textContent: `${collection.modules.length} groups` }),
+      Object.assign(document.createElement("span"), { textContent: `${liveCount} available` }),
+    );
+    const progress = collectionProgress(collection);
+    const progressWrap = document.createElement("div");
+    progressWrap.className = "collection-card__progress";
+    const progressText = document.createElement("small");
+    progressText.textContent = `${progress.completed} of ${progress.available} complete`;
+    progressWrap.append(progressText, createProgressTrack(progress.percent, `${collection.title} progress: ${progress.percent}%`));
+    const open = document.createElement("button");
+    open.type = "button";
+    open.dataset.openCollection = collection.id;
+    open.textContent = progress.completed ? "Continue domain →" : "Start here →";
+    card.append(top, title, description, metrics, progressWrap, open);
+    return card;
+  }
+
   function renderHome({ focusHeading = false } = {}) {
     state.selectedId = null;
     state.selectedCollectionId = null;
@@ -2140,69 +2804,42 @@
     applyCollectionTone();
     document.title = "Knowledge Library | Private Learning Space";
     lessonReader.replaceChildren();
-    const all = allLessons();
     const live = publishedLessons();
     const hero = createHomeHero(
-      "Private learning library",
-      state.data.title,
-      state.data.description,
+      "Your private learning world",
+      "Follow your curiosity.",
+      "Choose a constellation, start with one clear idea, and go as deep as you like.",
       [
+        [COLLECTION_GROUPS.length, "topic constellations"],
         [state.data.collections.length, "knowledge collections"],
-        [state.data.modules.length, "structured content groups"],
-        [all.length, "lessons and notes"],
         [live.length, "available reading items"],
       ],
     );
 
-    const collections = document.createElement("section");
-    collections.className = "home-section";
-    collections.append(createHomeSectionHead(
-      "My collections",
-      "Each subject has its own structure, source policy, and review cycle. Existing knowledge stays intact as new domains grow over time.",
-    ));
-    const grid = document.createElement("div");
-    grid.className = "collection-grid";
-    state.data.collections.forEach((collection) => {
-      const entries = collection.modules.flatMap((module) => module.lessons);
-      const liveCount = entries.filter((lesson) => lesson.status === "published").length;
-      const card = document.createElement("article");
-      card.className = "collection-card";
-      const top = document.createElement("div");
-      top.className = "collection-card__top";
-      const mark = document.createElement("span");
-      mark.textContent = collection.mark;
-      const type = document.createElement("span");
-      type.textContent = collection.kind === "notes" ? "Personal notes" : "Learning domain";
-      top.append(mark, type);
-      const title = document.createElement("h2");
-      title.textContent = collection.title;
-      const description = document.createElement("p");
-      description.textContent = shortText(collection.description, 170);
-      markVietnamese(title, description);
-      const metrics = document.createElement("div");
-      metrics.className = "collection-card__metrics";
-      metrics.append(
-        Object.assign(document.createElement("span"), { textContent: `${collection.modules.length} groups` }),
-        Object.assign(document.createElement("span"), { textContent: `${liveCount} available` }),
-      );
-      const progress = collectionProgress(collection);
-      const progressWrap = document.createElement("div");
-      progressWrap.className = "collection-card__progress";
-      const progressText = document.createElement("small");
-      progressText.textContent = `${progress.completed} of ${progress.available} complete`;
-      progressWrap.append(progressText, createProgressTrack(progress.percent, `${collection.title} progress: ${progress.percent}%`));
-      const open = document.createElement("button");
-      open.type = "button";
-      open.dataset.openCollection = collection.id;
-      open.textContent = progress.completed ? "Continue domain →" : "Start here →";
-      card.append(top, title, description, metrics, progressWrap, open);
-      grid.append(card);
+    const groupedCollections = document.createElement("div");
+    groupedCollections.className = "home-groups";
+    COLLECTION_GROUPS.forEach((group) => {
+      const collections = collectionsForGroup(group);
+      if (!collections.length) return;
+      const section = document.createElement("section");
+      section.className = "home-section topic-group";
+      section.dataset.collectionGroup = group.id;
+      const heading = createHomeSectionHead(group.title, group.description);
+      const groupMark = document.createElement("span");
+      groupMark.className = "topic-group__mark";
+      groupMark.textContent = group.mark;
+      groupMark.setAttribute("aria-hidden", "true");
+      heading.prepend(groupMark);
+      const grid = document.createElement("div");
+      grid.className = "collection-grid";
+      collections.forEach((collection) => grid.append(createCollectionCard(collection)));
+      section.append(heading, grid);
+      groupedCollections.append(section);
     });
-    collections.append(grid);
     lessonReader.append(hero, createPathPanel());
     const recent = createRecentSection();
     if (recent) lessonReader.append(recent);
-    lessonReader.append(collections);
+    lessonReader.append(groupedCollections);
     finishHomeRender({ focusHeading });
   }
 
@@ -2429,7 +3066,10 @@
     const mark = document.createElement("span");
     mark.textContent = entry.collection.mark;
     const meta = document.createElement("span");
-    meta.textContent = `${estimatedMinutes(entry.lesson)} min`;
+    meta.dataset.readingTime = "true";
+    meta.dataset.fullMinutes = String(fullEstimatedMinutes(entry.lesson));
+    meta.dataset.coreMinutes = String(essentialEstimatedMinutes(entry.lesson));
+    meta.textContent = `${readingMinutes(entry.lesson)} min`;
     top.append(mark, meta);
     const title = document.createElement("h3");
     title.textContent = entry.lesson.title;
@@ -2580,6 +3220,7 @@
     applyCollectionTone(entry.collection.id);
     if (remember) rememberLesson(entry);
     document.title = `${entry.lesson.title} | ${entry.collection.title}`;
+    hideTermHintTooltip();
     lessonReader.replaceChildren(
       entry.lesson.status === "published" ? renderPublishedLesson(entry) : renderPlannedLesson(entry),
     );
@@ -2745,6 +3386,8 @@
   function lockVault() {
     window.clearTimeout(state.toastTimer);
     window.clearTimeout(state.shortcutTimer);
+    stopFocusTimer();
+    hideTermHintTooltip();
     state.toastTimer = null;
     state.shortcutTimer = null;
     state.shortcutPrefix = "";
@@ -2933,6 +3576,11 @@
       selectRandomLesson(randomLessonButton.dataset.randomLesson);
       return;
     }
+    const dailySparkButton = event.target.closest("[data-daily-spark]");
+    if (dailySparkButton) {
+      openDailySpark();
+      return;
+    }
     const savedLessonsButton = event.target.closest("[data-open-bookmarks]");
     if (savedLessonsButton) {
       renderBookmarksHome();
@@ -2940,7 +3588,7 @@
     }
     const sectionButton = event.target.closest("[data-scroll-section]");
     if (sectionButton) {
-      document.getElementById(sectionButton.dataset.scrollSection)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById(sectionButton.dataset.scrollSection)?.scrollIntoView({ behavior: preferredScrollBehavior(), block: "start" });
       return;
     }
     const sourceToggle = event.target.closest("[data-toggle-sources]");
@@ -2974,7 +3622,7 @@
         const target = lessonReader.querySelector("#source-policy") || lessonReader.querySelector(".home-hero h1");
         if (!target) return;
         target.tabIndex = -1;
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        target.scrollIntoView({ behavior: preferredScrollBehavior(), block: "start" });
         target.focus({ preventScroll: true });
       });
     }
@@ -2988,6 +3636,36 @@
     const result = event.target.closest("[data-lesson-id]");
     if (result) selectLesson(result.dataset.lessonId);
   });
+  document.addEventListener("focusin", (event) => {
+    const hint = event.target.closest?.(".first-use-hint");
+    if (hint) showTermHintTooltip(hint);
+  });
+  document.addEventListener("focusout", (event) => {
+    if (event.target !== activeTermHint) return;
+    window.requestAnimationFrame(() => {
+      if (document.activeElement !== activeTermHint) hideTermHintTooltip();
+    });
+  });
+  document.addEventListener("pointerover", (event) => {
+    const hint = event.target.closest?.(".first-use-hint");
+    if (hint && event.pointerType !== "touch") showTermHintTooltip(hint);
+  });
+  document.addEventListener("pointerout", (event) => {
+    if (event.pointerType === "touch" || event.target !== activeTermHint) return;
+    if (event.relatedTarget && activeTermHint.contains(event.relatedTarget)) return;
+    if (document.activeElement !== activeTermHint) hideTermHintTooltip();
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!event.target.closest?.(".first-use-hint")) hideTermHintTooltip();
+  });
+  document.addEventListener("click", (event) => {
+    const hint = event.target.closest?.(".first-use-hint");
+    if (!hint) return;
+    hint.focus({ preventScroll: true });
+    showTermHintTooltip(hint);
+  });
+  document.addEventListener("scroll", hideTermHintTooltip, { capture: true, passive: true });
+  renderThemeOptions();
   themeToggle?.addEventListener("click", () => openThemeDialog(themeToggle));
   themeToolButton?.addEventListener("click", () => openThemeDialog(themeToolButton));
   themeCloseButtons.forEach((button) => button.addEventListener("click", closeThemeDialog));
@@ -2995,10 +3673,12 @@
     option.addEventListener("click", () => setTheme(option.dataset.themeOption));
     option.addEventListener("keydown", handleThemeOptionKeydown);
   });
+  themeShuffleButton?.addEventListener("click", shuffleTheme);
   toolsToggle?.addEventListener("click", toggleTools);
   toolsClose?.addEventListener("click", () => closeTools({ restoreFocus: true }));
   resumeButton?.addEventListener("click", openResumeLesson);
   randomButton?.addEventListener("click", () => selectRandomLesson());
+  dailyButton?.addEventListener("click", openDailySpark);
   bookmarksButton?.addEventListener("click", () => {
     closeTools();
     renderBookmarksHome();
@@ -3006,6 +3686,8 @@
   readingModeButton?.addEventListener("click", toggleReadingMode);
   textSizeButton?.addEventListener("click", cycleTextSize);
   focusButton?.addEventListener("click", () => setFocusMode(!state.focusMode));
+  focusTimerButton?.addEventListener("click", toggleFocusTimer);
+  focusTimerStopButton?.addEventListener("click", () => stopFocusTimer({ announce: true }));
   shortcutsButton?.addEventListener("click", openShortcuts);
   shortcutsCloseButtons.forEach((button) => button.addEventListener("click", closeShortcuts));
   sidebarOpenButton?.addEventListener("click", () => {
@@ -3024,6 +3706,7 @@
   window.addEventListener("pointerup", finishSidebarResize);
   window.addEventListener("pointercancel", finishSidebarResize);
   window.addEventListener("resize", () => {
+    hideTermHintTooltip();
     const compact = isCompactSidebar();
     if (state.compactSidebar !== compact) {
       document.body.classList.remove("sidebar-open");
@@ -3036,7 +3719,15 @@
     syncCurriculumInteractivity();
   });
   workspace?.addEventListener("scroll", updateReadingProgress, { passive: true });
+  workspace?.addEventListener("scroll", () => hideTermHintTooltip(), { passive: true });
   document.addEventListener("keydown", (event) => {
+    if (activeTermHint && event.key === "Escape") {
+      event.preventDefault();
+      const target = activeTermHint;
+      hideTermHintTooltip();
+      target.focus({ preventScroll: true });
+      return;
+    }
     if (!themeDialog?.hidden) {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -3128,6 +3819,10 @@
       event.preventDefault();
       closeCompactSidebarForShortcut();
       selectRandomLesson();
+    } else if (key === "d") {
+      event.preventDefault();
+      closeCompactSidebarForShortcut();
+      openDailySpark();
     } else if (key === "f") {
       event.preventDefault();
       closeCompactSidebarForShortcut();

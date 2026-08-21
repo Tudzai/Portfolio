@@ -5,7 +5,10 @@ import { fileURLToPath } from "node:url";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const vaultDirectory = resolve(scriptDirectory, "..");
-const inputPath = process.argv[2] ? resolve(process.cwd(), process.argv[2]) : join(vaultDirectory, "vault-data.js");
+const commandArguments = process.argv.slice(2);
+const requireCurrentRelease = commandArguments.includes("--require-current");
+const inputArgument = commandArguments.find((argument) => !argument.startsWith("--"));
+const inputPath = inputArgument ? resolve(process.cwd(), inputArgument) : join(vaultDirectory, "vault-data.js");
 const password = process.env.VAULT_PASSWORD;
 const expectedSectionCount = 11;
 const canonicalSectionIds = [
@@ -43,8 +46,11 @@ const releaseManifest = [
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
+  { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
+  { id: "coffee", modules: 6, lessons: 18, sources: 12 },
 ];
 const legacyReleaseManifest = releaseManifest.slice(0, 5);
+const previousEightDomainReleaseManifest = releaseManifest.slice(0, 8);
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const sourceDateFields = ["publishedAt", "adoptedAt", "updatedAt", "reviewedAt", "accessedAt"];
@@ -82,8 +88,25 @@ function isIsoDate(value) {
     && parsed.getUTCDate() === day;
 }
 
+function hasExactTerm(field, term) {
+  const needle = String(term ?? "").toLocaleLowerCase("vi");
+  const word = (character) => Boolean(character && /[\p{L}\p{N}]/u.test(character));
+  return String(field ?? "").split(/\[\[[a-z0-9-]+\]\]/gi).some((segment) => {
+    const text = segment.toLocaleLowerCase("vi");
+    let index = text.indexOf(needle);
+    while (needle && index >= 0) {
+      const before = index > 0 ? text[index - 1] : "";
+      const after = index + needle.length < text.length ? text[index + needle.length] : "";
+      if ((!word(needle[0]) || !word(before)) && (!word(needle.at(-1)) || !word(after))) return true;
+      index = text.indexOf(needle, index + Math.max(1, needle.length));
+    }
+    return false;
+  });
+}
+
 function validBlock(block) {
   if (!block || typeof block !== "object" || !present(block.type)) return false;
+  if (block.learningLayer !== undefined && !new Set(["core", "detail"]).has(block.learningLayer)) return false;
   if (block.type === "paragraph") return present(block.text) && block.text.length <= 1_600;
   if (block.type === "list") {
     return Array.isArray(block.items)
@@ -92,6 +115,7 @@ function validBlock(block) {
   }
   if (block.type === "callout") {
     return present(block.label)
+      && !/\[\[|\]\]/u.test(block.label)
       && present(block.text)
       && block.text.length <= 1_600
       && new Set(["note", "caution"]).has(block.tone);
@@ -135,12 +159,56 @@ function visibleBlockStrings(block) {
   return [];
 }
 
+function learningBlockStrings(block) {
+  if (block?.type === "callout") return [block.label, block.text];
+  return visibleBlockStrings(block);
+}
+
 function inlineCitationIds(sections) {
   const renderedText = (Array.isArray(sections) ? sections : [])
     .flatMap((section) => Array.isArray(section?.blocks) ? section.blocks.flatMap(visibleBlockStrings) : [])
     .filter((value) => typeof value === "string")
     .join("\n");
   return [...renderedText.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
+}
+
+function validLearningMetadata(lesson) {
+  if (!Array.isArray(lesson?.sections) || lesson.sections.some((section) => !Array.isArray(section?.blocks))) return false;
+  const blocks = lesson.sections.flatMap((section) => section.blocks);
+  const layeredBlocks = blocks.filter((block) => block.learningLayer !== undefined);
+  if (layeredBlocks.length) {
+    if (
+      layeredBlocks.length !== blocks.length
+      || !Number.isInteger(lesson.coreEstimatedMinutes)
+      || lesson.coreEstimatedMinutes < 4
+      || lesson.coreEstimatedMinutes > 20
+      || lesson.sections.some((section) => !section.blocks.some((block) => block.learningLayer === "core"))
+      || lesson.sections[7].blocks.some((block) => block.learningLayer !== "core")
+      || blocks.some((block) =>
+        block.type === "callout" && block.tone === "caution" && block.learningLayer !== "core",
+      )
+    ) return false;
+  } else if (lesson.coreEstimatedMinutes !== undefined) {
+    return false;
+  }
+
+  if (lesson.firstUseHints === undefined) return true;
+  if (layeredBlocks.length !== blocks.length) return false;
+  if (!Array.isArray(lesson.firstUseHints) || lesson.firstUseHints.length > 24) return false;
+  const terms = lesson.firstUseHints
+    .map((hint) => String(hint?.term || "").trim().toLocaleLowerCase("vi"));
+  const preGlossaryFields = lesson.sections.slice(0, 9)
+    .flatMap((section) => section.blocks.flatMap(learningBlockStrings))
+    .filter((value) => typeof value === "string");
+  return new Set(terms).size === terms.length
+    && lesson.firstUseHints.every((hint) =>
+      present(hint?.term)
+      && hint.term.length <= 80
+      && present(hint?.explanation)
+      && hint.explanation.length <= 600
+      && !/\[\[|\]\]/u.test(`${hint.term} ${hint.explanation}`)
+      && preGlossaryFields.some((field) => hasExactTerm(field, hint.term)),
+    );
 }
 
 function matchesHistoricalRelease(value, manifest) {
@@ -172,9 +240,9 @@ function matchesLegacyRelease(value) {
 }
 
 // Migration-only compatibility for the exact eight-domain release that preceded
-// the uniform schema. New plaintext and new ciphertext still pass the strict gate.
+// the ten-domain manifest. New plaintext and new ciphertext still pass the strict gate.
 function matchesPreviousEightDomainRelease(value) {
-  return matchesHistoricalRelease(value, releaseManifest);
+  return matchesHistoricalRelease(value, previousEightDomainReleaseManifest);
 }
 
 function matchesCurrentRelease(value) {
@@ -295,6 +363,7 @@ function matchesCurrentRelease(value) {
             && section.blocks.length > 0
             && section.blocks.every(validBlock)
           )
+          || !validLearningMetadata(lesson)
           || new Set(references).size < 3
           || new Set(references).size !== references.length
           || references.some((sourceId) => !sourceMap.has(sourceId))
@@ -327,6 +396,7 @@ function verifyReleaseShape(value) {
     || !Array.isArray(value.archivedVault.notes)
     || !value.archivedVault.notes.length
   ) return false;
+  if (requireCurrentRelease) return matchesCurrentRelease(value);
   return matchesCurrentRelease(value)
     || matchesPreviousEightDomainRelease(value)
     || matchesLegacyRelease(value);
@@ -384,7 +454,9 @@ try {
   );
   const parsed = JSON.parse(new TextDecoder().decode(plaintext));
   if (!verifyReleaseShape(parsed)) throw new Error();
-  console.log("Existing vault password and release shape verified.");
+  console.log(requireCurrentRelease
+    ? "Vault password and current ten-domain release shape verified."
+    : "Existing vault password and release shape verified.");
 } catch {
   console.error("Existing vault password verification failed.");
   process.exit(1);
