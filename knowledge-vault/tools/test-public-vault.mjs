@@ -72,7 +72,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260821-vault-polish7|vault.js?v=20260821-vault-polish7") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260822-simple-themes1|vault.js?v=20260822-simple-themes1") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -80,7 +80,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260821-vault-polish7") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260822-simple-themes1") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -121,6 +121,12 @@ const uniformReleaseManifest = [
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
   { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
   { id: "coffee", modules: 6, lessons: 18, sources: 12 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 12 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 12 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 12 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 12 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 12 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 12 },
 ];
 function extractLiteralManifest(artifact, constantName) {
   const literal = artifact.match(new RegExp(`const\\s+${constantName}\\s*=\\s*\\[([\\s\\S]*?)\\];`));
@@ -143,7 +149,7 @@ function extractLiteralManifest(artifact, constantName) {
 ].forEach(([artifact, constantName, label]) => {
   const manifest = extractLiteralManifest(artifact, constantName);
   if (JSON.stringify(manifest) !== JSON.stringify(uniformReleaseManifest)) {
-    failures.push(`exact uniform ten-domain manifest: ${label}`);
+    failures.push(`exact uniform sixteen-domain manifest: ${label}`);
   }
 });
 [
@@ -169,6 +175,11 @@ forbidMatch(encryptTool, /\bcanonicalSections\b/, "domain-conditional encryption
 forbidMatch(passwordVerifier, /\bcanonicalSections\b/, "domain-conditional password-verification gate");
 requireMatch(
   passwordVerifier,
+  /function\s+matchesPreviousTenDomainRelease\s*\(/,
+  "migration-only previous ten-domain password compatibility",
+);
+requireMatch(
+  passwordVerifier,
   /function\s+matchesPreviousEightDomainRelease\s*\(/,
   "migration-only previous eight-domain password compatibility",
 );
@@ -176,6 +187,11 @@ requireMatch(
   passwordVerifier,
   /function\s+matchesLegacyRelease\s*\(/,
   "migration-only legacy five-domain password compatibility",
+);
+requireMatch(
+  passwordVerifier,
+  /const\s+previousTenDomainReleaseManifest\s*=\s*releaseManifest\.slice\(0, 10\)/,
+  "exact previous ten-domain password manifest",
 );
 requireMatch(
   passwordVerifier,
@@ -202,9 +218,9 @@ requireMatch(
   /temporaryOutputPath,\s*"--require-current"/,
   "serialized ciphertext current-release verification",
 );
-forbidMatch(schemaValidator, /matchesPreviousEightDomainRelease|previousEightDomainReleaseManifest|legacyReleaseManifest/, "historical compatibility leaking into plaintext validation");
-forbidMatch(js, /matchesPreviousEightDomainRelease/, "historical compatibility leaking into runtime");
-forbidMatch(encryptTool, /matchesPreviousEightDomainRelease/, "historical compatibility leaking into source validation");
+forbidMatch(schemaValidator, /matchesPrevious(?:Eight|Ten)DomainRelease|previous(?:Eight|Ten)DomainReleaseManifest|legacyReleaseManifest/, "historical compatibility leaking into plaintext validation");
+forbidMatch(js, /matchesPrevious(?:Eight|Ten)DomainRelease/, "historical compatibility leaking into runtime");
+forbidMatch(encryptTool, /matchesPrevious(?:Eight|Ten)DomainRelease/, "historical compatibility leaking into source validation");
 
 const collectionToneManifest = [
   ["personal-notes", "violet"],
@@ -218,6 +234,12 @@ const collectionToneManifest = [
   ["cooking", "amber"],
   ["bar-drinks", "crimson"],
   ["coffee", "mocha"],
+  ["japanese-culture", "crimson"],
+  ["art-visual-culture", "gold"],
+  ["architecture-design-living", "mint"],
+  ["self-psychology", "indigo"],
+  ["communication-conflict", "cyan"],
+  ["relationships-boundaries", "rose"],
 ];
 collectionToneManifest.forEach(([id, tone]) => {
   requireMatch(js, new RegExp(`"${id}"\\s*:\\s*"${tone}"`), `collection tone mapping: ${id}`);
@@ -240,6 +262,8 @@ const collectionGroups = [
   ["movement-recovery", ["brk-domain-breaking", "mrel-domain"]],
   ["everyday-craft", ["personal-style", "photography", "cooking"]],
   ["taste-ritual", ["bar-drinks", "coffee"]],
+  ["culture-aesthetics", ["japanese-culture", "art-visual-culture", "architecture-design-living"]],
+  ["self-relationships", ["self-psychology", "communication-conflict", "relationships-boundaries"]],
 ];
 collectionGroups.forEach(([groupId, collectionIds]) => {
   requireMatch(js, new RegExp(`id:\\s*"${groupId}"`), `collection group: ${groupId}`);
@@ -249,6 +273,11 @@ collectionGroups.forEach(([groupId, collectionIds]) => {
 });
 requireMatch(js, /validateCollectionGroupManifest\(data\.collections\)/, "runtime collection-group coverage gate");
 requireMatch(js, /GROUPED_COLLECTION_ORDER\.join\("\|"\)\s*!==\s*EXPECTED_COLLECTION_ORDER\.join\("\|"\)/, "exact collection-group order gate");
+forbidMatch(html, /data-sidebar-filter|data-sidebar-groups-toggle/, "duplicated sidebar search or expand-all control");
+requireMatch(js, /function\s+loadNavigationGroups\s*\(/, "persistent sidebar group preference");
+requireMatch(js, /state\.openNavGroups\s*=\s*new Set\(\[group\.id\]\)/, "single-open sidebar group behavior");
+requireMatch(js, /state\.homeGroupId\s*===\s*group\.id/, "single-open home group behavior");
+requireMatch(js, /dataset\.homeGroupToggle\s*=\s*group\.id/, "home topic disclosure control");
 [
   [schemaValidator, "release-schema validator"],
   [js, "runtime"],
@@ -399,21 +428,11 @@ const ignoredPlaintext = spawnSync(
 if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
 
 [
-  "data-tools-toggle",
-  "data-resume-button",
-  "data-random-button",
-  "data-daily-button",
-  "data-bookmarks-button",
-  "data-reading-mode-button",
-  "data-text-size-button",
-  "data-theme-tool-button",
   "data-theme-dialog",
   "data-theme-options",
+  "data-theme-match-time",
   "data-theme-shuffle",
   "role=\"radiogroup\"",
-  "data-focus-button",
-  "data-focus-meta",
-  "data-focus-timer-button",
   "data-focus-timer-chip",
   "data-focus-timer-countdown",
   "data-focus-timer-stop",
@@ -422,6 +441,28 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "role=\"combobox\"",
   "role=\"listbox\"",
 ].forEach((token) => requireMatch(html, new RegExp(token), `missing interface contract: ${token}`));
+
+forbidMatch(
+  html,
+  /data-tools-toggle|data-resume-button|data-random-button|data-daily-button|data-bookmarks-button|data-reading-mode-button|data-text-size-button|data-theme-tool-button|data-focus-button|data-focus-meta|data-focus-timer-button/,
+  "duplicated utility controls outside Jump",
+);
+forbidMatch(html, /unlock-intro__lede|unlock-card__copy|data-curriculum-meta/, "redundant interface subtitles");
+requireMatch(html, /placeholder="Jump anywhere…"/, "unified Jump entry point");
+requireMatch(html, /aria-label="Jump results"/, "Jump palette accessibility");
+forbidMatch(js, /createQuickGuide|section-phase/, "duplicated lesson guide or phase subtitle");
+forbidMatch(js, /const\s+recent\s*=\s*createRecentSection\(\)/, "duplicated recent-reading home section");
+requireMatch(js, /event\.isComposing/, "IME-safe Jump keyboard handling");
+if ((js.match(/if \(event\.isComposing\) return;/g) || []).length < 2) failures.push("IME-safe global keyboard handling");
+forbidMatch(js, /!toolsPanel\?\.hidden/, "null Compass-panel runtime guard");
+requireMatch(js, /toolsPanel\s*&&\s*!toolsPanel\.hidden/, "removed Compass-panel event safety");
+requireMatch(js, /openThemeDialog\(searchInput\)/, "mobile Theme Studio focus return");
+requireMatch(js, /openShortcuts\(searchInput\)/, "Jump shortcut-dialog focus return");
+requireMatch(js, /function\s+closeSearch[\s\S]*?state\.searchMatches\s*=\s*\[\]/, "Jump stale-result cleanup");
+requireMatch(js, /state\.openModules\s*=\s*state\.openModules\.has\(id\)\s*\?\s*new Set\(\)\s*:\s*new Set\(\[id\]\)/, "single-open sidebar module behavior");
+requireMatch(js, /!state\.completed\.has\(target\.lesson\.id\)/, "completed lesson excluded from resume card");
+requireMatch(js, /currentNavigation\.replaceWith\(renderLessonNavigation\(entry\)\)/, "completion refreshes continuation action");
+requireMatch(js, /if \(state\.focusMode\) setFocusMode\(false\);[\s\S]*?searchInput\?\.focus\(\)/, "Jump exits focus mode before opening");
 
 [
   "validateLibraryCompleteness",
@@ -432,11 +473,19 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "announceFocusTimer",
   "displaySectionTitle",
   "shuffleTheme",
+  "themeForLocalHour",
+  "matchThemeToLocalTime",
   "renderThemeOptions",
   "createCollectionNavigation",
   "createCollectionCard",
   "createLessonOutline",
-  "createQuickGuide",
+  "createHomeDisclosure",
+  "jumpActionItems",
+  "jumpResultScore",
+  "buildJumpResults",
+  "dispatchJumpResult",
+  "nextUnreadLesson",
+  "completeAndContinue",
   "readableChunks",
   "handleSearchKeydown",
   "setFocusMode",
@@ -454,13 +503,27 @@ if (ignoredPlaintext.status !== 0) failures.push("plaintext ignore rule");
   "handleThemeOptionKeydown",
 ].forEach((token) => requireMatch(js, new RegExp(`function ${token}\\b`), `missing behavior contract: ${token}`));
 
-["midnight", "pearl", "nebula", "aurora", "ember", "tide", "sakura", "solstice"].forEach((theme) => {
+[
+  "midnight",
+  "pearl",
+  "nebula",
+  "aurora",
+  "ember",
+  "tide",
+  "sakura",
+  "solstice",
+  "washi",
+  "grove",
+  "noir",
+  "atelier",
+].forEach((theme) => {
   requireMatch(js, new RegExp(`^\\s*${theme}:\\s*\\{`, "m"), `theme preset config: ${theme}`);
-  if (!new Set(["midnight", "pearl"]).has(theme)) {
-    requireMatch(css, new RegExp(`data-theme-preset="${theme}"`), `theme preset variables: ${theme}`);
-  }
+  requireMatch(css, new RegExp(`data-theme-preset="${theme}"`), `theme preset variables: ${theme}`);
   requireMatch(css, new RegExp(`data-theme-option="${theme}"`), `theme preset swatch: ${theme}`);
 });
+requireMatch(css, /\.reader-wrap\s*\{[\s\S]*?--accent:\s*var\(--domain-accent\)/, "reader-scoped domain accent");
+forbidMatch(css, /html\[data-domain-tone="[^"]+"\]\s*\{[^}]*--accent:/, "domain tone overriding global theme accent");
+forbidMatch(html, /theme-dialog__intro|theme-description|theme-done/, "redundant visible theme subtitles or done action");
 requireMatch(js, /renderThemeOptions\(\);\s*\n\s*themeToggle/, "config-driven theme option initialization");
 requireMatch(js, /const\s+ESSENTIAL_SECTION_INDEXES\s*=\s*new Set\(\[0, 1, 2, 3, 5, 7, 9, 10\]\)/, "beginner essential-view safety sections");
 requireMatch(js, /behavior:\s*preferredScrollBehavior\(\)/, "reduced-motion-aware section navigation");
@@ -481,14 +544,12 @@ requireMatch(js, /"tac-dong":\s*"Chi phí, tác động và lựa chọn thực 
 requireMatch(js, /"khac-biet":\s*"Khác biệt theo bối cảnh"/, "lifestyle context section alias");
 
 [
-  ".tools-popover",
   ".path-panel",
-  ".quick-guide",
   ".lesson-outline",
-  ".outline-group",
-  ".section-phase",
   ".collection-nav-group",
   ".topic-group",
+  ".topic-group__toggle",
+  ".home-disclosure",
   ".unlock-constellation",
   ".focus-timer-chip",
   ".first-use-hint",
@@ -506,6 +567,10 @@ requireMatch(js, /"khac-biet":\s*"Khác biệt theo bối cảnh"/, "lifestyle c
   "data-theme-preset=\"tide\"",
   "data-theme-preset=\"sakura\"",
   "data-theme-preset=\"solstice\"",
+  "data-theme-preset=\"washi\"",
+  "data-theme-preset=\"grove\"",
+  "data-theme-preset=\"noir\"",
+  "data-theme-preset=\"atelier\"",
 ].forEach((token) => requireMatch(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `missing style contract: ${token}`));
 
 requireMatch(css, /@media\s*\(max-width:\s*720px\)\s*and\s*\(max-height:\s*760px\)/, "short-height mobile unlock layout");
@@ -543,4 +608,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("Public vault static checks passed: resource allowlist, CSP, JavaScript and validator syntax, uniform ten-domain schema-gate markers, encrypted-envelope plausibility, Git privacy boundary, and interface markers are valid; browser behavior was not exercised.");
+console.log("Public vault static checks passed: resource allowlist, CSP, JavaScript and validator syntax, uniform sixteen-domain schema-gate markers, encrypted-envelope plausibility, Git privacy boundary, and interface markers are valid; browser behavior was not exercised.");

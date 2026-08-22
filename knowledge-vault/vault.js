@@ -8,6 +8,7 @@
   const STORAGE_THEME_LEGACY = "fintech-domain:theme:v1";
   const STORAGE_SIDEBAR_WIDTH = "knowledge-library:sidebar-width:v1";
   const STORAGE_SIDEBAR_COLLAPSED = "knowledge-library:sidebar-collapsed:v1";
+  const STORAGE_NAV_GROUPS = "knowledge-library:nav-groups:v1";
   const STORAGE_BOOKMARKS = "knowledge-library:bookmarks:v1";
   const STORAGE_RECENT = "knowledge-library:recent:v1";
   const STORAGE_LAST_READ = "knowledge-library:last-read:v1";
@@ -25,6 +26,12 @@
     "cooking": "amber",
     "bar-drinks": "crimson",
     "coffee": "mocha",
+    "japanese-culture": "crimson",
+    "art-visual-culture": "gold",
+    "architecture-design-living": "mint",
+    "self-psychology": "indigo",
+    "communication-conflict": "cyan",
+    "relationships-boundaries": "rose",
   });
   const COLLECTION_GROUPS = Object.freeze([
     {
@@ -62,19 +69,20 @@
       description: "Learn what is in the glass, cup, and moment.",
       collectionIds: ["bar-drinks", "coffee"],
     },
-  ]);
-  const SECTION_PHASES = Object.freeze([
-    "Start",
-    "Start",
-    "Start",
-    "Understand",
-    "Understand",
-    "Apply",
-    "Apply",
-    "Apply",
-    "Apply",
-    "Remember",
-    "Remember",
+    {
+      id: "culture-aesthetics",
+      mark: "06",
+      title: "Culture & aesthetics",
+      description: "Read culture, art, design, and the spaces around you.",
+      collectionIds: ["japanese-culture", "art-visual-culture", "architecture-design-living"],
+    },
+    {
+      id: "self-relationships",
+      mark: "07",
+      title: "Self & relationships",
+      description: "Understand yourself, communicate clearly, and build healthy bonds.",
+      collectionIds: ["self-psychology", "communication-conflict", "relationships-boundaries"],
+    },
   ]);
   const ESSENTIAL_SECTION_INDEXES = new Set([0, 1, 2, 3, 5, 7, 9, 10]);
   const EXPECTED_SECTION_COUNT = 11;
@@ -102,6 +110,12 @@
     { id: "cooking", modules: 6, lessons: 18, sources: 12 },
     { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
     { id: "coffee", modules: 6, lessons: 18, sources: 12 },
+    { id: "japanese-culture", modules: 6, lessons: 18, sources: 12 },
+    { id: "art-visual-culture", modules: 6, lessons: 18, sources: 12 },
+    { id: "architecture-design-living", modules: 6, lessons: 18, sources: 12 },
+    { id: "self-psychology", modules: 6, lessons: 18, sources: 12 },
+    { id: "communication-conflict", modules: 6, lessons: 18, sources: 12 },
+    { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 12 },
   ];
   const EXPECTED_COLLECTION_ORDER = Object.freeze(["personal-notes", ...RELEASE_MANIFEST.map(({ id }) => id)]);
   const GROUPED_COLLECTION_ORDER = Object.freeze(COLLECTION_GROUPS.flatMap(({ collectionIds }) => collectionIds));
@@ -124,21 +138,37 @@
     "Tóm tắt bài học",
     "Nguồn tham khảo",
   ];
-  const LIFESTYLE_COLLECTION_IDS = new Set(["personal-style", "photography", "cooking", "bar-drinks", "coffee"]);
-  const LIFESTYLE_SECTION_ALIASES = Object.freeze({
+  const GENERAL_INTEREST_COLLECTION_IDS = new Set([
+    "personal-style",
+    "photography",
+    "cooking",
+    "bar-drinks",
+    "coffee",
+    "japanese-culture",
+    "art-visual-culture",
+    "architecture-design-living",
+    "self-psychology",
+    "communication-conflict",
+    "relationships-boundaries",
+  ]);
+  const GENERAL_INTEREST_SECTION_ALIASES = Object.freeze({
     "ben-lien-quan": "Ai hoặc yếu tố nào liên quan",
     "tac-dong": "Chi phí, tác động và lựa chọn thực tế",
     "khac-biet": "Khác biệt theo bối cảnh",
   });
   const THEME_PRESETS = Object.freeze({
-    midnight: { label: "Midnight", description: "Ink, lavender, quiet stars", mode: "dark", color: "#090812" },
-    pearl: { label: "Pearl", description: "Soft paper, daylight, clarity", mode: "light", color: "#f5f2f8" },
-    nebula: { label: "Nebula", description: "Plum space, rose light, wonder", mode: "dark", color: "#10091e" },
-    aurora: { label: "Aurora", description: "Deep teal, mint glow, calm", mode: "dark", color: "#061615" },
-    ember: { label: "Ember", description: "Charcoal, copper, late-night warmth", mode: "dark", color: "#17100d" },
-    tide: { label: "Tide", description: "Mist, ocean blue, open air", mode: "light", color: "#eef5f7" },
-    sakura: { label: "Sakura", description: "Blush paper, plum ink, softness", mode: "light", color: "#faf1f4" },
-    solstice: { label: "Solstice", description: "Night blue, quiet gold, depth", mode: "dark", color: "#071326" },
+    midnight: { label: "Midnight", description: "Ink, lavender, quiet stars", mode: "dark" },
+    pearl: { label: "Pearl", description: "Soft paper, daylight, clarity", mode: "light" },
+    nebula: { label: "Nebula", description: "Plum space, rose light, wonder", mode: "dark" },
+    aurora: { label: "Aurora", description: "Deep teal, mint glow, calm", mode: "dark" },
+    ember: { label: "Ember", description: "Charcoal, copper, late-night warmth", mode: "dark" },
+    tide: { label: "Tide", description: "Mist, ocean blue, open air", mode: "light" },
+    sakura: { label: "Sakura", description: "Blush paper, plum ink, softness", mode: "light" },
+    solstice: { label: "Solstice", description: "Night blue, quiet gold, depth", mode: "dark" },
+    washi: { label: "Washi", description: "Warm paper, vermilion, quiet craft", mode: "light" },
+    grove: { label: "Grove", description: "Sage light, forest ink, soft edges", mode: "light" },
+    noir: { label: "Noir", description: "Charcoal, champagne, editorial focus", mode: "dark" },
+    atelier: { label: "Atelier", description: "Gallery ivory, cobalt, crisp geometry", mode: "light" },
   });
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -158,6 +188,10 @@
   const curriculumMeta = document.querySelector("[data-curriculum-meta]");
   const curriculum = document.querySelector(".curriculum");
   const moduleList = document.querySelector("[data-module-list]");
+  const sidebarFilterInput = document.querySelector("[data-sidebar-filter]");
+  const sidebarFilterClear = document.querySelector("[data-sidebar-filter-clear]");
+  const sidebarFilterStatus = document.querySelector("[data-sidebar-filter-status]");
+  const sidebarGroupsToggle = document.querySelector("[data-sidebar-groups-toggle]");
   const searchInput = document.querySelector("[data-search-input]");
   const searchResults = document.querySelector("[data-search-results]");
   const themeToggle = document.querySelector("[data-theme-toggle]");
@@ -204,6 +238,7 @@
   const focusTimerStopButton = document.querySelector("[data-focus-timer-stop]");
   const focusTimerLive = document.querySelector("[data-focus-timer-live]");
   const themeShuffleButton = document.querySelector("[data-theme-shuffle]");
+  const themeMatchTimeButton = document.querySelector("[data-theme-match-time]");
   const shortcutsButton = document.querySelector("[data-shortcuts-button]");
   const shortcutsDialog = document.querySelector("[data-shortcuts-dialog]");
   const shortcutsCloseButtons = document.querySelectorAll("[data-shortcuts-close]");
@@ -215,6 +250,9 @@
     selectedCollectionId: null,
     openCollections: new Set(),
     openModules: new Set(),
+    openNavGroups: new Set(),
+    homeGroupId: null,
+    sidebarFilter: "",
     completed: new Set(),
     bookmarks: new Set(),
     recent: [],
@@ -1064,7 +1102,7 @@
   }
 
   function saveCompleted() {
-    writeStorage(STORAGE_COMPLETED, Array.from(state.completed), "Progress could not be saved on this device.");
+    return writeStorage(STORAGE_COMPLETED, Array.from(state.completed), "Progress could not be saved on this device.");
   }
 
   function saveBookmarks() {
@@ -1149,7 +1187,7 @@
 
   function nextLesson(collectionId = null) {
     const available = publishedLessons().filter(({ collection }) => !collectionId || collection.id === collectionId);
-    return available.find(({ lesson }) => !state.completed.has(lesson.id)) || available[0] || null;
+    return available.find(({ lesson }) => !state.completed.has(lesson.id)) || null;
   }
 
   function validStoredLesson(lessonId) {
@@ -1243,13 +1281,42 @@
       .filter(Boolean);
   }
 
-  function sectionPhase(index) {
-    return SECTION_PHASES[index] || "Verify";
+  function navigationGroupForCollection(collectionId) {
+    return COLLECTION_GROUPS.find((group) => group.collectionIds.includes(collectionId)) || null;
+  }
+
+  function saveNavigationGroups() {
+    writeStorage(
+      STORAGE_NAV_GROUPS,
+      COLLECTION_GROUPS.map(({ id }) => id).filter((id) => state.openNavGroups.has(id)),
+      "Library navigation preferences could not be saved on this device.",
+    );
+  }
+
+  function loadNavigationGroups() {
+    const stored = readStorage(STORAGE_NAV_GROUPS, []);
+    const allowed = new Set(COLLECTION_GROUPS.map(({ id }) => id));
+    const first = Array.isArray(stored) ? stored.find((id) => allowed.has(id)) : null;
+    return new Set(first ? [first] : []);
+  }
+
+  function openNavigationGroupForCollection(collectionId) {
+    const group = navigationGroupForCollection(collectionId);
+    if (!group || (state.openNavGroups.size === 1 && state.openNavGroups.has(group.id))) return;
+    state.openNavGroups = new Set([group.id]);
+    saveNavigationGroups();
+  }
+
+  function updateSidebarGroupToggle() {
+    if (!sidebarGroupsToggle) return;
+    const allExpanded = COLLECTION_GROUPS.every(({ id }) => state.openNavGroups.has(id));
+    sidebarGroupsToggle.textContent = allExpanded ? "Collapse all" : "Expand all";
+    sidebarGroupsToggle.setAttribute("aria-label", allExpanded ? "Collapse all topic groups" : "Expand all topic groups");
   }
 
   function displaySectionTitle(collectionId, section) {
-    if (!LIFESTYLE_COLLECTION_IDS.has(collectionId)) return section.title;
-    return LIFESTYLE_SECTION_ALIASES[section.id] || section.title;
+    if (!GENERAL_INTEREST_COLLECTION_IDS.has(collectionId)) return section.title;
+    return GENERAL_INTEREST_SECTION_ALIASES[section.id] || section.title;
   }
 
   function preferredScrollBehavior() {
@@ -1489,9 +1556,9 @@
     state.previousFocus = null;
   }
 
-  function openShortcuts() {
+  function openShortcuts(trigger = document.activeElement) {
     if (!shortcutsDialog) return;
-    state.previousFocus = toolsPanel?.contains(document.activeElement) ? toolsToggle : document.activeElement;
+    state.previousFocus = toolsPanel?.contains(trigger) ? toolsToggle : trigger;
     closeTools();
     shortcutsDialog.hidden = false;
     document.body.classList.add("modal-open");
@@ -1511,7 +1578,7 @@
   function updateToolsPanel() {
     if (!state.data) return;
     const last = validPublishedLesson(state.lastRead);
-    const next = last || nextLesson();
+    const next = last && !state.completed.has(last.lesson.id) ? last : nextLesson();
     if (resumeMeta) resumeMeta.textContent = next ? shortText(next.lesson.title, 48) : "All available lessons completed";
     if (bookmarksMeta) bookmarksMeta.textContent = `${state.bookmarks.size} saved`;
     syncFocusTimer();
@@ -1528,17 +1595,16 @@
       option.setAttribute("aria-checked", String(index === 0));
       option.tabIndex = index === 0 ? 0 : -1;
       option.dataset.themeOption = id;
+      option.setAttribute("aria-label", `${preset.label}: ${preset.description}`);
+      option.title = preset.description;
       const swatch = document.createElement("span");
       swatch.className = "theme-option__swatch";
       swatch.setAttribute("aria-hidden", "true");
-      swatch.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
       const copy = document.createElement("span");
       copy.className = "theme-option__copy";
       const label = document.createElement("strong");
       label.textContent = preset.label;
-      const description = document.createElement("small");
-      description.textContent = preset.description;
-      copy.append(label, description);
+      copy.append(label);
       const check = document.createElement("span");
       check.className = "theme-option__check";
       check.setAttribute("aria-hidden", "true");
@@ -1555,7 +1621,8 @@
     const preset = THEME_PRESETS[next];
     document.documentElement.dataset.theme = preset.mode;
     document.documentElement.dataset.themePreset = next;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", preset.color);
+    const themeColor = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+    if (themeColor) document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
     if (themeLabel) themeLabel.textContent = preset.label;
     themeToggle?.setAttribute("aria-label", `Choose theme. ${preset.label} active.`);
     if (themeToolMeta) themeToolMeta.textContent = `${preset.label} active`;
@@ -1595,6 +1662,23 @@
     setTheme(next);
     showToast(`${THEME_PRESETS[next].label} mood selected`);
     themeShuffleButton?.focus({ preventScroll: true });
+  }
+
+  function themeForLocalHour(hour = new Date().getHours()) {
+    if (hour < 5) return "noir";
+    if (hour < 8) return "washi";
+    if (hour < 12) return "pearl";
+    if (hour < 16) return "atelier";
+    if (hour < 19) return "grove";
+    if (hour < 22) return "ember";
+    return "midnight";
+  }
+
+  function matchThemeToLocalTime() {
+    const next = themeForLocalHour();
+    setTheme(next);
+    showToast(`${THEME_PRESETS[next].label} matched to your local time`);
+    themeMatchTimeButton?.focus({ preventScroll: true });
   }
 
   function handleThemeOptionKeydown(event) {
@@ -1789,17 +1873,17 @@
     const collectionTitle = document.createElement("strong");
     collectionTitle.textContent = collection.title;
     markVietnamese(collectionTitle);
-    const collectionMeta = document.createElement("small");
     const collectionEntries = collection.modules.reduce((total, module) => total + module.lessons.length, 0);
     const collectionLive = collection.modules.reduce(
       (total, module) => total + module.lessons.filter((lesson) => lesson.status === "published").length,
       0,
     );
     const progress = collectionProgress(collection);
-    collectionMeta.textContent = collection.kind === "notes"
+    const collectionMeta = collection.kind === "notes"
       ? `${collectionEntries} preserved ${collectionEntries === 1 ? "note" : "notes"}`
       : `${collection.modules.length} modules · ${progress.completed}/${collectionLive} complete`;
-    collectionCopy.append(collectionTitle, collectionMeta);
+    collectionButton.setAttribute("aria-label", `${collection.title}. ${collectionMeta}`);
+    collectionCopy.append(collectionTitle);
     const collectionArrow = document.createElement("span");
     collectionArrow.className = "collection-nav__chevron";
     collectionArrow.setAttribute("aria-hidden", "true");
@@ -1831,11 +1915,10 @@
       const title = document.createElement("strong");
       title.textContent = module.title;
       markVietnamese(title);
-      const meta = document.createElement("small");
       const liveCount = module.lessons.filter((lesson) => lesson.status === "published").length;
       const completedCount = module.lessons.filter((lesson) => state.completed.has(lesson.id)).length;
       const sourceMapped = module.lessons.every((lesson) => lesson.references.length >= 3);
-      meta.textContent = collection.kind === "notes"
+      const moduleMeta = collection.kind === "notes"
         ? `${module.lessons.length} ${module.lessons.length === 1 ? "note" : "notes"}`
         : `${module.lessons.length} lessons${
             liveCount
@@ -1844,7 +1927,8 @@
                 ? " · source-mapped roadmap"
                 : " · lesson planning"
           }`;
-      copy.append(title, meta);
+      toggle.setAttribute("aria-label", `${module.title}. ${moduleMeta}`);
+      copy.append(title);
       const chevron = document.createElement("span");
       chevron.className = "module-chevron";
       chevron.setAttribute("aria-hidden", "true");
@@ -1882,8 +1966,113 @@
     return collectionGroup;
   }
 
+  function createSidebarFilterResult(kind, titleText, contextText, dataset) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sidebar-filter-result";
+    Object.entries(dataset).forEach(([key, value]) => {
+      button.dataset[key] = value;
+    });
+    const kindLabel = document.createElement("span");
+    kindLabel.className = "sidebar-filter-result__kind";
+    kindLabel.textContent = kind;
+    kindLabel.setAttribute("aria-hidden", "true");
+    const copy = document.createElement("span");
+    const title = document.createElement("strong");
+    title.textContent = titleText;
+    const context = document.createElement("small");
+    context.textContent = contextText;
+    copy.append(title, context);
+    const arrow = document.createElement("span");
+    arrow.textContent = "›";
+    arrow.setAttribute("aria-hidden", "true");
+    button.append(kindLabel, copy, arrow);
+    markVietnamese(title, context);
+    return button;
+  }
+
+  function sidebarFilterMatches(value, query) {
+    const haystack = foldSearchText(value);
+    return foldSearchText(query)
+      .split(/\s+/u)
+      .filter(Boolean)
+      .every((token) => haystack.includes(token));
+  }
+
+  function renderSidebarFilterResults() {
+    const query = foldSearchText(state.sidebarFilter);
+    const priorityResults = [];
+    const results = [];
+    const appendResult = (button, title) => {
+      (sidebarFilterMatches(title, query) ? priorityResults : results).push(button);
+    };
+    state.data.collections.forEach((collection) => {
+      if (sidebarFilterMatches(`${collection.title} ${collection.description}`, query)) {
+        appendResult(createSidebarFilterResult(
+          "COL",
+          collection.title,
+          `${collection.modules.length} modules · Open collection`,
+          { collectionId: collection.id },
+        ), collection.title);
+      }
+      collection.modules.forEach((module) => {
+        if (sidebarFilterMatches(`${module.title} ${module.description} ${module.evidenceOutcome}`, query)) {
+          appendResult(createSidebarFilterResult(
+            "MOD",
+            module.title,
+            `${collection.title} · ${module.lessons.length} lessons`,
+            { sidebarModuleId: module.id },
+          ), module.title);
+        }
+        module.lessons.forEach((lesson) => {
+          if (sidebarFilterMatches(`${lesson.title} ${lesson.summary} ${lesson.keywords.join(" ")}`, query)) {
+            appendResult(createSidebarFilterResult(
+              "LESS",
+              lesson.title,
+              `${collection.title} · ${module.title}`,
+              { lessonId: lesson.id },
+            ), lesson.title);
+          }
+        });
+      });
+    });
+
+    const orderedResults = [...priorityResults, ...results];
+    const limit = 48;
+    const shown = orderedResults.slice(0, limit);
+    if (shown.length) {
+      const wrap = document.createElement("div");
+      wrap.className = "sidebar-filter-results";
+      wrap.append(...shown);
+      moduleList.append(wrap);
+    } else {
+      const empty = document.createElement("p");
+      empty.className = "sidebar-filter-empty";
+      empty.textContent = "No collection, module, or lesson title matches this filter.";
+      moduleList.append(empty);
+    }
+    if (sidebarFilterStatus) {
+      sidebarFilterStatus.textContent = orderedResults.length > limit
+        ? `${orderedResults.length} matches · showing ${limit}`
+        : `${orderedResults.length} ${orderedResults.length === 1 ? "match" : "matches"}`;
+    }
+    if (sidebarFilterClear) sidebarFilterClear.hidden = false;
+    if (sidebarGroupsToggle) sidebarGroupsToggle.hidden = true;
+  }
+
   function renderNavigation() {
     moduleList.replaceChildren();
+    if (!state.data) return;
+    if (state.sidebarFilter) {
+      renderSidebarFilterResults();
+      return;
+    }
+    if (sidebarFilterClear) sidebarFilterClear.hidden = true;
+    if (sidebarGroupsToggle) sidebarGroupsToggle.hidden = false;
+    if (sidebarFilterStatus) {
+      sidebarFilterStatus.textContent = `${COLLECTION_GROUPS.length} constellations · ${state.data.collections.length} collections`;
+    }
+    updateSidebarGroupToggle();
     COLLECTION_GROUPS.forEach((group) => {
       const collections = collectionsForGroup(group);
       if (!collections.length) return;
@@ -1891,20 +2080,45 @@
       groupSection.className = "collection-nav-group";
       groupSection.dataset.collectionGroup = group.id;
       groupSection.setAttribute("aria-labelledby", `collection-group-${group.id}`);
-      const groupLabel = document.createElement("div");
+      const groupExpanded = state.openNavGroups.has(group.id);
+      const groupLabel = document.createElement("button");
+      groupLabel.type = "button";
       groupLabel.className = "collection-nav-group__label";
-      const mark = document.createElement("span");
-      mark.textContent = group.mark;
-      mark.setAttribute("aria-hidden", "true");
-      const copy = document.createElement("h2");
+      groupLabel.dataset.navGroupId = group.id;
+      groupLabel.setAttribute("aria-expanded", String(groupExpanded));
+      const copy = document.createElement("span");
+      copy.className = "collection-nav-group__title";
       copy.id = `collection-group-${group.id}`;
       copy.textContent = group.title;
-      const count = document.createElement("small");
-      count.textContent = String(collections.length);
-      groupLabel.append(mark, copy, count);
-      groupSection.append(groupLabel, ...collections.map(createCollectionNavigation));
+      groupLabel.setAttribute(
+        "aria-label",
+        `${group.title}. ${collections.length} ${collections.length === 1 ? "collection" : "collections"}`,
+      );
+      const chevron = document.createElement("span");
+      chevron.className = "collection-nav-group__chevron";
+      chevron.textContent = "›";
+      chevron.setAttribute("aria-hidden", "true");
+      const groupBody = document.createElement("div");
+      groupBody.className = "collection-nav-group__body";
+      groupBody.id = `collection-group-body-${group.id}`;
+      groupBody.hidden = !groupExpanded;
+      groupBody.append(...collections.map(createCollectionNavigation));
+      groupLabel.setAttribute("aria-controls", groupBody.id);
+      groupLabel.append(copy, chevron);
+      groupSection.append(groupLabel, groupBody);
       moduleList.append(groupSection);
     });
+  }
+
+  function resetSidebarFilter() {
+    state.sidebarFilter = "";
+    if (sidebarFilterInput) sidebarFilterInput.value = "";
+  }
+
+  function clearSidebarFilter({ focus = false } = {}) {
+    resetSidebarFilter();
+    renderNavigation();
+    if (focus) sidebarFilterInput?.focus({ preventScroll: true });
   }
 
   function isWordCharacter(value) {
@@ -2233,19 +2447,15 @@
     hero.className = "reader-hero";
     const breadcrumb = document.createElement("p");
     breadcrumb.className = "reader-breadcrumb";
-    const domain = document.createElement("span");
-    domain.textContent = "Library";
-    const separator = document.createElement("span");
-    separator.textContent = "/";
     const collectionName = document.createElement("span");
     collectionName.textContent = collection.title;
     markVietnamese(collectionName);
-    const secondSeparator = document.createElement("span");
-    secondSeparator.textContent = "/";
+    const separator = document.createElement("span");
+    separator.textContent = "·";
     const moduleName = document.createElement("span");
     moduleName.textContent = `${module.number}. ${module.title}`;
     moduleName.lang = "vi";
-    breadcrumb.append(domain, separator, collectionName, secondSeparator, moduleName);
+    breadcrumb.append(collectionName, separator, moduleName);
     const title = document.createElement("h1");
     title.textContent = lesson.title;
     title.tabIndex = -1;
@@ -2256,17 +2466,12 @@
     deck.lang = "vi";
     const meta = document.createElement("div");
     meta.className = "reader-meta";
-    const status = document.createElement("span");
-    status.className = lesson.status === "published" ? "status-live" : "status-planned";
-    status.textContent = collection.kind === "notes"
-      ? "Saved"
-      : lesson.status === "published"
-        ? "Verified"
-        : "Full lesson pending";
-    const level = document.createElement("span");
-    level.textContent = module.level;
-    markVietnamese(level);
-    meta.append(status, level);
+    if (collection.kind === "notes" || lesson.status !== "published") {
+      const status = document.createElement("span");
+      status.className = lesson.status === "published" ? "status-live" : "status-planned";
+      status.textContent = collection.kind === "notes" ? "Saved note" : "Full lesson pending";
+      meta.append(status);
+    }
     const duration = document.createElement("span");
     const fullMinutes = fullEstimatedMinutes(lesson);
     const coreMinutes = essentialEstimatedMinutes(lesson);
@@ -2290,23 +2495,6 @@
     tools.className = "reader-tools";
     const toolGroup = document.createElement("div");
     toolGroup.className = "reader-tools__group";
-    const complete = document.createElement("button");
-    complete.type = "button";
-    complete.className = "complete-button";
-    complete.dataset.completeLesson = lesson.id;
-    complete.disabled = lesson.status !== "published";
-    complete.setAttribute("aria-pressed", String(state.completed.has(lesson.id)));
-    const check = document.createElement("span");
-    check.className = "complete-button__check";
-    check.setAttribute("aria-hidden", "true");
-    check.textContent = state.completed.has(lesson.id) ? "✓" : "";
-    const completeText = document.createElement("span");
-    completeText.textContent = lesson.status === "published"
-      ? state.completed.has(lesson.id)
-        ? "Completed"
-        : "Mark as completed"
-      : "Not yet available";
-    complete.append(check, completeText);
     const bookmark = document.createElement("button");
     bookmark.type = "button";
     bookmark.className = "bookmark-button";
@@ -2320,14 +2508,8 @@
     readingMode.setAttribute("aria-label", "Essential reading view");
     readingMode.setAttribute("aria-pressed", String(state.readingMode === "essentials"));
     readingMode.textContent = "Essential view";
-    const policy = document.createElement("button");
-    policy.type = "button";
-    policy.className = "source-policy-link";
-    policy.dataset.showSources = "true";
-    policy.dataset.collectionId = collection.id;
-    policy.textContent = collection.kind === "curriculum" ? "How sources are checked" : "About these notes";
-    toolGroup.append(complete, bookmark, readingMode);
-    tools.append(toolGroup, policy);
+    toolGroup.append(bookmark, readingMode);
+    tools.append(toolGroup);
     hero.append(breadcrumb, title, deck, meta, tools);
     return hero;
   }
@@ -2336,7 +2518,6 @@
     const section = document.createElement("section");
     section.className = "lesson-section";
     section.id = "section-references";
-    section.dataset.lessonPhase = "verify";
     const heading = document.createElement("div");
     heading.className = "section-heading";
     const number = document.createElement("span");
@@ -2344,13 +2525,10 @@
     number.textContent = String(referenceSectionNumber).padStart(2, "0");
     const headingCopy = document.createElement("div");
     headingCopy.className = "section-heading__copy";
-    const phase = document.createElement("span");
-    phase.className = "section-phase";
-    phase.textContent = "Verify";
     const title = document.createElement("h2");
     title.textContent = "Nguồn tham khảo";
     title.lang = "vi";
-    headingCopy.append(phase, title);
+    headingCopy.append(title);
     heading.append(number, headingCopy);
     const list = document.createElement("ol");
     list.className = "reference-list";
@@ -2397,98 +2575,42 @@
   }
 
   function renderLessonNavigation(entry) {
-    const entries = allLessons().filter(
-      ({ collection, lesson }) => collection.id === entry.collection.id && lesson.status === "published",
-    );
-    const index = entries.findIndex(({ lesson }) => lesson.id === entry.lesson.id);
-    const previous = entries[index - 1] || null;
-    const next = entries[index + 1] || null;
+    const next = nextUnreadLesson(entry);
     const nav = document.createElement("nav");
     nav.className = "lesson-nav";
-    nav.setAttribute("aria-label", "Previous and next reading items");
-    [
-      { label: "← Previous", entry: previous },
-      { label: "Next →", entry: next },
-    ].forEach(({ label, entry: target }) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.disabled = !target;
-      if (target) button.dataset.lessonId = target.lesson.id;
-      const small = document.createElement("small");
-      small.textContent = label;
-      const title = document.createElement("strong");
-      title.textContent = target ? target.lesson.title : "No item";
-      markVietnamese(title);
-      button.append(small, title);
-      nav.append(button);
-    });
+    nav.setAttribute("aria-label", "Continue learning");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.completeContinue = entry.lesson.id;
+    const label = document.createElement("strong");
+    label.textContent = state.completed.has(entry.lesson.id)
+      ? next ? "Next unread →" : "Back to collection →"
+      : next ? "Complete & continue →" : "Complete & return →";
+    const context = document.createElement("small");
+    context.textContent = next ? next.lesson.title : entry.collection.title;
+    markVietnamese(context);
+    button.append(label, context);
+    nav.append(button);
     return nav;
+  }
+
+  function nextUnreadLesson(entry) {
+    const entries = allLessons().filter(
+      ({ collection, lesson }) => collection.id === entry.collection.id
+        && lesson.status === "published"
+        && lesson.id !== entry.lesson.id,
+    );
+    const ordered = allLessons().filter(
+      ({ collection, lesson }) => collection.id === entry.collection.id && lesson.status === "published",
+    );
+    const currentIndex = ordered.findIndex(({ lesson }) => lesson.id === entry.lesson.id);
+    const forward = ordered.slice(currentIndex + 1).filter(({ lesson }) => !state.completed.has(lesson.id));
+    const wrapped = ordered.slice(0, Math.max(0, currentIndex)).filter(({ lesson }) => !state.completed.has(lesson.id));
+    return [...forward, ...wrapped].find(({ lesson }) => entries.some((item) => item.lesson.id === lesson.id)) || null;
   }
 
   function stripCitationTokens(value) {
     return normalizeString(value).replace(/\[\[[a-z0-9-]+\]\]/gi, " ").replace(/\s{2,}/g, " ").trim();
-  }
-
-  function firstSectionText(section) {
-    for (const block of section?.blocks || []) {
-      if (block.type === "paragraph" && block.text) return block.text;
-      if (block.type === "callout" && block.text) return block.text;
-      if (block.type === "list" && block.items[0]) return block.items[0];
-      if (block.type === "flow" && block.steps[0]?.detail) return block.steps[0].detail;
-    }
-    return "";
-  }
-
-  function firstTerms(section) {
-    const terms = [];
-    for (const block of section?.blocks || []) {
-      if (block.type === "table") terms.push(...block.rows.map((row) => row[0]));
-      else if (block.type === "list") terms.push(...block.items);
-      else if (block.type === "callout") terms.push(block.label);
-      if (terms.length >= 3) break;
-    }
-    return terms.filter(Boolean).slice(0, 3).map((term) => shortText(stripCitationTokens(term), 78));
-  }
-
-  function createQuickGuide(entry) {
-    const guide = document.createElement("aside");
-    guide.className = "quick-guide";
-    guide.setAttribute("aria-label", "Quick lesson guide");
-    const summary = document.createElement("div");
-    const summaryLabel = document.createElement("span");
-    summaryLabel.textContent = "What you will learn";
-    const summaryText = document.createElement("p");
-    const goalText = firstSectionText(entry.lesson.sections[0]) || entry.lesson.summary;
-    summaryText.textContent = shortText(stripCitationTokens(goalText), 220);
-    markVietnamese(summaryText);
-    summary.append(summaryLabel, summaryText);
-
-    const start = document.createElement("div");
-    const startLabel = document.createElement("span");
-    startLabel.textContent = "Start with this";
-    const startText = document.createElement("p");
-    const simpleText = firstSectionText(entry.lesson.sections[1]) || firstSectionText(entry.lesson.sections[0]);
-    startText.textContent = shortText(stripCitationTokens(simpleText), 180);
-    markVietnamese(startText);
-    start.append(startLabel, startText);
-    guide.append(summary, start);
-    const terms = firstTerms(entry.lesson.sections[9]);
-    if (terms.length) {
-      const glossary = document.createElement("div");
-      glossary.className = "quick-guide__terms";
-      const glossaryLabel = document.createElement("span");
-      glossaryLabel.textContent = "Words to know";
-      const glossaryList = document.createElement("ul");
-      terms.forEach((term) => {
-        const item = document.createElement("li");
-        item.textContent = term;
-        markVietnamese(item);
-        glossaryList.append(item);
-      });
-      glossary.append(glossaryLabel, glossaryList);
-      guide.append(glossary);
-    }
-    return guide;
   }
 
   function createLessonOutline(entry) {
@@ -2496,49 +2618,25 @@
     outline.className = "lesson-outline";
     outline.setAttribute("aria-label", "Lesson sections");
     const label = document.createElement("span");
-    label.textContent = "On this page";
+    label.textContent = "Sections";
     outline.append(label);
-    const phaseGroups = new Map();
-    const groupForPhase = (phase) => {
-      if (phaseGroups.has(phase)) return phaseGroups.get(phase);
-      const group = document.createElement("div");
-      group.className = "outline-group";
-      group.dataset.lessonPhase = phase.toLocaleLowerCase("en-US");
-      const groupLabel = document.createElement("strong");
-      groupLabel.className = "outline-group__label";
-      groupLabel.textContent = phase;
-      group.append(groupLabel);
-      phaseGroups.set(phase, group);
-      outline.append(group);
-      return group;
-    };
     const hasLearningLayer = lessonHasLearningLayer(entry.lesson);
     entry.lesson.sections.forEach((section, index) => {
-      const group = groupForPhase(sectionPhase(index));
       const button = document.createElement("button");
       button.type = "button";
       button.dataset.scrollSection = `section-${section.id}`;
-      if (hasLearningLayer || ESSENTIAL_SECTION_INDEXES.has(index)) {
-        button.classList.add("is-essential");
-        group.classList.add("has-essential");
-      }
-      const number = document.createElement("span");
-      number.textContent = String(index + 1).padStart(2, "0");
-      button.append(number, document.createTextNode(displaySectionTitle(entry.collection.id, section)));
+      if (hasLearningLayer || ESSENTIAL_SECTION_INDEXES.has(index)) button.classList.add("is-essential");
+      button.textContent = displaySectionTitle(entry.collection.id, section);
       markVietnamese(button);
-      group.append(button);
+      outline.append(button);
     });
-    const referenceGroup = groupForPhase("Verify");
-    referenceGroup.classList.add("has-essential");
     const references = document.createElement("button");
     references.type = "button";
     references.className = "is-essential";
     references.dataset.scrollSection = "section-references";
-    const referenceNumber = document.createElement("span");
-    referenceNumber.textContent = String(entry.lesson.sections.length + 1).padStart(2, "0");
-    references.append(referenceNumber, document.createTextNode("Nguồn tham khảo"));
+    references.textContent = "Nguồn tham khảo";
     references.lang = "vi";
-    referenceGroup.append(references);
+    outline.append(references);
     return outline;
   }
 
@@ -2549,14 +2647,12 @@
     layout.className = "reader-layout";
     const body = document.createElement("div");
     body.className = "lesson-body";
-    body.append(createQuickGuide(entry));
     const hasLearningLayer = lessonHasLearningLayer(entry.lesson);
     const firstUseHintState = createFirstUseHintState(entry.lesson);
     entry.lesson.sections.forEach((sectionData, index) => {
       const section = document.createElement("section");
       section.className = "lesson-section";
       section.lang = "vi";
-      section.dataset.lessonPhase = sectionPhase(index).toLocaleLowerCase("en-US");
       if (hasLearningLayer || ESSENTIAL_SECTION_INDEXES.has(index)) section.classList.add("is-essential");
       section.id = `section-${sectionData.id}`;
       const heading = document.createElement("div");
@@ -2565,12 +2661,9 @@
       number.textContent = String(index + 1).padStart(2, "0");
       const headingCopy = document.createElement("div");
       headingCopy.className = "section-heading__copy";
-      const phase = document.createElement("span");
-      phase.className = "section-phase";
-      phase.textContent = sectionPhase(index);
       const title = document.createElement("h2");
       title.textContent = displaySectionTitle(entry.collection.id, sectionData);
-      headingCopy.append(phase, title);
+      headingCopy.append(title);
       heading.append(number, headingCopy);
       section.append(heading);
       const sectionHintState = index < 9 ? firstUseHintState : null;
@@ -2612,30 +2705,10 @@
     return fragment;
   }
 
-  function createHomeStats(items) {
-    const stats = document.createElement("div");
-    stats.className = "home-stats";
-    items.forEach(([value, label]) => {
-      const card = document.createElement("div");
-      const number = document.createElement("strong");
-      number.textContent = String(value);
-      const text = document.createElement("span");
-      text.textContent = label;
-      card.append(number, text);
-      stats.append(card);
-    });
-    return stats;
-  }
-
-  function createHomeHero(eyebrowText, titleText, ledeText, stats) {
+  function createHomeHero(titleText, ledeText, metaText = "") {
     const hero = document.createElement("section");
     hero.className = "home-hero";
     const copy = document.createElement("div");
-    const eyebrow = document.createElement("p");
-    eyebrow.className = "eyebrow";
-    const line = document.createElement("span");
-    line.setAttribute("aria-hidden", "true");
-    eyebrow.append(line, document.createTextNode(eyebrowText));
     const title = document.createElement("h1");
     title.textContent = titleText;
     title.tabIndex = -1;
@@ -2643,20 +2716,47 @@
     lede.className = "home-hero__lede";
     lede.textContent = ledeText;
     markVietnamese(title, lede);
-    copy.append(eyebrow, title, lede);
-    hero.append(copy, createHomeStats(stats));
+    copy.append(title, lede);
+    if (metaText) {
+      const meta = document.createElement("p");
+      meta.className = "home-hero__meta";
+      meta.textContent = metaText;
+      copy.append(meta);
+    }
+    hero.append(copy);
     return hero;
   }
 
-  function createHomeSectionHead(titleText, copyText) {
+  function createHomeSectionHead(titleText, copyText = "") {
     const head = document.createElement("div");
     head.className = "home-section__head";
     const title = document.createElement("h2");
     title.textContent = titleText;
-    const copy = document.createElement("p");
-    copy.textContent = copyText;
-    head.append(title, copy);
+    head.append(title);
+    if (copyText) {
+      const copy = document.createElement("p");
+      copy.textContent = copyText;
+      head.append(copy);
+    }
     return head;
+  }
+
+  function createHomeDisclosure(titleText, content, { open = false } = {}) {
+    const disclosure = document.createElement("details");
+    disclosure.className = "home-disclosure";
+    disclosure.open = open;
+    const summary = document.createElement("summary");
+    const title = document.createElement("strong");
+    title.textContent = titleText;
+    const icon = document.createElement("span");
+    icon.textContent = "+";
+    icon.setAttribute("aria-hidden", "true");
+    summary.append(title, icon);
+    const body = document.createElement("div");
+    body.className = "home-disclosure__body";
+    body.append(content);
+    disclosure.append(summary, body);
+    return disclosure;
   }
 
   function finishHomeRender({ focusHeading = false } = {}) {
@@ -2682,23 +2782,24 @@
 
   function createPathPanel(collection = null) {
     const panel = document.createElement("section");
-    panel.className = "path-panel";
-    panel.setAttribute("aria-label", collection ? "Your path through this domain" : "Your learning path");
+    panel.className = "path-panel path-panel--single";
+    panel.setAttribute("aria-label", collection ? "Continue this topic" : "Continue learning");
 
     const primary = document.createElement("article");
     primary.className = "path-primary";
-    const kicker = document.createElement("p");
-    kicker.className = "path-kicker";
-    kicker.textContent = state.lastRead && validPublishedLesson(state.lastRead) ? "Continue your thread" : "Start gently";
     const target = validPublishedLesson(state.lastRead);
-    const targetInCollection = target && (!collection || target.collection.id === collection.id) ? target : null;
+    const targetInCollection = target
+      && !state.completed.has(target.lesson.id)
+      && (!collection || target.collection.id === collection.id)
+      ? target
+      : null;
     const next = targetInCollection || nextLesson(collection?.id || null);
     const title = document.createElement("h2");
     title.textContent = next ? next.lesson.title : "You have completed every available lesson";
     const description = document.createElement("p");
     description.textContent = next
-      ? shortText(next.lesson.summary, 180)
-      : "Return to any lesson, follow a new domain, or let the vault choose an idea for you.";
+      ? shortText(next.lesson.summary, 150)
+      : "Choose a topic and begin with one clear idea.";
     if (next) markVietnamese(title, description);
     const actions = document.createElement("div");
     actions.className = "path-actions";
@@ -2706,61 +2807,23 @@
       const resume = document.createElement("button");
       resume.type = "button";
       resume.dataset.lessonId = next.lesson.id;
-      resume.textContent = targetInCollection ? "Continue reading →" : "Start here →";
+      resume.textContent = targetInCollection ? "Continue →" : "Start →";
       actions.append(resume);
     }
-    const surprise = document.createElement("button");
-    surprise.type = "button";
-    surprise.dataset.randomLesson = collection?.id || "all";
-    surprise.textContent = "Surprise me ✦";
-    actions.append(surprise);
-    if (!collection) {
-      const daily = document.createElement("button");
-      daily.type = "button";
-      daily.dataset.dailySpark = "true";
-      daily.textContent = "Today's spark ☼";
-      actions.append(daily);
-    }
-    primary.append(kicker, title, description, actions);
-
-    const secondary = document.createElement("article");
-    secondary.className = "path-secondary";
-    const progressKicker = document.createElement("p");
-    progressKicker.className = "path-kicker";
-    progressKicker.textContent = "Your quiet progress";
-    const progressTitle = document.createElement("h2");
     const available = collection
       ? collection.modules.flatMap((module) => module.lessons).filter((lesson) => lesson.status === "published")
       : publishedLessons().map(({ lesson }) => lesson);
     const completed = available.filter((lesson) => state.completed.has(lesson.id)).length;
     const percent = available.length ? Math.round((completed / available.length) * 100) : 0;
-    progressTitle.textContent = `${percent}% explored`;
-    const progressCopy = document.createElement("p");
-    progressCopy.textContent = `${completed} of ${available.length} available lessons complete · ${state.bookmarks.size} saved`;
-    const progressWrap = document.createElement("div");
-    progressWrap.className = "path-progress";
-    const meta = document.createElement("div");
-    meta.className = "path-progress__meta";
-    meta.append(
-      Object.assign(document.createElement("span"), { textContent: "Progress" }),
-      Object.assign(document.createElement("span"), { textContent: `${percent}%` }),
-    );
-    progressWrap.append(meta, createProgressTrack(percent, `${collection?.title || "Library"} progress: ${percent}%`));
-    const savedActions = document.createElement("div");
-    savedActions.className = "path-actions";
-    const saved = document.createElement("button");
-    saved.type = "button";
-    saved.dataset.openBookmarks = "true";
-    saved.textContent = `Open saved lessons (${state.bookmarks.size})`;
-    savedActions.append(saved);
-    secondary.append(progressKicker, progressTitle, progressCopy, progressWrap, savedActions);
-    panel.append(primary, secondary);
+    const progressCopy = document.createElement("small");
+    progressCopy.className = "path-progress-inline";
+    progressCopy.textContent = `${completed}/${available.length} complete · ${percent}%`;
+    primary.append(title, description, progressCopy, actions);
+    panel.append(primary);
     return panel;
   }
 
   function createCollectionCard(collection) {
-    const entries = collection.modules.flatMap((module) => module.lessons);
-    const liveCount = entries.filter((lesson) => lesson.status === "published").length;
     const card = document.createElement("article");
     card.className = "collection-card";
     card.dataset.domainTone = collectionTone(collection.id);
@@ -2768,35 +2831,28 @@
     top.className = "collection-card__top";
     const mark = document.createElement("span");
     mark.textContent = collection.mark;
-    const type = document.createElement("span");
-    type.textContent = collection.kind === "notes" ? "Personal notes" : "Learning domain";
-    top.append(mark, type);
+    top.append(mark);
     const title = document.createElement("h3");
     title.textContent = collection.title;
     const description = document.createElement("p");
     description.textContent = shortText(collection.description, 145);
     markVietnamese(title, description);
-    const metrics = document.createElement("div");
-    metrics.className = "collection-card__metrics";
-    metrics.append(
-      Object.assign(document.createElement("span"), { textContent: `${collection.modules.length} groups` }),
-      Object.assign(document.createElement("span"), { textContent: `${liveCount} available` }),
-    );
     const progress = collectionProgress(collection);
     const progressWrap = document.createElement("div");
     progressWrap.className = "collection-card__progress";
     const progressText = document.createElement("small");
-    progressText.textContent = `${progress.completed} of ${progress.available} complete`;
+    progressText.textContent = `${progress.completed}/${progress.available} complete · ${progress.percent}%`;
     progressWrap.append(progressText, createProgressTrack(progress.percent, `${collection.title} progress: ${progress.percent}%`));
     const open = document.createElement("button");
     open.type = "button";
     open.dataset.openCollection = collection.id;
-    open.textContent = progress.completed ? "Continue domain →" : "Start here →";
-    card.append(top, title, description, metrics, progressWrap, open);
+    open.textContent = progress.completed ? "Continue →" : "Explore →";
+    card.append(top, title, description, progressWrap, open);
     return card;
   }
 
   function renderHome({ focusHeading = false } = {}) {
+    resetSidebarFilter();
     state.selectedId = null;
     state.selectedCollectionId = null;
     state.openCollections.clear();
@@ -2806,15 +2862,14 @@
     lessonReader.replaceChildren();
     const live = publishedLessons();
     const hero = createHomeHero(
-      "Your private learning world",
       "Follow your curiosity.",
-      "Choose a constellation, start with one clear idea, and go as deep as you like.",
-      [
-        [COLLECTION_GROUPS.length, "topic constellations"],
-        [state.data.collections.length, "knowledge collections"],
-        [live.length, "available reading items"],
-      ],
+      "Continue one thread or open a constellation.",
+      `${state.data.collections.length} collections · ${live.length} lessons`,
     );
+
+    const lastEntry = validPublishedLesson(state.lastRead);
+    const preferredGroup = navigationGroupForCollection(lastEntry?.collection.id)?.id || null;
+    if (!COLLECTION_GROUPS.some(({ id }) => id === state.homeGroupId)) state.homeGroupId = preferredGroup;
 
     const groupedCollections = document.createElement("div");
     groupedCollections.className = "home-groups";
@@ -2824,21 +2879,40 @@
       const section = document.createElement("section");
       section.className = "home-section topic-group";
       section.dataset.collectionGroup = group.id;
-      const heading = createHomeSectionHead(group.title, group.description);
+      const expanded = state.homeGroupId === group.id;
+      const heading = document.createElement("h2");
+      heading.className = "topic-group__heading";
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "topic-group__toggle";
+      toggle.dataset.homeGroupToggle = group.id;
+      toggle.setAttribute("aria-expanded", String(expanded));
+      toggle.setAttribute("aria-controls", `home-group-${group.id}`);
       const groupMark = document.createElement("span");
       groupMark.className = "topic-group__mark";
       groupMark.textContent = group.mark;
       groupMark.setAttribute("aria-hidden", "true");
-      heading.prepend(groupMark);
+      const groupTitle = document.createElement("span");
+      groupTitle.textContent = group.title;
+      const chevron = document.createElement("span");
+      chevron.className = "topic-group__chevron";
+      chevron.textContent = "›";
+      chevron.setAttribute("aria-hidden", "true");
+      toggle.setAttribute(
+        "aria-label",
+        `${group.title}. ${collections.length} ${collections.length === 1 ? "collection" : "collections"}`,
+      );
+      toggle.append(groupMark, groupTitle, chevron);
+      heading.append(toggle);
       const grid = document.createElement("div");
       grid.className = "collection-grid";
+      grid.id = `home-group-${group.id}`;
+      grid.hidden = !expanded;
       collections.forEach((collection) => grid.append(createCollectionCard(collection)));
       section.append(heading, grid);
       groupedCollections.append(section);
     });
     lessonReader.append(hero, createPathPanel());
-    const recent = createRecentSection();
-    if (recent) lessonReader.append(recent);
     lessonReader.append(groupedCollections);
     finishHomeRender({ focusHeading });
   }
@@ -2846,34 +2920,28 @@
   function renderCollectionHome(collectionId, { focusHeading = true } = {}) {
     const collection = state.data.collections.find((item) => item.id === collectionId);
     if (!collection) return;
+    resetSidebarFilter();
+    openNavigationGroupForCollection(collection.id);
     state.selectedId = null;
     state.selectedCollectionId = collection.id;
     state.openCollections = new Set([collection.id]);
+    state.openModules.clear();
     applyCollectionTone(collection.id);
     document.title = `${collection.title} | Knowledge Library`;
     lessonReader.replaceChildren();
     const entries = collection.modules.flatMap((module) => module.lessons);
     const live = entries.filter((lesson) => lesson.status === "published");
     const hero = createHomeHero(
-      collection.kind === "notes" ? "Personal notes collection" : "Structured learning domain",
       collection.title,
       collection.description,
-      [
-        [collection.modules.length, collection.kind === "notes" ? "note groups" : "learning modules"],
-        [entries.length, "reading items in this collection"],
-        [live.length, "currently available"],
-        [collection.primarySources.length, "saved sources"],
-      ],
+      `${collection.modules.length} modules · ${live.length} lessons · ${collection.primarySources.length} sources`,
     );
     const sections = [hero, createPathPanel(collection)];
 
     if (collection.kind === "notes") {
       const notes = document.createElement("section");
       notes.className = "home-section";
-      notes.append(createHomeSectionHead(
-        "Preserved notes",
-        "This content comes from the previous library. You can keep reading, searching, and marking items as completed.",
-      ));
+      notes.append(createHomeSectionHead("Preserved notes"));
       const noteGrid = document.createElement("div");
       noteGrid.className = "module-overview note-overview";
       collection.modules.forEach((module) => {
@@ -2904,12 +2972,6 @@
       sections.push(notes);
     } else {
       if (collection.mentalModel.length) {
-        const mental = document.createElement("section");
-        mental.className = "home-section";
-        mental.append(createHomeSectionHead(
-          "A simple map of this domain",
-          "Use these ideas to connect the lessons. You do not need prior experience.",
-        ));
         const mentalGrid = document.createElement("div");
         mentalGrid.className = "mental-model";
         collection.mentalModel.forEach((item, index) => {
@@ -2922,16 +2984,12 @@
           card.append(number, label);
           mentalGrid.append(card);
         });
-        mental.append(mentalGrid);
-        sections.push(mental);
+        sections.push(createHomeDisclosure("Domain map", mentalGrid));
       }
 
       const curriculum = document.createElement("section");
       curriculum.className = "home-section";
-      curriculum.append(createHomeSectionHead(
-        "Your learning path",
-        "Begin with Module 01. Each step builds on the one before it, from simple ideas to practical use.",
-      ));
+      curriculum.append(createHomeSectionHead("Modules"));
       const moduleGrid = document.createElement("div");
       moduleGrid.className = "module-overview";
       collection.modules.forEach((module) => {
@@ -2948,16 +3006,10 @@
         top.append(number, count);
         const title = document.createElement("h3");
         title.textContent = module.title;
-        const description = document.createElement("p");
-        description.textContent = shortText(module.description, 150);
-        const evidence = document.createElement("div");
-        evidence.className = "module-card__evidence";
-        const evidenceLabel = document.createElement("strong");
-        evidenceLabel.textContent = "What you can do";
-        const evidenceText = document.createElement("span");
+        const evidenceText = document.createElement("p");
+        evidenceText.className = "module-card__outcome";
         evidenceText.textContent = shortText(module.evidenceOutcome, 160);
-        markVietnamese(title, description, evidenceText);
-        evidence.append(evidenceLabel, evidenceText);
+        markVietnamese(title, evidenceText);
         const moduleProgress = document.createElement("div");
         moduleProgress.className = "module-card__progress";
         const modulePercent = availableLessons.length
@@ -2971,8 +3023,8 @@
         open.dataset.openModule = module.id;
         open.textContent = completedLessons.length ? "Continue module →" : "Start module →";
         if (!completedLessons.length) open.classList.add("module-card__start");
-        card.append(top, title, description);
-        if (module.evidenceOutcome) card.append(evidence);
+        card.append(top, title);
+        if (module.evidenceOutcome) card.append(evidenceText);
         card.append(moduleProgress, open);
         moduleGrid.append(card);
       });
@@ -2980,13 +3032,6 @@
       sections.push(curriculum);
 
       if (collection.sourcePolicy.length) {
-        const policy = document.createElement("section");
-        policy.className = "home-section";
-        policy.id = "source-policy";
-        policy.append(createHomeSectionHead(
-          "How sources are checked",
-          `Time-sensitive information was last reviewed on ${formatDate(collection.reviewedAt)}.`,
-        ));
         const policyGrid = document.createElement("div");
         policyGrid.className = "policy-grid";
         collection.sourcePolicy.forEach((item) => {
@@ -3000,18 +3045,16 @@
           card.append(title, description);
           policyGrid.append(card);
         });
-        policy.append(policyGrid);
+        const policy = createHomeDisclosure(
+          `How sources are checked · reviewed ${formatDate(collection.reviewedAt)}`,
+          policyGrid,
+        );
+        policy.id = "source-policy";
         sections.push(policy);
       }
 
       if (collection.primarySources.length) {
-        const sources = document.createElement("section");
-        sources.className = "home-section";
-        sources.id = "primary-sources";
-        sources.append(createHomeSectionHead(
-          "Source library",
-          "Each lesson links to its own sources. Official material comes first, and other evidence is clearly labeled.",
-        ));
+        const sourceContent = document.createElement("div");
         const sourceGrid = document.createElement("div");
         sourceGrid.className = "source-library";
         collection.primarySources.forEach((source, sourceIndex) => {
@@ -3040,7 +3083,7 @@
           }
           sourceGrid.append(card);
         });
-        sources.append(sourceGrid);
+        sourceContent.append(sourceGrid);
         if (collection.primarySources.length > 6) {
           const toggleSources = document.createElement("button");
           toggleSources.type = "button";
@@ -3048,8 +3091,10 @@
           toggleSources.dataset.toggleSources = "true";
           toggleSources.setAttribute("aria-expanded", "false");
           toggleSources.textContent = `Show all ${collection.primarySources.length} sources`;
-          sources.append(toggleSources);
+          sourceContent.append(toggleSources);
         }
+        const sources = createHomeDisclosure("Source library", sourceContent);
+        sources.id = "primary-sources";
         sections.push(sources);
       }
     }
@@ -3089,10 +3134,7 @@
     if (!entries.length) return null;
     const section = document.createElement("section");
     section.className = "home-section";
-    section.append(createHomeSectionHead(
-      "Recently opened",
-      "Return to the ideas that are still fresh in your mind.",
-    ));
+    section.append(createHomeSectionHead("Recently opened"));
     const grid = document.createElement("div");
     grid.className = "module-overview";
     entries.forEach((entry) => grid.append(createReadingCard(entry, "Return to lesson →")));
@@ -3110,13 +3152,9 @@
     lessonReader.replaceChildren();
     const entries = Array.from(state.bookmarks).map(validStoredLesson).filter(Boolean);
     const hero = createHomeHero(
-      "Your constellation",
       "Saved lessons",
-      "Keep the ideas you want to revisit in one quiet place. Only lesson identifiers are saved on this device.",
-      [
-        [entries.length, "saved lessons"],
-        [entries.filter(({ lesson }) => state.completed.has(lesson.id)).length, "already completed"],
-      ],
+      "Ideas you want to revisit, stored as local lesson identifiers only.",
+      `${entries.length} saved · ${entries.filter(({ lesson }) => state.completed.has(lesson.id)).length} complete`,
     );
     lessonReader.append(hero);
     if (!entries.length) {
@@ -3135,10 +3173,7 @@
     } else {
       const section = document.createElement("section");
       section.className = "home-section";
-      section.append(createHomeSectionHead(
-        "Ideas to revisit",
-        "Open any lesson, or remove it from the saved list from inside the reader.",
-      ));
+      section.append(createHomeSectionHead("Ideas to revisit"));
       const grid = document.createElement("div");
       grid.className = "module-overview";
       entries.forEach((entry) => grid.append(createReadingCard(entry)));
@@ -3172,7 +3207,8 @@
   }
 
   function openResumeLesson() {
-    const target = validPublishedLesson(state.lastRead) || nextLesson();
+    const last = validPublishedLesson(state.lastRead);
+    const target = last && !state.completed.has(last.lesson.id) ? last : nextLesson();
     if (target) selectLesson(target.lesson.id);
     else showToast("Every available lesson is complete.");
   }
@@ -3213,10 +3249,12 @@
   function selectLesson(lessonId, { focusHeading = true, remember = true } = {}) {
     const entry = allLessons().find(({ lesson }) => lesson.id === lessonId);
     if (!entry) return;
+    resetSidebarFilter();
+    openNavigationGroupForCollection(entry.collection.id);
     state.selectedId = lessonId;
     state.selectedCollectionId = entry.collection.id;
     state.openCollections = new Set([entry.collection.id]);
-    state.openModules.add(entry.module.id);
+    state.openModules = new Set([entry.module.id]);
     applyCollectionTone(entry.collection.id);
     if (remember) rememberLesson(entry);
     document.title = `${entry.lesson.title} | ${entry.collection.title}`;
@@ -3234,20 +3272,135 @@
     if (focusHeading) window.requestAnimationFrame(() => lessonReader.querySelector("h1")?.focus({ preventScroll: true }));
   }
 
-  function renderSearchResults(query) {
-    const normalized = foldSearchText(query);
-    searchResults.replaceChildren();
-    if (!normalized) {
-      state.searchMatches = [];
-      state.searchIndex = -1;
-      searchResults.hidden = true;
-      searchInput.setAttribute("aria-expanded", "false");
-      searchInput.removeAttribute("aria-activedescendant");
-      return;
+  function jumpActionItems() {
+    const current = currentEntry();
+    const last = validPublishedLesson(state.lastRead);
+    const next = last && !state.completed.has(last.lesson.id) ? last : nextLesson();
+    const actions = [
+      { id: "continue", marker: "↗", title: "Continue reading", context: next ? next.lesson.title : "Open the next unread lesson" },
+      { id: "saved", marker: "◇", title: "Saved lessons", context: `${state.bookmarks.size} saved on this device` },
+      { id: "daily", marker: "☼", title: "Daily spark", context: "One locally chosen idea for today" },
+      { id: "surprise", marker: "✦", title: "Surprise me", context: "Open an unread lesson" },
+      { id: "theme", marker: "◐", title: "Theme studio", context: THEME_PRESETS[document.documentElement.dataset.themePreset]?.label || "Choose a mood" },
+      { id: "reading-mode", marker: "≋", title: state.readingMode === "essentials" ? "Show full lesson" : "Show essentials", context: "Change the visible lesson depth" },
+      { id: "text-size", marker: "Aa", title: "Reading size", context: state.textSize === "xlarge" ? "Extra large" : state.textSize === "large" ? "Large" : "Comfortable" },
+      { id: "focus", marker: "◌", title: state.focusMode ? "Exit focus mode" : "Enter focus mode", context: "Quiet the navigation" },
+      { id: "timer", marker: "◷", title: state.focusTimerEnd ? "Stop focus timer" : "Start 15-minute focus", context: "Session-only timer" },
+      { id: "shortcuts", marker: "?", title: "Keyboard shortcuts", context: "Move through the library without a mouse" },
+    ];
+    if (current?.lesson.status === "published") {
+      actions.splice(1, 0, {
+        id: "completion",
+        marker: "✓",
+        title: state.completed.has(current.lesson.id) ? "Mark current lesson incomplete" : "Mark current lesson complete",
+        context: current.lesson.title,
+      });
     }
+    return actions.map((action) => ({ ...action, kind: "action", searchText: `${action.title} ${action.context}` }));
+  }
+
+  function jumpResultScore(result, query) {
+    const normalized = foldSearchText(query).trim();
+    if (!normalized) return result.kind === "action" ? 0 : null;
+    const tokens = normalized.split(/\s+/u).filter(Boolean);
+    const title = foldSearchText(result.title);
+    const haystack = foldSearchText(`${result.title} ${result.context} ${result.searchText || ""}`);
+    if (!tokens.every((token) => haystack.includes(token))) return null;
+    if (title === normalized) return 0;
+    if (title.startsWith(normalized)) return 1;
+    if (tokens.every((token) => title.includes(token))) return 2;
+    return 3;
+  }
+
+  function buildJumpResults(query) {
+    const results = [...jumpActionItems()];
+    state.data.collections.forEach((collection) => {
+      results.push({
+        kind: "collection",
+        id: collection.id,
+        marker: collection.mark,
+        title: collection.title,
+        context: `${collection.modules.length} modules`,
+        searchText: `${collection.title} ${collection.description}`,
+      });
+      collection.modules.forEach((module) => {
+        results.push({
+          kind: "module",
+          id: module.id,
+          marker: module.number,
+          title: module.title,
+          context: collection.title,
+          searchText: `${module.title} ${module.description} ${module.evidenceOutcome}`,
+        });
+        module.lessons.forEach((lesson) => {
+          const entry = { collection, module, lesson };
+          results.push({
+            kind: "lesson",
+            id: lesson.id,
+            marker: module.number,
+            title: lesson.title,
+            context: `${collection.title} · ${module.title}`,
+            searchText: lessonSearchText(entry),
+          });
+        });
+      });
+    });
+    return results
+      .map((result, order) => ({ result, order, score: jumpResultScore(result, query) }))
+      .filter(({ score }) => score !== null)
+      .sort((left, right) => left.score - right.score || left.order - right.order)
+      .slice(0, 36)
+      .map(({ result }) => result);
+  }
+
+  function openJumpModule(moduleId) {
+    const entry = state.data.collections
+      .flatMap((collection) => collection.modules.map((module) => ({ collection, module })))
+      .find(({ module }) => module.id === moduleId);
+    if (!entry) return;
+    const target = entry.module.lessons.find(
+      (lesson) => lesson.status === "published" && !state.completed.has(lesson.id),
+    ) || entry.module.lessons.find((lesson) => lesson.status === "published");
+    if (target) selectLesson(target.id);
+    else renderCollectionHome(entry.collection.id);
+  }
+
+  function dispatchJumpResult(result) {
+    if (!result) return;
+    searchInput.value = "";
+    closeSearch();
+    const returnFocusToJump = () => window.requestAnimationFrame(() => searchInput?.focus({ preventScroll: true }));
+    if (result.kind === "lesson") selectLesson(result.id);
+    else if (result.kind === "module") openJumpModule(result.id);
+    else if (result.kind === "collection") renderCollectionHome(result.id);
+    else if (result.id === "continue") openResumeLesson();
+    else if (result.id === "saved") renderBookmarksHome();
+    else if (result.id === "daily") openDailySpark();
+    else if (result.id === "surprise") selectRandomLesson();
+    else if (result.id === "theme") openThemeDialog(searchInput);
+    else if (result.id === "reading-mode") {
+      toggleReadingMode();
+      showToast(state.readingMode === "essentials" ? "Essential view on." : "Full lesson visible.");
+      returnFocusToJump();
+    } else if (result.id === "text-size") {
+      cycleTextSize();
+      showToast(`Reading size: ${state.textSize === "xlarge" ? "extra large" : state.textSize}.`);
+      returnFocusToJump();
+    } else if (result.id === "focus") setFocusMode(!state.focusMode);
+    else if (result.id === "timer") {
+      toggleFocusTimer();
+      returnFocusToJump();
+    } else if (result.id === "shortcuts") openShortcuts(searchInput);
+    else if (result.id === "completion") {
+      toggleCompleted(currentEntry()?.lesson.id);
+      returnFocusToJump();
+    }
+  }
+
+  function renderSearchResults(query) {
+    searchResults.replaceChildren();
     closeTools();
-    const allMatches = allLessons().filter((entry) => lessonSearchText(entry).includes(normalized));
-    const matches = allMatches.slice(0, 12);
+    const matches = buildJumpResults(query);
     state.searchMatches = matches;
     state.searchIndex = -1;
     searchInput.removeAttribute("aria-activedescendant");
@@ -3255,11 +3408,9 @@
     head.className = "search-results__head";
     head.setAttribute("role", "presentation");
     const label = document.createElement("span");
-    label.textContent = allMatches.length > matches.length
-      ? `${allMatches.length} results · showing ${matches.length}`
-      : `${allMatches.length} results`;
+    label.textContent = query.trim() ? `${matches.length} matches` : "Quick actions";
     const hint = document.createElement("span");
-    hint.textContent = "Esc to close";
+    hint.textContent = query.trim() ? "Esc to close" : "Type to search everything";
     head.append(label, hint);
     searchResults.append(head);
     if (!matches.length) {
@@ -3267,10 +3418,10 @@
       empty.className = "search-empty";
       empty.setAttribute("role", "option");
       empty.setAttribute("aria-disabled", "true");
-      empty.textContent = "No matching lesson, note, or concept was found.";
+      empty.textContent = "No matching topic, lesson, or action was found.";
       searchResults.append(empty);
     } else {
-      matches.forEach(({ collection, module, lesson }, index) => {
+      matches.forEach((result, index) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "search-result";
@@ -3278,25 +3429,23 @@
         button.setAttribute("role", "option");
         button.setAttribute("aria-selected", "false");
         button.tabIndex = -1;
-        button.dataset.lessonId = lesson.id;
-        const number = document.createElement("span");
-        number.className = "search-result__number";
-        number.textContent = module.number;
+        button.dataset.jumpIndex = String(index);
+        const marker = document.createElement("span");
+        marker.className = "search-result__number";
+        marker.textContent = result.marker;
         const copy = document.createElement("span");
         const title = document.createElement("strong");
-        title.textContent = lesson.title;
-        const moduleName = document.createElement("small");
-        moduleName.textContent = `${collection.title} · ${module.title}`;
-        markVietnamese(title, moduleName);
-        copy.append(title, moduleName);
+        title.textContent = result.title;
+        const context = document.createElement("small");
+        context.textContent = result.context;
+        markVietnamese(title, context);
+        copy.append(title, context);
         const status = document.createElement("span");
         status.className = "search-result__status";
-        status.textContent = collection.kind === "notes"
-          ? "Saved"
-          : lesson.status === "published"
-            ? "Verified"
-            : "Roadmap";
-        button.append(number, copy, status);
+        status.textContent = result.kind;
+        button.append(marker, copy);
+        if (result.kind !== "action") button.append(status);
+        else button.classList.add("search-result--action");
         searchResults.append(button);
       });
     }
@@ -3306,6 +3455,7 @@
 
   function closeSearch() {
     searchResults.hidden = true;
+    state.searchMatches = [];
     state.searchIndex = -1;
     searchInput?.setAttribute("aria-expanded", "false");
     searchInput?.removeAttribute("aria-activedescendant");
@@ -3326,6 +3476,7 @@
   }
 
   function handleSearchKeydown(event) {
+    if (event.isComposing) return;
     if (event.key === "ArrowDown") {
       event.preventDefault();
       if (searchResults.hidden) renderSearchResults(searchInput.value);
@@ -3341,8 +3492,7 @@
     }
     if (event.key === "Enter" && state.searchMatches.length) {
       event.preventDefault();
-      const entry = state.searchMatches[state.searchIndex >= 0 ? state.searchIndex : 0];
-      if (entry) selectLesson(entry.lesson.id);
+      dispatchJumpResult(state.searchMatches[state.searchIndex >= 0 ? state.searchIndex : 0]);
     }
   }
 
@@ -3359,7 +3509,27 @@
     saveCompleted();
     updateToolsPanel();
     updateCurrentLessonStateControls(lessonId);
+    const currentNavigation = lessonReader.querySelector(".lesson-nav");
+    if (state.selectedId === lessonId && currentNavigation) currentNavigation.replaceWith(renderLessonNavigation(entry));
     renderNavigation();
+  }
+
+  function completeAndContinue(lessonId) {
+    const entry = validPublishedLesson(lessonId);
+    if (!entry) return;
+    const wasCompleted = state.completed.has(lessonId);
+    state.completed.add(lessonId);
+    const persisted = saveCompleted();
+    const next = nextUnreadLesson(entry);
+    if (next) {
+      selectLesson(next.lesson.id);
+      if (persisted) {
+        showToast(wasCompleted ? "Your next unread lesson is open." : "Completed. Your next unread lesson is open.");
+      }
+      return;
+    }
+    renderCollectionHome(entry.collection.id);
+    if (persisted) showToast(wasCompleted ? "Back at the collection." : "Collection complete. Nicely done.");
   }
 
   function updateReadingProgress() {
@@ -3397,6 +3567,8 @@
     state.selectedCollectionId = null;
     state.openCollections.clear();
     state.openModules.clear();
+    state.homeGroupId = null;
+    state.sidebarFilter = "";
     state.completed = new Set();
     state.bookmarks = new Set();
     state.recent = [];
@@ -3408,6 +3580,10 @@
     moduleList.replaceChildren();
     searchResults.replaceChildren();
     searchInput.value = "";
+    if (sidebarFilterInput) sidebarFilterInput.value = "";
+    if (sidebarFilterClear) sidebarFilterClear.hidden = true;
+    if (sidebarFilterStatus) sidebarFilterStatus.textContent = "Browse by constellation";
+    if (sidebarGroupsToggle) sidebarGroupsToggle.hidden = false;
     searchInput.setAttribute("aria-expanded", "false");
     searchInput.removeAttribute("aria-activedescendant");
     if (curriculumMeta) curriculumMeta.textContent = "Collections";
@@ -3472,6 +3648,7 @@
       reconcileStoredState();
       state.openCollections = new Set();
       state.openModules = new Set();
+      state.openNavGroups = loadNavigationGroups();
       setReadingMode(readStorage(STORAGE_READING_MODE, "essentials"), false);
       setTextSize(readStorage(STORAGE_TEXT_SIZE, "comfortable"), false);
       passwordInput.removeAttribute("aria-invalid");
@@ -3479,7 +3656,7 @@
       unlockView.hidden = true;
       vaultView.hidden = false;
       headerStatus.textContent = "Open · locally decrypted";
-      curriculumMeta.textContent = `${data.collections.length} collections · ${allLessons().length} reading items`;
+      if (curriculumMeta) curriculumMeta.textContent = `${data.collections.length} collections · ${allLessons().length} reading items`;
       renderHome({ focusHeading: true });
       passwordInput.value = "";
     } catch {
@@ -3514,7 +3691,82 @@
     renderHome({ focusHeading: true });
     closeSidebar();
   });
+  sidebarFilterInput?.addEventListener("input", () => {
+    state.sidebarFilter = sidebarFilterInput.value.trim();
+    renderNavigation();
+  });
+  sidebarFilterInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && state.sidebarFilter) {
+      event.preventDefault();
+      clearSidebarFilter({ focus: true });
+      return;
+    }
+    if ((event.key === "ArrowDown" || event.key === "Enter") && state.sidebarFilter) {
+      const first = moduleList.querySelector(".sidebar-filter-result");
+      if (!first) return;
+      event.preventDefault();
+      if (event.key === "Enter") first.click();
+      else first.focus();
+    }
+  });
+  sidebarFilterClear?.addEventListener("click", () => clearSidebarFilter({ focus: true }));
+  sidebarGroupsToggle?.addEventListener("click", () => {
+    const allExpanded = COLLECTION_GROUPS.every(({ id }) => state.openNavGroups.has(id));
+    state.openNavGroups = allExpanded
+      ? new Set()
+      : new Set(COLLECTION_GROUPS.map(({ id }) => id));
+    saveNavigationGroups();
+    renderNavigation();
+    sidebarGroupsToggle.focus({ preventScroll: true });
+  });
+  moduleList?.addEventListener("keydown", (event) => {
+    const current = event.target.closest(".sidebar-filter-result");
+    if (!current || !state.sidebarFilter) return;
+    const results = Array.from(moduleList.querySelectorAll(".sidebar-filter-result"));
+    const index = results.indexOf(current);
+    if (event.key === "Escape") {
+      event.preventDefault();
+      clearSidebarFilter({ focus: true });
+      return;
+    }
+    const targetIndex = event.key === "ArrowDown"
+      ? Math.min(results.length - 1, index + 1)
+      : event.key === "ArrowUp"
+        ? Math.max(0, index - 1)
+        : event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? results.length - 1
+            : -1;
+    if (targetIndex < 0 || targetIndex === index) return;
+    event.preventDefault();
+    results[targetIndex]?.focus({ preventScroll: true });
+  });
   moduleList?.addEventListener("click", (event) => {
+    const groupButton = event.target.closest("[data-nav-group-id]");
+    if (groupButton) {
+      const id = groupButton.dataset.navGroupId;
+      state.openNavGroups = state.openNavGroups.has(id) ? new Set() : new Set([id]);
+      saveNavigationGroups();
+      renderNavigation();
+      moduleList.querySelector(`[data-nav-group-id="${id}"]`)?.focus({ preventScroll: true });
+      return;
+    }
+    const sidebarModuleResult = event.target.closest("[data-sidebar-module-id]");
+    if (sidebarModuleResult) {
+      const moduleId = sidebarModuleResult.dataset.sidebarModuleId;
+      const entry = state.data.collections
+        .flatMap((collection) => collection.modules.map((module) => ({ collection, module })))
+        .find(({ module }) => module.id === moduleId);
+      if (!entry) return;
+      state.openModules = new Set([entry.module.id]);
+      const target = entry.module.lessons.find(
+        (lesson) => lesson.status === "published" && !state.completed.has(lesson.id),
+      ) || entry.module.lessons.find((lesson) => lesson.status === "published") || entry.module.lessons[0];
+      if (target) selectLesson(target.id);
+      else renderCollectionHome(entry.collection.id);
+      return;
+    }
     const collectionButton = event.target.closest("[data-collection-id]");
     if (collectionButton) {
       const id = collectionButton.dataset.collectionId;
@@ -3534,8 +3786,7 @@
     const moduleToggle = event.target.closest("[data-module-id]");
     if (moduleToggle) {
       const id = moduleToggle.dataset.moduleId;
-      if (state.openModules.has(id)) state.openModules.delete(id);
-      else state.openModules.add(id);
+      state.openModules = state.openModules.has(id) ? new Set() : new Set([id]);
       renderNavigation();
       Array.from(moduleList.querySelectorAll("[data-module-id]"))
         .find((button) => button.dataset.moduleId === id)
@@ -3546,6 +3797,19 @@
     if (lessonButton) selectLesson(lessonButton.dataset.lessonId);
   });
   lessonReader?.addEventListener("click", (event) => {
+    const homeGroupButton = event.target.closest("[data-home-group-toggle]");
+    if (homeGroupButton) {
+      const id = homeGroupButton.dataset.homeGroupToggle;
+      state.homeGroupId = state.homeGroupId === id ? null : id;
+      lessonReader.querySelectorAll("[data-home-group-toggle]").forEach((button) => {
+        const open = button.dataset.homeGroupToggle === state.homeGroupId;
+        button.setAttribute("aria-expanded", String(open));
+        const panel = document.getElementById(button.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !open;
+      });
+      homeGroupButton.focus({ preventScroll: true });
+      return;
+    }
     const collectionButton = event.target.closest("[data-open-collection]");
     if (collectionButton) {
       renderCollectionHome(collectionButton.dataset.openCollection);
@@ -3554,6 +3818,11 @@
     const lessonButton = event.target.closest("[data-lesson-id]");
     if (lessonButton) {
       selectLesson(lessonButton.dataset.lessonId);
+      return;
+    }
+    const completeContinueButton = event.target.closest("[data-complete-continue]");
+    if (completeContinueButton) {
+      completeAndContinue(completeContinueButton.dataset.completeContinue);
       return;
     }
     const completeButton = event.target.closest("[data-complete-lesson]");
@@ -3606,7 +3875,7 @@
     if (moduleButton) {
       const module = state.data.modules.find((item) => item.id === moduleButton.dataset.openModule);
       if (module) {
-        state.openModules.add(module.id);
+        state.openModules = new Set([module.id]);
         renderNavigation();
         const target = module.lessons.find(
           (lesson) => lesson.status === "published" && !state.completed.has(lesson.id),
@@ -3630,11 +3899,11 @@
   searchInput?.addEventListener("input", () => renderSearchResults(searchInput.value));
   searchInput?.addEventListener("keydown", handleSearchKeydown);
   searchInput?.addEventListener("focus", () => {
-    if (searchInput.value.trim()) renderSearchResults(searchInput.value);
+    renderSearchResults(searchInput.value);
   });
   searchResults?.addEventListener("click", (event) => {
-    const result = event.target.closest("[data-lesson-id]");
-    if (result) selectLesson(result.dataset.lessonId);
+    const result = event.target.closest("[data-jump-index]");
+    if (result) dispatchJumpResult(state.searchMatches[Number(result.dataset.jumpIndex)]);
   });
   document.addEventListener("focusin", (event) => {
     const hint = event.target.closest?.(".first-use-hint");
@@ -3673,6 +3942,7 @@
     option.addEventListener("click", () => setTheme(option.dataset.themeOption));
     option.addEventListener("keydown", handleThemeOptionKeydown);
   });
+  themeMatchTimeButton?.addEventListener("click", matchThemeToLocalTime);
   themeShuffleButton?.addEventListener("click", shuffleTheme);
   toolsToggle?.addEventListener("click", toggleTools);
   toolsClose?.addEventListener("click", () => closeTools({ restoreFocus: true }));
@@ -3721,6 +3991,7 @@
   workspace?.addEventListener("scroll", updateReadingProgress, { passive: true });
   workspace?.addEventListener("scroll", () => hideTermHintTooltip(), { passive: true });
   document.addEventListener("keydown", (event) => {
+    if (event.isComposing) return;
     if (activeTermHint && event.key === "Escape") {
       event.preventDefault();
       const target = activeTermHint;
@@ -3765,9 +4036,11 @@
     }
     if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === "k") {
       event.preventDefault();
+      if (state.focusMode) setFocusMode(false);
       closeTools();
       closeCompactSidebarForShortcut();
       searchInput?.focus();
+      if (searchInput) renderSearchResults(searchInput.value);
       return;
     }
     if (event.key === "Escape") {
@@ -3775,7 +4048,7 @@
         event.preventDefault();
         closeSearch();
         searchInput?.focus({ preventScroll: true });
-      } else if (!toolsPanel?.hidden) {
+      } else if (toolsPanel && !toolsPanel.hidden) {
         event.preventDefault();
         closeTools({ restoreFocus: true });
       } else if (document.body.classList.contains("sidebar-open")) {
@@ -3835,13 +4108,13 @@
   });
 
   document.addEventListener("pointerdown", (event) => {
-    if (!toolsPanel?.hidden && !toolsPanel.contains(event.target) && !toolsToggle?.contains(event.target)) closeTools();
+    if (toolsPanel && !toolsPanel.hidden && !toolsPanel.contains(event.target) && !toolsToggle?.contains(event.target)) closeTools();
     if (!searchResults?.hidden && !searchResults.contains(event.target) && !searchInput?.contains(event.target)) closeSearch();
   });
 
   document.addEventListener("focusin", (event) => {
     if (!searchResults?.hidden && event.target !== searchInput && !searchResults.contains(event.target)) closeSearch();
-    if (!toolsPanel?.hidden && event.target !== toolsToggle && !toolsPanel.contains(event.target)) closeTools();
+    if (toolsPanel && !toolsPanel.hidden && event.target !== toolsToggle && !toolsPanel.contains(event.target)) closeTools();
   });
 
   initializeSidebarLayout();

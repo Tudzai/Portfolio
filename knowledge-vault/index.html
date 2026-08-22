@@ -16,9 +16,9 @@
     />
     <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260821-vault-polish7" />
-    <script src="vault-data.js?v=20260821-vault-polish7" defer></script>
-    <script src="vault.js?v=20260821-vault-polish7" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260822-simple-themes1" />
+    <script src="vault-data.js?v=20260822-simple-themes1" defer></script>
+    <script src="vault.js?v=20260822-simple-themes1" defer></script>
   </head>
   <body class="is-locked">
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -28,7 +28,6 @@
         <span class="brand__mark" aria-hidden="true">KL</span>
         <span class="brand__copy">
           <strong>Knowledge Library</strong>
-          <small>Private learning space</small>
         </span>
       </a>
       <div class="security-status" aria-label="Security status">
@@ -40,9 +39,7 @@
     <main id="main-content">
       <section class="unlock-view" data-unlock-view aria-labelledby="unlock-title">
         <div class="unlock-intro">
-          <p class="eyebrow"><span aria-hidden="true"></span> Beyond the threshold</p>
           <h1 id="unlock-title">A quiet world of ideas waits inside.</h1>
-          <p class="unlock-intro__lede">Open one door. Follow your curiosity.</p>
 
           <div class="unlock-constellation" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span>
@@ -51,9 +48,7 @@
 
         <div class="unlock-card" data-unlock-card>
           <div class="unlock-card__icon" aria-hidden="true"><span></span></div>
-          <p class="unlock-card__kicker">The threshold</p>
           <h2>Enter quietly</h2>
-          <p class="unlock-card__copy">The library opens locally in this browser.</p>
 
           <form class="unlock-form" data-unlock-form novalidate>
             <input type="text" name="username" value="vault-owner" autocomplete="username" hidden />
@@ -96,7 +91,6 @@
                 <span class="domain-button__mark" aria-hidden="true">KL</span>
                 <span>
                   <strong>Knowledge Library</strong>
-                  <small data-curriculum-meta>Collections</small>
                 </span>
                 <span aria-hidden="true">⌂</span>
               </button>
@@ -142,7 +136,7 @@
                 >☰</button>
                 <label class="search-box" for="lesson-search">
                   <span aria-hidden="true">⌕</span>
-                  <span class="sr-only">Search lessons, notes, concepts, or keywords</span>
+                  <span class="sr-only">Jump to a topic, lesson, or action</span>
                   <input
                     id="lesson-search"
                     type="search"
@@ -150,7 +144,7 @@
                     aria-autocomplete="list"
                     aria-expanded="false"
                     aria-controls="vault-search-results"
-                    placeholder="Search any idea…"
+                    placeholder="Jump anywhere…"
                     autocomplete="off"
                     data-search-input
                   />
@@ -159,16 +153,6 @@
               </div>
 
               <div class="workspace-actions">
-                <button
-                  type="button"
-                  class="text-button text-button--compass"
-                  data-tools-toggle
-                  aria-label="Open learning tools"
-                  aria-expanded="false"
-                  aria-controls="vault-tools"
-                >
-                  <span aria-hidden="true">✦</span><span>Compass</span>
-                </button>
                 <button type="button" class="text-button" data-theme-toggle aria-label="Choose theme. Midnight active.">
                   <span aria-hidden="true">◐</span><span data-theme-label>Midnight</span>
                 </button>
@@ -183,86 +167,8 @@
                 data-search-results
                 hidden
                 role="listbox"
-                aria-label="Search results"
+                aria-label="Jump results"
               ></div>
-
-              <aside id="vault-tools" class="tools-popover" data-tools-panel hidden aria-label="Learning tools">
-                <div class="tools-popover__head">
-                  <div>
-                    <span>Learning compass</span>
-                    <strong>Choose your next step</strong>
-                  </div>
-                  <button type="button" class="icon-button" data-tools-close aria-label="Close learning tools">×</button>
-                </div>
-                <div class="tools-grid">
-                  <button type="button" class="tool-card" data-resume-button>
-                    <span aria-hidden="true">↗</span>
-                    <strong>Continue reading</strong>
-                    <small data-resume-meta>Find your next lesson</small>
-                  </button>
-                  <button type="button" class="tool-card" data-random-button>
-                    <span aria-hidden="true">✦</span>
-                    <strong>Surprise me</strong>
-                    <small>Open an unread idea</small>
-                  </button>
-                  <button type="button" class="tool-card" data-daily-button>
-                    <span aria-hidden="true">☼</span>
-                    <strong>Daily spark</strong>
-                    <small>One idea chosen for today</small>
-                  </button>
-                  <button type="button" class="tool-card" data-bookmarks-button>
-                    <span aria-hidden="true">◇</span>
-                    <strong>Saved lessons</strong>
-                    <small data-bookmarks-meta>0 saved</small>
-                  </button>
-                  <button
-                    type="button"
-                    class="tool-card"
-                    data-reading-mode-button
-                    aria-label="Essential reading view"
-                    aria-pressed="false"
-                  >
-                    <span aria-hidden="true">≋</span>
-                    <strong data-reading-mode-label>Reading view</strong>
-                    <small data-reading-mode-meta>Full lesson · Show essentials</small>
-                  </button>
-                  <button type="button" class="tool-card" data-text-size-button aria-label="Reading size: Comfortable. Activate to change.">
-                    <span aria-hidden="true">Aa</span>
-                    <strong>Reading size</strong>
-                    <small data-text-size-meta>Comfortable</small>
-                  </button>
-                  <button type="button" class="tool-card" data-theme-tool-button aria-label="Choose theme. Midnight active.">
-                    <span aria-hidden="true">◐</span>
-                    <strong>Theme</strong>
-                    <small data-theme-tool-meta>Midnight active</small>
-                  </button>
-                  <button
-                    type="button"
-                    class="tool-card"
-                    data-focus-button
-                    aria-label="Focus mode"
-                    aria-pressed="false"
-                  >
-                    <span aria-hidden="true">◌</span>
-                    <strong data-focus-label>Focus mode</strong>
-                    <small data-focus-meta>Off · Quiet the navigation</small>
-                  </button>
-                  <button
-                    type="button"
-                    class="tool-card"
-                    data-focus-timer-button
-                    aria-label="15-minute focus timer"
-                    aria-pressed="false"
-                  >
-                    <span aria-hidden="true">◷</span>
-                    <strong data-focus-timer-label>Focus timer</strong>
-                    <small data-focus-timer-meta>Stopped · Start 15 minutes</small>
-                  </button>
-                </div>
-                <button type="button" class="shortcuts-link" data-shortcuts-button>
-                  Keyboard shortcuts <span aria-hidden="true">?</span>
-                </button>
-              </aside>
             </header>
 
             <div class="reading-progress" aria-hidden="true">
@@ -285,7 +191,6 @@
     </main>
 
     <footer class="public-footer">
-      <span>AES-256-GCM · Local decryption · Manual lock</span>
       <a href="../">Back to portfolio</a>
     </footer>
 
@@ -293,22 +198,15 @@
 
     <div class="modal-layer" data-theme-dialog hidden>
       <div class="modal-scrim" data-theme-close aria-hidden="true"></div>
-      <section class="theme-dialog" role="dialog" aria-modal="true" aria-labelledby="theme-title" aria-describedby="theme-description">
+      <section class="theme-dialog" role="dialog" aria-modal="true" aria-labelledby="theme-title">
         <div class="theme-dialog__head">
-          <div>
-            <span>Shape the atmosphere</span>
-            <h2 id="theme-title">Theme studio</h2>
-          </div>
+          <h2 id="theme-title">Theme studio</h2>
           <button type="button" class="icon-button" data-theme-close aria-label="Close theme studio">×</button>
         </div>
-        <p id="theme-description" class="theme-dialog__intro">
-          Choose a reading atmosphere. Your choice stays on this device and never leaves the vault.
-        </p>
         <div class="theme-grid" role="radiogroup" aria-label="Vault theme" data-theme-options></div>
         <div class="theme-dialog__footer">
-          <span>Theme changes apply immediately.</span>
+          <button type="button" class="theme-match-time" data-theme-match-time>Match time ☼</button>
           <button type="button" class="theme-shuffle" data-theme-shuffle>Shuffle mood ✦</button>
-          <button type="button" class="theme-done" data-theme-close>Done</button>
         </div>
       </section>
     </div>
@@ -317,14 +215,11 @@
       <div class="modal-scrim" data-shortcuts-close aria-hidden="true"></div>
       <section class="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title">
         <div class="shortcut-dialog__head">
-          <div>
-            <span>Move without breaking focus</span>
-            <h2 id="shortcut-title">Keyboard shortcuts</h2>
-          </div>
+          <h2 id="shortcut-title">Keyboard shortcuts</h2>
           <button type="button" class="icon-button" data-shortcuts-close aria-label="Close keyboard shortcuts">×</button>
         </div>
         <dl class="shortcut-list">
-          <div><dt><kbd>Ctrl</kbd> <kbd>K</kbd></dt><dd>Search the vault</dd></div>
+          <div><dt><kbd>Ctrl</kbd> <kbd>K</kbd></dt><dd>Jump anywhere</dd></div>
           <div><dt><kbd>G</kbd> <kbd>H</kbd></dt><dd>Go to the library home</dd></div>
           <div><dt><kbd>G</kbd> <kbd>S</kbd></dt><dd>Open saved lessons</dd></div>
           <div><dt><kbd>R</kbd></dt><dd>Open a surprise lesson</dd></div>

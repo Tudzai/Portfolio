@@ -46,6 +46,12 @@ const releaseManifest = [
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
   { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
   { id: "coffee", modules: 6, lessons: 18, sources: 12 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 12 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 12 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 12 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 12 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 12 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 12 },
 ];
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
@@ -410,4 +416,4 @@ if (issues.size) {
   process.exit(1);
 }
 
-console.log("Vault release-schema validation passed: all ten domains meet the same identity, review-metadata, canonical-section, block-shape, and source-coverage contract.");
+console.log("Vault release-schema validation passed: all sixteen domains meet the same identity, review-metadata, canonical-section, block-shape, and source-coverage contract.");

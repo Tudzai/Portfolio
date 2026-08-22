@@ -2,9 +2,9 @@
 
 This folder is a private-reading layer inside the public Portfolio site. The browser derives an AES-256-GCM key from
 the owner password, decrypts `vault-data.js` locally, and renders a multi-domain personal library without sending the
-password, plaintext content, completion state, or search activity to a server. FinTech, Finance, Road to CFO,
-Breaking, muscle recovery, personal style, photography, home cooking, bar drinks, and coffee are separate structured
-collections; existing personal notes remain available as their own collection.
+password, plaintext content, completion state, or search activity to a server. Sixteen structured collections span
+finance, movement, practical life, taste, Japanese culture, visual culture, design, self-understanding,
+communication, and relationships; existing personal notes remain available as their own collection.
 
 The page is intentionally unlinked and marked `noindex`. The URL is not a security boundary: encrypted data remains
 publicly downloadable when the Portfolio site is deployed, so a strong unique password is essential.
@@ -37,25 +37,27 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
 
 ## Reading experience
 
-- The library home leads with the next useful lesson, recent reading, saved lessons, and per-domain progress.
-- Collections are organized into five stable constellations: Personal space, Money & leadership, Movement & recovery,
-  Everyday craft, and Taste & ritual. These same groups appear on the home page and in navigation.
+- The library home leads with one clear continuation and seven compact topic disclosures; only one group is open at a
+  time.
+- Collections are organized into seven stable constellations: Personal space, Money & leadership, Movement &
+  recovery, Everyday craft, Taste & ritual, Culture & aesthetics, and Self & relationships. The left navigation keeps
+  one group open at a time, while the header Jump palette finds actions, collections, modules, and lesson titles.
 - Every domain uses the same beginner path: a simple map, a recommended starting point, ordered modules, practical
-  outcomes, and a clearly separated source library.
-- Every lesson opens with a one-sentence guide and a simple starting idea. Essential view is the default for a new
-  reader. Evidence-heavy lessons keep all eleven sections but show a curated core path first; full view reveals every
-  supporting detail. Shorter lessons keep the safest beginner sections visible. References remain available in both.
-- The Learning Compass provides continue reading, surprise discovery, a deterministic daily spark, saved lessons,
-  reading size, essential/full view, focus mode, a session-only 15-minute timer, and keyboard shortcuts without
-  crowding the main reading surface.
-- Theme Studio offers eight palettes: Midnight, Pearl, Nebula, Aurora, Ember, Tide, Sakura, and Solstice, plus an
-  offline mood shuffle. The selected preset is saved only in local browser storage and can be changed from the header
-  or Learning Compass.
-- Lessons group their outline into Start, Understand, Apply, Remember, and Verify phases while preserving the full
+  outcomes, and source details that stay collapsed until requested.
+- Every lesson opens directly into the authored content. Essential view is the default for a new reader. Evidence-heavy
+  lessons keep all eleven sections but show a curated core path first; full view reveals every supporting detail.
+  Shorter lessons keep the safest beginner sections visible. References remain available in both.
+- Jump also provides continue reading, surprise discovery, a deterministic daily spark, saved lessons, reading size,
+  essential/full view, focus mode, a session-only 15-minute timer, theme access, and keyboard shortcuts without adding
+  a separate control panel.
+- Theme Studio offers twelve palettes: Midnight, Pearl, Nebula, Aurora, Ember, Tide, Sakura, Solstice, Washi, Grove,
+  Noir, and Atelier. Offline actions can shuffle the mood or match one preset to the current local hour. The selected
+  preset is saved only in local browser storage and can be changed from the header or the mobile Jump palette.
+- Lessons use one flat section outline and one smart `Complete & continue` action while preserving the full
   eleven-section authoring contract and source section.
 - Glossary-derived first-use hints explain eligible technical terms in place without changing or inventing definitions.
-- Search is accent-insensitive and keyboard navigable. Lesson pages include a section outline, estimated reading time,
-  completion, bookmarks, previous/next navigation, and a reading-progress indicator.
+- Jump is accent-insensitive and keyboard navigable. Lesson pages include a flat section outline, estimated reading
+  time, saved state, one smart continuation action, and a reading-progress indicator.
 - Each domain receives a restrained accent tone while sharing the same quiet, high-contrast visual system.
 
 Do not use this vault for passwords, keys, recovery codes, identity documents, bank information, real customer data,
@@ -78,12 +80,11 @@ The decrypted source contains:
    describes the core path, and `firstUseHints` reuses definitions already present in that lesson's glossary.
 
 The library currently contains the preserved personal-note collection plus fully published, beginner-first curricula
-for FinTech, Finance, Road to CFO, Breaking, muscle recovery, personal style, photography, home cooking, bar drinks,
-and coffee. The five practical lifestyle collections cover outfit building across multiple styles, camera and phone
-photography, safe everyday cooking, understanding and ordering common alcoholic and alcohol-free bar drinks, and
-coffee from bean and roast fundamentals through brewing, tasting, and café choices. Time-sensitive regulation,
-competition rules, medical, alcohol-safety, food-safety, and emerging-practice guidance must be rechecked
-periodically against the linked authoritative sources.
+for all sixteen domains below. The six newest collections cover Japanese culture without reducing it to stereotypes;
+visual art and architectural literacy without status snobbery; and evidence-aware self-understanding, communication,
+conflict, relationships, and boundaries without diagnosis or manipulation. Time-sensitive regulation, competition
+rules, medical, alcohol-safety, food-safety, mental-health, relationship-safety, and emerging-practice guidance must be
+rechecked periodically against the linked authoritative sources.
 
 | Structured collection | Modules | Reading items | Saved sources | Status |
 |---|---:|---:|---:|---|
@@ -97,14 +98,20 @@ periodically against the linked authoritative sources.
 | Home cooking | 6 | 18 | 12 | Published |
 | Bar drinks | 6 | 18 | 12 | Published |
 | Coffee | 6 | 18 | 12 | Published |
+| Japanese culture | 6 | 18 | 12 | Published |
+| Art, taste & visual culture | 6 | 18 | 12 | Published |
+| Architecture, design & beautiful living | 6 | 18 | 12 | Published |
+| Self-understanding & human psychology | 6 | 18 | 12 | Published |
+| Communication & conflict | 6 | 18 | 12 | Published |
+| Relationships & boundaries | 6 | 18 | 12 | Published |
 
-Across the ten structured collections, the library now contains 104 modules, 448 published lessons, and 501 saved
+Across the sixteen structured collections, the library now contains 140 modules, 556 published lessons, and 573 saved
 sources. Every lesson contains 11 authored sections, renders its references as section 12, and maps to at least three
 distinct sources from at least two organizations.
 
-### Uniform ten-domain release gate
+### Uniform sixteen-domain release gate
 
-The same release criteria apply to all ten structured collections; none is treated as a legacy exception:
+The same release criteria apply to all sixteen structured collections; none is treated as a legacy exception:
 
 - domain identity, order, module count, lesson count, and source count must match the release manifest;
 - every module has sequential numbering, framing metadata, and an `evidenceOutcome`;
@@ -150,7 +157,7 @@ this audit note is never exposed as a public plaintext file.
    - keep `publishedAt` for the original publication date; use `adoptedAt`, `updatedAt`, `reviewedAt`, or `accessedAt`
      for those distinct dates instead of relabeling a later page update as publication.
 4. Run the read-only release-schema gate. It reports only pass/fail categories and never prints private content or IDs.
-   It applies the uniform ten-domain contract above, including exact identity and counts, canonical sections, review
+   It applies the uniform sixteen-domain contract above, including exact identity and counts, canonical sections, review
    and reading-time metadata, safe block shapes, source mapping and use, HTTPS URLs, dates, inline citations, and
    source-organization diversity. Plain-language and claim-level evidence quality still require editorial review:
 
