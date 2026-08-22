@@ -48,9 +48,16 @@ const releaseManifest = [
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
   { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
   { id: "coffee", modules: 6, lessons: 18, sources: 12 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 12 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 12 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 12 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 12 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 12 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 12 },
 ];
 const legacyReleaseManifest = releaseManifest.slice(0, 5);
 const previousEightDomainReleaseManifest = releaseManifest.slice(0, 8);
+const previousTenDomainReleaseManifest = releaseManifest.slice(0, 10);
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const sourceDateFields = ["publishedAt", "adoptedAt", "updatedAt", "reviewedAt", "accessedAt"];
@@ -240,9 +247,15 @@ function matchesLegacyRelease(value) {
 }
 
 // Migration-only compatibility for the exact eight-domain release that preceded
-// the ten-domain manifest. New plaintext and new ciphertext still pass the strict gate.
+// the historical ten-domain manifest. New plaintext and new ciphertext still pass the strict gate.
 function matchesPreviousEightDomainRelease(value) {
   return matchesHistoricalRelease(value, previousEightDomainReleaseManifest);
+}
+
+// Migration-only compatibility for the exact ten-domain release that preceded
+// the sixteen-domain manifest. Strict verification never accepts this shape.
+function matchesPreviousTenDomainRelease(value) {
+  return matchesHistoricalRelease(value, previousTenDomainReleaseManifest);
 }
 
 function matchesCurrentRelease(value) {
@@ -398,6 +411,7 @@ function verifyReleaseShape(value) {
   ) return false;
   if (requireCurrentRelease) return matchesCurrentRelease(value);
   return matchesCurrentRelease(value)
+    || matchesPreviousTenDomainRelease(value)
     || matchesPreviousEightDomainRelease(value)
     || matchesLegacyRelease(value);
 }
@@ -455,7 +469,7 @@ try {
   const parsed = JSON.parse(new TextDecoder().decode(plaintext));
   if (!verifyReleaseShape(parsed)) throw new Error();
   console.log(requireCurrentRelease
-    ? "Vault password and current ten-domain release shape verified."
+    ? "Vault password and current sixteen-domain release shape verified."
     : "Existing vault password and release shape verified.");
 } catch {
   console.error("Existing vault password verification failed.");
