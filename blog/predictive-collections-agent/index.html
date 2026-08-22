@@ -17,7 +17,7 @@
     <meta property="og:title" content="Designing a Predictive Collections Agent That Acts Before a Payment Is Missed" />
     <meta
       property="og:description"
-      content="From reactive dunning to a governed decision loop: early warning, next-best action, human approval, and measurable finance outcomes."
+      content="From late-payment follow-up to a governed decision loop: early warning, next-best action, human approval, and measurable finance outcomes."
     />
     <meta
       property="og:image"
@@ -50,7 +50,7 @@
         "headline": "Designing a Predictive Collections Agent That Acts Before a Payment Is Missed",
         "description": "How I designed a predictive early-warning collections agent with explainable recommendations, human controls, and an evidence-first finance case for AABW 2026.",
         "datePublished": "2026-07-13",
-        "dateModified": "2026-07-13",
+        "dateModified": "2026-08-22",
         "author": {
           "@type": "Person",
           "name": "Truong Dinh Anh Tu"
@@ -66,9 +66,10 @@
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/article.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" href="../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260813-6">
-      <script src="../../analytics.js?v=posthog-replay-fix-20260816"></script>
+    <link rel="stylesheet" href="../../assets/agentic-home/css/featured-route-polish.css?v=featured-routes-20260822-9">
+      <script defer src="../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body class="detail-page aabw-article-page simple-three-page simple-three-article" data-stage-family="blog" data-stage-template="article">
+  <body class="detail-page aabw-article-page simple-three-page simple-three-article collections-agent-page polished-route" data-stage-family="blog" data-stage-template="article">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -76,7 +77,7 @@
           <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
           <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
         </a>
-        <div class="header-actions stage-shell-actions">
+        <nav class="header-actions stage-shell-actions" aria-label="Primary">
           <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
             aria-controls="primary-navigation" aria-label="Open capabilities menu">
             <span>Capabilities</span><i aria-hidden="true"></i>
@@ -85,7 +86,7 @@
           <a class="header-link" href="../../index.html#contact">Contact</a>
           <a class="header-link" href="../index.html">Blog</a>
           <a class="nav-cv" href="../../cv.html">View CV</a>
-        </div>
+        </nav>
         <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
           <p class="nav-panel-label">Capabilities</p>
           <div class="capability-nav stage-shell-capabilities">
@@ -105,46 +106,66 @@
         </nav>
       </div>
     </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="page-shell blog-page" data-stage-content>
+    <main id="main-content" class="page-shell blog-page" data-stage-content tabindex="-1">
 <article>
         <header class="detail-hero" aria-labelledby="article-title" data-core-section="hero">
           <p class="breadcrumb"><a href="../index.html">Blog</a> / Predictive Collections Agent</p>
-          <div class="article-hero-copy">
-            <p class="eyebrow">Agentic AI Build Week 2026 · Financial Services II</p>
-            <h1 id="article-title">Designing a Predictive Collections Agent That Acts Before a Payment Is Missed</h1>
-            <p class="article-lede">
-              How I reframed collections as a cash, customer, and governance problem—and designed an agentic decision
-              loop that detects risk early, recommends the next best action, keeps humans accountable, and learns only
-              through controlled approval.
-            </p>
-            <div class="article-meta" aria-label="Article details">
-              <span class="blog-status-badge is-published">Published</span>
-              <span><i data-lucide="calendar-days"></i> July 13, 2026</span>
-              <span><i data-lucide="clock-3"></i> 12 min read</span>
-              <span><i data-lucide="map-pin"></i> Ho Chi Minh City</span>
+          <div class="collections-hero-grid">
+            <div class="article-hero-copy">
+              <p class="eyebrow">Finance-led agent design · AABW 2026</p>
+              <h1 id="article-title">A Predictive Collections Agent That Acts Before Payment Is Missed</h1>
+              <p class="article-lede">
+                A finance-led design for detecting payment risk 7–14 days early, recommending the next best action,
+                and keeping every outreach and learning decision under human control.
+              </p>
+              <div class="article-meta" aria-label="Article details">
+                <span class="blog-status-badge is-published">Published</span>
+                <span>July 13, 2026</span>
+                <span>3 min read</span>
+                <span>Ho Chi Minh City</span>
+              </div>
+              <div class="product-tags" aria-label="Article tags">
+                <span>Agentic AI</span>
+                <span>Credit Risk</span>
+                <span>Collections</span>
+                <span>Working Capital</span>
+                <span>Human-in-the-Loop</span>
+                <span>AABW 2026</span>
+              </div>
+              <div class="hero-actions collections-hero-actions">
+                <a class="button primary" href="#deck-title">
+                  Explore the 6-slide case <span aria-hidden="true">&darr;</span>
+                </a>
+              </div>
             </div>
-            <div class="product-tags" aria-label="Article tags">
-              <span>Agentic AI</span>
-              <span>Credit Risk</span>
-              <span>Collections</span>
-              <span>Working Capital</span>
-              <span>Human-in-the-Loop</span>
-              <span>AABW 2026</span>
-            </div>
+            <aside class="collections-loop-card" aria-label="Predictive collections decision loop">
+              <div class="collections-loop-head">
+                <span>Early-warning window</span>
+                <strong>7–14 days</strong>
+                <small>before the due date</small>
+              </div>
+              <ol class="collections-loop-flow">
+                <li><span>01</span><strong>Signal</strong></li>
+                <li><span>02</span><strong>Risk</strong></li>
+                <li><span>03</span><strong>Action</strong></li>
+                <li class="is-control"><span>04</span><strong>Human approval</strong></li>
+                <li><span>05</span><strong>Outreach</strong></li>
+              </ol>
+              <p><strong>Two approval gates.</strong> One before outreach, one before the agent changes its decision rules.</p>
+            </aside>
           </div>
         </header>
 
         <section class="article-summary" aria-labelledby="article-summary-title" data-core-section="evidence">
           <div class="article-summary-heading">
             <p class="section-kicker">Article at a glance</p>
-            <h2 id="article-summary-title">One decision loop, three design principles.</h2>
+            <h2 id="article-summary-title">Predict early. Recommend with controls. Prove the cash impact.</h2>
           </div>
           <div class="article-summary-grid">
             <article>
               <span>01</span>
               <strong>Predict before the due date</strong>
-              <p>Move from reactive dunning to a 7–14 day early-warning window.</p>
+              <p>Move from late-payment follow-up to a 7–14 day early-warning window.</p>
             </article>
             <article>
               <span>02</span>
@@ -154,17 +175,15 @@
             <article>
               <span>03</span>
               <strong>Prove value with a control group</strong>
-              <p>Measure cure uplift, cost-to-collect, cash timing, and customer guardrails.</p>
+              <p>Measure payment recovery, cost-to-collect, cash timing, and customer guardrails.</p>
             </article>
           </div>
           <div class="article-summary-actions">
-            <a class="button primary" href="deck/index.html?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer">
-              <i data-lucide="presentation"></i>
-              Open the 6-slide case
+            <a class="button primary" href="deck/index.html?v=20260822-sandbox-storage1" target="_blank" rel="noreferrer" aria-label="Open the 6-slide case in a new tab">
+              Open the 6-slide case <span aria-hidden="true">&nearr;</span>
             </a>
-            <a class="button quiet" href="#workflow-title">
-              <i data-lucide="route"></i>
-              Jump to the workflow
+            <a class="button quiet" href="#deck-title">
+              Preview the case below <span aria-hidden="true">&darr;</span>
             </a>
           </div>
         </section>
@@ -318,10 +337,10 @@
         <section class="detail-section article-section deck-core-section" aria-labelledby="deck-title" data-core-section="action">
           <div class="article-section-heading">
             <p class="section-kicker">Interactive case deck</p>
-            <h2 id="deck-title">Explore the full story—from workflow to economics and roadmap.</h2>
+            <h2 id="deck-title">See the complete decision story.</h2>
             <p>
-              Use the arrow controls, keyboard arrows, or space bar inside the deck. The presentation contains six
-              chapters: the problem, target workflow, business case, product demo, roadmap, and executive Q&amp;A.
+              Six concise chapters connect the problem, governed workflow, business case, product demo, roadmap, and
+              executive Q&amp;A. Use the deck controls or open it full-screen.
             </p>
           </div>
 
@@ -335,13 +354,13 @@
             </div>
             <div class="deck-frame">
               <iframe
-                src="deck/index.html?v=20260813-standalone-ff5c17b"
+                src="deck/index.html?v=20260822-sandbox-storage1"
                 title="Interactive Predictive Early-Warning Collections Agent presentation"
                 loading="lazy"
                 sandbox="allow-scripts allow-top-navigation-by-user-activation"
               ></iframe>
             </div>
-            <a class="deck-mobile-poster" href="deck/index.html?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer">
+            <a class="deck-mobile-poster" href="deck/index.html?v=20260822-sandbox-storage1" target="_blank" rel="noreferrer" aria-label="Open the interactive deck in a new tab">
               <img
                 src="deck/assets/workflow-ai-agent-ver69.png"
                 alt="Preview of the Predictive Collections Agent workflow deck"
@@ -350,16 +369,15 @@
                 loading="lazy"
                 decoding="async"
               />
-              <span><i data-lucide="presentation"></i> Open the interactive deck</span>
+              <span>Open the interactive deck <span aria-hidden="true">&nearr;</span></span>
             </a>
             <div class="deck-actions">
               <p>
                 The embedded deck is optimised for desktop. On a phone—or if reduced motion is enabled—open the full
                 presentation for the clearest experience.
               </p>
-              <a class="button primary" href="deck/index.html?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer" data-track-event="aabw_deck_open">
-                <i data-lucide="presentation"></i>
-                Open presentation
+              <a class="button primary" href="deck/index.html?v=20260822-sandbox-storage1" target="_blank" rel="noreferrer" aria-label="Open presentation in a new tab" data-track-event="aabw_deck_open">
+                Open presentation <span aria-hidden="true">&nearr;</span>
               </a>
             </div>
           </div>
@@ -762,7 +780,7 @@
               while protecting the customer and the institution.
             </p>
             <div class="article-end-actions">
-              <a class="button primary" href="deck/index.html?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer">
+              <a class="button primary" href="deck/index.html?v=20260822-sandbox-storage1" target="_blank" rel="noreferrer">
                 <i data-lucide="presentation"></i>
                 View the case deck
               </a>
@@ -801,7 +819,7 @@
         </a>
       </div>
     </footer>
-      <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=routes-20260818-back-to-top1"></script>
+      <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=featured-routes-20260822-1"></script>
+    <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=featured-routes-20260822-1"></script>
   </body>
 </html>

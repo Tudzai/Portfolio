@@ -8,7 +8,7 @@
 
     const setState = (open, moveFocus = false) => {
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      toggle.setAttribute('aria-label', open ? 'Close Capabilities menu' : 'Open Capabilities menu');
       menu.setAttribute('aria-hidden', String(!open));
       menu.inert = !open;
       menu.classList.toggle('is-open', open);
@@ -28,6 +28,14 @@
       }
     });
     menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setState(false)));
+
+    header?.addEventListener('focusout', () => {
+      window.requestAnimationFrame(() => {
+        if (toggle.getAttribute('aria-expanded') === 'true' && !header.contains(document.activeElement)) {
+          setState(false);
+        }
+      });
+    });
 
     document.addEventListener('pointerdown', (event) => {
       if (toggle.getAttribute('aria-expanded') === 'true' && event.target instanceof Element && !header?.contains(event.target)) {

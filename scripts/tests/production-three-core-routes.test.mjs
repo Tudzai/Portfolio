@@ -244,8 +244,8 @@ test("presents the interactive deck as the article action section", async () => 
   const html = await read("blog/predictive-collections-agent/index.html");
 
   assert.match(html, /class="detail-section article-section deck-core-section"[^>]*data-core-section="action"/);
-  assert.match(html, /src="deck\/index\.html\?v=20260813-standalone-ff5c17b"/);
-  assert.equal((html.match(/deck\/index\.html\?v=20260813-standalone-ff5c17b/g) ?? []).length, 5);
+  assert.match(html, /src="deck\/index\.html\?v=20260822-sandbox-storage1"/);
+  assert.equal((html.match(/deck\/index\.html\?v=20260822-sandbox-storage1/g) ?? []).length, 5);
   assert.doesNotMatch(html, /aria-labelledby="workflow-title"[^>]*data-core-section/);
 });
 

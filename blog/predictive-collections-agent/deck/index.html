@@ -15025,8 +15025,8 @@
         }
 
         .deck-controls button {
-            width: 34px;
-            height: 30px;
+            width: 44px;
+            height: 44px;
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.08);
@@ -18576,6 +18576,7 @@
                 this.introSlide.dataset.step = String(bounded);
                 this.introSlide.classList.remove(...this.introStateClasses);
                 this.introSlide.classList.add(`intro-scene-${bounded}`);
+                this.updateCounter();
             }
 
             advanceIntroScene() {
@@ -19124,8 +19125,23 @@
                     if (nextSlide === this.qaSlide) this.applyInitialQAScene();
                 }
                 if (nextSlide === this.demoSlide) this.prepareDemoVideo();
-                this.counter.textContent = `${bounded + 1} / ${this.slides.length}`;
+                this.updateCounter();
                 this.progress.style.width = `${((bounded + 1) / this.slides.length) * 100}%`;
+            }
+
+            updateCounter() {
+                const nextButton = document.getElementById("nextSlide");
+                if (this.isIntroActive()) {
+                    this.counter.textContent = `1 / ${this.slides.length} · intro ${this.introScene + 1} / ${this.introSceneCount}`;
+                    const hasMoreIntro = this.introScene < this.introSceneCount - 1;
+                    nextButton?.setAttribute(
+                        "aria-label",
+                        hasMoreIntro ? `Continue introduction, step ${this.introScene + 2} of ${this.introSceneCount}` : "Next slide"
+                    );
+                    return;
+                }
+                this.counter.textContent = `${this.currentSlide + 1} / ${this.slides.length}`;
+                nextButton?.setAttribute("aria-label", "Next slide");
             }
 
             next() {
@@ -19159,9 +19175,9 @@
             }
 
             restoreSavedText() {
-                const saved = localStorage.getItem("collections-agent-deck-edits-v8");
-                if (!saved) return;
                 try {
+                    const saved = localStorage.getItem("collections-agent-deck-edits-v8");
+                    if (!saved) return;
                     const edits = JSON.parse(saved);
                     document.querySelectorAll("[data-editable]").forEach((node, index) => {
                         const savedValue = edits[index];
@@ -19172,7 +19188,7 @@
                         if (savedValue && !isStaleOverviewClaim && !isStaleSlideCount) node.innerHTML = savedValue;
                     });
                 } catch (error) {
-                    console.warn("Could not restore saved edits", error);
+                    if (error?.name !== "SecurityError") console.warn("Could not restore saved edits", error);
                 }
             }
         }
@@ -19241,7 +19257,11 @@
 
             save() {
                 const edits = Array.from(document.querySelectorAll("[data-editable]")).map((node) => node.innerHTML);
-                localStorage.setItem("collections-agent-deck-edits-v8", JSON.stringify(edits));
+                try {
+                    localStorage.setItem("collections-agent-deck-edits-v8", JSON.stringify(edits));
+                } catch (error) {
+                    if (error?.name !== "SecurityError") console.warn("Could not save inline edits in this viewing mode", error);
+                }
             }
         }
 

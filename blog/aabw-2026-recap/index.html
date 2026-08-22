@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="aabw-recap-document">
   <head>
     <meta name="robots" content="index, follow">
     <meta charset="utf-8" />
@@ -58,7 +58,7 @@
         "headline": "AABW 2026 Recap: My First Hackathon as a Non-Technical Builder",
         "description": "A personal recap of turning a real enterprise brief into an end-to-end agentic AI product story, HTML pitch deck, and focused demo during Agentic AI Build Week 2026.",
         "datePublished": "2026-07-14",
-        "dateModified": "2026-07-16",
+        "dateModified": "2026-08-22",
         "author": {
           "@type": "Person",
           "name": "Truong Dinh Anh Tu"
@@ -73,9 +73,10 @@
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/article.css?v=routes-20260811-annotated2">
-      <script src="../../analytics.js?v=posthog-replay-fix-20260816"></script>
+    <link rel="stylesheet" href="../../assets/agentic-home/css/featured-route-polish.css?v=featured-routes-20260822-9">
+      <script defer src="../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body class="detail-page aabw-article-page aabw-recap-page" data-stage-family="blog" data-stage-template="article">
+  <body class="detail-page aabw-article-page aabw-recap-page polished-route" data-stage-family="blog" data-stage-template="article">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -83,7 +84,7 @@
           <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
           <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
         </a>
-        <div class="header-actions stage-shell-actions">
+        <nav class="header-actions stage-shell-actions" aria-label="Primary">
           <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
             aria-controls="primary-navigation" aria-label="Open capabilities menu">
             <span>Capabilities</span><i aria-hidden="true"></i>
@@ -92,7 +93,7 @@
           <a class="header-link" href="../../index.html#contact">Contact</a>
           <a class="header-link" href="../index.html">Blog</a>
           <a class="nav-cv" href="../../cv.html">View CV</a>
-        </div>
+        </nav>
         <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
           <p class="nav-panel-label">Capabilities</p>
           <div class="capability-nav stage-shell-capabilities">
@@ -112,26 +113,24 @@
         </nav>
       </div>
     </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="page-shell blog-page" data-stage-content>
+    <main id="main-content" class="page-shell blog-page" data-stage-content tabindex="-1">
 <article>
         <header class="detail-hero recap-hero" aria-labelledby="article-title">
           <p class="breadcrumb"><a href="../index.html">Blog</a> / AABW 2026 Recap</p>
           <div class="recap-hero-grid">
             <div class="recap-hero-copy">
               <p class="eyebrow">Agentic AI Build Week 2026 · First-person recap</p>
-              <h1 id="article-title">My First Hackathon as a Non-Technical Builder</h1>
+              <h1 id="article-title">My First Hackathon as a Non&#8209;Technical Builder</h1>
               <p class="article-lede">
-                I entered AABW with business context, finance discipline, and curiosity—not a software engineering
-                background. I left with a much wider definition of building: framing a real problem, designing the
-                decision workflow, shaping an end-to-end product, turning the story into HTML slides, and making a
-                demo that people could understand quickly.
+                I arrived with finance discipline and business context—not an engineering background. In five days,
+                I helped turn an enterprise brief into a governed workflow, an HTML pitch deck, and a focused demo
+                that people could understand quickly.
               </p>
               <div class="article-meta" aria-label="Article details">
                 <span class="blog-status-badge is-published">Published</span>
-                <span><i data-lucide="calendar-days"></i> July 14, 2026</span>
-                <span><i data-lucide="clock-3"></i> 9 min read</span>
-                <span><i data-lucide="map-pin"></i> Ho Chi Minh City</span>
+                <span>July 14, 2026</span>
+                <span>9 min read</span>
+                <span>Ho Chi Minh City</span>
               </div>
               <div class="product-tags" aria-label="Article tags">
                 <span>AABW 2026</span>
@@ -141,13 +140,11 @@
                 <span>Demo Storytelling</span>
               </div>
               <div class="recap-hero-actions">
-                <a class="button primary" href="../../collections-agent/?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer">
-                  <i data-lucide="presentation"></i>
-                  Open the pitch deck
+                <a class="button primary" href="../../collections-agent/?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer" aria-label="Explore the pitch deck in a new tab">
+                  Explore the pitch deck <span aria-hidden="true">&nearr;</span>
                 </a>
                 <a class="button quiet" href="../predictive-collections-agent/index.html">
-                  <i data-lucide="workflow"></i>
-                  Read the product case
+                  Read the product case <span aria-hidden="true">&rarr;</span>
                 </a>
               </div>
             </div>
@@ -443,7 +440,8 @@
                   conference hall; each space added context about how technology, operations, and community meet.
                 </p>
               </div>
-              <div class="venue-grid">
+              <p class="mobile-gallery-hint">Swipe to explore the partner venues <span aria-hidden="true">&rarr;</span></p>
+              <div class="venue-grid" tabindex="0" aria-label="Partner venue photo gallery. Scroll horizontally to explore on small screens.">
                 <figure class="venue-card venue-card--wide">
                   <img
                     src="assets/tasco-mobility-visit.jpg"
@@ -526,7 +524,8 @@
                   decision becomes a real technical advantage.
                 </p>
               </div>
-              <div class="community-gallery">
+              <p class="mobile-gallery-hint">Swipe to explore the people gallery <span aria-hidden="true">&rarr;</span></p>
+              <div class="community-gallery" tabindex="0" aria-label="Community photo gallery. Scroll horizontally to explore on small screens.">
                 <figure class="community-gallery__event-selfie">
                   <img
                     src="assets/aabw-builder-community.jpg"
@@ -601,20 +600,18 @@
               </div>
               <div class="article-end-card">
                 <p class="section-kicker">From recap to proof</p>
-                <h2>The week ended. The product-learning loop did not.</h2>
+                <h3>The week ended. The product-learning loop did not.</h3>
                 <p>
                   I now have a clearer playbook for future builds: frame the business decision, map the human and AI
                   workflow, build the smallest credible experience, design the evidence, and present it with enough
                   clarity that someone can act on it.
                 </p>
                 <div class="article-end-actions">
-                  <a class="button primary" href="../../collections-agent/?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer">
-                    <i data-lucide="presentation"></i>
-                    View the pitch deck
+                  <a class="button primary" href="../../collections-agent/?v=20260813-standalone-ff5c17b" target="_blank" rel="noreferrer" aria-label="View the pitch deck in a new tab">
+                    View the pitch deck <span aria-hidden="true">&nearr;</span>
                   </a>
                   <a class="button quiet" href="../predictive-collections-agent/index.html">
-                    <i data-lucide="book-open"></i>
-                    Read the full case study
+                    Read the full case study <span aria-hidden="true">&rarr;</span>
                   </a>
                 </div>
               </div>
@@ -624,7 +621,7 @@
                   <li><a href="https://aabw.genaifund.ai/" target="_blank" rel="noreferrer">Official Agentic AI Build Week 2026 website</a></li>
                   <li><a href="https://aitalent.genaifund.ai/report-2026" target="_blank" rel="noreferrer">GenAI Fund: State of AI Builders in Southeast Asia 2026 preview</a></li>
                   <li><a href="https://www.linkedin.com/posts/genai-fund_aabwxgaf-activity-7474748023135436800-uw5e" target="_blank" rel="noreferrer">GenAI Fund event scale and partner announcement</a></li>
-                  <li><a href="https://aitalent.genaifund.ai/tracks/financial-services-ii/predictive-collections-agent" target="_blank" rel="noreferrer">Financial Services II: Predictive Collections Agent brief</a></li>
+                  <li><a href="https://aitalent.genaifund.ai/tracks/financial-services-ii/predictive-collections-agent" target="_blank" rel="noreferrer">Financial Services II challenge brief (sign-in may be required)</a></li>
                 </ul>
                 <p>
                   Personal photographs are from my AABW recap archive. The official event visual is © GenAI Fund and
@@ -645,7 +642,7 @@
         </a>
       </div>
     </footer>
-      <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=routes-20260818-back-to-top1"></script>
+      <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=featured-routes-20260822-1"></script>
+    <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=featured-routes-20260822-1"></script>
   </body>
 </html>
