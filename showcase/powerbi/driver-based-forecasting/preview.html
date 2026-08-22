@@ -13,7 +13,7 @@
       --panel: #ffffff;
       --panel-soft: #f7f9fc;
       --ink: #12233e;
-      --muted: #64728a;
+      --muted: #53637b;
       --line: #d8e1ee;
       --line-strong: #c5d1e2;
       --navy: #0b2d59;
@@ -37,7 +37,7 @@
     button, select, input { font: inherit; }
     button { color: inherit; }
     button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible {
-      outline: 3px solid #f0b33b;
+      outline: 3px solid #0b5cab;
       outline-offset: 2px;
     }
 
@@ -148,7 +148,7 @@
 
     .filters {
       display: grid;
-      grid-template-columns: repeat(4, 112px);
+      grid-template-columns: 112px 112px 132px 152px;
       gap: 6px;
       align-items: stretch;
     }
@@ -164,7 +164,20 @@
       font-weight: 700;
       line-height: 1.1;
       box-shadow: 0 4px 12px rgba(3, 29, 62, .1);
+      transition: border-color .16s ease, background .16s ease, box-shadow .16s ease;
     }
+    .filter:hover,
+    .filter:focus-within {
+      border-color: rgba(139, 207, 255, .86);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(91, 178, 235, .15), 0 5px 16px rgba(3, 29, 62, .14);
+    }
+    .filter.is-active {
+      border-color: #87c9ee;
+      background: #f1f8ff;
+      box-shadow: inset 0 -2px #4b9ed0, 0 5px 14px rgba(3, 29, 62, .12);
+    }
+    .filter.is-active > span { color: #135d92; }
     .filter span { display: block; margin: 0 0 2px; }
     .filter.hidden { display: none; }
     .filter select {
@@ -340,6 +353,8 @@
     .visual-grid.lab-mode { grid-template-rows: 105px 298px; }
     .panel {
       position: relative;
+      display: flex;
+      flex-direction: column;
       min-width: 0;
       min-height: 0;
       overflow: hidden;
@@ -348,6 +363,15 @@
       border-radius: 11px;
       background: var(--panel);
       box-shadow: var(--shadow-soft);
+      animation: content-enter .2s ease-out both;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+    .panel:nth-child(2) { animation-delay: 25ms; }
+    .panel:nth-child(3) { animation-delay: 50ms; }
+    .panel:nth-child(4) { animation-delay: 75ms; }
+    @media (hover: hover) {
+      .panel:hover { border-color: #bdcce0; box-shadow: 0 9px 22px rgba(27, 52, 89, .1); }
+      .kpi:hover { border-color: #bdcce0; box-shadow: 0 8px 20px rgba(27, 52, 89, .1); }
     }
     .panel::after {
       content: "";
@@ -364,7 +388,16 @@
     .panel.span-7 { grid-column: span 7; }
     .panel.span-8 { grid-column: span 8; }
     .panel.span-12 { grid-column: span 12; }
+    .panel-heading {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
     .panel h2 {
+      min-width: 0;
       margin: 0;
       color: var(--ink);
       font-size: 13px;
@@ -373,30 +406,52 @@
     }
     .panel-sub {
       margin: 3px 0 6px;
-      color: var(--muted);
-      font-size: 9px;
+      color: #596980;
+      font-size: 9.5px;
       line-height: 1.25;
     }
     .panel-action {
-      position: absolute;
-      top: 9px;
-      right: 10px;
+      flex: 0 0 auto;
+      padding: 2px 6px;
+      border: 1px solid #d4e2f2;
+      border-radius: 999px;
       color: var(--blue);
+      background: #f4f8fd;
       font-size: 9px;
       font-weight: 800;
+      line-height: 1.1;
+      white-space: nowrap;
     }
 
-    .chart-wrap { position: relative; height: calc(100% - 29px); min-height: 0; }
-    .chart { display: block; width: 100%; height: 100%; min-height: 132px; overflow: visible; }
+    .chart-wrap {
+      position: relative;
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      height: auto;
+      min-height: 0;
+    }
+    .chart { display: block; flex: 1 1 auto; width: 100%; height: 100%; min-height: 0; overflow: visible; }
     .chart text { font-family: "Segoe UI Variable", "Segoe UI", Arial, sans-serif; }
     .chart .gridline { stroke: #e4eaf2; stroke-width: 1; }
     .chart .axisline { stroke: #cbd6e4; stroke-width: 1; }
-    .chart .tick { fill: #65758d; font-size: 12.5px; }
-    .chart .direct-label { fill: #253a57; font-size: 12.5px; font-weight: 800; }
+    .chart .tick { fill: #53657d; font-size: 12.5px; }
+    .chart .direct-label { fill: #1d3150; font-size: 12.5px; font-weight: 800; }
+    .chart .variance-category { fill: #1d3150; font-size: 16px; font-weight: 850; }
+    .chart .variance-value {
+      font-size: 17px;
+      font-weight: 900;
+      paint-order: stroke;
+      stroke: #fff;
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+    .chart .variance-value.up { fill: #126f67; }
+    .chart .variance-value.down { fill: #a33e4b; }
     .panel.span-3 .chart .tick { font-size: 17px; }
     .panel.span-3 .chart .direct-label { font-size: 17px; }
     .chart .empty-state { fill: #21456f; font-size: 15px; font-weight: 850; }
-    .chart .empty-state-sub { fill: #6d7c91; font-size: 11px; }
+    .chart .empty-state-sub { fill: #53637b; font-size: 11px; }
     .chart .series-actual { fill: none; stroke: #697789; stroke-width: 2.1; }
     .chart .series-base { fill: none; stroke: var(--blue); stroke-width: 2.7; }
     .chart .series-upside { fill: none; stroke: var(--teal); stroke-width: 2.7; }
@@ -404,35 +459,88 @@
     .chart .series-ebitda { fill: none; stroke: var(--teal); stroke-width: 2.4; }
     .chart .scenario-mark { cursor: pointer; }
     .chart .scenario-mark:hover { opacity: .82; }
+    .chart[tabindex="0"] { cursor: crosshair; }
+    .chart[tabindex="0"]:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px #0b5cab;
+      border-radius: 6px;
+    }
+    .chart .scenario-mark:focus-visible {
+      outline: none;
+      filter: drop-shadow(0 0 3px rgba(11, 92, 171, .95));
+    }
+    .chart .keyboard-active {
+      filter: drop-shadow(0 0 4px rgba(34, 89, 173, .9));
+    }
 
     .legend {
-      position: absolute;
-      top: -1px;
-      right: 2px;
       display: flex;
+      flex: 0 0 auto;
       align-items: center;
+      align-self: flex-end;
+      justify-content: flex-end;
+      flex-wrap: wrap;
       gap: 10px;
-      color: var(--muted);
-      font-size: 9px;
+      min-height: 13px;
+      margin: -1px 2px 3px 0;
+      color: #53637b;
+      font-size: 9.5px;
       pointer-events: none;
     }
     .legend span { display: inline-flex; align-items: center; gap: 4px; }
-    .legend i { width: 12px; height: 3px; border-radius: 999px; background: var(--legend-color); }
+    .legend i { width: 14px; height: 4px; border-radius: 999px; background: var(--legend-color); }
+    .legend i.legend-dash {
+      height: 0;
+      border-top: 2px dashed var(--legend-color);
+      border-radius: 0;
+      background: transparent;
+    }
+    .chart-readout {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      min-height: 19px;
+      margin: 0 0 4px;
+      padding: 2px 7px;
+      overflow: hidden;
+      border-left: 3px solid #4d83c3;
+      border-radius: 5px;
+      color: #29405d;
+      background: #f1f6fc;
+      font-size: 9.5px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-    .bar-list { display: grid; gap: 7px; margin-top: 8px; }
+    .bar-list { display: grid; gap: 4px; margin-top: 8px; }
+    .bar-list.is-focused { height: 100%; grid-template-rows: auto auto 1fr; }
+    .bar-list .bar-readout { margin-bottom: 0; }
+    .bar-context-note {
+      display: flex;
+      align-items: center;
+      padding: 8px 9px;
+      border: 1px dashed #c4d2e4;
+      border-radius: 7px;
+      color: #53637b;
+      background: #f7f9fc;
+      font-size: 9px;
+      line-height: 1.35;
+    }
     .bar-row {
       display: grid;
       grid-template-columns: minmax(80px, 1fr) minmax(90px, 2fr) 56px;
       align-items: center;
       gap: 7px;
       min-height: 20px;
-      font-size: 9px;
+      font-size: 9.5px;
     }
     .bar-row .bar-name {
       overflow: hidden;
       padding: 2px 0;
       color: #31425a;
-      font-size: 9px;
+      font-size: 9.5px;
       text-align: left;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -455,8 +563,15 @@
     }
     .bar-row-button[aria-pressed="true"] .bar-name { color: var(--blue); font-weight: 900; }
     .bar-track { height: 10px; overflow: hidden; border-radius: 999px; background: #e8edf4; }
-    .bar-fill { display: block; height: 100%; border-radius: inherit; background: var(--fill, var(--blue)); }
-    .bar-value { color: #33465f; font-weight: 850; text-align: right; font-variant-numeric: tabular-nums; }
+    .bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--fill, var(--blue));
+      transform-origin: left center;
+      animation: grow-bar .28s ease-out both;
+    }
+    .bar-value { color: #263a55; font-weight: 850; text-align: right; font-variant-numeric: tabular-nums; }
     .empty-list {
       display: grid;
       place-items: center;
@@ -470,13 +585,13 @@
       text-align: center;
     }
 
-    .table-wrap { width: 100%; height: calc(100% - 30px); overflow: auto; scrollbar-color: #9cafc7 #edf2f8; }
+    .table-wrap { flex: 1 1 auto; width: 100%; height: auto; min-height: 0; overflow: auto; scrollbar-color: #9cafc7 #edf2f8; }
     .scroll-cue { display: none; }
     table { width: 100%; border-collapse: collapse; font-size: 9px; }
     th, td {
-      padding: 3px 6px;
+      padding: 1.5px 6px;
       border-bottom: 1px solid #e7ecf3;
-      line-height: 1.15;
+      line-height: 1.1;
       text-align: left;
       vertical-align: middle;
     }
@@ -487,10 +602,20 @@
       color: var(--muted);
       background: #f7f9fc;
       font-weight: 800;
+      font-size: 9px;
     }
     td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     tbody tr:hover { background: #f2f7fd; }
     tbody tr[role="button"] { cursor: pointer; }
+    tbody tr[role="button"][aria-pressed="true"] {
+      background: #eaf2ff;
+      box-shadow: inset 3px 0 var(--blue);
+    }
+    tbody tr[role="button"]:focus-visible {
+      outline: 2px solid #0b5cab;
+      outline-offset: -2px;
+      background: #eef5ff;
+    }
     .status {
       display: inline-flex;
       align-items: center;
@@ -498,7 +623,7 @@
       min-width: 45px;
       padding: 2px 6px;
       border-radius: 999px;
-      font-size: 8px;
+      font-size: 8.5px;
       font-weight: 850;
     }
     .status.good { color: #246a61; background: #dff1ed; }
@@ -515,9 +640,9 @@
       padding: 4px 6px;
       border-radius: 7px;
       background: #f7f9fc;
-      font-size: 8px;
+      font-size: 9px;
     }
-    .driver strong { font-size: 8px; }
+    .driver strong { font-size: 9px; }
     .driver .impact { text-align: right; font-weight: 900; font-variant-numeric: tabular-nums; }
     .driver .impact.up { color: #236f65; }
     .driver .impact.down { color: #a53c49; }
@@ -530,7 +655,7 @@
       align-items: center;
       gap: 8px;
       min-height: 26px;
-      font-size: 8px;
+      font-size: 9px;
     }
     .control input { width: 100%; accent-color: var(--blue); cursor: pointer; }
     .control output {
@@ -554,7 +679,7 @@
       padding: 7px 8px;
       border-radius: 8px;
       background: #f6f8fb;
-      font-size: 8px;
+      font-size: 9px;
     }
     .readback-item span { color: var(--muted); }
     .readback-item strong { color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -583,10 +708,10 @@
       background: linear-gradient(145deg, #f0f9f6, #f9fbfd);
     }
     .verdict-card.risk { border-color: #efcbd1; background: linear-gradient(145deg, #fff4f5, #f9fbfd); }
-    .verdict-card b { color: var(--muted); font-size: 8px; letter-spacing: .11em; text-transform: uppercase; }
+    .verdict-card b { color: var(--muted); font-size: 9px; letter-spacing: .11em; text-transform: uppercase; }
     .verdict-card strong { margin: 7px 0 5px; color: #187267; font-size: 28px; line-height: 1; }
     .verdict-card.risk strong { color: #aa3d4b; }
-    .verdict-card span { color: var(--muted); font-size: 9px; line-height: 1.45; }
+    .verdict-card span { color: var(--muted); font-size: 10px; line-height: 1.45; }
     .verdict-metrics {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -596,8 +721,8 @@
       border-top: 1px solid rgba(23, 114, 103, .17);
     }
     .verdict-metrics span { display: grid; gap: 3px; min-width: 0; }
-    .verdict-metrics small { color: var(--muted); font-size: 7px; }
-    .verdict-metrics b { color: var(--ink); font-size: 9px; letter-spacing: 0; text-transform: none; }
+    .verdict-metrics small { color: var(--muted); font-size: 8px; }
+    .verdict-metrics b { color: var(--ink); font-size: 9.5px; letter-spacing: 0; text-transform: none; }
 
     .tooltip {
       position: fixed;
@@ -617,6 +742,15 @@
       transition: opacity .12s ease, transform .12s ease;
     }
     .tooltip.visible { opacity: 1; transform: translateY(0); }
+
+    @keyframes content-enter {
+      from { opacity: .68; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes grow-bar {
+      from { transform: scaleX(.7); opacity: .55; }
+      to { transform: scaleX(1); opacity: 1; }
+    }
     .sr-only {
       position: absolute;
       width: 1px;
@@ -627,6 +761,91 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
+    }
+
+    @media (min-width: 761px) and (max-width: 1180px) {
+      .preview-frame { overflow: visible; }
+      .dashboard-shell { height: auto; overflow: visible; }
+      .dashboard {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        padding: 10px 12px 18px;
+        transform: none !important;
+      }
+      .app-header {
+        grid-template-columns: minmax(300px, 1fr) minmax(310px, 360px);
+        gap: 14px;
+        padding: 14px 16px;
+      }
+      .filters,
+      .filters.lab-mode { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filter { min-height: 44px; padding: 6px 9px; }
+      .filter select { min-height: 24px; font-size: 11px; }
+      .pagebar button,
+      .reset { min-height: 38px; }
+      .decision-band {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px 12px;
+        padding: 8px 10px;
+      }
+      .decision-band .lens { grid-column: 1 / -1; flex-wrap: wrap; }
+      .decision-copy { white-space: normal; }
+      .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .visual-grid,
+      .visual-grid.lab-mode {
+        height: auto;
+        grid-template-rows: none;
+      }
+      .panel.span-6,
+      .panel.span-12 { grid-column: span 12; }
+      .panel.span-3,
+      .panel.span-4 { grid-column: span 6; }
+      .dashboard[data-page="revenue-cost-drivers"] .visual-grid > .panel:nth-child(3),
+      .dashboard[data-page="detail-exceptions"] .visual-grid > .panel:nth-child(3) { grid-column: span 12; }
+      .panel.chart-panel { min-height: 272px; }
+      .panel.bar-panel { min-height: 228px; }
+      .panel.compact-bar-panel { min-height: 206px; }
+      .panel.table-panel { min-height: 190px; }
+      .panel.lab-control-panel { min-height: 142px; }
+      .panel.readback-panel,
+      .panel.verdict-panel { min-height: 258px; }
+      .chart .tick,
+      .chart .direct-label { font-size: 10.5px; }
+      .panel.span-3 .chart .tick,
+      .panel.span-3 .chart .direct-label { font-size: 13px; }
+      .table-wrap { max-height: 330px; }
+      table { min-width: 720px; }
+      th, td { padding-top: 5px; padding-bottom: 5px; }
+      .scroll-cue {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        padding: 3px 7px;
+        border: 1px solid #cad7e7;
+        border-radius: 999px;
+        color: #174b88;
+        background: #f4f8fd;
+        box-shadow: 0 3px 9px rgba(28, 64, 108, .1);
+        font-size: 8px;
+        font-weight: 850;
+        white-space: nowrap;
+        pointer-events: none;
+      }
+      .lab-controls.horizontal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .control { min-height: 38px; font-size: 9px; }
+      .control input { min-height: 24px; }
+      .chart-readout { font-size: 10px; }
+    }
+
+    @media (min-width: 761px) and (max-width: 850px) {
+      .app-header { grid-template-columns: 1fr; }
+      .filters,
+      .filters.lab-mode { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .command-row { grid-template-columns: 1fr; }
+      .reset { width: 100%; }
+      .kpis { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 760px) {
@@ -650,11 +869,11 @@
       .title-row h1 { font-size: 20px; white-space: normal; }
       .filters { grid-template-columns: 1fr 1fr; gap: 7px; }
       .filters.lab-mode { grid-template-columns: 1fr; }
-      .filter { min-height: 39px; padding: 6px 9px; }
-      .filter select { font-size: 11px; }
+      .filter { min-height: 44px; padding: 6px 9px; }
+      .filter select { min-height: 28px; font-size: 11px; }
       .command-row { grid-template-columns: 1fr; }
       .pagebar { grid-template-columns: repeat(3, 1fr); }
-      .pagebar button, .reset { min-height: 40px; font-size: 9px; }
+      .pagebar button, .reset { min-height: 44px; font-size: 9px; }
       .reset { width: 100%; }
       .decision-band {
         grid-template-columns: 1fr;
@@ -703,16 +922,17 @@
       .legend { font-size: 10px; gap: 8px; }
       .panel h2 { font-size: 14px; }
       .panel-sub { font-size: 10px; }
-      .bar-row { grid-template-columns: minmax(92px, 1fr) minmax(80px, 1.4fr) 58px; min-height: 28px; font-size: 10px; }
+      .bar-list { gap: 7px; }
+      .bar-row { grid-template-columns: minmax(92px, 1fr) minmax(80px, 1.4fr) 58px; min-height: 44px; font-size: 10px; }
       .bar-row .bar-name { font-size: 10px; }
       table { min-width: 640px; font-size: 10px; }
+      th { font-size: 10px; }
       th, td { padding-top: 6px; padding-bottom: 6px; }
+      tbody tr[role="button"] td { height: 44px; }
       .scroll-cue {
-        display: block;
-        position: absolute;
-        top: 8px;
-        right: 10px;
-        z-index: 4;
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
         padding: 3px 7px;
         border: 1px solid #cad7e7;
         border-radius: 999px;
@@ -721,17 +941,34 @@
         box-shadow: 0 3px 9px rgba(28, 64, 108, .12);
         font-size: 7px;
         font-weight: 850;
+        white-space: nowrap;
         pointer-events: none;
       }
       .lab-panel { min-height: 320px; }
       .lab-controls.horizontal { grid-template-columns: 1fr; }
       .control { grid-template-columns: 102px minmax(0, 1fr) 46px; min-height: 42px; font-size: 9px; }
-      .control input { min-height: 24px; }
+      .control input { min-height: 44px; }
       .verdict-card { min-height: 205px; }
     }
 
+    @media (max-width: 374px) {
+      #regionControl,
+      #contextControl { grid-column: 1 / -1; }
+      .kpi-body { grid-template-columns: minmax(0, 1fr); }
+      .kpi svg { display: none; }
+      .kpi strong { font-size: 19px; }
+      .bar-row {
+        grid-template-columns: minmax(108px, 1.25fr) minmax(58px, 1fr) 52px;
+        gap: 5px;
+      }
+      .bar-value { font-size: 9px; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+      .pagebar button:hover,
+      .reset:hover,
+      .bar-row-button:hover { transform: none; }
     }
   </style>
   <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
@@ -739,7 +976,7 @@
 <body data-project-number="02" data-layout-source="project-02-own-dashboard">
   <div class="preview-frame">
     <div class="dashboard-shell">
-      <main class="dashboard" id="dashboard" role="application" aria-label="Driver-Based Forecasting and Scenario Planning dashboard">
+      <main class="dashboard" id="dashboard" aria-label="Driver-Based Forecasting and Scenario Planning dashboard">
         <header class="app-header">
           <div class="title-block">
             <div class="brandline"><span>TDAT · FP&amp;A planning model</span><span class="live">Interactive · synthetic model</span></div>
@@ -759,10 +996,10 @@
           <button class="reset" id="resetFilters" type="button">Reset lens</button>
         </div>
 
-        <section class="decision-band" id="decisionBand" aria-live="polite"></section>
-        <section class="kpis" id="kpis" aria-label="Forecast key performance indicators" aria-live="polite"></section>
-        <section class="visual-grid" id="visuals" role="tabpanel" aria-live="polite"></section>
-        <p class="sr-only" id="srStatus" aria-live="polite"></p>
+        <section class="decision-band" id="decisionBand"></section>
+        <section class="kpis" id="kpis" aria-label="Forecast key performance indicators"></section>
+        <section class="visual-grid" id="visuals" role="tabpanel"></section>
+        <p class="sr-only" id="srStatus" aria-live="polite" aria-atomic="true"></p>
       </main>
     </div>
   </div>
@@ -1082,7 +1319,9 @@
       }
 
       function money(value, digits) {
-        return symbol() + value.toFixed(digits == null ? 1 : digits) + "M";
+        var precision = digits == null ? 1 : digits;
+        var rounded = Number(value.toFixed(precision));
+        return (rounded < 0 ? "−" : "") + symbol() + Math.abs(rounded).toFixed(precision) + "M";
       }
 
       function signedMoney(value) {
@@ -1161,34 +1400,61 @@
 
       function panel(title, subtitle, body, span, extraClass, action) {
         return '<article class="panel span-' + span + (extraClass ? " " + extraClass : "") + '">' +
-          '<h2>' + title + '</h2>' +
+          '<div class="panel-heading"><h2>' + title + '</h2>' +
+          (action ? '<span class="panel-action">' + action + '</span>' : "") + '</div>' +
           '<p class="panel-sub">' + subtitle + '</p>' +
-          (action ? '<span class="panel-action">' + action + '</span>' : "") +
           body +
           '</article>';
       }
 
+      function estimateSvgTextWidth(text, fontSize) {
+        return Array.from(String(text)).reduce(function (width, character) {
+          var factor = /[MW@%]/.test(character) ? .82 : /[il1.,]/.test(character) ? .34 : .58;
+          return width + fontSize * factor;
+        }, 0);
+      }
+
       function axisLabel(value, unit) {
-        if (unit === "%") return value.toFixed(0) + "%";
+        if (unit === "%") return (value < 0 ? "−" : "") + Math.abs(value).toFixed(Math.abs(value) < 10 ? 1 : 0) + "%";
         if (unit === "count") return compactNumber(value);
-        return symbol() + value.toFixed(value >= 100 ? 0 : 1) + "M";
+        var absolute = Math.abs(value);
+        return (value < 0 ? "−" : "") + symbol() + absolute.toFixed(absolute >= 100 ? 0 : 1) + "M";
+      }
+
+      function chartFrame(config) {
+        var fontSize = config.fontSize || 17;
+        function widest(labels) {
+          return Math.max.apply(null, (labels || []).map(function (label) {
+            return estimateSvgTextWidth(label, fontSize);
+          }).concat([0]));
+        }
+        return {
+          left: Math.max(config.minLeft || 38, Math.ceil(widest(config.leftLabels) + 10)),
+          right: Math.max(config.minRight || 14, Math.ceil(widest(config.rightLabels) + 10)),
+          top: config.top || 18,
+          bottom: config.bottom || 25
+        };
       }
 
       function lineChart(series, options) {
         var width = 560;
         var height = 172;
-        var left = 38;
-        var right = 14;
-        var top = 15;
-        var bottom = 25;
-        var plotWidth = width - left - right;
-        var plotHeight = height - top - bottom;
         var all = [];
         series.forEach(function (item) { all = all.concat(item.values); });
         if (options.reference != null) all.push(options.reference);
         var max = options.max != null ? options.max : Math.max.apply(null, all) * 1.12;
         var min = options.min != null ? options.min : Math.min(0, Math.min.apply(null, all) * .9);
         if (max === min) max = min + 1;
+        var frame = chartFrame({
+          leftLabels: [axisLabel(max, options.unit), axisLabel((max + min) / 2, options.unit), axisLabel(min, options.unit)],
+          minLeft: 38,
+          minRight: 14,
+          top: 15,
+          bottom: 25
+        });
+        var left = frame.left, right = frame.right, top = frame.top, bottom = frame.bottom;
+        var plotWidth = width - left - right;
+        var plotHeight = height - top - bottom;
         var labels = options.labels;
 
         function x(index, length) {
@@ -1205,9 +1471,11 @@
             '<text class="tick" x="' + (left - 5) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end">' + axisLabel(value, options.unit) + '</text>';
         }).join("");
 
+        var referenceY = options.reference == null ? null : y(options.reference);
+        var referenceLabelY = referenceY == null ? null : Math.max(top + 11, Math.min(height - bottom - 4, referenceY - 4));
         var reference = options.reference == null ? "" :
-          '<line x1="' + left + '" y1="' + y(options.reference).toFixed(1) + '" x2="' + (width - right) + '" y2="' + y(options.reference).toFixed(1) + '" stroke="#d4921c" stroke-width="1.2" stroke-dasharray="5 4"></line>' +
-          '<text class="direct-label" x="' + (width - right - 2) + '" y="' + (y(options.reference) - 4).toFixed(1) + '" text-anchor="end">' + escapeHtml(options.referenceLabel || "") + '</text>';
+          '<line x1="' + left + '" y1="' + referenceY.toFixed(1) + '" x2="' + (width - right) + '" y2="' + referenceY.toFixed(1) + '" stroke="#d4921c" stroke-width="1.2" stroke-dasharray="5 4"></line>' +
+          '<text class="direct-label" x="' + (width - right - 2) + '" y="' + referenceLabelY.toFixed(1) + '" text-anchor="end">' + escapeHtml(options.referenceLabel || "") + '</text>';
 
         var paths = series.map(function (item) {
           var points = item.values.map(function (value, index) {
@@ -1241,17 +1509,26 @@
         var actualLabel = state.region === "All Regions" && state.service === "All Services" ? "Actual revenue" : "Allocated actual revenue";
         var revenue = monthlySeries("revenue");
         var ebitda = monthlySeries("ebitda");
-        var width = 560, height = 172, left = 42, right = 42, top = 18, bottom = 25;
-        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var width = 560, height = 172;
         var maxRevenue = Math.max.apply(null, actualRevenue.concat(revenue).concat([1])) * 1.18;
         var maxEbitda = Math.max.apply(null, ebitda.concat([1])) * 1.32;
+        var frame = chartFrame({
+          leftLabels: [axisLabel(maxRevenue, "currency"), axisLabel(maxRevenue * .5, "currency"), axisLabel(0, "currency")],
+          rightLabels: [axisLabel(maxEbitda, "currency"), axisLabel(maxEbitda * .5, "currency"), axisLabel(0, "currency")],
+          minLeft: 42,
+          minRight: 42,
+          top: 18,
+          bottom: 25
+        });
+        var left = frame.left, right = frame.right, top = frame.top, bottom = frame.bottom;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
         var step = plotWidth / labels.length;
         var bars = revenue.map(function (value, index) {
           var chartIndex = actualLabels.length + index;
           var x = left + chartIndex * step + step * .16;
           var barWidth = Math.max(4, step * .58);
           var barHeight = value / maxRevenue * plotHeight;
-          return '<rect tabindex="0" role="img" aria-label="Forecast revenue ' + escapeHtml(forecastLabels[index]) + ': ' + money(value) + '" data-tip="Forecast revenue · ' + escapeHtml(forecastLabels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barHeight.toFixed(1) + '" rx="2" fill="#cbdcf3"></rect>';
+          return '<rect tabindex="0" role="img" aria-label="Forecast revenue ' + escapeHtml(forecastLabels[index]) + ': ' + money(value) + '" data-tip="Forecast revenue · ' + escapeHtml(forecastLabels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barHeight.toFixed(1) + '" rx="2" fill="#bed4ee" stroke="#8eafd5" stroke-width=".55"></rect>';
         }).join("");
         var actualPoints = actualRevenue.map(function (value, index) {
           var x = left + index * step + step * .45;
@@ -1289,7 +1566,7 @@
           return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 6) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
         }).join("");
         var boundaryX = left + actualLabels.length * step;
-        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#2259ad"></i>' + escapeHtml(actualLabel) + '</span><span><i style="--legend-color:#cbdcf3"></i>Forecast revenue</span><span><i style="--legend-color:#178f83"></i>Forecast EBITDA</span></div>' +
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#2259ad"></i>' + escapeHtml(actualLabel) + '</span><span><i style="--legend-color:#8eafd5"></i>Forecast revenue</span><span><i style="--legend-color:#178f83"></i>Forecast EBITDA</span></div>' +
           '<svg class="chart" role="img" aria-label="Monthly revenue columns with EBITDA line" viewBox="0 0 560 172">' + grid + bars +
           '<line x1="' + boundaryX.toFixed(1) + '" y1="' + top + '" x2="' + boundaryX.toFixed(1) + '" y2="' + (top + plotHeight) + '" stroke="#9cabc0" stroke-width="1" stroke-dasharray="4 4"></line><text class="direct-label" x="' + (boundaryX + 4).toFixed(1) + '" y="' + (top + 8) + '">Forecast</text>' +
           '<polyline points="' + actualPoints + '" fill="none" stroke="#2259ad" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></polyline>' + actualDots +
@@ -1299,16 +1576,18 @@
       function scenarioColumns(metric, title) {
         var scenarios = ["Base", "Upside", "Downside"];
         var values = scenarios.map(function (name) { return compute(name)[metric] * currencyRate(); });
-        var max = Math.max.apply(null, values) * 1.14 || 1;
+        var max = Math.max.apply(null, values) * 1.25 || 1;
         var width = 430, height = 172, left = 34, right = 12, top = 19, bottom = 27;
         var plotWidth = width - left - right, plotHeight = height - top - bottom, group = plotWidth / scenarios.length;
         var bars = scenarios.map(function (name, index) {
           var value = values[index], barHeight = value / max * plotHeight, active = name === state.scenario;
           var x = left + group * index + group * .27;
           var color = name === "Base" ? "#2259ad" : name === "Upside" ? "#178f83" : "#be4655";
-          return '<g class="scenario-mark" tabindex="0" role="button" aria-label="Set scenario to ' + name + '" data-scenario="' + name + '" data-tip="' + escapeHtml(name + " · " + title + " · " + (metric === "grossMargin" ? value.toFixed(1) + "%" : money(compute(name)[metric]))) + '">' +
-            '<rect x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + (group * .46).toFixed(1) + '" height="' + barHeight.toFixed(1) + '" rx="4" fill="' + color + '" opacity="' + (active ? "1" : ".64") + '" stroke="' + (active ? "#0b2d59" : "none") + '" stroke-width="' + (active ? "2" : "0") + '"></rect>' +
-            '<text class="direct-label" x="' + (x + group * .23).toFixed(1) + '" y="' + (top + plotHeight - barHeight - 5).toFixed(1) + '" text-anchor="middle">' + (metric === "grossMargin" ? value.toFixed(1) + "%" : symbol() + value.toFixed(0) + "M") + '</text>' +
+          var valueLabel = metric === "grossMargin" ? value.toFixed(1) + "%" : symbol() + value.toFixed(Math.abs(value) < 10 ? 1 : 0) + "M";
+          return '<g class="scenario-mark" tabindex="0" role="button" aria-pressed="' + active + '" aria-label="' + (active ? "Scenario " + name + " selected" : "Set scenario to " + name) + '" data-scenario="' + name + '" data-tip="' + escapeHtml(name + " · " + title + " · " + (metric === "grossMargin" ? value.toFixed(1) + "%" : money(compute(name)[metric]))) + '">' +
+            '<rect class="scenario-hit-area" aria-hidden="true" x="' + (left + group * index + group * .20).toFixed(1) + '" y="' + (top - 4) + '" width="' + (group * .60).toFixed(1) + '" height="' + (height - top + 2) + '" fill="transparent" style="pointer-events:all"></rect>' +
+            '<rect x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + (group * .46).toFixed(1) + '" height="' + barHeight.toFixed(1) + '" rx="4" fill="' + color + '" opacity="' + (active ? "1" : ".76") + '" stroke="' + (active ? "#0b2d59" : color) + '" stroke-width="' + (active ? "2" : ".7") + '"></rect>' +
+            '<text class="direct-label" x="' + (x + group * .23).toFixed(1) + '" y="' + Math.max(top + 12, top + plotHeight - barHeight - 7).toFixed(1) + '" text-anchor="middle">' + valueLabel + '</text>' +
             '<text class="tick" x="' + (x + group * .23).toFixed(1) + '" y="' + (height - 7) + '" text-anchor="middle">' + name + '</text></g>';
         }).join("");
         return '<div class="chart-wrap"><svg class="chart" role="img" aria-label="' + escapeHtml(title + " by scenario; select a bar to change scenario") + '" viewBox="0 0 430 172">' +
@@ -1323,34 +1602,44 @@
           ["Ending cash", upside.cash - base.cash, downside.cash - base.cash]
         ];
         var max = Math.max.apply(null, rows.reduce(function (all, row) { return all.concat([Math.abs(row[1]), Math.abs(row[2])]); }, [])) || 1;
-        var width = 430, height = 172, center = 236, scale = 150 / max;
+        var width = 430, height = 172, center = 268, maxBarWidth = 80, scale = maxBarWidth / max;
         var body = rows.map(function (row, index) {
-          var y = 35 + index * 43, up = row[1] * currencyRate(), down = row[2] * currencyRate();
-          var upWidth = Math.max(2, up * scale);
+          var y = 38 + index * 44, up = row[1] * currencyRate(), down = row[2] * currencyRate();
+          var upWidth = Math.max(2, Math.abs(up) * scale);
           var downWidth = Math.max(2, Math.abs(down) * scale);
-          return '<text class="direct-label" x="8" y="' + (y + 4) + '">' + row[0] + '</text>' +
-            '<rect tabindex="0" role="img" aria-label="' + escapeHtml(row[0] + " upside variance " + signedMoney(row[1])) + '" data-tip="' + escapeHtml(row[0] + " · Upside · " + signedMoney(row[1])) + '" x="' + center + '" y="' + (y - 10) + '" width="' + (Math.max(2, up * scale)).toFixed(1) + '" height="11" rx="3" fill="#178f83"></rect>' +
-            '<text class="direct-label" x="421" y="' + (y - 1) + '" text-anchor="end">' + signedMoney(row[1]) + '</text>' +
-            '<rect tabindex="0" role="img" aria-label="' + escapeHtml(row[0] + " downside variance " + signedMoney(row[2])) + '" data-tip="' + escapeHtml(row[0] + " · Downside · " + signedMoney(row[2])) + '" x="' + (center - downWidth).toFixed(1) + '" y="' + (y + 3) + '" width="' + downWidth.toFixed(1) + '" height="11" rx="3" fill="#be4655"></rect>' +
-            '<text class="direct-label" x="226" y="' + (y + 13) + '" text-anchor="end">' + signedMoney(row[2]) + '</text>';
+          var upEnd = center + upWidth;
+          var downStart = center - downWidth;
+          var upLabel = signedMoney(row[1]);
+          var upLabelFits = upEnd + 6 + estimateSvgTextWidth(upLabel, 17) <= width - 8;
+          var upLabelX = upLabelFits ? upEnd + 6 : width - 8;
+          var upLabelY = upLabelFits ? y - 4 : y - 20;
+          return '<text class="variance-category" x="8" y="' + (y + 4) + '">' + row[0] + '</text>' +
+            '<line x1="145" y1="' + y + '" x2="' + (width - 8) + '" y2="' + y + '" stroke="#edf1f6" stroke-width="1"></line>' +
+            '<rect tabindex="0" role="img" aria-label="' + escapeHtml(row[0] + " upside variance " + signedMoney(row[1])) + '" data-tip="' + escapeHtml(row[0] + " · Upside · " + signedMoney(row[1])) + '" x="' + center + '" y="' + (y - 11) + '" width="' + upWidth.toFixed(1) + '" height="9" rx="3" fill="#178f83"></rect>' +
+            '<text class="variance-value up" x="' + upLabelX.toFixed(1) + '" y="' + upLabelY + '" text-anchor="' + (upLabelFits ? "start" : "end") + '">' + upLabel + '</text>' +
+            '<rect tabindex="0" role="img" aria-label="' + escapeHtml(row[0] + " downside variance " + signedMoney(row[2])) + '" data-tip="' + escapeHtml(row[0] + " · Downside · " + signedMoney(row[2])) + '" x="' + downStart.toFixed(1) + '" y="' + (y + 3) + '" width="' + downWidth.toFixed(1) + '" height="9" rx="3" fill="#be4655"></rect>' +
+            '<text class="variance-value down" x="' + Math.max(103, downStart - 6).toFixed(1) + '" y="' + (y + 11) + '" text-anchor="end">' + signedMoney(row[2]) + '</text>';
         }).join("");
         return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#178f83"></i>Upside</span><span><i style="--legend-color:#be4655"></i>Downside</span></div>' +
-          '<svg class="chart" role="img" aria-label="Upside and downside variance to base" viewBox="0 0 430 172"><line x1="' + center + '" y1="17" x2="' + center + '" y2="157" stroke="#aebbd0" stroke-width="1"></line>' + body + '</svg></div>';
+          '<svg class="chart" role="img" aria-label="Upside and downside variance to base" viewBox="0 0 430 172"><line x1="' + center + '" y1="17" x2="' + center + '" y2="158" stroke="#9eacc0" stroke-width="1.2"></line>' + body + '</svg></div>';
       }
 
       function barList(titleRows, interactive, type) {
         if (!titleRows.length) return '<div class="empty-list">No material items in the selected lens.</div>';
         var max = Math.max.apply(null, titleRows.map(function (row) { return Math.abs(row.value); })) || 1;
-        return '<div class="bar-list">' + titleRows.map(function (row, index) {
-          var selected = interactive && ((type === "service" && state.service === row.name) || (type === "department" && state.department === row.name));
+        var readout = '<div class="chart-readout bar-readout">Hover, tap, or focus a row to inspect its full label and value</div>';
+        var contextNote = titleRows.length === 1 ? '<div class="bar-context-note">Focused lens · reset this filter to restore the peer comparison.</div>' : '';
+        return '<div class="bar-list' + (contextNote ? ' is-focused' : '') + '">' + readout + titleRows.map(function (row, index) {
+          var selected = interactive && ((type === "service" && state.service === row.name) || (type === "department" && state.department === row.name) || (type === "region" && state.region === row.name));
+          var tip = row.name + " · " + row.label;
           var contents = '<span class="bar-name">' + escapeHtml(row.name) + '</span>' +
             '<span class="bar-track"><i class="bar-fill" style="--fill:' + (row.color || colors[index % colors.length]) + ';width:' + Math.max(3, Math.abs(row.value) / max * 100).toFixed(1) + '%"></i></span>' +
             '<span class="bar-value">' + escapeHtml(row.label) + '</span>';
           if (interactive) {
-            return '<button type="button" class="bar-row bar-row-button" data-value="' + row.value.toFixed(4) + '" data-' + type + '="' + escapeHtml(row.name) + '" aria-pressed="' + selected + '" aria-label="' + (selected ? "Clear" : "Filter") + ' ' + type + ' ' + escapeHtml(row.name) + '">' + contents + '</button>';
+            return '<button type="button" class="bar-row bar-row-button" data-inline-tip="' + escapeHtml(tip) + '" data-value="' + row.value.toFixed(4) + '" data-' + type + '="' + escapeHtml(row.name) + '" aria-pressed="' + selected + '" aria-label="' + (selected ? "Clear" : "Filter") + ' ' + type + ' ' + escapeHtml(row.name) + '">' + contents + '</button>';
           }
-          return '<div class="bar-row" data-value="' + row.value.toFixed(4) + '">' + contents + '</div>';
-        }).join("") + '</div>';
+          return '<div class="bar-row" tabindex="0" role="img" aria-label="' + escapeHtml(tip) + '" data-inline-tip="' + escapeHtml(tip) + '" data-value="' + row.value.toFixed(4) + '">' + contents + '</div>';
+        }).join("") + contextNote + '</div>';
       }
 
       function serviceRows(metric) {
@@ -1487,11 +1776,20 @@
         var labels = yearProfile[state.year].months;
         var fteValues = monthlySeries("fte");
         var payrollValues = monthlySeries("payroll");
-        var width = 560, height = 172, left = 42, right = 42, top = 18, bottom = 25;
-        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var width = 560, height = 172;
         var payrollMax = Math.max.apply(null, payrollValues.concat([1])) * 1.18;
         var fteMin = Math.min.apply(null, fteValues) * .94;
         var fteMax = Math.max.apply(null, fteValues) * 1.04;
+        var frame = chartFrame({
+          leftLabels: [money(payrollMax), money(payrollMax * .5), money(0)],
+          rightLabels: [Math.round(fteMax), Math.round((fteMax + fteMin) / 2), Math.round(fteMin)],
+          minLeft: 42,
+          minRight: 42,
+          top: 18,
+          bottom: 25
+        });
+        var left = frame.left, right = frame.right, top = frame.top, bottom = frame.bottom;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
         var step = plotWidth / labels.length;
         function fteY(value) { return top + (fteMax - value) / Math.max(1, fteMax - fteMin) * plotHeight; }
         var grid = [0, .5, 1].map(function (ratio) {
@@ -1505,7 +1803,7 @@
         var bars = payrollValues.map(function (value, index) {
           var x = left + index * step + step * .18;
           var barHeight = value / payrollMax * plotHeight;
-          return '<rect tabindex="0" role="img" aria-label="Payroll ' + escapeHtml(labels[index]) + ': ' + money(value) + '" data-tip="Payroll · ' + escapeHtml(labels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + Math.max(4, step * .56).toFixed(1) + '" height="' + Math.max(1, barHeight).toFixed(1) + '" rx="2" fill="#8fb9e8"></rect>';
+          return '<rect tabindex="0" role="img" aria-label="Payroll ' + escapeHtml(labels[index]) + ': ' + money(value) + '" data-tip="Payroll · ' + escapeHtml(labels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + Math.max(4, step * .56).toFixed(1) + '" height="' + Math.max(1, barHeight).toFixed(1) + '" rx="2" fill="#83afe0" stroke="#5e93ce" stroke-width=".55"></rect>';
         }).join("");
         var points = fteValues.map(function (value, index) {
           return (left + index * step + step * .46).toFixed(1) + "," + fteY(value).toFixed(1);
@@ -1519,7 +1817,7 @@
           var x = left + index * step + step * .46;
           return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 6) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
         }).join("");
-        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#8fb9e8"></i>Payroll · left axis</span><span><i style="--legend-color:#178f83"></i>Average FTE · right axis</span></div><svg class="chart" role="img" aria-label="Monthly payroll columns and average FTE line" viewBox="0 0 560 172">' + grid + bars + '<polyline points="' + points + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>' + dots + xLabels + '</svg></div>';
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#5e93ce"></i>Payroll · left axis</span><span><i style="--legend-color:#178f83"></i>Average FTE · right axis</span></div><svg class="chart" role="img" aria-label="Monthly payroll columns and average FTE line" viewBox="0 0 560 172">' + grid + bars + '<polyline points="' + points + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>' + dots + xLabels + '</svg></div>';
       }
 
       function productivityChart() {
@@ -1553,10 +1851,19 @@
         var operatingCash = monthlySeries("operatingCash");
         var endingCash = cashSeries();
         var floor = 40;
-        var width = 560, height = 172, left = 40, right = 42, top = 18, bottom = 25;
-        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var width = 560, height = 172;
         var cashMax = Math.max.apply(null, endingCash.concat([floor])) * 1.1;
         var flowMax = Math.max.apply(null, operatingCash.concat([1])) * 1.22;
+        var frame = chartFrame({
+          leftLabels: [money(flowMax), money(flowMax * .5), money(0)],
+          rightLabels: [money(cashMax), money(cashMax * .5), money(0)],
+          minLeft: 40,
+          minRight: 42,
+          top: 18,
+          bottom: 25
+        });
+        var left = frame.left, right = frame.right, top = frame.top, bottom = frame.bottom;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
         var step = plotWidth / labels.length;
         function cashY(value) { return top + (1 - value / cashMax) * plotHeight; }
         var grid = [0, .5, 1].map(function (ratio) {
@@ -1568,7 +1875,7 @@
         var bars = operatingCash.map(function (value, index) {
           var barHeight = value / flowMax * plotHeight;
           var x = left + index * step + step * .18;
-          return '<rect tabindex="0" role="img" aria-label="Operating cash ' + escapeHtml(labels[index]) + ': ' + money(value) + '" data-tip="Operating cash · ' + escapeHtml(labels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + Math.max(4, step * .56).toFixed(1) + '" height="' + Math.max(1, barHeight).toFixed(1) + '" rx="2" fill="#8fb9e8"></rect>';
+          return '<rect tabindex="0" role="img" aria-label="Operating cash ' + escapeHtml(labels[index]) + ': ' + money(value) + '" data-tip="Operating cash · ' + escapeHtml(labels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + Math.max(4, step * .56).toFixed(1) + '" height="' + Math.max(1, barHeight).toFixed(1) + '" rx="2" fill="#83afe0" stroke="#5e93ce" stroke-width=".55"></rect>';
         }).join("");
         var points = endingCash.map(function (value, index) {
           return (left + index * step + step * .46).toFixed(1) + "," + cashY(value).toFixed(1);
@@ -1583,7 +1890,7 @@
           var x = left + index * step + step * .46;
           return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 6) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
         }).join("");
-        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#8fb9e8"></i>Operating cash · left axis</span><span><i style="--legend-color:#178f83"></i>Ending cash · right axis</span></div><svg class="chart" role="img" aria-label="Operating cash columns and ending cash line" viewBox="0 0 560 172">' + grid + bars + '<line x1="' + left + '" y1="' + floorY.toFixed(1) + '" x2="' + (width - right) + '" y2="' + floorY.toFixed(1) + '" stroke="#d4921c" stroke-width="1.2" stroke-dasharray="5 4"></line><text class="direct-label" x="' + (width - right - 3) + '" y="' + (floorY - 4).toFixed(1) + '" text-anchor="end">$40M floor</text><polyline points="' + points + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>' + dots + xLabels + '</svg></div>';
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#5e93ce"></i>Operating cash · left axis</span><span><i style="--legend-color:#178f83"></i>Ending cash · right axis</span><span><i class="legend-dash" style="--legend-color:#b9780b"></i>Cash floor · $40M</span></div><svg class="chart" role="img" aria-label="Operating cash columns and ending cash line with a 40 million dollar cash floor" viewBox="0 0 560 172">' + grid + bars + '<line x1="' + left + '" y1="' + floorY.toFixed(1) + '" x2="' + (width - right) + '" y2="' + floorY.toFixed(1) + '" stroke="#b9780b" stroke-width="1.4" stroke-dasharray="5 4"></line><polyline points="' + points + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>' + dots + xLabels + '</svg></div>';
       }
 
       function forecastAccuracyRows() {
@@ -1669,7 +1976,7 @@
           ["Base", "Upside", "Downside"].map(function (name) {
             var model = compute(name);
             var active = name === state.scenario;
-            return '<tr data-scenario="' + name + '" tabindex="0" role="button" aria-label="Set scenario to ' + name + '"' + (active ? ' style="background:#eef5ff"' : "") + '><td><strong>' + name + '</strong></td><td class="num">' + money(model.revenue) + '</td><td class="num">' + money(model.directCost) + '</td><td class="num">' + money(model.payroll) + '</td><td class="num">' + money(model.opex) + '</td><td class="num">' + money(model.ebitda) + '</td><td class="num">' + model.grossMargin.toFixed(1) + '%</td><td class="num">' + money(model.cash) + '</td></tr>';
+            return '<tr data-scenario="' + name + '" tabindex="0" role="button" aria-pressed="' + active + '" aria-label="' + (active ? "Scenario " + name + " selected" : "Set scenario to " + name) + '"' + (active ? ' style="background:#eef5ff"' : "") + '><td><strong>' + name + '</strong></td><td class="num">' + money(model.revenue) + '</td><td class="num">' + money(model.directCost) + '</td><td class="num">' + money(model.payroll) + '</td><td class="num">' + money(model.opex) + '</td><td class="num">' + money(model.ebitda) + '</td><td class="num">' + model.grossMargin.toFixed(1) + '%</td><td class="num">' + money(model.cash) + '</td></tr>';
           }).join("") + '</tbody></table></div>';
       }
 
@@ -1860,11 +2167,11 @@
           return { name: service, value: score, label: score.toString(), color: score >= 4 ? "#be4655" : colors[index % colors.length] };
         }).sort(function (a, b) { return b.value - a.value; }).slice(0, 3);
         var revenueDelta = (planningRecord(state.scenario).revenue / planningRecord("Base").revenue - 1) * 100;
-        var scenarioContext = state.scenario === "Downside" ? "Downside adds 2 variance-risk points" : state.scenario === "Upside" ? "Upside uses Base risk score" : "Base risk reference";
+        var scenarioContext = state.scenario === "Downside" ? "Downside · +2 risk pts" : state.scenario === "Upside" ? "Upside · Base risk" : "Base risk reference";
         var scenarioReference = '<div class="bar-list scenario-reference"><div class="bar-row" data-value="' + revenueDelta.toFixed(4) + '"><span class="bar-name">' + scenarioContext + '</span><span class="bar-track"><i class="bar-fill" style="--fill:#8aa9d2;width:' + Math.max(3, Math.abs(revenueDelta) / 20 * 100).toFixed(1) + '%"></i></span><span class="bar-value">' + (revenueDelta > 0 ? "+" : "") + revenueDelta.toFixed(1) + '% rev</span></div></div>';
-        return panel("Base Revenue by Region", "Regional concentration under the current service lens", barList(regionRows(), false), 4, "bar-panel") +
-          panel("Historical MAPE by Service", "Service lines with forecast quality risk", barList(mapeRows, false), 4, "bar-panel") +
-          panel("Exception Risk by Service", "Highest source-defined exception score", scenarioReference + barList(riskRows, false), 4, "bar-panel") +
+        return panel("Base Revenue by Region", "Select a region to narrow the exception lens", barList(regionRows(), true, "region"), 4, "bar-panel", "Interactive") +
+          panel("Historical MAPE by Service", "Select a service to isolate forecast quality risk", barList(mapeRows, true, "service"), 4, "bar-panel", "Interactive") +
+          panel("Exception Risk by Service", "Select a service to isolate source-defined risk", scenarioReference + barList(riskRows, true, "service"), 4, "bar-panel", "Interactive") +
           panel("Top 5 Priority Plan Exceptions", "Score >1 with exposure, owner, and governed action", exceptionTable(5), 12, "table-panel");
       }
 
@@ -1880,13 +2187,14 @@
           cumulativeWeight += weight;
           return (model.cash - base.cash) * cumulativeWeight;
         });
-        var width = 560, height = 214, left = 42, right = 18, top = 20, bottom = 28;
-        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var width = 560, height = 214, top = 20, bottom = 28;
         var neutral = state.volume === 0 && state.rate === 0 && state.cost === 0 && state.dso === 0;
         if (neutral) {
-          var neutralStep = plotWidth / labels.length;
+          var neutralLeft = 42, neutralRight = 18;
+          var neutralPlotWidth = width - neutralLeft - neutralRight;
+          var neutralStep = neutralPlotWidth / labels.length;
           var neutralTicks = labels.map(function (_, index) {
-            var x = left + neutralStep * index + neutralStep * .5;
+            var x = neutralLeft + neutralStep * index + neutralStep * .5;
             return '<line x1="' + x.toFixed(1) + '" y1="108" x2="' + x.toFixed(1) + '" y2="116" stroke="#c8d3e1" stroke-width="1"></line>';
           }).join("");
           return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#c6d9f2"></i>Revenue impact</span><span><i style="--legend-color:#178f83"></i>EBITDA impact</span><span><i style="--legend-color:#6e4bd8"></i>Cash impact</span></div>' +
@@ -1902,6 +2210,15 @@
         var padding = Math.max(.25, (max - min) * .15);
         max += padding;
         min -= padding;
+        var frame = chartFrame({
+          leftLabels: [money(max), money((max + min) / 2), money(min)],
+          minLeft: 42,
+          minRight: 18,
+          top: top,
+          bottom: bottom
+        });
+        var left = frame.left, right = frame.right;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
         var step = plotWidth / labels.length;
         function y(value) { return top + (max - value) / (max - min || 1) * plotHeight; }
         var zeroY = y(0);
@@ -1913,7 +2230,7 @@
         var bars = revenueImpact.map(function (value, index) {
           var x = left + index * step + step * .18;
           var valueY = y(value);
-          return '<rect aria-hidden="true" x="' + x.toFixed(1) + '" y="' + Math.min(zeroY, valueY).toFixed(1) + '" width="' + Math.max(3, step * .55).toFixed(1) + '" height="' + Math.max(1, Math.abs(zeroY - valueY)).toFixed(1) + '" rx="2" fill="#c6d9f2" pointer-events="none"></rect>';
+          return '<rect aria-hidden="true" x="' + x.toFixed(1) + '" y="' + Math.min(zeroY, valueY).toFixed(1) + '" width="' + Math.max(3, step * .55).toFixed(1) + '" height="' + Math.max(1, Math.abs(zeroY - valueY)).toFixed(1) + '" rx="2" fill="#b9d2ee" stroke="#83a9d4" stroke-width=".55" pointer-events="none"></rect>';
         }).join("");
         var ebitdaPoints = ebitdaImpact.map(function (value, index) {
           return (left + index * step + step * .46).toFixed(1) + "," + y(value).toFixed(1);
@@ -1939,7 +2256,7 @@
           var x = left + index * step + step * .46;
           return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 7) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
         }).join("");
-        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#c6d9f2"></i>Revenue impact</span><span><i style="--legend-color:#178f83"></i>EBITDA impact</span><span><i style="--legend-color:#6e4bd8"></i>Cash impact</span></div><svg class="chart" role="img" aria-label="Monthly revenue, EBITDA, and cash sensitivity impact" viewBox="0 0 560 214">' + grid + '<line x1="' + left + '" y1="' + zeroY.toFixed(1) + '" x2="' + (width - right) + '" y2="' + zeroY.toFixed(1) + '" stroke="#8393a8" stroke-width="1.2"></line>' + bars + '<polyline points="' + ebitdaPoints + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"></polyline>' + ebitdaDots + '<polyline points="' + cashPoints + '" fill="none" stroke="#6e4bd8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"></polyline>' + cashDots + xLabels + hitAreas + '</svg></div>';
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#83a9d4"></i>Revenue impact</span><span><i style="--legend-color:#178f83"></i>EBITDA impact</span><span><i style="--legend-color:#6e4bd8"></i>Cash impact</span></div><svg class="chart" role="img" aria-label="Monthly revenue, EBITDA, and cash sensitivity impact" viewBox="0 0 560 214">' + grid + '<line x1="' + left + '" y1="' + zeroY.toFixed(1) + '" x2="' + (width - right) + '" y2="' + zeroY.toFixed(1) + '" stroke="#8393a8" stroke-width="1.2"></line>' + bars + '<polyline points="' + ebitdaPoints + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"></polyline>' + ebitdaDots + '<polyline points="' + cashPoints + '" fill="none" stroke="#6e4bd8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"></polyline>' + cashDots + xLabels + hitAreas + '</svg></div>';
       }
 
       function renderLab() {
@@ -2008,10 +2325,72 @@
             cue.className = "scroll-cue";
             cue.setAttribute("aria-hidden", "true");
             cue.textContent = "Swipe table →";
-            wrap.closest(".panel").appendChild(cue);
+            var heading = wrap.closest(".panel").querySelector(".panel-heading");
+            if (heading) heading.appendChild(cue);
           } else {
             wrap.removeAttribute("aria-label");
           }
+        });
+      }
+
+      function chartMarks(chart) {
+        return Array.prototype.filter.call(chart.querySelectorAll("[data-tip]"), function (mark) {
+          return !mark.hasAttribute("data-scenario");
+        });
+      }
+
+      function allChartMarks(chart) {
+        return Array.prototype.slice.call(chart.querySelectorAll("[data-tip]"));
+      }
+
+      function setChartReadout(chart, text, announce) {
+        var readout = chart.parentElement.querySelector(".chart-readout");
+        if (readout) {
+          readout.textContent = text;
+          hideTooltip();
+        }
+        if (announce) document.getElementById("srStatus").textContent = text;
+      }
+
+      function setChartActiveMark(chart, index, announce) {
+        var marks = chartMarks(chart);
+        if (!marks.length) return;
+        var nextIndex = Math.max(0, Math.min(index, marks.length - 1));
+        marks.forEach(function (mark) { mark.classList.remove("keyboard-active"); });
+        var mark = marks[nextIndex];
+        mark.classList.add("keyboard-active");
+        chart.dataset.activeMark = String(nextIndex);
+        var text = mark.getAttribute("data-tip");
+        var readout = chart.parentElement.querySelector(".chart-readout");
+        if (readout) {
+          setChartReadout(chart, text, announce);
+        } else {
+          positionTooltipForTarget(mark, text);
+          if (announce) document.getElementById("srStatus").textContent = text;
+        }
+      }
+
+      function enhanceChartKeyboard() {
+        Array.prototype.forEach.call(document.querySelectorAll("svg.chart"), function (chart, chartIndex) {
+          var allMarks = allChartMarks(chart);
+          if (!allMarks.length) return;
+          var marks = chartMarks(chart);
+          var readout = document.createElement("div");
+          readout.className = "chart-readout";
+          readout.id = "chart-readout-" + state.page + "-" + chartIndex;
+          readout.textContent = marks.length ? "Hover, tap, or use ← → to inspect exact values" : "Hover, tap, or Tab to inspect and select a scenario";
+          chart.parentElement.insertBefore(readout, chart);
+          chart.setAttribute("aria-describedby", readout.id);
+          chart.dataset.inlineReadout = "true";
+
+          if (!marks.length) return;
+          marks.forEach(function (mark) { mark.setAttribute("tabindex", "-1"); });
+          chart.setAttribute("tabindex", "0");
+          chart.setAttribute("data-keyboard-chart", "true");
+          chart.setAttribute("aria-roledescription", "interactive chart");
+          var label = chart.getAttribute("aria-label") || "Interactive chart";
+          if (label.indexOf("arrow keys") < 0) chart.setAttribute("aria-label", label + ". Use Left and Right arrow keys to inspect values.");
+          chart.dataset.activeMark = "0";
         });
       }
 
@@ -2024,6 +2403,21 @@
         label.textContent = mode === "department" ? "Department" : "Service";
         select.setAttribute("aria-label", mode === "department" ? "Department" : "Service");
         select.innerHTML = options.map(function (option) { return '<option' + (option === value ? " selected" : "") + '>' + escapeHtml(option) + '</option>'; }).join("");
+      }
+
+      function updateFilterStates() {
+        var labMode = state.page === "scenario-lab";
+        var values = {
+          scenarioControl: !labMode && state.scenario !== defaults.scenario,
+          regionControl: !labMode && state.region !== defaults.region,
+          contextControl: !labMode && (contextMode() === "department" ? state.department !== defaults.department : state.service !== defaults.service)
+        };
+        Object.keys(values).forEach(function (id) {
+          var control = document.getElementById(id);
+          if (control) control.classList.toggle("is-active", values[id]);
+        });
+        var yearControl = document.getElementById("yearFilter").closest(".filter");
+        if (yearControl) yearControl.classList.toggle("is-active", state.year !== defaults.year);
       }
 
       function renderNavigation() {
@@ -2091,7 +2485,7 @@
         var frame = document.querySelector(".preview-frame");
         var shell = document.querySelector(".dashboard-shell");
         var dashboard = document.querySelector(".dashboard");
-        if (frame.clientWidth <= 760) {
+        if (frame.clientWidth <= 1180) {
           dashboard.style.transform = "none";
           shell.style.height = dashboard.offsetHeight + "px";
           return;
@@ -2102,8 +2496,10 @@
       }
 
       function render(announce) {
+        hideTooltip();
         var page = pages.find(function (item) { return item.id === state.page; });
         var labMode = state.page === "scenario-lab";
+        document.getElementById("dashboard").dataset.page = state.page;
         if (labMode) {
           state.scenario = "Base";
           document.getElementById("scenarioFilter").value = "Base";
@@ -2115,10 +2511,13 @@
         document.getElementById("pageTitle").textContent = page.label;
         document.getElementById("subtitle").textContent = page.sub;
         updateContextControl();
+        updateFilterStates();
         renderNavigation();
+        document.getElementById("visuals").setAttribute("aria-labelledby", "tab-" + state.page);
         document.getElementById("decisionBand").innerHTML = decisionReadout();
         renderKpis();
         renderVisuals();
+        enhanceChartKeyboard();
         markScrollableTables();
         publishQa();
         fitDashboard();
@@ -2163,7 +2562,12 @@
           nextValue = state.department === value ? "All Departments" : value;
           state.department = nextValue;
         }
-        render((type === "service" ? "Service" : "Department") + " set to " + nextValue);
+        if (type === "region" && regionProfile[value]) {
+          nextValue = state.region === value ? "All Regions" : value;
+          state.region = nextValue;
+          document.getElementById("regionFilter").value = nextValue;
+        }
+        render((type === "service" ? "Service" : type === "department" ? "Department" : "Region") + " set to " + nextValue);
         restoreInteractiveFocus(type, value, focusIndex);
       }
 
@@ -2178,6 +2582,7 @@
       }
 
       function refreshScenarioLab(announce) {
+        hideTooltip();
         document.getElementById("decisionBand").innerHTML = decisionReadout();
         renderKpis();
         var staging = document.createElement("div");
@@ -2189,32 +2594,85 @@
         if (currentSummary && nextSummary) currentSummary.replaceWith(nextSummary);
         while (root.children.length > 1) root.removeChild(root.lastElementChild);
         nextPanels.slice(1).forEach(function (panelNode) { root.appendChild(panelNode); });
+        enhanceChartKeyboard();
         markScrollableTables();
         publishQa();
         fitDashboard();
         if (announce) document.getElementById("srStatus").textContent = announce + ". Scenario Lab updated.";
       }
 
+      function placeTooltip(tooltip, left, top) {
+        var margin = 12;
+        tooltip.style.left = Math.min(window.innerWidth - tooltip.offsetWidth - margin, Math.max(margin, left)) + "px";
+        tooltip.style.top = Math.min(window.innerHeight - tooltip.offsetHeight - margin, Math.max(margin, top)) + "px";
+      }
+
       function positionTooltip(event, text) {
         var tooltip = document.getElementById("tooltip");
         tooltip.textContent = text;
         tooltip.classList.add("visible");
+        var gap = 12;
+        var top = event.clientY + gap;
+        if (top + tooltip.offsetHeight > window.innerHeight - 12) top = event.clientY - tooltip.offsetHeight - gap;
+        placeTooltip(tooltip, event.clientX + gap, top);
+      }
+
+      function positionTooltipForTarget(target, text) {
+        var tooltip = document.getElementById("tooltip");
+        tooltip.textContent = text;
+        tooltip.classList.add("visible");
+        var rect = target.getBoundingClientRect();
+        var gap = 10;
         var margin = 12;
-        var left = Math.min(window.innerWidth - tooltip.offsetWidth - margin, Math.max(margin, event.clientX + 12));
-        var top = Math.min(window.innerHeight - tooltip.offsetHeight - margin, Math.max(margin, event.clientY + 12));
-        tooltip.style.left = left + "px";
-        tooltip.style.top = top + "px";
+        var candidates = [
+          { left: rect.right + gap, top: rect.top + rect.height / 2 - tooltip.offsetHeight / 2 },
+          { left: rect.left - tooltip.offsetWidth - gap, top: rect.top + rect.height / 2 - tooltip.offsetHeight / 2 },
+          { left: rect.left + rect.width / 2 - tooltip.offsetWidth / 2, top: rect.top - tooltip.offsetHeight - gap },
+          { left: rect.left + rect.width / 2 - tooltip.offsetWidth / 2, top: rect.bottom + gap }
+        ];
+        var choice = candidates.find(function (candidate) {
+          return candidate.left >= margin && candidate.top >= margin && candidate.left + tooltip.offsetWidth <= window.innerWidth - margin && candidate.top + tooltip.offsetHeight <= window.innerHeight - margin;
+        }) || candidates[2];
+        placeTooltip(tooltip, choice.left, choice.top);
       }
 
       function hideTooltip() {
         document.getElementById("tooltip").classList.remove("visible");
       }
 
+      function nearestChartMark(chart, clientX, clientY) {
+        var marks = chartMarks(chart);
+        var nearest = null;
+        var distance = Infinity;
+        marks.forEach(function (mark, index) {
+          var rect = mark.getBoundingClientRect();
+          var dx = clientX - (rect.left + rect.width / 2);
+          var dy = clientY - (rect.top + rect.height / 2);
+          var nextDistance = dx * dx + dy * dy;
+          if (nextDistance < distance) {
+            distance = nextDistance;
+            nearest = { mark: mark, index: index };
+          }
+        });
+        return nearest;
+      }
+
+      function setInlineBarReadout(target, announce) {
+        var list = target.closest(".bar-list");
+        var readout = list ? list.querySelector(".bar-readout") : null;
+        var text = target.getAttribute("data-inline-tip");
+        if (readout) readout.textContent = text;
+        if (announce) document.getElementById("srStatus").textContent = text;
+        hideTooltip();
+      }
+
       document.getElementById("dashboard").addEventListener("click", function (event) {
-        var pageButton = event.target.closest("[data-page]");
+        var pageButton = event.target.closest("button[data-page]");
         var scenarioButton = event.target.closest("[data-scenario]");
         var serviceButton = event.target.closest("[data-service]");
         var departmentButton = event.target.closest("[data-department]");
+        var regionButton = event.target.closest("[data-region]");
+        var inlineBar = event.target.closest("[data-inline-tip]");
         if (pageButton) {
           state.page = pageButton.getAttribute("data-page");
           if (state.page === "scenario-lab") state.scenario = "Base";
@@ -2228,6 +2686,17 @@
         } else if (departmentButton) {
           var departmentValue = departmentButton.getAttribute("data-department");
           setContext("department", departmentValue, interactiveFocusIndex("department", departmentValue, departmentButton));
+        } else if (regionButton) {
+          var regionValue = regionButton.getAttribute("data-region");
+          setContext("region", regionValue, interactiveFocusIndex("region", regionValue, regionButton));
+        } else if (inlineBar) {
+          setInlineBarReadout(inlineBar, true);
+        } else {
+          var chart = event.target.closest("svg[data-keyboard-chart]");
+          if (chart) {
+            var nearest = nearestChartMark(chart, event.clientX, event.clientY);
+            if (nearest) setChartActiveMark(chart, nearest.index, true);
+          }
         }
       });
 
@@ -2246,6 +2715,15 @@
             var active = document.querySelector("[role='tab'][aria-selected='true']");
             if (active) active.focus();
           });
+        } else if (target.matches("svg[data-keyboard-chart]") && ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown", "Home", "End"].indexOf(event.key) >= 0) {
+          event.preventDefault();
+          var marks = chartMarks(target);
+          var markIndex = Number(target.dataset.activeMark || 0);
+          if (event.key === "ArrowRight" || event.key === "ArrowDown") markIndex = (markIndex + 1) % marks.length;
+          if (event.key === "ArrowLeft" || event.key === "ArrowUp") markIndex = (markIndex - 1 + marks.length) % marks.length;
+          if (event.key === "Home") markIndex = 0;
+          if (event.key === "End") markIndex = marks.length - 1;
+          setChartActiveMark(target, markIndex, true);
         } else if ((event.key === "Enter" || event.key === " ") && target.closest("[data-scenario]")) {
           event.preventDefault();
           var scenarioTarget = target.closest("[data-scenario]");
@@ -2261,6 +2739,11 @@
           var departmentTarget = target.closest("[data-department]");
           var departmentKeyValue = departmentTarget.getAttribute("data-department");
           setContext("department", departmentKeyValue, interactiveFocusIndex("department", departmentKeyValue, departmentTarget));
+        } else if ((event.key === "Enter" || event.key === " ") && target.closest("[data-region]")) {
+          event.preventDefault();
+          var regionTarget = target.closest("[data-region]");
+          var regionKeyValue = regionTarget.getAttribute("data-region");
+          setContext("region", regionKeyValue, interactiveFocusIndex("region", regionKeyValue, regionTarget));
         }
       });
 
@@ -2290,18 +2773,52 @@
       });
 
       document.getElementById("dashboard").addEventListener("mousemove", function (event) {
+        var chart = event.target.closest("svg[data-inline-readout='true']");
+        if (chart) {
+          var marks = chartMarks(chart);
+          if (marks.length) {
+            var nearest = nearestChartMark(chart, event.clientX, event.clientY);
+            if (nearest) setChartActiveMark(chart, nearest.index, false);
+          } else {
+            var chartTarget = event.target.closest("[data-tip]");
+            if (chartTarget && chart.contains(chartTarget)) setChartReadout(chart, chartTarget.getAttribute("data-tip"), false);
+          }
+          return;
+        }
+        var inlineTarget = event.target.closest("[data-inline-tip]");
+        if (inlineTarget) {
+          setInlineBarReadout(inlineTarget, false);
+          return;
+        }
         var target = event.target.closest("[data-tip]");
         if (target) positionTooltip(event, target.getAttribute("data-tip"));
         else hideTooltip();
       });
       document.getElementById("dashboard").addEventListener("mouseleave", hideTooltip);
       document.getElementById("dashboard").addEventListener("focusin", function (event) {
+        var inlineTarget = event.target.closest("[data-inline-tip]");
+        if (inlineTarget) {
+          setInlineBarReadout(inlineTarget, true);
+          return;
+        }
         var target = event.target.closest("[data-tip]");
-        if (!target) return;
-        var rect = target.getBoundingClientRect();
-        positionTooltip({ clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2 }, target.getAttribute("data-tip"));
+        if (target) {
+          var readoutChart = target.closest("svg[data-inline-readout='true']");
+          if (readoutChart) {
+            setChartReadout(readoutChart, target.getAttribute("data-tip"), false);
+            return;
+          }
+          positionTooltipForTarget(target, target.getAttribute("data-tip"));
+          return;
+        }
+        var chart = event.target.closest("svg[data-keyboard-chart]");
+        if (chart) setChartActiveMark(chart, Number(chart.dataset.activeMark || 0), false);
       });
-      document.getElementById("dashboard").addEventListener("focusout", hideTooltip);
+      document.getElementById("dashboard").addEventListener("focusout", function (event) {
+        var chart = event.target.closest("svg[data-keyboard-chart]");
+        if (chart) chartMarks(chart).forEach(function (mark) { mark.classList.remove("keyboard-active"); });
+        hideTooltip();
+      });
       window.addEventListener("resize", fitDashboard);
 
       window.previewActions = {

@@ -95,7 +95,7 @@ h1 { margin:0; font-size:22px; line-height:1.12; letter-spacing:0; }
   .qa-note { padding:0 14px; }
 }
 </style>
-<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}.chart-card{height:216px}.chart-card .chart-body{height:calc(100% - 30px)}.bottom-row .chart-card{height:202px}#actionPage .bottom-row .chart-card{height:252px}#actionPage .bottom-row .chart-card:first-child{height:276px}@media(max-width:980px){.chart-card,.bottom-row .chart-card,#actionPage .bottom-row .chart-card{height:250px}#actionPage .bottom-row .chart-card:first-child{height:276px}}@media(max-width:480px){.page-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.nav-btn,.preview-reset{width:100%;min-width:0}.preview-reset{padding:8px 6px}}</style></head>
+<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}.chart-card{height:216px}.chart-card .chart-body{height:calc(100% - 30px)}.bottom-row .chart-card{height:202px}#actionPage .bottom-row .chart-card{height:252px}#actionPage .bottom-row .chart-card:first-child{height:276px}.nav-btn,.filter select,.preview-reset{min-height:40px}@media(max-width:980px){.chart-card,.bottom-row .chart-card,#actionPage .bottom-row .chart-card{height:250px}#actionPage .bottom-row .chart-card:first-child{height:276px}.filter{height:auto;min-height:62px;padding:5px 8px}.nav-btn,.filter select,.preview-reset{min-height:44px!important}}@media(max-width:480px){.page-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.nav-btn,.preview-reset{width:100%;min-width:0}.preview-reset{padding:8px 6px}}</style></head>
 <body data-project-number="17" data-layout-source="project-17-own-dashboard"><div class="preview-frame"><div class="dashboard-shell">
 <main class="shell">
   <header class="report-header">
@@ -288,30 +288,23 @@ function svgFrame(w = 360, h = 140) {
   return {w,h,p:28, innerW:w-56, innerH:h-52};
 }
 function barsSvg(items, options = {}) {
-  const cfg = svgFrame(options.w || 360, options.h || 140);
-  const max = Math.max(...items.map(d => Math.abs(d.value)), 1);
-  const bw = cfg.innerW / Math.max(items.length, 1) - 6;
-  let out = `<svg viewBox="0 0 ${cfg.w} ${cfg.h}"><line x1="${cfg.p}" y1="${cfg.h-cfg.p}" x2="${cfg.w-cfg.p}" y2="${cfg.h-cfg.p}" stroke="#CBD5E1"/>`;
-  items.slice(0, options.limit || 12).forEach((d,i) => {
-    const x = cfg.p + i * (cfg.innerW / Math.max(items.length, 1));
-    const bh = Math.abs(d.value) / max * cfg.innerH;
-    const y = cfg.h - cfg.p - bh;
-    const color = d.value < 0 ? '#DC2626' : (options.color || colors[i % colors.length]);
-    out += `<rect x="${x}" y="${y}" width="${Math.max(bw,4)}" height="${bh}" rx="3" fill="${color}"><title>${clean(d.name)} ${money(d.value)}</title></rect>`;
-    out += `<text x="${x + Math.max(bw,4) / 2}" y="${cfg.h-8}" text-anchor="end" transform="rotate(-35 ${x + Math.max(bw,4) / 2} ${cfg.h-8})" fill="#64748B" font-size="8">${clean(String(d.name).slice(0,12))}</text>`;
-  });
+  const mobile=matchMedia('(max-width:340px)').matches,w=mobile?300:(options.w||420),h=options.h||142,rows=items.slice(0,Math.min(options.limit||6,6)),top=8,labelX=6,trackX=mobile?100:128,valueX=w-4,rowH=(h-top-6)/Math.max(rows.length,1);
+  const max=Math.max(...rows.map(d=>Math.abs(d.value)),1),trackWidth=w-trackX-62;
+  let out=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Ranked category comparison"><title>Ranked category comparison</title>`;
+  rows.forEach((d,i)=>{const y=top+i*rowH,bw=Math.max(4,Math.abs(d.value)/max*trackWidth),color=d.value<0?'#b73535':(options.color||'#4f9f96');out+=`<text x="${labelX}" y="${y+12}" fill="#334155" font-size="11" font-weight="600">${clean(String(d.name).slice(0,mobile?14:18))}</text><rect x="${trackX}" y="${y+1}" width="${trackWidth}" height="13" rx="3" fill="#E4EAF0"/><rect x="${trackX}" y="${y+1}" width="${bw}" height="13" rx="3" fill="${color}"><title>${clean(d.name)}: ${options.percent?pct(d.value):money(d.value)}</title></rect><text x="${valueX}" y="${y+12}" text-anchor="end" fill="#334155" font-size="11" font-weight="700">${options.percent?pct(d.value):money(d.value)}</text>`;});
   return out + '</svg>';
 }
 function horizontalSvg(items, options = {}) {
-  const h = options.h || 140, w = options.w || 360, p = 22;
-  const rows = items.slice(0, options.limit || 7);
+  const mobile=matchMedia('(max-width:340px)').matches,h = options.h || 142, w = mobile?300:(options.w || 420), p = 8;
+  const rows = items.slice(0, Math.min(options.limit || 6, 6));
   const max = Math.max(...rows.map(d => Math.abs(d.value)), 1);
-  let out = `<svg viewBox="0 0 ${w} ${h}">`;
+  const trackX=mobile?100:128,valueX=w-4,trackWidth=w-trackX-62,rowH=(h-p-6)/Math.max(rows.length,1);
+  let out = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Ranked category comparison"><title>Ranked category comparison</title>`;
   rows.forEach((d,i) => {
-    const y = p + i * ((h - p - 8) / Math.max(rows.length,1));
-    const bw = Math.abs(d.value) / max * (w - 148);
-    const color = d.value < 0 ? '#DC2626' : (options.color || '#6FB8AF');
-    out += `<text x="6" y="${y+8}" fill="#475569" font-size="9">${clean(String(d.name).slice(0,20))}</text><rect x="132" y="${y}" width="${bw}" height="12" rx="2" fill="${color}"/><text x="${Math.min(132+bw+5,w-38)}" y="${y+9}" fill="#475569" font-size="8">${options.percent ? pct(d.value) : money(d.value)}</text>`;
+    const y = p + i * rowH;
+    const bw = Math.max(4,Math.abs(d.value) / max * trackWidth);
+    const color = d.value < 0 ? '#b73535' : (options.color || '#4f9f96');
+    out += `<text x="6" y="${y+12}" fill="#334155" font-size="11" font-weight="600">${clean(String(d.name).slice(0,mobile?14:18))}</text><rect x="${trackX}" y="${y+1}" width="${trackWidth}" height="13" rx="3" fill="#E4EAF0"/><rect x="${trackX}" y="${y+1}" width="${bw}" height="13" rx="3" fill="${color}"><title>${clean(d.name)}: ${options.percent?pct(d.value):money(d.value)}</title></rect><text x="${valueX}" y="${y+12}" text-anchor="end" fill="#334155" font-size="11" font-weight="700">${options.percent ? pct(d.value) : money(d.value)}</text>`;
   });
   return out + '</svg>';
 }
@@ -346,22 +339,23 @@ function donutHtml(items) {
   return `<div class="donut-wrap"><div class="donut" style="background:conic-gradient(${stops})"></div><div class="donut-legend">${items.slice(0,5).map((d,i)=>`<div><span class="swatch" style="background:${colors[i % colors.length]}"></span><span>${clean(d.name)}</span><strong>${((d.value/total)*100).toFixed(1)}%</strong></div>`).join('')}</div></div>`;
 }
 function waterfallSvg(items) {
-  const w = 380, h = 142, p = 28;
+  const narrow = matchMedia('(max-width:340px)').matches, w = narrow ? 300 : 380, h = 142, p = narrow ? 20 : 28;
   const rows = items.slice(0,8);
   const min = Math.min(0, ...rows.map(d => d.value));
   const max = Math.max(0, ...rows.map(d => d.value));
   const span = max - min || 1;
   const zero = h - p - ((0 - min) / span) * (h - 44);
   const bw = (w - p*2) / Math.max(rows.length,1) - 8;
-  let out = `<svg viewBox="0 0 ${w} ${h}"><line x1="${p}" y1="${zero}" x2="${w-p}" y2="${zero}" stroke="#CBD5E1"/>`;
+  let out = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Gross-profit driver variance from zero"><title>Gross-profit driver variance from zero</title><line x1="${p}" y1="${zero}" x2="${w-p}" y2="${zero}" stroke="#8694A3" stroke-width="1.5"/>`;
   rows.forEach((d,i) => {
     const x = p + i * ((w - p*2) / rows.length);
     const y = h - p - ((Math.max(d.value,0) - min) / span) * (h - 44);
     const y0 = h - p - ((Math.min(d.value,0) - min) / span) * (h - 44);
-    const color = d.value < 0 ? '#DC2626' : '#6FB8AF';
+    const color = d.value < 0 ? '#b73535' : '#4f9f96';
     out += `<rect x="${x}" y="${Math.min(y,zero)}" width="${bw}" height="${Math.abs(zero-y)}" rx="2" fill="${color}"><title>${clean(d.name)} ${money(d.value)}</title></rect>`;
     if (d.value < 0) out += `<rect x="${x}" y="${zero}" width="${bw}" height="${Math.abs(y0-zero)}" rx="2" fill="${color}"/>`;
-    out += `<text x="${x+bw/2}" y="${h-8}" text-anchor="end" transform="rotate(-35 ${x+bw/2} ${h-8})" fill="#64748B" font-size="8">${clean(String(d.name).slice(0,12))}</text>`;
+    const rawLabel=String(d.name).split(/[ /]/)[0],shortLabel=narrow?({Carrier:'Car.',Demurrage:'Dem.',Claims:'Clm.',Utilization:'Util.'}[rawLabel]||rawLabel.slice(0,5)):rawLabel.slice(0,9);
+    out += `<text x="${x+bw/2}" y="${h-7}" text-anchor="middle" fill="#475569" font-size="10.5" font-weight="600">${clean(shortLabel)}</text>`;
   });
   return out + '</svg>';
 }
@@ -551,7 +545,7 @@ render();
     for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
     return (hash >>> 0).toString(16).padStart(8, "0");
   };
-+  reset.addEventListener("click", resetFilters);
+  reset.addEventListener("click", resetFilters);
   document.addEventListener("change", sync);
   document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
   window.previewState = publicState;

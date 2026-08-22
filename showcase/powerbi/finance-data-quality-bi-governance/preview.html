@@ -89,7 +89,7 @@ td.center, th.center { text-align:center; }
   .bar-value { text-align:left; }
 }
 </style>
-<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}th:first-child,td:first-child,#action-incident-table th:nth-child(3),#action-incident-table td:nth-child(3){white-space:normal;overflow-wrap:anywhere;line-height:1.25}.panel>div:has(>table){max-width:100%;overflow-x:auto}@media(max-width:680px){table{min-width:720px}header{position:relative}.tabs{flex-wrap:wrap;overflow:visible}.tab{height:auto;min-height:38px}}</style></head>
+<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}th:first-child,td:first-child,#action-incident-table th:nth-child(3),#action-incident-table td:nth-child(3){white-space:normal;overflow-wrap:anywhere;line-height:1.25}.panel>div:has(>table){max-width:100%;overflow-x:auto}@media(max-width:680px){table{min-width:720px}header{position:relative}.tabs{flex-wrap:wrap;overflow:visible}.tab,select,.preview-reset{height:auto;min-height:44px!important}}</style></head>
 <body data-project-number="19" data-layout-source="project-19-own-dashboard"><div class="preview-frame"><div class="dashboard-shell">
 <header>
   <div class="topline">
@@ -320,24 +320,32 @@ function drawSpark(id, series, target, color) {
 }
 function drawLine(id, rows, fields) {
   const svg = el(id);
-  svg.setAttribute("viewBox", "0 0 660 240");
-  if (!rows.length) { svg.innerHTML = '<foreignObject width="660" height="240"><div class="empty">No data for current lens</div></foreignObject>'; return; }
+  const mobile = matchMedia("(max-width:680px)").matches;
+  const width = mobile ? (innerWidth <= 340 ? 300 : 360) : 660;
+  const left = mobile ? 30 : 42;
+  const right = mobile ? 10 : 24;
+  const plotTop = mobile ? 42 : 20;
+  const plotBottom = 204;
+  const plotWidth = width - left - right;
+  svg.setAttribute("viewBox", `0 0 ${width} 240`);
+  if (!rows.length) { svg.innerHTML = `<foreignObject width="${width}" height="240"><div class="empty">No data for current lens</div></foreignObject>`; return; }
   const values = rows.flatMap(r => fields.map(f => num(r[f.key])));
   const min = Math.min(...values), max = Math.max(...values), span = Math.max(0.0001, max - min);
-  let out = '<line x1="42" x2="636" y1="204" y2="204" stroke="#d8ded8"/><line x1="42" x2="42" y1="20" y2="204" stroke="#d8ded8"/>';
+  let out = `<line x1="${left}" x2="${width-right}" y1="${plotBottom}" y2="${plotBottom}" stroke="#d8ded8"/><line x1="${left}" x2="${left}" y1="${plotTop}" y2="${plotBottom}" stroke="#d8ded8"/>`;
   fields.forEach((field, index) => {
     const pts = rows.map((r, i) => {
-      const x = 42 + i * (594 / Math.max(1, rows.length - 1));
-      const y = 204 - ((num(r[field.key]) - min) / span) * 174;
+      const x = left + i * (plotWidth / Math.max(1, rows.length - 1));
+      const y = plotBottom - ((num(r[field.key]) - min) / span) * (plotBottom - plotTop);
       return x.toFixed(1) + "," + y.toFixed(1);
     }).join(" ");
     out += '<polyline fill="none" stroke="' + field.color + '" stroke-width="3" points="' + pts + '"/>';
-    out += '<text x="' + (455 + index * 92) + '" y="20" fill="' + field.color + '" font-size="12" font-weight="700">' + field.label + '</text>';
+    out += '<text x="' + (mobile ? left + index * (width <= 300 ? 118 : 142) : 455 + index * 92) + '" y="20" fill="' + field.color + '" font-size="12" font-weight="700">' + field.label + '</text>';
   });
   rows.filter((_, i) => i === 0 || i === rows.length - 1 || i % 4 === 0).forEach((r, i) => {
     const idx = rows.indexOf(r);
-    const x = 42 + idx * (594 / Math.max(1, rows.length - 1));
-    out += '<text x="' + (x - 18).toFixed(1) + '" y="226" fill="#5d6875" font-size="10">' + r.monthYear.replace(" 20", " ") + '</text>';
+    const x = left + idx * (plotWidth / Math.max(1, rows.length - 1));
+    const anchor = idx === 0 ? 'start' : idx === rows.length - 1 ? 'end' : 'middle';
+    out += '<text x="' + x.toFixed(1) + '" y="226" text-anchor="' + anchor + '" fill="#5d6875" font-size="10">' + r.monthYear.replace(" 20", " ") + '</text>';
   });
   svg.innerHTML = out;
 }
@@ -696,7 +704,7 @@ window.addEventListener("DOMContentLoaded", init);
     for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
     return (hash >>> 0).toString(16).padStart(8, "0");
   };
-+  reset.addEventListener("click", resetFilters);
+  reset.addEventListener("click", resetFilters);
   document.addEventListener("change", sync);
   document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
   window.previewState = publicState;

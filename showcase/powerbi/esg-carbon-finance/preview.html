@@ -626,7 +626,7 @@
       .methodology { margin-left: 16px; margin-right: 16px; }
     }
   </style>
-<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}.slicer select{padding:5px 18px 5px 6px!important;font-size:13px!important;line-height:1.2!important;text-indent:0!important}#yearFilter{padding:5px 14px 5px 4px!important;font-size:11px!important}@media(max-width:820px){.table-head{flex-wrap:wrap;gap:10px;padding:16px 14px 10px}.table-head .accent{width:100%;margin-bottom:4px}.badge{min-height:32px;padding:6px 12px}.table-wrap{overflow-x:auto;padding:10px 10px 14px}.table-wrap table{min-width:360px}}</style></head>
+<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}.slicer select{padding:5px 18px 5px 6px!important;font-size:13px!important;line-height:1.2!important;text-indent:0!important}#yearFilter{padding:5px 14px 5px 4px!important;font-size:11px!important}@media(max-width:820px){.table-head{flex-wrap:wrap;gap:10px;padding:16px 14px 10px}.table-head .accent{width:100%;margin-bottom:4px}.badge{min-height:32px;padding:6px 12px}.table-wrap{overflow-x:auto;padding:10px 10px 14px}.table-wrap table{min-width:360px}.nav-btn,.report-tab,.slicer select,.preview-reset{min-height:44px!important}}</style></head>
 <body data-project-number="18" data-layout-source="project-18-own-dashboard"><div class="preview-frame"><div class="dashboard-shell">
   <div class="dashboard">
     <header class="hero">
@@ -1043,9 +1043,10 @@
     function renderMonthlyChart(f) {
       const rows = filteredMonths(f);
       const svg = qs("#monthlyChart");
-      const width = 760;
+      const mobile = matchMedia("(max-width:520px)").matches;
+      const width = mobile ? (innerWidth <= 340 ? 300 : 360) : 760;
       const height = 220;
-      const margin = { left: 52, right: 20, top: 18, bottom: 34 };
+      const margin = { left: mobile ? 36 : 52, right: mobile ? 8 : 20, top: 18, bottom: 34 };
       const maxEmission = Math.max(...rows.map(row => row.emissions), 1) * 1.12;
       const maxCost = Math.max(...rows.map(row => row.emissions * 140 / 1000000), 1) * 1.12;
       const emissionPoints = linePoints(rows, "emissions", width, height, margin, maxEmission);
@@ -1056,7 +1057,7 @@
         const label = Math.round(maxEmission * value / 1000) + "K";
         return `<line x1="${margin.left}" x2="${width - margin.right}" y1="${y}" y2="${y}" stroke="${COLORS.line}" stroke-width="1"></line><text x="8" y="${y + 4}" fill="${COLORS.muted}" font-size="12">${label}</text>`;
       }).join("");
-      const labels = rows.filter((_, index) => index % Math.max(1, Math.ceil(rows.length / 5)) === 0 || index === rows.length - 1).map((row, index, arr) => {
+      const labels = rows.filter((_, index) => index % Math.max(1, Math.ceil(rows.length / (mobile ? 3 : 5))) === 0 || index === rows.length - 1).map((row, index, arr) => {
         const rowIndex = rows.indexOf(row);
         const x = margin.left + rowIndex * ((width - margin.left - margin.right) / Math.max(rows.length - 1, 1));
         const anchor = index === arr.length - 1 ? "end" : "middle";
@@ -1073,9 +1074,10 @@
 
     function renderBars(svgId, rows, options = {}) {
       const svg = qs(svgId);
-      const width = options.width || 520;
+      const mobile = matchMedia("(max-width:520px)").matches;
+      const width = mobile ? (innerWidth <= 340 ? 300 : 360) : (options.width || 520);
       const height = options.height || 220;
-      const margin = { left: options.left || 110, right: 64, top: 22, bottom: 34 };
+      const margin = { left: mobile ? (width <= 300 ? 112 : 130) : (options.left || 110), right: mobile ? (width <= 300 ? 52 : 58) : 64, top: 22, bottom: 34 };
       const valueKey = options.valueKey || "value";
       const labelKey = options.labelKey || "label";
       const max = options.max || Math.max(...rows.map(row => Math.abs(row[valueKey])), 1);
@@ -1086,10 +1088,13 @@
         const y = margin.top + index * rowHeight + (rowHeight - barHeight) / 2;
         const barWidth = Math.max(5, (Math.abs(row[valueKey]) / max) * (width - margin.left - margin.right));
         const valueLabel = options.format ? options.format(row[valueKey]) : row[valueKey].toLocaleString();
+        const rawLabel = String(row[labelKey]);
+        const labelLimit = width <= 300 ? 14 : 18;
+        const displayLabel = mobile && rawLabel.length > labelLimit ? rawLabel.slice(0, labelLimit - 1) + "…" : rawLabel;
         return `
-          <text x="${margin.left - 12}" y="${y + barHeight * 0.65}" fill="${COLORS.muted}" font-size="13" text-anchor="end">${row[labelKey]}</text>
-          <rect x="${margin.left}" y="${y}" width="${barWidth}" height="${barHeight}" rx="1" fill="${row.color || color}"></rect>
-          <text x="${Math.min(width - 4, margin.left + barWidth + 10)}" y="${y + barHeight * 0.65}" fill="${COLORS.muted}" font-size="13">${valueLabel}</text>
+          <text x="${margin.left - 12}" y="${y + barHeight * 0.65}" fill="${COLORS.muted}" font-size="13" text-anchor="end">${displayLabel}</text>
+          <rect x="${margin.left}" y="${y}" width="${barWidth}" height="${barHeight}" rx="1" fill="${row.color || color}"><title>${rawLabel}: ${valueLabel}</title></rect>
+          <text x="${mobile ? width - 4 : Math.min(width - 4, margin.left + barWidth + 10)}" y="${y + barHeight * 0.65}" fill="${COLORS.muted}" font-size="13"${mobile ? ' text-anchor="end"' : ''}>${valueLabel}</text>
         `;
       }).join("");
       svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
@@ -1415,7 +1420,7 @@
     for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
     return (hash >>> 0).toString(16).padStart(8, "0");
   };
-+  reset.addEventListener("click", resetFilters);
+  reset.addEventListener("click", resetFilters);
   document.addEventListener("change", sync);
   document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
   window.previewState = publicState;
@@ -1460,7 +1465,7 @@
   }
   sync();
 })();
-</script><style id="decision-accessibility-style">button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #f4c86a!important;outline-offset:2px!important}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style><script id="decision-accessibility">
+</script><style id="decision-accessibility-style">button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #0b6d60!important;outline-offset:2px!important}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style><script id="decision-accessibility">
 (() => {
   const labels = {yearFilter:"Year",regionFilter:"Region",businessFilter:"Business unit",scopeFilter:"Emissions scope",priceFilter:"Carbon price"};
   const panelFor = key => document.getElementById(key) || document.getElementById(`page-${key}`) || document.getElementById(`${key}Page`) || document.querySelector(`.page[data-page="${key}"],.dashboard-page[data-page="${key}"]`);

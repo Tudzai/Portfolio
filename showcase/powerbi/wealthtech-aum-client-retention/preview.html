@@ -50,6 +50,7 @@ h1 { font-size: 18px; line-height: 1.15; margin: 0; }
 .side small { color: #c9d6e4; line-height: 1.45; }
 .tab {
   width: 100%;
+  min-height: 44px;
   border: 1px solid rgba(255,255,255,.12);
   color: #dbe7f3;
   background: rgba(255,255,255,.04);
@@ -62,13 +63,13 @@ h1 { font-size: 18px; line-height: 1.15; margin: 0; }
 }
 .tab.active { background: #f8fafc; color: var(--navy); border-color: #f8fafc; }
 .filters { margin-top: 18px; display: grid; gap: 10px; }
-label { color: #c9d6e4; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+label { display:grid; gap:5px; color: #c9d6e4; font-size: 11px; font-weight: 700; text-transform: uppercase; }
 select {
-  width: 100%; border: 1px solid rgba(255,255,255,.18); border-radius: 7px;
+  width: 100%; min-height:44px; border: 1px solid rgba(255,255,255,.18); border-radius: 7px;
   background: rgba(255,255,255,.08); color: #f8fafc; padding: 9px 10px;
 }
 select option { color: #172033; }
-button:focus-visible, select:focus-visible { outline: 3px solid #60a5fa; outline-offset: 3px; }
+button:focus-visible, select:focus-visible, [role="region"]:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
 .main { padding: 22px; min-width: 0; }
 .topbar { display:flex; justify-content:space-between; align-items:flex-start; gap: 16px; margin-bottom: 18px; }
 .topbar h2 { margin: 0 0 5px; font-size: 25px; }
@@ -105,7 +106,7 @@ table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th, td { padding: 9px 10px; border-bottom: 1px solid #edf1f5; text-align: left; white-space: nowrap; }
 th { color: var(--muted); font-size: 11px; text-transform: uppercase; }
 td.num, th.num { text-align: right; }
-.table-wrap { overflow:auto; max-height: 310px; }
+.table-wrap { overflow:auto; max-height: 310px; overscroll-behavior-inline:contain; scrollbar-gutter:stable; }
 .pill { display:inline-flex; padding: 3px 7px; border-radius: 999px; font-weight: 700; font-size: 11px; background:#eef2f7; color:#344054; }
 .pill.High { color:#991b1b; background:#fee2e2; }
 .pill.Medium { color:#92400e; background:#fef3c7; }
@@ -124,8 +125,10 @@ td.num, th.num { text-align: right; }
   h1 { font-size: 17px; }
   .tab { padding: 9px 10px; margin-bottom: 6px; }
   .filters { margin-top: 12px; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .filters label { display: none; }
+  .filters label { display:grid; gap:4px; font-size:10px; }
   select { padding: 8px 9px; font-size: 12px; }
+  .reset-control { grid-column:1/-1; min-height:44px; }
+  .table-wrap table { min-width:480px; }
   .main { padding: 14px; }
   .kpis, .cards4 { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
   .layout-2, .layout-3 { grid-template-columns: 1fr; }
@@ -137,7 +140,7 @@ td.num, th.num { text-align: right; }
   .lens { grid-template-columns: 1fr; gap: 8px; }
   .lens div:not(:first-child) { display:flex; justify-content:space-between; gap: 10px; }
 }
-.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{width:100%;border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:6px;padding:10px 12px;margin-top:8px;font-weight:700;cursor:pointer}
+.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{width:100%;min-height:44px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:6px;padding:10px 12px;margin-top:8px;font-weight:700;cursor:pointer}
 </style>
 <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
 </head>
@@ -158,14 +161,10 @@ td.num, th.num { text-align: right; }
       <button class="tab" id="tab-risk" type="button" role="tab" aria-selected="false" aria-controls="risk" data-tab="risk">Risk, Suitability & Retention</button>
     </nav>
     <div class="filters">
-      <label for="segmentFilter">Client Segment</label>
-      <select id="segmentFilter"></select>
-      <label for="riskFilter">Risk Profile</label>
-      <select id="riskFilter"></select>
-      <label for="regionFilter">Region</label>
-      <select id="regionFilter"></select>
-      <label for="modelFilter">Model Portfolio</label>
-      <select id="modelFilter"></select>
+      <label for="segmentFilter">Client Segment<select id="segmentFilter"></select></label>
+      <label for="riskFilter">Risk Profile<select id="riskFilter"></select></label>
+      <label for="regionFilter">Region<select id="regionFilter"></select></label>
+      <label for="modelFilter">Model Portfolio<select id="modelFilter"></select></label>
     </div>
   </aside>
   <main class="main">
@@ -420,9 +419,9 @@ function lineChart(id, rows, series, opts={}) {
     const points = rows.map((r,i)=>`${x(i)},${y(r[s.key])}`).join(' ');
     out += `<polyline fill="none" stroke="${s.color}" stroke-width="2.5" points="${points}"/>`;
   });
-  rows.forEach((r,i)=> { if (i % 4 === 0 || i === rows.length-1) out += `<text x="${x(i)}" y="${h-12}" text-anchor="middle" font-size="10" fill="${colors.muted}">${r.MonthLabel.split(' ')[0]}</text>`; });
+  rows.forEach((r,i)=> { if ((i % 4 === 0 && i < rows.length-2) || i === rows.length-1) out += `<text x="${x(i)}" y="${h-12}" text-anchor="middle" font-size="11" fill="${colors.muted}">${r.MonthLabel.split(' ')[0]}</text>`; });
   const formatter=opts.formatMax || (v=>Number(v).toFixed(0));
-  out += `<text x="4" y="18" font-size="10" fill="${colors.muted}">${formatter(max)}</text><text x="4" y="${h-pad.b+4}" font-size="10" fill="${colors.muted}">${formatter(min)}</text>`;
+  out += `<text x="4" y="18" font-size="11" fill="${colors.muted}">${formatter(max)}</text><text x="4" y="${h-pad.b+4}" font-size="11" fill="${colors.muted}">${formatter(min)}</text>`;
   const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'WealthTech trend chart';
   svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
 }
@@ -434,9 +433,10 @@ function barChart(id, rows, labelKey, valueKey, color, formatter=fmtMoney) {
   data.forEach((r,i)=> {
     const y = pad.t + i * ((h-pad.t-pad.b) / data.length);
     const bw = Math.abs(Number(r[valueKey] || 0)) / max * (w-pad.l-pad.r);
-    out += `<text x="0" y="${y+bh*.65}" font-size="10" fill="${colors.muted}">${String(r[labelKey]).slice(0,18)}</text>`;
+    out += `<text x="0" y="${y+bh*.65}" font-size="11" fill="${colors.muted}">${String(r[labelKey]).slice(0,18)}</text>`;
     out += `<rect x="${pad.l}" y="${y}" width="${bw}" height="${bh}" rx="4" fill="${color}"/>`;
-    out += `<text x="${pad.l+bw+5}" y="${y+bh*.65}" font-size="10" fill="${colors.muted}">${formatter(r[valueKey])}</text>`;
+    const outside=pad.l+bw+72<w, valueX=outside?pad.l+bw+5:pad.l+bw-6;
+    out += `<text x="${valueX}" y="${y+bh*.65}" text-anchor="${outside?'start':'end'}" font-size="11" fill="${outside?colors.muted:'#ffffff'}">${formatter(r[valueKey])}</text>`;
   });
   const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'WealthTech bar chart';
   svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
@@ -451,13 +451,13 @@ function groupedFlow(id, rows) {
     const h1 = Number(r.Inflows)/max*(h-pad.t-pad.b); const h2 = Number(r.Outflows)/max*(h-pad.t-pad.b);
     out += `<rect x="${x0}" y="${h-pad.b-h1}" width="${bw}" height="${h1}" fill="${colors.green}" rx="3"/>`;
     out += `<rect x="${x0+bw+2}" y="${h-pad.b-h2}" width="${bw}" height="${h2}" fill="${colors.red}" rx="3"/>`;
-    if (i % 5 === 0) out += `<text x="${x0}" y="${h-10}" font-size="9" fill="${colors.muted}">${r.MonthLabel.split(' ')[0]}</text>`;
+    if (i % 5 === 0) out += `<text x="${x0}" y="${h-10}" font-size="11" fill="${colors.muted}">${r.MonthLabel.split(' ')[0]}</text>`;
   });
   const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'AUM flow chart';
   svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
 }
 function donut(id, rows) {
-  const svg = document.getElementById(id), w = svg.clientWidth || 360, h = 220, cx=105, cy=108, r=74, sw=24;
+  const svg = document.getElementById(id), w = svg.clientWidth || 360, compact=w<440, h = compact?310:220, cx=compact?w/2:105, cy=compact?82:108, r=compact?56:74, sw=compact?20:24;
   const total = rows.reduce((a,r)=>a+Number(r.AllocationAmount||0),0); let a0=-Math.PI/2;
   const palette=[colors.blue, colors.teal, colors.green, colors.amber, colors.indigo];
   function arc(a1,a2) {
@@ -467,9 +467,9 @@ function donut(id, rows) {
   let out = '';
   rows.forEach((row,i)=> { const a1=a0, a2=a0 + Number(row.AllocationAmount||0)/total*Math.PI*2; out += `<path d="${arc(a1,a2)}" fill="none" stroke="${palette[i%palette.length]}" stroke-width="${sw}" />`; a0=a2; });
   out += `<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="18" font-weight="800" fill="#172033">${fmtMoney(total)}</text><text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="11" fill="${colors.muted}">allocated</text>`;
-  rows.forEach((row,i)=> { out += `<rect x="210" y="${32+i*28}" width="10" height="10" rx="2" fill="${palette[i%palette.length]}"/><text x="226" y="${41+i*28}" font-size="11" fill="${colors.muted}">${row.AssetClass} ${fmtPct(row.AllocationPct)}</text>`; });
+  rows.forEach((row,i)=> { const lx=compact?16:210,ly=(compact?174:32)+i*(compact?25:28);out += `<rect x="${lx}" y="${ly}" width="10" height="10" rx="2" fill="${palette[i%palette.length]}"/><text x="${lx+16}" y="${ly+9}" font-size="11" fill="${colors.muted}">${row.AssetClass} ${fmtPct(row.AllocationPct)}</text>`; });
   const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'Asset allocation chart';
-  svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
+  svg.style.height=compact?'310px':'220px';svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
 }
 function table(id, headers, rows) {
   document.getElementById(id).innerHTML = `<thead><tr>${headers.map(h=>`<th class="${h.cls||''}">${h.label}</th>`).join('')}</tr></thead><tbody>` +
@@ -550,6 +550,7 @@ render();
 </div></div>
 <script>
 (() => {
+  document.querySelectorAll(".table-wrap").forEach(region=>{region.tabIndex=0;region.setAttribute("role","region");region.setAttribute("aria-label",region.closest(".chart")?.querySelector("h3")?.textContent+" scrollable table")});
   const reset=document.createElement("button"); reset.type="button"; reset.id="resetFilters"; reset.className="reset-control"; reset.textContent="Reset lens"; document.querySelector(".filters").appendChild(reset);
   const ids={segment:"segmentFilter",risk:"riskFilter",region:"regionFilter",model:"modelFilter"};
   const page=()=>document.querySelector(".tab.active")?.dataset.tab||"overview";

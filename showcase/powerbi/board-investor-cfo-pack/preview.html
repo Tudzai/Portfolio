@@ -52,6 +52,18 @@
       outline-offset: 2px;
     }
 
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
     .preview-frame {
       min-height: 100vh;
       padding: clamp(10px, 2vw, 22px);
@@ -691,6 +703,62 @@
       background: #fee2e2;
     }
 
+    .mobile-table-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .mobile-table-row {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid #e3dbea;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .mobile-table-row > header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .mobile-table-values {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin: 0;
+    }
+
+    .mobile-table-values div {
+      min-width: 0;
+      padding: 7px;
+      border-radius: 6px;
+      background: #f7f4fb;
+    }
+
+    .mobile-table-values dt {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .mobile-table-values dd {
+      margin: 3px 0 0;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .mobile-table-trend svg {
+      display: block;
+      width: 100%;
+      height: 26px;
+    }
+
     .metric-table th:nth-child(1),
     .metric-table td:nth-child(1) {
       width: 23%;
@@ -872,6 +940,19 @@
         min-height: 44px;
       }
 
+      .slicer {
+        min-height: 44px;
+      }
+
+      button.bar-row {
+        min-height: 44px;
+        padding: 6px 0;
+      }
+
+      button.bar-row .bar-track {
+        height: 16px;
+      }
+
       .as-of {
         position: static;
         width: auto;
@@ -943,7 +1024,7 @@
 <body>
   <div class="preview-frame">
     <div class="dashboard-shell">
-      <div class="dashboard" role="application" aria-label="Board Investor CFO Pack preview">
+      <div class="dashboard" role="region" aria-label="Board Investor CFO Pack preview">
         <aside class="sidebar">
           <div class="signature" aria-label="TDAT signature">
             <svg viewBox="0 0 64 64" role="img" aria-label="AT modern FP&A monogram">
@@ -1456,7 +1537,7 @@
       `).join("");
       return `
         <div class="legend">${legend}</div>
-        <svg class="chart-svg" viewBox="0 0 400 142" aria-hidden="true">
+        <svg class="chart-svg" viewBox="0 0 400 142" role="img" aria-label="${escapeHtml(panel.title)}"><title>${escapeHtml(panel.title)}</title>
           <g stroke="#ded6eb" stroke-width="1">
             <line x1="0" y1="30" x2="400" y2="30"/>
             <line x1="0" y1="70" x2="400" y2="70"/>
@@ -1503,7 +1584,7 @@
         <span style="--dot:${colors[index % colors.length]}"><i></i>${escapeHtml(segment.label)}</span>
       `).join("");
       return `
-        <div class="donut-wrap">
+        <div class="donut-wrap" role="img" aria-label="${escapeHtml(panel.title)}: ${escapeHtml(panel.totalLabel)}">
           <div class="donut" style="--donut:conic-gradient(${parts.join(", ")})">
             <div class="donut-total">${escapeHtml(panel.totalLabel)}</div>
           </div>
@@ -1577,6 +1658,14 @@
     function renderMetricTable(panel) {
       const rowVariance = panel.rows.map((row) => tableVariance(row[0], row[1], row[2], row[3]));
       const maxDelta = Math.max(...rowVariance.map(item => Math.abs(item.delta)), .01);
+      if (matchMedia("(max-width:620px)").matches) {
+        return `<div class="mobile-table-list" role="list" aria-label="${escapeHtml(panel.title)} details">${panel.rows.map((row, index) => {
+          const [metric, actual, plan, status] = row;
+          const variance = rowVariance[index];
+          const statusClass = status === "Risk" ? "risk" : status === "Watch" ? "watch" : "";
+          return `<article class="mobile-table-row" role="listitem"><header><span class="metric-name"><i class="metric-dot" style="--dot:${variance.color}"></i>${escapeHtml(metric)}</span><span class="status ${statusClass}">${escapeHtml(status)}</span></header><dl class="mobile-table-values"><div><dt>Actual</dt><dd>${escapeHtml(actual)}</dd></div><div><dt>Plan</dt><dd>${escapeHtml(plan)}</dd></div><div><dt>Variance</dt><dd>${escapeHtml(variance.display)}</dd></div></dl><div class="mobile-table-trend" aria-label="${escapeHtml(metric)} trend">${miniSpark(tableSeries(metric), variance.color)}</div></article>`;
+        }).join("")}</div>`;
+      }
       const rows = panel.rows.map((row, index) => {
         const [metric, actual, plan, status] = row;
         const variance = rowVariance[index];
@@ -1611,6 +1700,14 @@
 
     function renderRiskTable(panel) {
       const maxExposure = Math.max(...panel.rows.map(row => parseDisplayValue(row[1])), 1);
+      if (matchMedia("(max-width:620px)").matches) {
+        return `<div class="mobile-table-list" role="list" aria-label="${escapeHtml(panel.title)} details">${panel.rows.map((row, index) => {
+          const [risk, exposure, owner, signal] = row;
+          const statusClass = signal === "Risk" ? "risk" : signal === "Watch" ? "watch" : "";
+          const color = signal === "Risk" ? COLORS.red : signal === "Watch" ? COLORS.gold : COLORS.green;
+          return `<article class="mobile-table-row" role="listitem"><header><span class="metric-name"><i class="metric-dot" style="--dot:${color}"></i>${escapeHtml(risk)}</span><span class="status ${statusClass}">${escapeHtml(signal)}</span></header><dl class="mobile-table-values"><div><dt>Exposure</dt><dd>${escapeHtml(exposure)}</dd></div><div style="grid-column:span 2"><dt>Owner</dt><dd>${escapeHtml(owner)}</dd></div></dl><div class="mobile-table-trend" aria-label="${escapeHtml(risk)} trend">${miniSpark(tableSeries(risk).map(value => value * (1 - index * .08)), color)}</div></article>`;
+        }).join("")}</div>`;
+      }
       const rows = panel.rows.map((row, index) => {
         const [risk, exposure, owner, signal] = row;
         const exposureValue = parseDisplayValue(exposure);
@@ -2118,8 +2215,12 @@
     function setPage(pageId) {
       state.page = pageId;
       document.querySelectorAll(".nav button").forEach((button) => {
-        button.classList.toggle("active", button.dataset.page === pageId);
+        const active = button.dataset.page === pageId;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
       });
+      content.setAttribute("aria-labelledby", `p20-tab-${pageId}`);
       renderPage(pageId);
     }
 
@@ -2237,8 +2338,26 @@
       };
     }
 
+    const pageNav = document.querySelector(".nav");
+    pageNav.setAttribute("role", "tablist");
+    content.setAttribute("role", "tabpanel");
     document.querySelectorAll(".nav button").forEach((button) => {
+      button.id = `p20-tab-${button.dataset.page}`;
+      button.setAttribute("role", "tab");
+      button.setAttribute("aria-controls", "content");
       button.addEventListener("click", () => setPage(button.dataset.page));
+    });
+    pageNav.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+      const buttons = Array.from(pageNav.querySelectorAll("button"));
+      const current = buttons.indexOf(document.activeElement);
+      let next = current;
+      if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = buttons.length - 1;
+      else next = (current + (["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1) + buttons.length) % buttons.length;
+      event.preventDefault();
+      buttons[next].focus();
+      buttons[next].click();
     });
 
     content.addEventListener("click", (event) => {

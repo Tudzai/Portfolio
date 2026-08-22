@@ -17,7 +17,7 @@
     * { box-sizing:border-box; }
     body { margin:0; color:var(--ink); background:var(--bg); font-family:"Segoe UI", Arial, sans-serif; }
     button, select, input { font:inherit; }
-    button:focus-visible, select:focus-visible, input:focus-visible { outline:3px solid #FDBA74; outline-offset:2px; }
+    button:focus-visible, select:focus-visible, input:focus-visible, [role="button"]:focus-visible { outline:3px solid #0B63CE; outline-offset:2px; box-shadow:0 0 0 5px #FFFFFF; }
     .shell { min-height:100vh; display:grid; grid-template-columns:274px minmax(0,1fr); }
     aside { background:linear-gradient(180deg,var(--rail),var(--rail2)); color:#F9FAFB; padding:22px 18px; position:sticky; top:0; height:100vh; overflow:auto; }
     .brand { font-size:12px; color:#CBD5E1; text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
@@ -26,7 +26,7 @@
     .rail-metric span { color:#C6D3E1; font-size:12px; }
     .rail-metric strong { font-size:20px; }
     .nav { display:grid; gap:8px; margin:20px 0; }
-    .nav button { border:1px solid rgba(255,255,255,.13); color:#D1D5DB; background:transparent; border-radius:8px; padding:10px 12px; text-align:left; cursor:pointer; }
+    .nav button { min-height:44px; border:1px solid rgba(255,255,255,.20); color:#E2E8F0; background:transparent; border-radius:8px; padding:10px 12px; text-align:left; cursor:pointer; }
     .nav button.active { color:#FFFFFF; border-color:rgba(238,77,45,.72); background:rgba(238,77,45,.20); box-shadow:inset 3px 0 0 var(--orange); }
     .side-note { color:#CBD5E1; font-size:12px; line-height:1.55; border-top:1px solid rgba(255,255,255,.10); padding-top:16px; }
     main { padding:20px 24px 34px; min-width:0; }
@@ -36,7 +36,7 @@
     .filters { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
     .field { display:grid; gap:4px; }
     label { color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
-    select, input { height:36px; min-width:134px; border:1px solid var(--line); border-radius:7px; background:#FFFFFF; color:var(--ink); padding:0 10px; outline:none; }
+    select, input { height:44px; min-width:134px; border:1px solid #C7D2E1; border-radius:7px; background:#FFFFFF; color:var(--ink); padding:0 10px; outline:none; }
     input { min-width:190px; }
     .lens { display:grid; grid-template-columns:minmax(260px,1.4fr) repeat(4,minmax(112px,.55fr)); gap:10px; align-items:stretch; margin:0 0 13px; }
     .lens-main, .lens-chip { background:var(--panel); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
@@ -89,13 +89,13 @@
     .good { color:var(--green); } .bad { color:var(--red); } .warn { color:var(--amber); }
     svg { width:100%; height:100%; display:block; overflow:visible; }
     .axis { stroke:var(--line); stroke-width:1; } .gridline { stroke:var(--line2); stroke-width:1; }
-    .tick { fill:var(--muted); font-size:11px; } .legend { fill:var(--muted); font-size:12px; }
+    .tick { fill:#475467; font-size:19px; font-weight:600; } .legend { fill:#344054; font-size:20px; font-weight:700; }
     .empty { color:var(--muted); font-size:13px; padding:22px; text-align:center; border:1px dashed var(--line); border-radius:8px; }
     @media (max-width:1400px) { .kpis { grid-template-columns:repeat(3,minmax(0,1fr)); } .lens { grid-template-columns:1fr 1fr; } .lens-main { grid-column:1/-1; } }
     @media (max-width:1180px) { .shell { grid-template-columns:1fr; } aside { position:relative; height:auto; } .nav { grid-template-columns:repeat(4,minmax(0,1fr)); } .span-3,.span-4,.span-5,.span-6,.span-7,.span-8 { grid-column:span 12; } .topbar { align-items:stretch; flex-direction:column; } .filters { justify-content:flex-start; } }
     @media (min-width:1181px) { .kpis { grid-template-columns:repeat(6,minmax(0,1fr)); } .lens { grid-template-columns:minmax(260px,1.4fr) repeat(4,minmax(112px,.55fr)); } .lens-main { grid-column:auto; } }
-    @media (max-width:720px) { main { padding:16px; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .lens, .nav { grid-template-columns:1fr; } select,input { min-width:100%; } .field { width:100%; } table { font-size:11px; } th,td { padding:7px 6px; } .card { min-height:132px; } .card .value { font-size:23px; } }
-  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{height:36px;border:1px solid var(--line);border-radius:7px;background:var(--rail);color:#fff;padding:0 13px;font-weight:700;cursor:pointer}.reset-control:hover{background:var(--rail2)}
+    @media (max-width:720px) { main { padding:16px; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .lens, .nav { grid-template-columns:1fr; } select,input { min-width:100%; } .field { width:100%; } table { font-size:11px; } th,td { padding:9px 7px; } .card { min-height:142px; } .card .value { font-size:23px; } .filters{display:grid;grid-template-columns:1fr}.reset-control{width:100%}.chart{min-height:230px} }
+  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{height:44px;border:1px solid var(--line);border-radius:7px;background:var(--rail);color:#fff;padding:0 13px;font-weight:700;cursor:pointer}.reset-control:hover{background:var(--rail2)}
   </style>
   <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
 </head>
@@ -252,12 +252,22 @@
       document.getElementById("platformFilter").onchange = e => { state.platform = e.target.value; render(); };
       document.getElementById("tierFilter").onchange = e => { state.tier = e.target.value; render(); };
       document.getElementById("searchFilter").oninput = e => { state.search = e.target.value.toLowerCase().trim(); render(); };
-      document.querySelectorAll("#nav button").forEach(btn => btn.onclick = () => {
+      const tabs = Array.from(document.querySelectorAll("#nav button"));
+      tabs.forEach(btn => {
+        btn.tabIndex = btn.classList.contains("active") ? 0 : -1;
+        btn.onclick = () => {
         state.view = btn.dataset.view;
-        document.querySelectorAll("#nav button").forEach(b => { const selected=b===btn; b.classList.toggle("active", selected); b.setAttribute("aria-selected",String(selected)); });
+        tabs.forEach(b => { const selected=b===btn; b.classList.toggle("active", selected); b.setAttribute("aria-selected",String(selected)); b.tabIndex=selected?0:-1; });
         document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === state.view));
         document.getElementById("viewTitle").textContent = btn.textContent;
         render();
+        };
+        btn.onkeydown = event => {
+          if (!["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"].includes(event.key)) return;
+          event.preventDefault();
+          const current=tabs.indexOf(btn),next=event.key==="Home"?0:event.key==="End"?tabs.length-1:(current+(event.key==="ArrowRight"||event.key==="ArrowDown"?1:-1)+tabs.length)%tabs.length;
+          tabs[next].focus(); tabs[next].click();
+        };
       });
     }
 
@@ -426,7 +436,7 @@
       if (!rows.length) { el.innerHTML = `<div class="empty">${empty}</div>`; return; }
       const head = `<thead><tr>${columns.map(c=>`<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("")}</tr></thead>`;
       const body = `<tbody>${rows.map(r=>`<tr>${columns.map(c=>`<td class="${c.num ? "num" : ""}">${c.render ? c.render(r) : esc(r[c.key])}</td>`).join("")}</tr>`).join("")}</tbody>`;
-      el.innerHTML = `<div class="table-wrap"><table>${head}${body}</table></div>`;
+      el.innerHTML = `<div class="table-wrap" tabindex="0" role="region" aria-label="${esc(target.replace(/([A-Z])/g," $1"))} table; swipe or use arrow keys to reveal every column"><table>${head}${body}</table></div>`;
     }
     function svgLine(target, series, opts={}) {
       const el = document.getElementById(target);
@@ -447,16 +457,19 @@
       const el = document.getElementById(target);
       const data = rows.filter(d => safe(d.value) > 0).slice(0, opts.limit || 10);
       if (!data.length) { el.innerHTML = `<div class="empty">No bar data</div>`; return; }
-      const w=600,h=Math.max(210, data.length*34+28),ml=128,mr=24,mt=18,mb=20;
+      const w=600,rowSlot=104,h=data.length*rowSlot+34,ml=opts.left||138,mr=96,mt=17,mb=17;
+      el.style.height = Math.max(230, data.length*70) + "px";
       const max = Math.max(...data.map(d=>d.value), 1);
-      const barH = Math.min(24, (h-mt-mb)/data.length - 8);
+      const barH = 28;
       const lines = data.map((d,i) => {
-        const y = mt + i*((h-mt-mb)/data.length);
+        const y = mt + i*rowSlot + (rowSlot-barH)/2;
         const bw = (d.value/max)*(w-ml-mr);
         const color = d.color || opts.color || platformColor[d.name] || palette.blue;
-        return `<text class="tick" x="${ml-10}" y="${y+barH*.72}" text-anchor="end">${esc(d.name)}</text><rect x="${ml}" y="${y}" width="${bw}" height="${barH}" rx="5" fill="${color}"/><text class="tick" x="${ml+bw+7}" y="${y+barH*.72}">${opts.format ? opts.format(d.value) : compact(d.value)}</text>`;
+        const value=opts.format ? opts.format(d.value) : compact(d.value), rowH=rowSlot;
+        const body=`<text class="tick" x="${ml-10}" y="${y+barH*.72}" text-anchor="end">${esc(d.name)}</text><rect x="${ml}" y="${y}" width="${bw}" height="${barH}" rx="5" fill="${color}"/><text class="tick" x="${Math.min(w-mr+8,ml+bw+8)}" y="${y+barH*.72}">${value}</text>`;
+        return opts.filter ? `<g tabindex="0" role="button" data-chart-filter="${esc(opts.filter)}" data-value="${esc(d.name)}" aria-label="Filter ${esc(opts.filter)} to ${esc(d.name)}, ${esc(value)}"><rect data-hit-area="true" x="0" y="${mt+i*rowSlot}" width="${w}" height="${rowH}" fill="transparent" pointer-events="all"/>${body}</g>` : body;
       }).join("");
-      el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opts.ariaLabel || `${target.replace(/([A-Z])/g," $1")} bar chart`)}">${lines}</svg>`;
+      el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="${opts.filter?"group":"img"}" aria-label="${esc(opts.ariaLabel || `${target.replace(/([A-Z])/g," $1")} bar chart`)}">${lines}</svg>`;
     }
     function svgScatter(target, rows, opts={}) {
       const el = document.getElementById(target);
@@ -475,7 +488,7 @@
 
     function renderExecutive(rows) {
       svgLine("gmvTrend", metricSeries(a=>a.gmv), { color:palette.orange, label:"Seller GMV" });
-      svgBars("platformBars", groupBy(rows, r=>r.platform_name, r=>r.seller_gmv_net).sort((a,b)=>b.value-a.value), { format:moneyCompact });
+      svgBars("platformBars", groupBy(rows, r=>r.platform_name, r=>r.seller_gmv_net).sort((a,b)=>b.value-a.value), { format:moneyCompact, filter:"platform" });
       const maxGmv = Math.max(...rows.map(r=>r.seller_gmv_net), 1);
       const cols = [
         { label:"Seller / Owner", render:sellerCell },
@@ -493,7 +506,7 @@
       const paretoRows = rows.slice().sort((a,b)=>b.seller_gmv_net-a.seller_gmv_net);
       let cum = 0; const total = paretoRows.reduce((s,r)=>s+r.seller_gmv_net,0) || 1;
       svgLine("paretoCurve", paretoRows.map((r,i)=>{ cum += r.seller_gmv_net; return { label:String(i+1), y:cum/total*100 }; }), { color:palette.blue, label:"Cumulative GMV %" });
-      svgBars("tierBars", groupBy(rows, r=>r.seller_tier, r=>r.seller_gmv_net).sort((a,b)=>b.value-a.value), { color:palette.teal, format:moneyCompact });
+      svgBars("tierBars", groupBy(rows, r=>r.seller_tier, r=>r.seller_gmv_net).sort((a,b)=>b.value-a.value), { color:palette.teal, format:moneyCompact, filter:"tier" });
       const maxScore = Math.max(...rows.map(performanceScore), 1);
       renderTable("leaderboard", rows.slice().sort((a,b)=>performanceScore(b)-performanceScore(a)).slice(0,12), [
         { label:"Seller / Owner", render:sellerCell },
@@ -531,20 +544,21 @@
     function svgCategoryQuadrant(target, rows) {
       const el = document.getElementById(target);
       if (!rows.length) { el.innerHTML = `<div class="empty">No category data</div>`; return; }
-      const w=620,h=250,ml=58,mr=24,mt=18,mb=44;
+      const w=620,h=270,ml=142,mr=142,mt=24,mb=48;
       const maxX = Math.max(...rows.map(r=>r.share), .01)*1.2;
       const minY = Math.min(...rows.map(r=>r.growth), 0);
       const maxY = Math.max(...rows.map(r=>r.growth), .01);
       const yRange = (maxY - minY) || 1;
       const x = v => ml + (v/maxX)*(w-ml-mr);
       const y = v => h-mb - ((v-minY)/yRange)*(h-mt-mb);
-      const body = rows.map(r => `<circle cx="${x(r.share)}" cy="${y(r.growth)}" r="10" fill="${palette.teal}" opacity=".72"><title>${esc(r.category)} | Share ${pct(r.share)} | Growth ${pct(r.growth)}</title></circle><text class="tick" x="${x(r.share)+13}" y="${y(r.growth)+4}">${esc(r.category)}</text>`).join("");
+      let left=0,right=0;
+      const body = rows.map(r => { const px=x(r.share),py=y(r.growth),side=px<(ml+(w-ml-mr)/2)?"left":"right",lane=side==="left"?left++:right++,lx=side==="left"?18:w-18,ly=48+lane*38,anchor=side==="left"?"start":"end",lineEnd=side==="left"?ml-12:w-mr+12;return `<circle cx="${px}" cy="${py}" r="11" fill="${palette.teal}" opacity=".78"><title>${esc(r.category)} | Share ${pct(r.share)} | Growth ${pct(r.growth)}</title></circle><line x1="${px}" y1="${py}" x2="${lineEnd}" y2="${ly-5}" stroke="${palette.slate}" stroke-width="1.3"/><text class="tick" text-anchor="${anchor}" x="${lx}" y="${ly}">${esc(r.category)}</text>`; }).join("");
       el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Category GMV share versus month-over-month growth"><line class="axis" x1="${ml}" x2="${w-mr}" y1="${h-mb}" y2="${h-mb}"/><line class="axis" x1="${ml}" x2="${ml}" y1="${mt}" y2="${h-mb}"/>${body}<text class="tick" x="${w/2}" y="${h-10}" text-anchor="middle">GMV share</text><text class="tick" x="12" y="${h/2}" transform="rotate(-90 12 ${h/2})" text-anchor="middle">MoM growth</text></svg>`;
     }
     function renderRisk(rows) {
       const trend = DATA.months.map(m => { const a = aggregate(trendRowsFor(m)); return { label:m, y:a.cancellation*100, y2:(1-a.stock)*100 }; });
       svgLine("riskTrend", trend, { color:palette.red, label:"Cancellation %", y2:true, color2:palette.amber, label2:"Stockout %" });
-      svgBars("reasonBars", reasonRows().map(r=>({name:r.cancellation_reason, value:r.items})).sort((a,b)=>b.value-a.value), { color:palette.red, format:num, limit:7 });
+      svgBars("reasonBars", reasonRows().map(r=>({name:r.cancellation_reason, value:r.items})).sort((a,b)=>b.value-a.value), { color:palette.red, format:num, limit:7, left:184 });
       svgScatter("riskBubble", rows.slice().sort((a,b)=>riskScore(b)-riskScore(a)).slice(0,70), { limit:70 });
       const riskRows = rows.filter(r=>r.order_items>=20).map(r=>({...r, risk:riskScore(r)})).sort((a,b)=>b.risk-a.risk).slice(0,14);
       const maxRisk = Math.max(...riskRows.map(r=>r.risk), 1);
@@ -565,6 +579,14 @@
       if (state.view === "portfolio") renderPortfolio(rows);
       if (state.view === "growth") renderGrowth(rows);
       if (state.view === "risk") renderRisk(rows);
+      bindChartFilters();
+    }
+    function bindChartFilters() {
+      document.querySelectorAll("[data-chart-filter]").forEach(control => {
+        const activate=()=>{const key=control.dataset.chartFilter,value=control.dataset.value;if(key==="platform"||key==="tier"){state[key]=value;document.getElementById(key+"Filter").value=value;render();}};
+        control.onclick=activate;
+        control.onkeydown=event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();activate();}};
+      });
     }
     populateFilters();
     render();

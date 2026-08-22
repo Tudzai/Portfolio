@@ -28,7 +28,7 @@
     .brand { font-size: 16px; line-height: 1.2; font-weight: 800; letter-spacing: 0; margin-bottom: 18px; }
     .brand span { display:block; color:#9ad7cd; font-size: 11px; font-weight: 700; margin-top: 6px; }
     .tabs { display: grid; gap: 8px; margin-top: 20px; }
-    .tab-button { border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); color: #f7faf8; border-radius: 8px; padding: 12px; text-align: left; font-size: 13px; cursor: pointer; }
+    .tab-button { min-height:44px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); color: #f7faf8; border-radius: 8px; padding: 12px; text-align: left; font-size: 13px; cursor: pointer; }
     .tab-button.active { background: #f7faf8; color: var(--ink); border-color: #f7faf8; }
     .side-metric { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.15); }
     .side-metric div { font-size: 11px; color: #b9c7c2; }
@@ -38,8 +38,8 @@
     h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: 0; }
     .subtitle { color: var(--muted); font-size: 13px; }
     .filters { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-    select { border: 1px solid var(--line); background: var(--surface); border-radius: 7px; padding: 8px 28px 8px 10px; color: var(--ink); }
-    button:focus-visible, select:focus-visible { outline: 3px solid #5eead4; outline-offset: 3px; }
+    select { min-height:44px; border: 1px solid var(--line); background: var(--surface); border-radius: 7px; padding: 8px 28px 8px 10px; color: var(--ink); }
+    button:focus-visible, select:focus-visible, [role="region"]:focus-visible, .chart-svg:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
     .kpi-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px; margin-bottom: 12px; }
@@ -56,7 +56,7 @@
     .chart-svg { width: 100%; height: auto; display: block; }
     .grid { stroke: #e6ebe6; stroke-width: 1; }
     .axis { stroke: #bfc8c0; stroke-width: 1; }
-    .axis-label, .bar-label, .bar-value, .funnel-stage, .funnel-value { fill: #657383; font-size: 11px; }
+    .axis-label, .bar-label, .bar-value, .funnel-stage, .funnel-value { fill: #566575; font-size: 12px; }
     .rotate { transform: rotate(-90deg); transform-origin: 9px 140px; }
     .line-alert { fill: none; stroke: var(--amber); stroke-width: 3; }
     .line-case { fill: none; stroke: var(--teal); stroke-width: 3; }
@@ -75,6 +75,14 @@
     .gov-row { display: grid; grid-template-columns: 78px 1fr 92px 74px; gap: 8px; align-items:center; padding: 8px; border: 1px solid #edf0ed; border-radius: 7px; }
     .gov-row span { font-size: 12px; color: var(--muted); }
     .gov-row strong { font-size: 12px; }
+    .table-wrap { max-width:100%; overflow:auto; overscroll-behavior-inline:contain; scrollbar-gutter:stable; }
+    .chart-readout { min-height:36px; margin-top:8px; padding:8px 10px; border:1px solid #d8ded8; border-radius:7px; background:#f6f7f4; color:#566575; font-size:12px; }
+    .chart-svg circle[tabindex] { cursor:pointer; }
+    .overview-trend .axis-label, .overview-trend .legend-alert, .overview-trend .legend-case { font-size:14px; }
+    @media (min-width:1101px) and (max-width:1400px) {
+      .grid-3 { grid-template-columns:1fr 1fr; }
+      .grid-3 > .panel:last-child { grid-column:1 / -1; }
+    }
     @media (max-width: 1100px) {
       .app { grid-template-columns: minmax(0,1fr); }
       aside, main { min-width:0; width:100%; }
@@ -88,11 +96,20 @@
       main { padding:18px 14px; }
       aside { padding:20px 18px; }
       .filters select { min-width:0; flex:1 1 145px; }
+      .tab-button, .reset-control { min-height:44px; }
+      .panel table { min-width:600px; }
+      .table-wrap { border:1px solid #edf0ed; border-radius:7px; }
+      .table-wrap th:first-child,.table-wrap td:first-child { position:sticky; left:0; background:#fff; z-index:1; }
+      .table-wrap th:first-child { background:#f7faf8; }
       .gov-row { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
       .gov-row > * { min-width:0; }
       .gov-row .chip { justify-self:start; }
+      .overview-trend .axis-label { font-size:30px; }
+      .overview-trend .legend-alert, .overview-trend .legend-case { font-size:26px; }
+      #deep .funnel-stage, #deep .funnel-value, #deep .axis-label { font-size:17px; }
+      #sla .bar-label, #sla .bar-value { font-size:15px; }
     }
-  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{border:1px solid var(--line);background:#17202a;color:#fff;border-radius:7px;padding:9px 12px;font-weight:700;cursor:pointer}
+  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{min-height:44px;border:1px solid var(--line);background:#17202a;color:#fff;border-radius:7px;padding:9px 12px;font-weight:700;cursor:pointer}
 </style>
 <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
 </head>
@@ -134,7 +151,7 @@
       </div>
       <div class="grid-2">
         <div class="panel"><h2>Alert and Case Trend</h2><p>Monthly alert volume and escalated case load.</p>
-<svg viewBox="0 0 760 260" class="chart-svg" role="img" aria-label="Alert and case monthly trend">
+<svg viewBox="0 0 760 260" class="chart-svg overview-trend" role="img" aria-label="Alert and case monthly trend">
   <line x1="48" x2="740" y1="24.0" y2="24.0" class="grid"/><line x1="48" x2="740" y1="73.5" y2="73.5" class="grid"/><line x1="48" x2="740" y1="123.0" y2="123.0" class="grid"/><line x1="48" x2="740" y1="172.5" y2="172.5" class="grid"/><line x1="48" x2="740" y1="222.0" y2="222.0" class="grid"/>
   <line x1="48" y1="222" x2="740" y2="222" class="axis"/>
   <path d="M48.0,144.7 L91.2,136.6 L134.5,100.4 L177.8,123.2 L221.0,93.2 L264.2,122.2 L307.5,124.4 L350.8,118.8 L394.0,84.8 L437.2,98.5 L480.5,90.4 L523.8,96.3 L567.0,93.2 L610.2,101.6 L653.5,53.0 L696.8,86.1 L740.0,45.2" class="line-alert"/>
@@ -154,7 +171,7 @@
 
     <section id="deep" class="tab-panel" role="tabpanel" aria-labelledby="tab-deep">
       <div class="grid-3">
-        <div class="panel"><h2>Alert Funnel</h2><p>From monitored activity to SAR filing.</p><svg viewBox="0 0 520 270" class="chart-svg"><rect x="82.0" y="18" width="420.0" height="27" rx="5" fill="#17202a"/><text x="20" y="36" class="funnel-stage">Transactions</text><text x="492" y="36" class="funnel-value" text-anchor="end">36,000</text><rect x="202.0" y="58" width="180.0" height="27" rx="5" fill="#0f766e"/><text x="20" y="76" class="funnel-stage">Flagged Txns</text><text x="492" y="76" class="funnel-value" text-anchor="end">6,611</text><rect x="202.0" y="98" width="180.0" height="27" rx="5" fill="#2a9d8f"/><text x="20" y="116" class="funnel-stage">Alerts</text><text x="492" y="116" class="funnel-value" text-anchor="end">6,611</text><rect x="226.0" y="138" width="132.0" height="27" rx="5" fill="#d97706"/><text x="20" y="156" class="funnel-stage">Cases</text><text x="492" y="156" class="funnel-value" text-anchor="end">3,556</text><rect x="232.5" y="178" width="119.1" height="27" rx="5" fill="#b91c1c"/><text x="20" y="196" class="funnel-stage">Suspicious</text><text x="492" y="196" class="funnel-value" text-anchor="end">2,894</text><rect x="235.1" y="218" width="113.7" height="27" rx="5" fill="#5b4b8a"/><text x="20" y="236" class="funnel-stage">SAR Filed</text><text x="492" y="236" class="funnel-value" text-anchor="end">2,639</text></svg></div>
+        <div class="panel"><h2>Alert Funnel</h2><p>From monitored activity to SAR filing.</p><svg viewBox="0 0 520 270" class="chart-svg"><rect x="115" y="18" width="340" height="27" rx="5" fill="#17202a"/><text x="20" y="36" class="funnel-stage">Transactions</text><text x="492" y="36" class="funnel-value" text-anchor="end">36,000</text><rect x="202.0" y="58" width="180.0" height="27" rx="5" fill="#0f766e"/><text x="20" y="76" class="funnel-stage">Flagged Txns</text><text x="492" y="76" class="funnel-value" text-anchor="end">6,611</text><rect x="202.0" y="98" width="180.0" height="27" rx="5" fill="#2a9d8f"/><text x="20" y="116" class="funnel-stage">Alerts</text><text x="492" y="116" class="funnel-value" text-anchor="end">6,611</text><rect x="226.0" y="138" width="132.0" height="27" rx="5" fill="#d97706"/><text x="20" y="156" class="funnel-stage">Cases</text><text x="492" y="156" class="funnel-value" text-anchor="end">3,556</text><rect x="232.5" y="178" width="119.1" height="27" rx="5" fill="#b91c1c"/><text x="20" y="196" class="funnel-stage">Suspicious</text><text x="492" y="196" class="funnel-value" text-anchor="end">2,894</text><rect x="235.1" y="218" width="113.7" height="27" rx="5" fill="#5b4b8a"/><text x="20" y="236" class="funnel-stage">SAR Filed</text><text x="492" y="236" class="funnel-value" text-anchor="end">2,639</text></svg></div>
         <div class="panel"><h2>Rule Performance</h2><p>Precision vs alert volume, sized by value.</p><svg viewBox="0 0 520 280" class="chart-svg"><line x1="42" y1="238" x2="502" y2="238" class="axis"/><line x1="42" y1="18" x2="42" y2="238" class="axis"/><text x="260.0" y="274" class="axis-label" text-anchor="middle">Alert volume</text><text x="9" y="140.0" class="axis-label rotate" text-anchor="middle">Precision</text><circle cx="492.0" cy="103.4" r="16.2" fill="#0f766e" opacity="0.82"><title>High Velocity Transfers</title></circle><circle cx="388.3" cy="100.2" r="12.6" fill="#0f766e" opacity="0.82"><title>High Risk Corridor</title></circle><circle cx="316.1" cy="106.5" r="13.8" fill="#0f766e" opacity="0.82"><title>Crypto Off-ramp Spike</title></circle><circle cx="312.3" cy="102.3" r="11.5" fill="#0f766e" opacity="0.82"><title>Cash Intensive Pattern</title></circle><circle cx="299.3" cy="102.0" r="12.2" fill="#0f766e" opacity="0.82"><title>Structuring Below Threshold</title></circle><circle cx="287.0" cy="107.7" r="11.7" fill="#0f766e" opacity="0.82"><title>Watchlist Proximity</title></circle><circle cx="224.0" cy="98.9" r="9.9" fill="#0f766e" opacity="0.82"><title>Round Dollar Repetition</title></circle><circle cx="220.5" cy="106.6" r="10.2" fill="#0f766e" opacity="0.82"><title>New Beneficiary Burst</title></circle><circle cx="213.6" cy="110.7" r="9.3" fill="#0f766e" opacity="0.82"><title>Rapid In-Out Funds</title></circle><circle cx="205.2" cy="109.5" r="8.7" fill="#0f766e" opacity="0.82"><title>Dormant Account Reactivation</title></circle></svg></div>
         <div class="panel"><h2>High-Risk Customers</h2><p>Customer risk and case conversion queue.</p><table><thead><tr><th>Customer</th><th>Country</th><th>Alerts</th><th>Cases</th><th>SAR</th><th>Amount</th><th>Risk</th></tr></thead><tbody><tr><td>Customer 0167</td><td>Nigeria</td><td>71</td><td>62</td><td>52</td><td>$2.0M</td><td>94.7</td></tr><tr><td>Customer 0026</td><td>United Arab Emirates</td><td>60</td><td>52</td><td>42</td><td>$1.5M</td><td>91.8</td></tr><tr><td>Customer 0162</td><td>United Arab Emirates</td><td>56</td><td>43</td><td>31</td><td>$6.6M</td><td>90.9</td></tr><tr><td>Customer 0101</td><td>United Arab Emirates</td><td>54</td><td>43</td><td>40</td><td>$8.1M</td><td>90.9</td></tr><tr><td>Customer 0007</td><td>Turkey</td><td>45</td><td>36</td><td>28</td><td>$4.5M</td><td>90.8</td></tr><tr><td>Customer 0165</td><td>Turkey</td><td>54</td><td>42</td><td>33</td><td>$5.6M</td><td>90.5</td></tr><tr><td>Customer 0146</td><td>Philippines</td><td>48</td><td>36</td><td>32</td><td>$5.5M</td><td>90.2</td></tr><tr><td>Customer 0116</td><td>Turkey</td><td>56</td><td>49</td><td>35</td><td>$7.1M</td><td>90.1</td></tr></tbody></table></div>
       </div>
@@ -201,6 +218,15 @@
 </div></div>
 <script>
 (() => {
+  document.querySelectorAll(".panel > table").forEach(table=>{
+    const wrap=document.createElement("div");
+    wrap.className="table-wrap";
+    wrap.tabIndex=0;
+    wrap.setAttribute("role","region");
+    wrap.setAttribute("aria-label",(table.closest(".panel")?.querySelector("h2")?.textContent||"Dashboard")+" scrollable table");
+    table.before(wrap);
+    wrap.appendChild(table);
+  });
   const state={page:"overview",month:"May 2026",corridor:"All corridors",severity:"All severities",scenario:"Base"};
   const controls={month:"monthFilter",corridor:"corridorFilter",severity:"severityFilter",scenario:"scenarioFilter"};
   const nodes=Array.from(document.querySelectorAll(".kpi strong,.side-metric strong,table td")).filter(el=>/^-?\$?[\d,.]+(?:\.\d+)?(?:[MK]|%| days)?$/.test(el.textContent.trim()));
@@ -254,7 +280,7 @@
   }
   function renderChartGeometry(){
     const scope=scopeMultiplier();
-    chartSets.forEach(set=>{const shaped=set.bars.map((bar,index)=>{const profile=chartProfile(set.title,index,set.bars.length),value=set.values[index],adjusted=value?Number(value.dataset.baseValue)*scope*profile:Number(bar.dataset.baseWidth)*scope*profile;return {bar,value,adjusted};}),maxWidth=set.title.includes("Alert Funnel")?420:Math.max(...set.bars.map(b=>Number(b.dataset.baseWidth))),maxAdjusted=Math.max(1,...shaped.map(item=>item.adjusted));shaped.forEach(item=>{item.bar.setAttribute("width",String(Math.max(1,maxWidth*item.adjusted/maxAdjusted)));if(item.value)item.value.textContent=format(item.adjusted,item.value.dataset.template);});});
+    chartSets.forEach(set=>{const shaped=set.bars.map((bar,index)=>{const profile=chartProfile(set.title,index,set.bars.length),value=set.values[index],adjusted=value?Number(value.dataset.baseValue)*scope*profile:Number(bar.dataset.baseWidth)*scope*profile;return {bar,value,adjusted};}),maxWidth=set.title.includes("Alert Funnel")?340:Math.max(...set.bars.map(b=>Number(b.dataset.baseWidth))),maxAdjusted=Math.max(1,...shaped.map(item=>item.adjusted));shaped.forEach(item=>{item.bar.setAttribute("width",String(Math.max(1,maxWidth*item.adjusted/maxAdjusted)));if(item.value)item.value.textContent=format(item.adjusted,item.value.dataset.template);});});
     Array.from(ruleBubbles).forEach((circle,index)=>{const controls=state.scenario==="Controls strengthened",spike=state.scenario==="Risk spike",corridor=state.corridor==="High risk corridors",severe=state.severity==="Critical and High";const baseCx=Number(circle.dataset.baseCx),baseCy=Number(circle.dataset.baseCy),baseR=Number(circle.dataset.baseR);const cx=baseCx+(corridor?(index<3?18:-10):0)+(severe?(index%2?8:-5):0);const cy=baseCy+(controls?-18-(index%3)*2:spike?17+(index%3)*2:0)+(severe?-6:0);const radius=baseR*(controls?.86:spike?1.14:1)*(corridor&&index<3?1.12:1);circle.setAttribute("cx",String(Math.max(48,Math.min(498,cx))));circle.setAttribute("cy",String(Math.max(28,Math.min(232,cy))));circle.setAttribute("r",String(radius));});
     renderTrend();
   }
@@ -283,6 +309,14 @@
   document.querySelectorAll(".tab-button").forEach(b=>b.addEventListener("click",sync));
   window.previewState=state;
   document.querySelectorAll(".chart-svg").forEach(svg=>{const panel=svg.closest(".panel"),title=panel?.querySelector("h2")?.textContent.trim()||"AML dashboard chart";svg.setAttribute("role","img");svg.setAttribute("aria-label",title);});
+  const bubblePanel=Array.from(document.querySelectorAll(".panel")).find(panel=>panel.querySelector("h2")?.textContent.includes("Rule Performance"));
+  if(bubblePanel){
+    const readout=document.createElement("div");readout.className="chart-readout";readout.setAttribute("aria-live","polite");readout.textContent="Focus or tap a rule bubble to inspect its name.";bubblePanel.appendChild(readout);
+    const bubbleSvg=bubblePanel.querySelector("svg"),bubbles=Array.from(bubblePanel.querySelectorAll("circle"));let selected=0;
+    const show=index=>{selected=(index+bubbles.length)%bubbles.length;const label=bubbles[selected]?.querySelector("title")?.textContent||"Rule";readout.textContent=label+" · position shows alert volume and precision; size represents monitored value.";};
+    const nearest=event=>{let best=0,distance=Infinity;bubbles.forEach((circle,index)=>{const box=circle.getBoundingClientRect(),dx=event.clientX-(box.left+box.width/2),dy=event.clientY-(box.top+box.height/2),next=dx*dx+dy*dy;if(next<distance){distance=next;best=index;}});show(best);};
+    bubbleSvg.tabIndex=0;bubbleSvg.setAttribute("role","group");bubbleSvg.setAttribute("aria-label","Rule performance bubble chart. Use left and right arrows to inspect rules.");bubbleSvg.addEventListener("pointermove",nearest);bubbleSvg.addEventListener("click",nearest);bubbleSvg.addEventListener("focus",()=>show(selected));bubbleSvg.addEventListener("keydown",event=>{if(event.key==="ArrowRight"||event.key==="ArrowDown"){event.preventDefault();show(selected+1);}if(event.key==="ArrowLeft"||event.key==="ArrowUp"){event.preventDefault();show(selected-1);}});
+  }
   function chartFingerprint(){const signature=root=>Array.from(root.querySelectorAll("svg path,svg polyline,svg rect,svg circle,svg text,table tbody tr")).map(el=>[el.tagName,el.getAttribute("d"),el.getAttribute("points"),el.getAttribute("x"),el.getAttribute("y"),el.getAttribute("cx"),el.getAttribute("cy"),el.getAttribute("r"),el.getAttribute("width"),el.getAttribute("height"),el.getAttribute("style"),el.textContent.trim()].join("|")).join("~"),hash=value=>{let h=2166136261;for(let i=0;i<value.length;i++)h=Math.imul(h^value.charCodeAt(i),16777619);return(h>>>0).toString(16)};return Object.fromEntries(Array.from(document.querySelectorAll("[role=tabpanel]")).map(root=>[root.id,hash(signature(root))]));}
   window.previewActions=Object.freeze({setPage,setFilter,resetFilters,getSummary:()=>({project:"10",...state,multiplier:multiplier(),directionChecks:{controlsStrengthened:"alert volume/FPR/overdue down; SLA/precision up",riskSpike:"alert volume/overdue up; SLA/precision down"}}),getRows:()=>Array.from(document.querySelectorAll("#deep tbody tr")).slice(0,10).map(r=>Array.from(r.cells).map(c=>c.textContent.trim())),getChartFingerprint:chartFingerprint});
   const qa={ready:true,project:"10",layoutSource:"project-10-own-dashboard",pageCount:3,filterCount:4,kpiCount:6,hasReset:true,hasTable:true};

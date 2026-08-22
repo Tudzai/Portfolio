@@ -20,11 +20,11 @@
     h1 { margin:4px 0 0; font-size:24px; line-height:1.1; }
     .meta { color:var(--muted); font-size:12px; text-align:right; }
     .tabs { display:flex; gap:8px; margin:16px 0; flex-wrap:wrap; }
-    .tabs button { border:1px solid var(--line); background:var(--panel); color:var(--text); padding:9px 13px; border-radius:6px; font-weight:650; cursor:pointer; }
+    .tabs button { min-height:40px; border:1px solid var(--line); background:var(--panel); color:var(--text); padding:9px 13px; border-radius:6px; font-weight:650; cursor:pointer; }
     .tabs button.active { background:var(--teal); border-color:var(--teal); color:white; }
     .filters { display:grid; grid-template-columns:repeat(4, minmax(170px, 1fr)); gap:10px; margin-bottom:14px; }
     label { display:block; color:var(--muted); font-size:11px; margin-bottom:4px; font-weight:650; }
-    select { width:100%; border:1px solid var(--line); border-radius:6px; background:white; padding:8px; font-size:13px; }
+    select { width:100%; min-height:40px; border:1px solid var(--line); border-radius:6px; background:white; padding:8px; font-size:13px; }
     .page { display:none; }
     .page.active { display:block; }
     .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:12px; }
@@ -66,6 +66,7 @@
       table.cols-5 th:nth-child(4), table.cols-5 td:nth-child(4) { width:19%; }
       table.cols-5 th:nth-child(5), table.cols-5 td:nth-child(5) { width:17%; }
       .status { width:100%; min-width:0; box-sizing:border-box; padding:3px 2px; font-size:9px; }
+      .tabs button, select, .preview-reset { min-height:44px; }
     }
   </style>
 <link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}</style></head>
@@ -123,22 +124,30 @@ function group(rows, key, valueFn) {
 function card(label, value, sub="") { return `<div class="card span2"><div class="label">${label}</div><div class="value">${value}</div><div class="sub">${sub}</div></div>`; }
 function panel(cls, title, sub, body) { return `<div class="panel ${cls}"><h2>${title}</h2><p>${sub}</p>${body}</div>`; }
 function bars(items, opts={}) {
-  const w=640,h=190, ml=120, mr=72, mt=12, mb=24;
+  const mobile=matchMedia("(max-width:520px)").matches;
+  const narrow=innerWidth<=340;
+  const w=mobile?(narrow?280:360):360,h=190, ml=mobile?(narrow?88:102):120, mr=mobile?(narrow?50:58):58, mt=12, mb=24;
   const max=Math.max(1,...items.map(d=>Math.abs(d.value)));
   const bh=(h-mt-mb)/Math.max(1,items.length);
-  let s=`<svg viewBox="0 0 ${w} ${h}" role="img">`;
-  items.forEach((d,i)=>{ const y=mt+i*bh+3; const bw=Math.abs(d.value)/max*(w-ml-mr); const c=PALETTE[i%PALETTE.length]; s+=`<text x="4" y="${y+bh/2+3}" font-size="11" fill="#607081">${d.name}</text><rect x="${ml}" y="${y}" width="${bw}" height="${Math.max(8,bh-7)}" rx="3" fill="${c}"></rect><text x="${ml+bw+5}" y="${y+bh/2+3}" font-size="11" fill="#15202b">${opts.percent?fmtP(d.value):fmtM(d.value)}</text>`; });
+  let s=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Ranked value comparison"><title>Ranked value comparison</title>`;
+  items.forEach((d,i)=>{ const y=mt+i*bh+3; const bw=Math.abs(d.value)/max*(w-ml-mr); const c=PALETTE[i%PALETTE.length],label=mobile&&String(d.name).length>15?String(d.name).slice(0,14)+"…":d.name; s+=`<text x="4" y="${y+bh/2+3}" font-size="11" fill="#607081">${label}</text><rect x="${ml}" y="${y}" width="${bw}" height="${Math.max(8,bh-7)}" rx="3" fill="${c}"><title>${d.name}: ${opts.percent?fmtP(d.value):fmtM(d.value)}</title></rect><text x="${Math.min(w-3,ml+bw+5)}" y="${y+bh/2+3}" font-size="11" fill="#15202b"${ml+bw+42>w?' text-anchor="end"':''}>${opts.percent?fmtP(d.value):fmtM(d.value)}</text>`; });
   return s + `</svg>`;
 }
 function columns(items, selectedName="") {
-  const w=640,h=190, ml=42, mr=14, mt=12, mb=34, max=Math.max(1,...items.map(d=>Math.abs(d.value)));
-  const gap=8, bw=(w-ml-mr-gap*(items.length-1))/Math.max(1,items.length);
-  let s=`<svg viewBox="0 0 ${w} ${h}" role="img"><line x1="${ml}" y1="${h-mb}" x2="${w-mr}" y2="${h-mb}" stroke="#d8e0e7"/>`;
-  items.forEach((d,i)=>{ const barH=Math.abs(d.value)/max*(h-mt-mb); const x=ml+i*(bw+gap); const y=h-mb-barH; const selected=d.name===selectedName; s+=`<rect x="${x}" y="${y}" width="${bw}" height="${barH}" rx="3" fill="${PALETTE[i%PALETTE.length]}"${selected?' stroke="#15202b" stroke-width="3"':''}></rect>${selected?`<path d="M ${x+bw/2-5} ${Math.max(4,y-8)} L ${x+bw/2+5} ${Math.max(4,y-8)} L ${x+bw/2} ${Math.max(9,y-2)} Z" fill="#15202b"><title>Selected forecast horizon: ${d.name}</title></path>`:""}<text transform="translate(${x+bw/2},${h-11}) rotate(-25)" font-size="10" fill="${selected?'#15202b':'#607081'}" font-weight="${selected?700:400}" text-anchor="end">${d.name}</text>`; });
+  const mobile=matchMedia("(max-width:520px)").matches;
+  const narrow=innerWidth<=340;
+  const w=mobile?(narrow?280:360):540,h=190,ml=mobile?(narrow?18:22):34,mr=mobile?(narrow?12:14):12,mt=14,mb=28;
+  const values=items.map(d=>+d.value||0), min=Math.min(0,...values), max=Math.max(0,...values), span=Math.max(1,max-min);
+  const sy=value=>mt+(max-value)/span*(h-mt-mb), zero=sy(0);
+  const gap=mobile?3:7,bw=(w-ml-mr-gap*(items.length-1))/Math.max(1,items.length);
+  let s=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Weekly net cash-flow drivers; bars above zero are inflows and bars below zero are outflows"><title>Weekly net cash-flow drivers</title><line x1="${ml}" y1="${zero}" x2="${w-mr}" y2="${zero}" stroke="#8694a3" stroke-width="1.5"/>`;
+  items.forEach((d,i)=>{ const value=+d.value||0,x=ml+i*(bw+gap),valueY=sy(value),y=Math.min(zero,valueY),barH=Math.max(2,Math.abs(zero-valueY)),selected=d.name===selectedName,color=value<0?'#b85062':PALETTE[i%PALETTE.length],short=d.name.split(' ')[0],showLabel=!narrow||i%2===0||i===items.length-1,labelX=i===items.length-1?w-mr:x+bw/2,labelAnchor=i===items.length-1?'end':'middle'; s+=`<rect x="${x}" y="${y}" width="${bw}" height="${barH}" rx="3" fill="${color}"${selected?' stroke="#15202b" stroke-width="3"':''}><title>${d.name}: ${fmtM(value)}</title></rect>${selected?`<path d="M ${x+bw/2-5} ${Math.max(4,y-8)} L ${x+bw/2+5} ${Math.max(4,y-8)} L ${x+bw/2} ${Math.max(9,y-2)} Z" fill="#15202b"><title>Selected forecast horizon: ${d.name}</title></path>`:""}${showLabel?`<text x="${labelX}" y="${h-9}" font-size="11" fill="${selected?'#15202b':'#607081'}" font-weight="${selected?700:500}" text-anchor="${labelAnchor}">${short}</text>`:""}`; });
   return s + `</svg>`;
 }
-function line(items, seriesKey, xKey, yKey, selectedX="") {
-  const w=720,h=190, ml=46, mr=20, mt=16, mb=34;
+function line(items, seriesKey, xKey, yKey, selectedX="", desktopWidth=720) {
+  const mobile=matchMedia("(max-width:520px)").matches;
+  const narrow=innerWidth<=340;
+  const w=mobile?(narrow?280:360):desktopWidth,h=190, ml=mobile?(narrow?28:34):46, mr=mobile?(narrow?16:18):20, mt=16, mb=34;
   const groups = group(items, r=>r[seriesKey], r=>0).map(d=>d.name);
   const xs = unique(items.map(r=>r[xKey]));
   const vals = items.map(r=>+r[yKey]||0), min=Math.min(...vals), max=Math.max(...vals);
@@ -146,8 +155,8 @@ function line(items, seriesKey, xKey, yKey, selectedX="") {
   const sy = y => mt + (max-y)/Math.max(1,max-min)*(h-mt-mb);
   let s=`<svg viewBox="0 0 ${w} ${h}" role="img"><line x1="${ml}" y1="${h-mb}" x2="${w-mr}" y2="${h-mb}" stroke="#d8e0e7"/>`;
   if(selectedX && xs.includes(selectedX)){ const selectedPos=sx(selectedX); s+=`<line x1="${selectedPos}" y1="${mt}" x2="${selectedPos}" y2="${h-mb}" stroke="#15202b" stroke-width="2" stroke-dasharray="4 4"><title>Selected forecast horizon: ${selectedX}</title></line>`; }
-  groups.forEach((g,gi)=>{ const rows=items.filter(r=>r[seriesKey]===g).sort((a,b)=>xs.indexOf(a[xKey])-xs.indexOf(b[xKey])); const pts=rows.map(r=>`${sx(r[xKey])},${sy(+r[yKey]||0)}`).join(" "); s+=`<polyline points="${pts}" fill="none" stroke="${PALETTE[gi%PALETTE.length]}" stroke-width="3"/>`; rows.forEach(r=>s+=`<circle cx="${sx(r[xKey])}" cy="${sy(+r[yKey]||0)}" r="3" fill="${PALETTE[gi%PALETTE.length]}"/>`); s+=`<text x="${ml+gi*115}" y="11" font-size="11" fill="${PALETTE[gi%PALETTE.length]}">${g}</text>`; });
-  xs.forEach((x,i)=>{ if(i%2===0) s+=`<text x="${sx(x)}" y="${h-10}" font-size="10" fill="#607081" text-anchor="middle">${x.split(' ')[0]}</text>`; });
+  groups.forEach((g,gi)=>{ const rows=items.filter(r=>r[seriesKey]===g).sort((a,b)=>xs.indexOf(a[xKey])-xs.indexOf(b[xKey])); const pts=rows.map(r=>`${sx(r[xKey])},${sy(+r[yKey]||0)}`).join(" "); s+=`<polyline points="${pts}" fill="none" stroke="${PALETTE[gi%PALETTE.length]}" stroke-width="3"/>`; rows.forEach(r=>s+=`<circle cx="${sx(r[xKey])}" cy="${sy(+r[yKey]||0)}" r="3" fill="${PALETTE[gi%PALETTE.length]}"/>`); s+=`<text x="${ml+gi*(mobile?(narrow?72:94):115)}" y="12" font-size="12" fill="${PALETTE[gi%PALETTE.length]}">${g}</text>`; });
+  xs.forEach((x,i)=>{ const dated=/^20\d\d-/.test(String(x)), step=dated&&(mobile||desktopWidth<=400)?4:2, adjacentToForecast=selectedX&&i===xs.length-2&&xs[xs.length-1]===selectedX; if((i%step===0||i===xs.length-1)&&!adjacentToForecast){ const last=i===xs.length-1; s+=`<text x="${last?w-mr:sx(x)}" y="${h-9}" font-size="12" fill="#607081" text-anchor="${last?'end':'middle'}">${x.split(' ')[0]}</text>`; } });
   return s + `</svg>`;
 }
 function rowsTable(headers, rows) {
@@ -226,7 +235,7 @@ function render() {
     card("Cash Conversion", (dso+dio-dpo).toFixed(1), `${c.latestWcDate}: DSO + DIO - DPO`),
     panel("span4","AR aging","Open receivables by aging bucket", bars(arAging)),
     panel("span4","AP due schedule","Vendor payments by due window", bars(apDue)),
-    panel("span4","DSO and DPO trend","History through "+c.latestWcDate+"; "+c.scenario+" target at "+selectedWeekLabel, line(wcDaysTrend, "metric", "date_id", "value", selectedWeekLabel)),
+    panel("span4","DSO and DPO trend","History through "+c.latestWcDate+"; "+c.scenario+" target at "+selectedWeekLabel, line(wcDaysTrend, "metric", "date_id", "value", selectedWeekLabel, 360)),
     panel("span6","Top customer collection focus","Largest AR balances", rowsTable(["Customer","Outstanding"], customerRows)),
     panel("span6","Top vendor payment focus","Largest AP balances", rowsTable(["Vendor","Outstanding"], vendorRows))
   ].join("");
@@ -367,7 +376,7 @@ render();
     for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
     return (hash >>> 0).toString(16).padStart(8, "0");
   };
-+  reset.addEventListener("click", resetFilters);
+  reset.addEventListener("click", resetFilters);
   document.addEventListener("change", sync);
   document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
   window.previewState = publicState;

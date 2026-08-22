@@ -84,7 +84,7 @@
       th, td { padding:8px 6px; font-size:12px; }
     }
   </style>
-<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}</style></head>
+<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}@media(max-width:680px){button[data-tab],select,.preview-reset{min-height:44px!important}}</style></head>
 <body data-project-number="16" data-layout-source="project-16-own-dashboard"><div class="preview-frame"><div class="dashboard-shell">
 <main>
   <header>
@@ -331,22 +331,35 @@
     const min = Math.min(...allValues, 0);
     const max = Math.max(...allValues, 1);
     const range = max - min || 1;
-    const xFor = index => 52 + index * (650 / Math.max(1, months.length - 1));
-    const yFor = value => 214 - ((value - min) / range) * 160;
+    const mobile = matchMedia('(max-width:680px)').matches;
+    const width = mobile ? (innerWidth <= 340 ? 300 : 360) : 760;
+    const left = mobile ? 34 : 52;
+    const right = mobile ? 12 : 58;
+    const plotTop = mobile ? 48 : 54;
+    const plotBottom = 216;
+    const xFor = index => left + index * ((width - left - right) / Math.max(1, months.length - 1));
+    const yFor = value => plotBottom - ((value - min) / range) * (plotBottom - plotTop);
     const lines = series.map(s => `<polyline points="${s.values.map((value, index) => `${xFor(index).toFixed(1)},${yFor(value).toFixed(1)}`).join(' ')}" fill="none" stroke="${s.color}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"${s.dashed ? ' stroke-dasharray="8 7"' : ''}/>`).join('');
-    const legend = series.map((s, index) => `<text x="${52 + index * 160}" y="250" fill="${COLORS.muted}" font-size="12" font-weight="800"><tspan fill="${s.color}">●</tspan> ${esc(s.label)}</text>`).join('');
-    return `<svg class="chart" viewBox="0 0 760 270" role="img" aria-label="${esc(title)}"><rect width="760" height="270" rx="8" fill="${COLORS.panelSoft}"/><g stroke="${COLORS.grid}" stroke-width="1"><line x1="52" y1="54" x2="710" y2="54"/><line x1="52" y1="108" x2="710" y2="108"/><line x1="52" y1="162" x2="710" y2="162"/><line x1="52" y1="216" x2="710" y2="216"/></g>${lines}<text x="52" y="238" fill="${COLORS.muted}" font-size="12" font-weight="800">${esc(months[0])}</text><text x="650" y="238" fill="${COLORS.muted}" font-size="12" font-weight="800">${esc(months[months.length - 1])}</text>${legend}</svg>`;
+    const legend = series.map((s, index) => `<text x="${mobile ? left + (index % 2) * (width <= 300 ? 132 : 156) : 52 + index * 160}" y="${mobile ? 260 + Math.floor(index / 2) * 17 : 268}" fill="${COLORS.muted}" font-size="12" font-weight="800"><tspan fill="${s.color}">●</tspan> ${esc(s.label)}</text>`).join('');
+    const grid = [plotTop, plotTop + (plotBottom - plotTop) / 3, plotTop + (plotBottom - plotTop) * 2 / 3, plotBottom].map(y => `<line x1="${left}" y1="${y}" x2="${width-right}" y2="${y}"/>`).join('');
+    return `<svg class="chart" viewBox="0 0 ${width} 282" role="img" aria-label="${esc(title)}"><title>${esc(title)}</title><rect width="${width}" height="282" rx="8" fill="${COLORS.panelSoft}"/><g stroke="${COLORS.grid}" stroke-width="1">${grid}</g>${lines}<text x="${left}" y="240" fill="${COLORS.muted}" font-size="12" font-weight="800">${esc(months[0])}</text><text x="${width-right}" y="240" text-anchor="end" fill="${COLORS.muted}" font-size="12" font-weight="800">${esc(months[months.length - 1])}</text>${legend}</svg>`;
   }
 
   function barChart(items, kind = 'money', color = COLORS.steel) {
     if (!items.length) return '<div class="empty">No rows in current filter state</div>';
+    const mobile = matchMedia('(max-width:680px)').matches;
+    const chartWidth = mobile ? (innerWidth <= 340 ? 300 : 360) : 700;
+    const trackX = mobile ? (chartWidth <= 300 ? 108 : 128) : 210;
+    const valueX = chartWidth - 4;
+    const trackWidth = mobile ? chartWidth - trackX - 66 : 430;
     const max = Math.max(...items.map(item => Math.abs(item.value)), 1);
     const rows = items.map((item, index) => {
       const y = 36 + index * 34;
-      const width = 430 * Math.abs(item.value) / max;
-      return `<g><text x="14" y="${y + 15}" fill="${COLORS.ink}" font-size="12" font-weight="760">${esc(item.name)}</text><rect x="210" y="${y}" width="430" height="18" rx="5" fill="${COLORS.grid}"/><rect x="210" y="${y}" width="${width.toFixed(1)}" height="18" rx="5" fill="${color}" opacity=".88"/><text x="656" y="${y + 14}" fill="${COLORS.ink}" font-size="12" font-weight="850" text-anchor="end">${formatValue(item.value, kind)}</text></g>`;
+      const width = trackWidth * Math.abs(item.value) / max;
+      const label = mobile && String(item.name).length > 17 ? String(item.name).slice(0, 16) + '…' : item.name;
+      return `<g><text x="8" y="${y + 15}" fill="${COLORS.ink}" font-size="11" font-weight="760">${esc(label)}</text><rect x="${trackX}" y="${y}" width="${trackWidth}" height="18" rx="5" fill="${COLORS.grid}"/><rect x="${trackX}" y="${y}" width="${width.toFixed(1)}" height="18" rx="5" fill="${color}" opacity=".88"><title>${esc(item.name)}: ${formatValue(item.value, kind)}</title></rect><text x="${valueX}" y="${y + 14}" fill="${COLORS.ink}" font-size="11" font-weight="850" text-anchor="end">${formatValue(item.value, kind)}</text></g>`;
     }).join('');
-    return `<svg class="chart small" viewBox="0 0 700 ${Math.max(230, 58 + items.length * 34)}" role="img" aria-label="Bar chart">${rows}</svg>`;
+    return `<svg class="chart small" viewBox="0 0 ${chartWidth} ${Math.max(230, 58 + items.length * 34)}" role="img" aria-label="Bar chart">${rows}</svg>`;
   }
 
   function waterfallChart(metrics) {
@@ -358,13 +371,18 @@
       { label: 'Yield loss', value: metrics.yieldLossCost, color: COLORS.red },
       { label: 'Actual COGS', value: metrics.actualCogs, color: COLORS.teal }
     ];
+    const mobile = matchMedia('(max-width:680px)').matches;
+    const chartWidth = mobile ? (innerWidth <= 340 ? 300 : 360) : 700;
+    const trackX = mobile ? (chartWidth <= 300 ? 108 : 128) : 170;
+    const valueX = chartWidth - 4;
+    const trackWidth = mobile ? chartWidth - trackX - 66 : 390;
     const max = Math.max(...steps.map(step => Math.abs(step.value)), 1);
     const rows = steps.map((step, index) => {
       const y = 30 + index * 33;
-      const w = 390 * Math.abs(step.value) / max;
-      return `<g><text x="14" y="${y + 15}" fill="${COLORS.ink}" font-size="12" font-weight="760">${esc(step.label)}</text><rect x="170" y="${y}" width="${w.toFixed(1)}" height="18" rx="5" fill="${step.color}" opacity=".9"/><text x="650" y="${y + 14}" fill="${COLORS.ink}" font-size="12" font-weight="850" text-anchor="end">${money(step.value)}</text></g>`;
+      const w = trackWidth * Math.abs(step.value) / max;
+      return `<g><text x="8" y="${y + 15}" fill="${COLORS.ink}" font-size="11" font-weight="760">${esc(step.label)}</text><rect x="${trackX}" y="${y}" width="${w.toFixed(1)}" height="18" rx="5" fill="${step.color}" opacity=".9"><title>${esc(step.label)}: ${money(step.value)}</title></rect><text x="${valueX}" y="${y + 14}" fill="${COLORS.ink}" font-size="11" font-weight="850" text-anchor="end">${money(step.value)}</text></g>`;
     }).join('');
-    return `<svg class="chart small" viewBox="0 0 700 240" role="img" aria-label="COGS variance bridge">${rows}</svg>`;
+    return `<svg class="chart small" viewBox="0 0 ${chartWidth} 240" role="img" aria-label="COGS variance bridge">${rows}</svg>`;
   }
 
   function tableHtml(headers, rows) {
@@ -602,7 +620,7 @@
     for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
     return (hash >>> 0).toString(16).padStart(8, "0");
   };
-+  reset.addEventListener("click", resetFilters);
+  reset.addEventListener("click", resetFilters);
   document.addEventListener("change", sync);
   document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
   window.previewState = publicState;

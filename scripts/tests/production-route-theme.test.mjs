@@ -180,7 +180,7 @@ test("keeps the board CFO preview as a self-contained interactive dashboard", as
   assert.match(indexHtml, /<main\b[^>]*id=["']main-content["'][^>]*class=["']board-case["']/i);
   assert.equal((indexHtml.match(/\bid=["']main-content["']/gi) || []).length, 1);
   assert.match(indexHtml, /id=["']interactive-preview["']/);
-  assert.match(indexHtml, /<iframe\b[^>]*id=["']board-pack-preview["'][^>]*src=["']preview\.html\?v=interactive-20260818-responsive1["'][^>]*title=["']Board Investor CFO Pack interactive preview["']/i);
+  assert.match(indexHtml, /<iframe\b[^>]*id=["']board-pack-preview["'][^>]*src=["']preview\.html\?v=polished-all-20260822["'][^>]*title=["']Board Investor CFO Pack interactive preview["']/i);
   assert.match(indexHtml, /<h1\b[^>]*>Board Investor\s*<span>CFO Pack<\/span><\/h1>/i);
   assert.match(indexHtml, /class=["']board-overview["']/);
   assert.match(indexHtml, /class=["']board-metrics["']/);

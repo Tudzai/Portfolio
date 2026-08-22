@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8">
 <meta name="robots" content="noindex, follow">
-<meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Regional FP&A Consolidation Dashboard</title>
   <style>
@@ -21,9 +20,9 @@
     .status-pill { border:1px solid var(--line); background:#f9fbfc; border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted); box-shadow:0 1px 2px rgba(23,33,43,.04); }
     .filters { display:grid; grid-template-columns: repeat(6, minmax(135px, 1fr)); gap:10px; margin-top:14px; }
     label { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); background:#fbfcfd; border:1px solid #e5eaf0; border-radius:8px; padding:8px 10px; }
-    select { height:32px; border:1px solid var(--line); border-radius:6px; background:white; color:var(--ink); padding:0 8px; font:inherit; }
+    select { height:44px; border:1px solid var(--line); border-radius:6px; background:white; color:var(--ink); padding:0 8px; font:inherit; }
     nav { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-    nav button { border:1px solid var(--line); background:white; color:var(--ink); border-radius:6px; padding:8px 10px; cursor:pointer; }
+    nav button { min-height:44px; border:1px solid var(--line); background:white; color:var(--ink); border-radius:6px; padding:8px 10px; cursor:pointer; }
     nav button.active { background:var(--teal); color:white; border-color:var(--teal); }
     main { padding:18px 28px 34px; max-width:1500px; margin:0 auto; }
     .page { display:none; }
@@ -101,9 +100,10 @@
     .sev-Medium { color:#a4661c; font-weight:700; }
     .sev-Low { color:#52612c; font-weight:700; }
     @media (max-width: 980px) {
-      header { padding:14px; }
+      header { position:relative; padding:14px; }
       main { padding:14px; }
-      .filters, .kpis, .grid, .grid.three, .grid.story, .mosaic, .action-strip, .lens-bar { grid-template-columns:1fr; }
+      .filters, .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .grid, .grid.three, .grid.story, .mosaic, .action-strip, .lens-bar { grid-template-columns:1fr; }
       .current-lens { grid-template-columns:6px 16px minmax(0,1fr); }
       .lens-chip { grid-column:1 / -1; min-height:58px; }
       .card { grid-template-columns:1fr; min-height:0; }
@@ -111,9 +111,36 @@
       .card .kpi-footer { grid-column:1; }
       .card .value { font-size:30px; }
       svg.chart { height:240px; }
+      .table-wrap table { min-width:620px; }
+    }
+    @media (max-width: 520px) {
+      h1 { font-size:22px; }
+      .subtitle { font-size:12px; }
+      .filters { gap:8px; }
+      label { padding:7px 8px; font-size:11px; }
+      nav { display:grid; grid-template-columns:1fr 1fr; }
+      nav button { width:100%; }
+      .preview-reset { min-height:44px; }
+      .kpis { grid-template-columns:1fr; gap:10px; }
+      .current-lens { grid-template-columns:1fr 1fr; gap:8px; }
+      .lens-rail,.lens-dot { display:none; }
+      .lens-copy { grid-column:1/-1; }
+      .lens-chip { grid-column:auto; min-height:54px; padding:8px; }
+      .lens-chip b { font-size:20px; }
+      .card { grid-template-columns:minmax(0,1fr) 92px; grid-template-rows:1fr auto; min-height:132px; padding:13px 12px 10px; }
+      .card .kpi-main { grid-column:1; grid-row:1; }
+      .card .spark { grid-column:2; grid-row:1; min-height:70px; padding:6px; }
+      .card .kpi-footer { grid-column:1/-1; grid-row:2; }
+      .card .value { font-size:27px; }
+      .card .label { font-size:13px; }
+      .panel { padding:12px; }
+      .panel .note { font-size:12.5px; }
+      .action,.story-callout { font-size:13px; }
+      .bullet-row { grid-template-columns:90px 1fr 58px; font-size:12.5px; }
+      svg.chart { height:250px; }
     }
   </style>
-<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}#sources{display:none!important}</style></head>
+<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{min-height:44px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}button:focus-visible,select:focus-visible,.table-wrap:focus-visible{outline:3px solid #2563eb;outline-offset:3px}#sources{display:none!important}</style></head>
 <body data-project-number="13" data-layout-source="project-13-own-dashboard"><div class="preview-frame"><div class="dashboard-shell">
 <header>
   <div class="titlebar">
@@ -131,14 +158,14 @@
     <label>Scenario<select id="scenarioFilter"></select></label>
     <label>Entity<select id="entityFilter"></select></label>
   </div>
-  <nav>
-    <button data-page="overview" class="active">Executive Summary</button>
-    <button data-page="pnl">P&L Variance</button>
-    <button data-page="story">Controls & Storyboard</button>
+  <nav role="tablist" aria-label="Regional FP&A dashboard views">
+    <button data-page="overview" class="active" role="tab" aria-selected="true" aria-controls="overview">Executive Summary</button>
+    <button data-page="pnl" role="tab" aria-selected="false" aria-controls="pnl">P&L Variance</button>
+    <button data-page="story" role="tab" aria-selected="false" aria-controls="story">Controls & Storyboard</button>
   </nav>
 </header>
 <main>
-  <section id="overview" class="page active">
+  <section id="overview" class="page active" role="tabpanel" aria-hidden="false">
     <div class="lens-bar">
       <div class="filter-lens-label">FILTER LENS</div>
       <div class="current-lens" id="currentLens"></div>
@@ -155,7 +182,7 @@
       <div class="panel"><h2>Management Attention List</h2><div class="note">Largest open close exceptions in current context</div><div class="table-wrap"><table id="attentionTable"></table></div></div>
     </div>
   </section>
-  <section id="pnl" class="page">
+  <section id="pnl" class="page" role="tabpanel" aria-hidden="true">
     <div class="grid">
       <div class="panel"><h2>Country and Entity P&L Matrix</h2><div class="note">Actual, Budget, and variance at selected period</div><div class="table-wrap"><table id="pnlTable"></table></div></div>
       <div class="panel"><h2>P&L Shape by Account Group</h2><div class="note">Revenue through Net Income view</div><div id="pnlWaterfall"></div></div>
@@ -187,7 +214,7 @@
     </div>
     <div class="panel" style="margin-top:14px"><h2>Close Commentary Log</h2><div class="note">Synthetic exceptions for portfolio demonstration</div><div class="table-wrap"><table id="exceptionTable"></table></div></div>
   </section>
-  <section id="story" class="page">
+  <section id="story" class="page" role="tabpanel" aria-hidden="true">
     <div class="grid story">
       <div class="panel"><h2>Board Narrative Bridge</h2><div class="note">Condensed CFO storyline: budget EBITDA to actual EBITDA</div><div id="storyBridge"></div></div>
       <div class="rail">
@@ -285,9 +312,10 @@ function scopeLine(){
   if (state.entity !== "All") parts.push(state.entity);
   return parts.join(" | ");
 }
-function svgWrap(content, h=280, cls="chart"){ return `<svg class="${cls}" viewBox="0 0 760 ${h}" role="img">${content}</svg>`; }
+function chartWidth(){ return Math.max(300, Math.min(620, document.documentElement.clientWidth - (document.documentElement.clientWidth <= 980 ? 40 : 70))); }
+function svgWrap(content, h=280, cls="chart", w=chartWidth()){ return `<svg class="${cls}" viewBox="0 0 ${w} ${h}" role="img">${content}</svg>`; }
 function axis(min,max,h){ return v => h - 36 - ((v-min)/(max-min || 1))*(h-70); }
-function xScale(n,w=720){ return i => 34 + (n<=1?0:i*(w-68)/(n-1)); }
+function xScale(n,w=chartWidth()){ return i => 34 + (n<=1?0:i*(w-68)/(n-1)); }
 function sparkline(values, good=true, accent=colors.actual){
   const clean = values.map(num).filter(Number.isFinite);
   if (clean.length < 2) return `<svg class="sparkline-svg" viewBox="0 0 112 64"><line x1="10" x2="102" y1="34" y2="34" stroke="#3a4655" stroke-width="2" stroke-linecap="round"/></svg>`;
@@ -344,7 +372,7 @@ function renderCurrentLens({lens, revVarPct, closeRisk}){
 }
 function comboTrendChart(labels, bars, lines, barColor=colors.actual){
   if (!labels.length || (!bars.some(Boolean) && !lines.some(s=>s.values.some(Boolean)))) return emptyState();
-  const h=280, w=760, plotLeft=42, plotRight=724, base=h-38;
+  const h=280, w=chartWidth(), plotLeft=42, plotRight=w-24, base=h-38;
   const maxBar = Math.max(1, ...bars);
   const lineVals = lines.flatMap(s=>s.values);
   const minLine = Math.min(0, ...lineVals), maxLine = Math.max(1, ...lineVals) * 1.08;
@@ -358,31 +386,31 @@ function comboTrendChart(labels, bars, lines, barColor=colors.actual){
     const pts = s.values.map((v,i)=>`${x(i)},${yLine(v)}`).join(" ");
     return `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="${s.dash?2.2:3}" ${s.dash?'stroke-dasharray="6 5"':''} stroke-linecap="round" stroke-linejoin="round"/><circle cx="${x(s.values.length-1)}" cy="${yLine(s.values.at(-1))}" r="4" fill="${s.color}"/>`;
   }).join("");
-  const lab = labels.filter((_,i)=>i%3===0 || i===labels.length-1).map(l=>{
+  const lab = labels.filter((_,i)=>(i%3===0 && i<labels.length-2) || i===labels.length-1).map(l=>{
     const i = labels.indexOf(l);
     return `<text x="${x(i)}" y="${h-10}" font-size="11" text-anchor="middle" fill="${colors.muted}">${l.slice(5)}</text>`;
   }).join("");
-  return svgWrap(`${grid}${cols}${paths}${lab}<text x="${plotLeft}" y="20" font-size="11" fill="${colors.muted}">Revenue ${money(maxBar)}</text><text x="610" y="20" font-size="11" fill="${colors.muted}">EBITDA ${money(maxLine)}</text>`, h);
+  return svgWrap(`${grid}${cols}${paths}${lab}<text x="${plotLeft}" y="20" font-size="12" fill="${colors.muted}">Revenue ${money(maxBar)}</text><text x="${Math.max(plotLeft+120,w-148)}" y="20" font-size="12" fill="${colors.muted}">EBITDA ${money(maxLine)}</text>`, h, "chart", w);
 }
 function lineChart(series, labels){
   if (!labels.length || !series.some(s=>s.values.some(Boolean))) return emptyState();
   const vals = series.flatMap(s=>s.values);
   const min = Math.min(0, ...vals), max = Math.max(...vals)*1.08;
-  const h=280, y=axis(min,max,h), x=xScale(labels.length);
-  const grid = [0,.25,.5,.75,1].map(t=>`<line x1="34" x2="730" y1="${36+t*(h-70)}" y2="${36+t*(h-70)}" stroke="${colors.line}" stroke-width="1"/>`).join("");
+  const h=280, w=chartWidth(), y=axis(min,max,h), x=xScale(labels.length,w);
+  const grid = [0,.25,.5,.75,1].map(t=>`<line x1="34" x2="${w-30}" y1="${36+t*(h-70)}" y2="${36+t*(h-70)}" stroke="${colors.line}" stroke-width="1"/>`).join("");
   const paths = series.map(s=>{
     const pts = s.values.map((v,i)=>`${x(i)},${y(v)}`).join(" ");
     return `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="3"/><circle cx="${x(s.values.length-1)}" cy="${y(s.values.at(-1))}" r="4" fill="${s.color}"/>`;
   }).join("");
-  const lab = labels.filter((_,i)=>i%3===0 || i===labels.length-1).map((l,i2)=>{
+  const lab = labels.filter((_,i)=>(i%3===0 && i<labels.length-2) || i===labels.length-1).map((l,i2)=>{
     const i = labels.indexOf(l);
     return `<text x="${x(i)}" y="${h-10}" font-size="11" text-anchor="middle" fill="${colors.muted}">${l.slice(5)}</text>`;
   }).join("");
-  return svgWrap(`${grid}${paths}${lab}<text x="34" y="20" font-size="11" fill="${colors.muted}">${money(max)}</text><text x="34" y="${h-38}" font-size="11" fill="${colors.muted}">${money(min)}</text>`, h);
+  return svgWrap(`${grid}${paths}${lab}<text x="34" y="20" font-size="12" fill="${colors.muted}">${money(max)}</text><text x="34" y="${h-38}" font-size="12" fill="${colors.muted}">${money(min)}</text>`, h, "chart", w);
 }
 function barChart(items, opts={}){
   if (!items.length) return emptyState();
-  const h=opts.h||280, w=760, left=opts.left||170;
+  const h=opts.h||280, w=chartWidth(), left=Math.min(opts.left||170,Math.max(104,Math.round(w*.39))), compact=w<500;
   const max = Math.max(1, ...items.map(d=>Math.abs(d.value)));
   const rowH = Math.min(38, (h-34)/Math.max(1, items.length));
   const zero = left + (opts.diverging ? (w-left-30)/2 : 0);
@@ -393,14 +421,34 @@ function barChart(items, opts={}){
     const bw = scale(val);
     const x = opts.diverging ? (val>=0 ? zero : zero-bw) : left;
     const fill = val>=0 ? (opts.color||colors.actual) : colors.bad;
-    return `<text x="8" y="${y+20}" font-size="15" fill="${colors.muted}"><title>${d.name}</title>${shortLabel(d.name, 20)}</text><rect x="${x}" y="${y+6}" width="${Math.max(2,bw)}" height="${Math.max(9,rowH-12)}" rx="3" fill="${fill}"/><text x="${val>=0?x+bw+7:x-7}" y="${y+20}" text-anchor="${val>=0?'start':'end'}" font-size="14" fill="${colors.muted}">${money(val)}</text>`;
+    const outsideX=val>=0?x+bw+7:x-7, inside=val>=0?outsideX+62>w:outsideX-62<left;
+    const valueX=inside?(val>=0?x+bw-6:x+6):outsideX, anchor=inside?(val>=0?'end':'start'):(val>=0?'start':'end');
+    return `<text x="8" y="${y+20}" font-size="${compact?12:14}" fill="${colors.muted}"><title>${esc(d.name)}</title>${esc(shortLabel(d.name, compact?12:20))}</text><rect x="${x}" y="${y+6}" width="${Math.max(2,bw)}" height="${Math.max(12,rowH-12)}" rx="3" fill="${fill}" tabindex="0" role="img" aria-label="${esc(d.name)}: ${esc(money(val))}"><title>${esc(d.name)}: ${esc(money(val))}</title></rect><text x="${valueX}" y="${y+20}" text-anchor="${anchor}" font-size="${compact?11:13}" fill="${inside?'#ffffff':colors.muted}">${money(val)}</text>`;
   }).join("");
   const zeroLine = opts.diverging ? `<line x1="${zero}" x2="${zero}" y1="10" y2="${h-18}" stroke="${colors.line}"/>` : "";
-  return svgWrap(`${zeroLine}${bars}`, h);
+  return svgWrap(`${zeroLine}${bars}`, h, "chart", w);
 }
 function waterfall(items){
   if (!items.length) return emptyState("No bridge rows for this filter selection");
-  const h=280,w=760,baseY=h-34;
+  const h=280,w=chartWidth(),compact=w<500,baseY=h-(compact?52:34);
+  const axisLabel=name=>{
+    if(!compact) return shortLabel(name.split(' ')[0],7);
+    const value=String(name).toLowerCase();
+    if(value.includes('budget')) return 'Bud';
+    if(value.includes('actual')) return 'Act';
+    if(value === 'revenue') return 'Rev';
+    if(value.includes('volume')) return 'Vol';
+    if(value.includes('price')) return 'Px';
+    if(value.includes('business')) return 'Mix';
+    if(value.includes('inter')) return 'IC';
+    if(value.includes('opex')) return 'OpEx';
+    if(value.includes('ebitda')) return 'EBITDA';
+    if(value.includes('cogs')) return 'COGS';
+    if(value.includes('elim')) return 'Elim';
+    if(value.includes('other')) return 'Oth';
+    if(value.includes('fx')) return 'FX';
+    return shortLabel(name,5);
+  };
   let running = 0;
   const spans = items.map(d => {
     if (d.anchor) {
@@ -413,18 +461,21 @@ function waterfall(items){
   });
   const vals = spans.flatMap(s=>[s.start,s.end]).concat([0]);
   const min=Math.min(...vals), max=Math.max(...vals);
-  const y=axis(min,max,h), colW=Math.max(42,(w-70)/items.length-8);
+  const y=v=>baseY-((v-min)/(max-min||1))*(baseY-34), colW=Math.max(compact?22:42,(w-70)/items.length-(compact?5:8));
   const x=i=>40+i*((w-70)/items.length);
   const bars=items.map((d,i)=>{
     const s=spans[i].start, e=spans[i].end, top=y(Math.max(s,e)), bottom=y(Math.min(s,e));
     const delta = e-s;
     const fill=d.anchor ? colors.blue : (delta>=0?colors.good:colors.bad);
-    return `<rect x="${x(i)}" y="${top}" width="${colW}" height="${Math.max(2,bottom-top)}" fill="${fill}" rx="3"/><text x="${x(i)+colW/2}" y="${top-5}" text-anchor="middle" font-size="10" fill="${colors.muted}">${money(d.anchor ? d.value : delta)}</text><text x="${x(i)+colW/2}" y="${baseY+15}" text-anchor="middle" font-size="10" fill="${colors.muted}">${d.name.split(' ')[0]}</text>`;
+    const amount=money(d.anchor ? d.value : delta);
+    const showAmount=!compact||d.anchor||Math.abs(delta)>=Math.max(1,(max-min)*.12),labelX=x(i)+colW/2,labelY=baseY+(compact?18:15);
+    return `<rect x="${x(i)}" y="${top}" width="${colW}" height="${Math.max(2,bottom-top)}" fill="${fill}" rx="3" tabindex="0" role="img" aria-label="${esc(d.name)}: ${esc(amount)}"><title>${esc(d.name)}: ${esc(amount)}</title></rect>${showAmount?`<text x="${labelX}" y="${Math.max(15,top-5)}" text-anchor="middle" font-size="11" fill="${colors.muted}">${amount}</text>`:""}<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="${compact?10.5:11}" fill="${colors.muted}">${esc(axisLabel(d.name))}</text>`;
   }).join("");
-  return svgWrap(`<line x1="34" x2="730" y1="${y(0)}" y2="${y(0)}" stroke="${colors.line}"/>${bars}<text x="34" y="20" font-size="11" fill="${colors.muted}">${money(max)}</text><text x="34" y="${h-42}" font-size="11" fill="${colors.muted}">${money(min)}</text>`, h);
+  return svgWrap(`<line x1="34" x2="${w-30}" y1="${y(0)}" y2="${y(0)}" stroke="${colors.line}"/>${bars}`, h, "chart", w);
 }
 function treemap(items){
-  const h=280, w=760;
+  const h=280, w=chartWidth();
+  if(w<500) return barChart(items,{left:92,h,color:colors.actual});
   const total = Math.max(1, items.reduce((s,d)=>s+Math.max(0,d.value),0));
   let x = 24;
   const palette = [colors.actual, colors.blue, colors.amber, colors.olive, colors.bad, "#6a7fa8", "#8b6f47"];
@@ -434,10 +485,10 @@ function treemap(items){
     x += width;
     return out;
   }).join("");
-  return svgWrap(`<text x="24" y="24" font-size="12" fill="${colors.muted}">Revenue share by country</text>${rects}`, h);
+  return svgWrap(`<text x="24" y="24" font-size="12" fill="${colors.muted}">Revenue share by country</text>${rects}`, h, "chart", w);
 }
 function funnel(items){
-  const h=280,w=760;
+  const h=280,w=chartWidth();
   const max = Math.max(1, ...items.map(d=>d.value));
   const rows = items.map((d,i)=>{
     const bw = Math.max(90, d.value/max*(w-160));
@@ -445,7 +496,7 @@ function funnel(items){
     const fill = i===0 ? colors.bad : (i===1 ? colors.amber : colors.olive);
     return `<path d="M${x},${y} L${x+bw},${y} L${x+bw-26},${y+44} L${x+26},${y+44} Z" fill="${fill}" opacity=".88"/><text x="${w/2}" y="${y+25}" text-anchor="middle" font-size="13" fill="white" font-weight="700">${d.name} ${money(d.value)}</text>`;
   }).join("");
-  return svgWrap(rows, h);
+  return svgWrap(rows, h, "chart", w);
 }
 function table(el, headers, rows){
   document.getElementById(el).innerHTML = `<thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
@@ -476,9 +527,9 @@ function renderFilters(){
     render();
   }));
   document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{
-    document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
-    document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active"); document.getElementById(b.dataset.page).classList.add("active"); state.page=b.dataset.page; render();
+    document.querySelectorAll("nav button").forEach(x=>{x.classList.remove("active");if(x.matches("[role=tab]"))x.setAttribute("aria-selected","false");});
+    document.querySelectorAll(".page").forEach(x=>{x.classList.remove("active");if(x.matches("[role=tabpanel]"))x.setAttribute("aria-hidden","true");});
+    b.classList.add("active"); b.setAttribute("aria-selected","true"); const panel=document.getElementById(b.dataset.page);panel.classList.add("active");panel.setAttribute("aria-hidden","false");state.page=b.dataset.page; render();
   }));
 }
 function renderOverview(){
@@ -641,6 +692,7 @@ render();
 </script>
 <script>
 (() => {
+  document.querySelectorAll(".table-wrap").forEach(region=>{region.tabIndex=0;region.setAttribute("role","region");region.setAttribute("aria-label",region.closest(".panel")?.querySelector("h2")?.textContent+" scrollable table")});
   const projectNumber = "13";
   const layoutSource = "project-13-own-dashboard";
   const selects = Array.from(document.querySelectorAll("select"));
@@ -745,7 +797,7 @@ render();
     for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
     return (hash >>> 0).toString(16).padStart(8, "0");
   };
-+  reset.addEventListener("click", resetFilters);
+  reset.addEventListener("click", resetFilters);
   document.addEventListener("change", sync);
   document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
   window.previewState = publicState;

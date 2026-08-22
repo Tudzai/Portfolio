@@ -16,13 +16,13 @@
     * { box-sizing:border-box; }
     body { margin:0; background:var(--bg); color:var(--ink); font-family:"Segoe UI", Arial, sans-serif; }
     button,select,input { font:inherit; }
-    button:focus-visible,select:focus-visible,input:focus-visible { outline:3px solid #38BDF8; outline-offset:2px; }
+    button:focus-visible,select:focus-visible,input:focus-visible,[role="region"]:focus-visible { outline:3px solid #38BDF8; outline-offset:2px; }
     .shell { min-height:100vh; display:grid; grid-template-columns:260px minmax(0,1fr); }
     aside { background:var(--navy); color:#fff; padding:22px 18px; position:sticky; top:0; height:100vh; }
     .brand { color:#A7F3D0; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
     h1 { margin:9px 0 24px; font-size:25px; line-height:1.15; letter-spacing:0; }
     .nav { display:grid; gap:8px; }
-    .nav button { color:#CBD5E1; border:1px solid rgba(255,255,255,.10); background:transparent; border-radius:8px; padding:11px 12px; text-align:left; cursor:pointer; }
+    .nav button { min-height:44px; color:#CBD5E1; border:1px solid rgba(255,255,255,.10); background:transparent; border-radius:8px; padding:11px 12px; text-align:left; cursor:pointer; }
     .nav button.active { color:#fff; border-color:#38BDF8; background:rgba(37,99,235,.24); }
     .note { margin-top:22px; padding-top:16px; border-top:1px solid rgba(255,255,255,.12); color:#CBD5E1; font-size:12px; line-height:1.55; }
     main { padding:20px 24px 34px; min-width:0; }
@@ -32,7 +32,7 @@
     .filters { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
     .field { display:grid; gap:4px; }
     label { color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
-    select,input { height:34px; min-width:132px; border:1px solid var(--line); border-radius:7px; background:#fff; color:var(--ink); padding:0 10px; outline:none; }
+    select,input { height:44px; min-width:132px; border:1px solid var(--line); border-radius:7px; background:#fff; color:var(--ink); padding:0 10px; outline:none; }
     input { min-width:190px; }
     .kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:14px; }
     .card,.panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
@@ -67,8 +67,9 @@
     .tick { fill:var(--muted); font-size:11px; }
     .legend { fill:var(--muted); font-size:12px; }
     @media (max-width:1180px) { .shell { grid-template-columns:1fr; } aside { position:relative; height:auto; } .nav { grid-template-columns:repeat(3,minmax(0,1fr)); } .kpis { grid-template-columns:repeat(3,minmax(0,1fr)); } .span-3,.span-4,.span-5,.span-6,.span-7,.span-8 { grid-column:span 12; } .topbar { flex-direction:column; align-items:stretch; } .filters { justify-content:flex-start; } }
-    @media (max-width:720px) { main { padding:16px; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .nav { grid-template-columns:1fr; } .field,select,input { width:100%; min-width:0; } .card { min-height:112px; } .card .value { font-size:21px; } .spark { width:38%; } #topTable table,#bottomTable table,#riskTable table,#scenarioTable table { min-width:620px; } }
-  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{height:36px;border:1px solid var(--line);border-radius:7px;background:var(--navy);color:#fff;padding:0 13px;font-weight:700;cursor:pointer}
+    @media (max-width:720px) { main { padding:16px; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .nav { grid-template-columns:1fr; } .nav button,.reset-control { min-height:44px; } .field,select,input { width:100%; min-width:0; } .card { min-height:112px; } .card .value { font-size:21px; } .spark { width:34%; } #topTable table,#bottomTable table,#riskTable table,#scenarioTable table { min-width:620px; } }
+    @media (max-width:360px) { .kpis { grid-template-columns:1fr; } .card { min-height:98px; padding-right:112px; } .card .value { font-size:24px; } .card .delta { max-width:150px; } .spark { width:92px; right:12px; } }
+  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{height:44px;border:1px solid var(--line);border-radius:7px;background:var(--navy);color:#fff;padding:0 13px;font-weight:700;cursor:pointer}
   </style>
   <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
 </head>
@@ -224,23 +225,23 @@
     function card(label,value,note,color,series) { return `<div class="card" style="--accent:${color}"><div class="label">${label}</div><div class="value">${value}</div><div class="delta">${note}</div>${sparkSvg(series,color)}</div>`; }
     function group(rows,key,aggs) { const m=new Map(); rows.forEach(r=>{ const k=r[key]||'Unknown'; if(!m.has(k)) m.set(k,{key:k}); const o=m.get(k); aggs.forEach(a=>o[a]=(o[a]||0)+(+r[a]||0)); }); return [...m.values()]; }
     function lineChart(id, rows, series) {
-      const w=760,h=220,p=34; const months=[...new Set(rows.map(r=>r.year_month))].sort(); const grouped=months.map(m=>{ const rs=rows.filter(r=>r.year_month===m); return {month:m,gmv:sum(rs,'gmv'),rev:sum(rs,'revenue_fee'),margin:sum(rs,'contribution_margin'),costTxn:sum(rs,'total_cost')/sum(rs,'transaction_count')}; });
+      const w=Math.max(280,Math.min(760,byId(id).clientWidth||document.documentElement.clientWidth-40)),h=220,p=34; const months=[...new Set(rows.map(r=>r.year_month))].sort(); const grouped=months.map(m=>{ const rs=rows.filter(r=>r.year_month===m); return {month:m,gmv:sum(rs,'gmv'),rev:sum(rs,'revenue_fee'),margin:sum(rs,'contribution_margin'),costTxn:sum(rs,'total_cost')/sum(rs,'transaction_count')}; });
       const sx=i=>p+i*(w-2*p)/Math.max(1,grouped.length-1);
       const indexed=series.length>1;
       const plotted=series.map(s=>{const raw=grouped.map(d=>Number(d[s.key]));const base=raw.find(v=>Number.isFinite(v)&&v!==0)||1;return {...s,values:raw.map(v=>indexed?v/base*100:v)}});
       const allValues=plotted.flatMap(s=>s.values).filter(Number.isFinite);let min=Math.min(...allValues),max=Math.max(...allValues);if(indexed){min=Math.floor(Math.min(min,100)/5)*5;max=Math.ceil(Math.max(max,100)/5)*5;}if(max-min<.0001){min-=1;max+=1;}const sy=v=>h-p-(v-min)/(max-min)*(h-2*p);
       const paths=plotted.map(s=>`<path d="${s.values.map((v,i)=>(i?'L':'M')+sx(i)+','+sy(v)).join(' ')}" fill="none" stroke="${s.color}" stroke-width="3"/>`).join('');
-      const labels=grouped.map((d,i)=> i%3===0 ? `<text class="tick" x="${sx(i)}" y="${h-7}" text-anchor="middle">${d.month.slice(2)}</text>`:'').join('');
+      const labelEvery=w<360?6:3;const labels=grouped.map((d,i)=> ((i%labelEvery===0&&i<grouped.length-2)||i===grouped.length-1) ? `<text class="tick" x="${sx(i)}" y="${h-7}" text-anchor="middle">${d.month.slice(2)}</text>`:'').join('');
       const ticks=[min,(min+max)/2,max].map(v=>`<line class="axis" opacity=".45" x1="${p}" y1="${sy(v)}" x2="${w-p}" y2="${sy(v)}"/><text class="tick" x="4" y="${sy(v)+4}">${indexed?Math.round(v):v.toFixed(2)}</text>`).join('');
       const label=indexed?'Indexed monthly trend; each series begins at 100':`${series[0].name} monthly trend`;
-      byId(id).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}"><title>${label}</title>${ticks}${paths}${labels}${series.map((s,i)=>`<text class="legend" x="${p+i*130}" y="18" fill="${s.color}">${s.name}</text>`).join('')}</svg>`;
+      byId(id).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}"><title>${label}</title>${ticks}${paths}${labels}${series.map((s,i)=>`<text class="legend" x="${p+i*((w-2*p)/Math.max(1,series.length))}" y="18" fill="${s.color}">${s.name}</text>`).join('')}</svg>`;
     }
     function barChart(id, data, labelKey, valueKey, color, horizontal=false) {
-      const w=520,h=220,p=38; const vals=data.map(d=>+d[valueKey]||0); const min=Math.min(0,...vals), max=Math.max(0,...vals), range=Math.max(0.0001,max-min);
+      const w=Math.max(280,Math.min(520,byId(id).clientWidth||document.documentElement.clientWidth-40)),h=220,p=Math.min(38,Math.max(30,w*.11)); const vals=data.map(d=>+d[valueKey]||0); const min=Math.min(0,...vals), max=Math.max(0,...vals), range=Math.max(0.0001,max-min);
       let bars='';
       const zeroY=p+(max/range)*(h-2*p);
-      if(horizontal) { const bh=(h-2*p)/data.length*.65; const maxAbs=Math.max(Math.abs(min),Math.abs(max),1); data.forEach((d,i)=>{ const y=p+i*(h-2*p)/data.length; const bw=Math.abs(d[valueKey])/maxAbs*(w-2*p); bars+=`<rect x="${p}" y="${y}" width="${bw}" height="${bh}" fill="${Array.isArray(color)?color[i%color.length]:color}"/><text class="tick" x="4" y="${y+bh*.75}">${d[labelKey]}</text>`; }); }
-      else { const bw=(w-2*p)/data.length*.62; data.forEach((d,i)=>{ const x=p+i*(w-2*p)/data.length; const v=+d[valueKey]||0; const y=p+(max-Math.max(v,0))/range*(h-2*p); const y0=p+(max-0)/range*(h-2*p); const bh=Math.abs(v)/range*(h-2*p); bars+=`<rect x="${x}" y="${Math.min(y,y0)}" width="${bw}" height="${Math.max(1,bh)}" fill="${Array.isArray(color)?color[i%color.length]:color}"/><text class="tick" x="${x+bw/2}" y="${h-8}" text-anchor="middle">${String(d[labelKey]).slice(0,10)}</text>`; }); }
+      if(horizontal) { const left=Math.min(104,Math.max(78,w*.3)),right=18,top=26,bottom=18,rowH=(h-top-bottom)/Math.max(1,data.length),bh=Math.max(11,rowH*.56),maxAbs=Math.max(Math.abs(min),Math.abs(max),1); data.forEach((d,i)=>{ const y=top+i*rowH+(rowH-bh)/2; const bw=Math.abs(d[valueKey])/maxAbs*(w-left-right); const label=String(d[labelKey]); bars+=`<rect x="${left}" y="${y}" width="${Math.max(2,bw)}" height="${bh}" rx="2" fill="${Array.isArray(color)?color[i%color.length]:color}" tabindex="0" role="img" aria-label="${label}: ${Number(d[valueKey]).toLocaleString()}"><title>${label}: ${Number(d[valueKey]).toLocaleString()}</title></rect><text class="tick" x="4" y="${y+bh*.76}">${label}</text>`; }); byId(id).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${id.replace(/([A-Z])/g,' $1')} chart"><title>${id.replace(/([A-Z])/g,' $1')} chart</title><line class="axis" x1="${left}" y1="${top-5}" x2="${left}" y2="${h-bottom+3}"/>${bars}</svg>`; return; }
+      else { const bw=(w-2*p)/data.length*.62,short={"Prior revenue":"Prior","GMV volume":"GMV","Take-rate / mix":"Rate","Residual":"Resid","Current revenue":"Now","Bank Transfer":"Bank Txn","QR / Instant":"QR / Inst"}; data.forEach((d,i)=>{ const x=p+i*(w-2*p)/data.length; const v=+d[valueKey]||0; const y=p+(max-Math.max(v,0))/range*(h-2*p); const y0=p+(max-0)/range*(h-2*p); const bh=Math.abs(v)/range*(h-2*p); const raw=short[d[labelKey]]||String(d[labelKey]); const shown=raw.slice(0,w<360?7:10); bars+=`<rect x="${x}" y="${Math.min(y,y0)}" width="${bw}" height="${Math.max(1,bh)}" fill="${Array.isArray(color)?color[i%color.length]:color}"/><text class="tick" x="${x+bw/2}" y="${h-8}" text-anchor="middle"><title>${String(d[labelKey])}</title>${shown}</text>`; }); }
       const aria=`${id.replace(/([A-Z])/g,' $1')} chart`;
       byId(id).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${aria}"><title>${aria}</title><line class="axis" x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}"/>${bars}</svg>`;
     }
@@ -288,6 +289,7 @@
 </div></div>
   <script>
     (() => {
+      ["topTable","bottomTable","riskTable","scenarioTable"].forEach(id=>{const region=byId(id);if(!region)return;region.tabIndex=0;region.setAttribute("role","region");region.setAttribute("aria-label",region.closest(".panel")?.querySelector("h3")?.textContent+" scrollable table");});
       const reset = document.createElement("button");
       reset.type = "button"; reset.id = "resetFilters"; reset.className = "reset-control"; reset.textContent = "Reset lens";
       document.querySelector(".filters").appendChild(reset);

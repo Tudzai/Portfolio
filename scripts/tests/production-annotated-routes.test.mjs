@@ -90,9 +90,9 @@ test("redesigns the Power BI library from the recruiter shortlist through the fi
   assert.equal((html.match(/class="project-open"/g) ?? []).length, 17);
   assert.equal((html.match(/class="project-visual"/g) ?? []).length, 20);
 
-  const thumbnailVersion = "own-layout-polish3-20260818";
+  const thumbnailVersion = "polished-all-20260822";
   const previewImages = [
-    ...html.matchAll(/src="\.\.\/\.\.\/(assets\/powerbi-previews\/[^"?]+\.png)\?v=own-layout-polish3-20260818"/g),
+    ...html.matchAll(/src="\.\.\/\.\.\/(assets\/powerbi-previews\/[^"?]+\.png)\?v=polished-all-20260822"/g),
   ].map((match) => match[1]);
   assert.equal(previewImages.length, 22);
   assert.equal(new Set(previewImages).size, 20);
@@ -102,7 +102,7 @@ test("redesigns the Power BI library from the recruiter shortlist through the fi
 
   const projectImageMappings = [
     ...html.matchAll(
-      /<article class="project-card(?: featured)?" id="([^"]+)"[^>]*>[\s\S]*?<img src="\.\.\/\.\.\/assets\/powerbi-previews\/([^"?]+)\.png\?v=own-layout-polish3-20260818"/g,
+      /<article class="project-card(?: featured)?" id="([^"]+)"[^>]*>[\s\S]*?<img src="\.\.\/\.\.\/assets\/powerbi-previews\/([^"?]+)\.png\?v=polished-all-20260822"/g,
     ),
   ].map((match) => [match[1], match[2]]);
   assert.equal(projectImageMappings.length, 20);
