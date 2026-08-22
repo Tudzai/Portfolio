@@ -1,39 +1,339 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta name="robots" content="noindex, follow" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Digital Payments Profitability Interactive Preview | Truong Dinh Anh Tu</title>
-    <link rel="canonical" href="index.html" />
-    <link rel="icon" href="../../../assets/favicon.svg" />
-    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
-    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-  <body class="powerbi-standard-preview" data-project-no="08">
-    <div class="preview-frame">
-      <div class="dashboard-shell">
-        <div class="dashboard" role="application" aria-label="Digital Payments Profitability interactive dashboard">
-          <aside class="sidebar">
-            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Payments profitability</small></span></div>
-            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
-            <div class="lens-group">
-              <h2 class="lens-title">Global Lens</h2>
-              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
-              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
-            </div>
-            <div class="lens-group">
-              <h2 class="lens-title">Operating Scope</h2>
-              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
-              <label><span class="filter-label">Payment Rail</span><span class="select-wrap"><select id="regionFilter" aria-label="Payment Rail filter"></select></span></label>
-            </div>
-            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
-          </aside>
-          <main class="dashboard-content" id="content"></main>
+<head>
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="index.html">
+  <link rel="icon" href="../../../assets/favicon.svg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Payments Profitability Dashboard</title>
+  <style>
+    :root {
+      --bg:#F5F7FA; --panel:#FFFFFF; --ink:#111827; --muted:#667085; --line:#D8DEE9;
+      --blue:#2563EB; --cyan:#0891B2; --green:#16A34A; --teal:#0F766E; --amber:#D97706;
+      --red:#DC2626; --violet:#7C3AED; --navy:#0B1220; --shadow:0 12px 30px rgba(15,23,42,.08);
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:"Segoe UI", Arial, sans-serif; }
+    button,select,input { font:inherit; }
+    button:focus-visible,select:focus-visible,input:focus-visible { outline:3px solid #38BDF8; outline-offset:2px; }
+    .shell { min-height:100vh; display:grid; grid-template-columns:260px minmax(0,1fr); }
+    aside { background:var(--navy); color:#fff; padding:22px 18px; position:sticky; top:0; height:100vh; }
+    .brand { color:#A7F3D0; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+    h1 { margin:9px 0 24px; font-size:25px; line-height:1.15; letter-spacing:0; }
+    .nav { display:grid; gap:8px; }
+    .nav button { color:#CBD5E1; border:1px solid rgba(255,255,255,.10); background:transparent; border-radius:8px; padding:11px 12px; text-align:left; cursor:pointer; }
+    .nav button.active { color:#fff; border-color:#38BDF8; background:rgba(37,99,235,.24); }
+    .note { margin-top:22px; padding-top:16px; border-top:1px solid rgba(255,255,255,.12); color:#CBD5E1; font-size:12px; line-height:1.55; }
+    main { padding:20px 24px 34px; min-width:0; }
+    .topbar { display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:14px; }
+    h2 { margin:0; font-size:22px; letter-spacing:0; }
+    .subtitle { margin-top:4px; color:var(--muted); font-size:13px; }
+    .filters { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .field { display:grid; gap:4px; }
+    label { color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+    select,input { height:34px; min-width:132px; border:1px solid var(--line); border-radius:7px; background:#fff; color:var(--ink); padding:0 10px; outline:none; }
+    input { min-width:190px; }
+    .kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:14px; }
+    .card,.panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
+    .card { min-height:98px; padding:13px 13px 11px; position:relative; overflow:hidden; }
+    .card:before { content:""; position:absolute; top:12px; bottom:12px; left:0; width:4px; background:var(--accent); }
+    .card .label { color:var(--muted); font-size:12px; font-weight:800; }
+    .card .value { margin-top:9px; font-size:23px; font-weight:800; color:var(--accent); }
+    .card .delta { margin-top:4px; color:var(--muted); font-size:12px; }
+    .spark { position:absolute; right:12px; bottom:10px; width:42%; height:42px; border:1px solid #E2E8F0; border-radius:6px; background:#F8FAFC; padding:3px; }
+    .grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:14px; }
+    .panel { padding:14px; min-height:250px; min-width:0; }
+    .panel h3 { margin:0; font-size:14px; }
+    .caption { color:var(--muted); font-size:12px; margin-top:3px; }
+    .chart { min-height:190px; margin-top:10px; }
+    .span-3 { grid-column:span 3; } .span-4 { grid-column:span 4; } .span-5 { grid-column:span 5; } .span-6 { grid-column:span 6; } .span-7 { grid-column:span 7; } .span-8 { grid-column:span 8; } .span-12 { grid-column:span 12; }
+    .view { display:none; } .view.active { display:block; }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th { text-align:left; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.04em; background:#F8FAFC; }
+    th,td { padding:8px; border-bottom:1px solid #EEF2F7; white-space:nowrap; }
+    td.num,th.num { text-align:right; }
+    tbody tr:hover { background:#F8FAFC; }
+    #topTable,#bottomTable,#riskTable,#scenarioTable { max-width:100%; overflow:auto; }
+    #scenarioTable th:last-child,#scenarioTable td:last-child { min-width:210px; white-space:normal; line-height:1.35; }
+    .pill { display:inline-flex; min-height:22px; align-items:center; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:800; white-space:nowrap; }
+    .pill.good { background:#DCFCE7; color:#166534; }
+    .pill.watch { background:#FEF3C7; color:#92400E; }
+    .pill.risk { background:#FEE2E2; color:#991B1B; }
+    .microbar { display:block; min-width:84px; height:8px; border-radius:999px; background:#E2E8F0; overflow:hidden; }
+    .microbar i { display:block; height:100%; border-radius:inherit; background:#7C3AED; }
+    svg { width:100%; height:100%; display:block; overflow:visible; }
+    .axis { stroke:var(--line); stroke-width:1; }
+    .tick { fill:var(--muted); font-size:11px; }
+    .legend { fill:var(--muted); font-size:12px; }
+    @media (max-width:1180px) { .shell { grid-template-columns:1fr; } aside { position:relative; height:auto; } .nav { grid-template-columns:repeat(3,minmax(0,1fr)); } .kpis { grid-template-columns:repeat(3,minmax(0,1fr)); } .span-3,.span-4,.span-5,.span-6,.span-7,.span-8 { grid-column:span 12; } .topbar { flex-direction:column; align-items:stretch; } .filters { justify-content:flex-start; } }
+    @media (max-width:720px) { main { padding:16px; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .nav { grid-template-columns:1fr; } .field,select,input { width:100%; min-width:0; } .card { min-height:112px; } .card .value { font-size:21px; } .spark { width:38%; } #topTable table,#bottomTable table,#riskTable table,#scenarioTable table { min-width:620px; } }
+  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{height:36px;border:1px solid var(--line);border-radius:7px;background:var(--navy);color:#fff;padding:0 13px;font-weight:700;cursor:pointer}
+  </style>
+  <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+</head>
+<body data-project-number="08" data-layout-source="project-08-own-dashboard">
+<div class="preview-frame"><div class="dashboard-shell">
+  <div class="shell">
+    <aside>
+      <div class="brand">Portfolio BI</div>
+      <h1>Digital Payments Profitability Dashboard</h1>
+      <div class="nav" id="nav" role="tablist" aria-label="Payments profitability dashboard pages">
+        <button id="tab-exec" class="active" data-view="exec" role="tab" aria-controls="exec" aria-selected="true">Executive Overview</button>
+        <button id="tab-drivers" data-view="drivers" role="tab" aria-controls="drivers" aria-selected="false">Merchant & Transaction Drivers</button>
+        <button id="tab-scenario" data-view="scenario" role="tab" aria-controls="scenario" aria-selected="false">Margin & Scenario Planning</button>
+      </div>
+      <div class="note">Synthetic portfolio demo. Seed 802608. Latest complete month 2026-05. Metrics reconcile across every dashboard view and scenario.</div>
+    </aside>
+    <main>
+      <div class="topbar">
+        <div>
+          <h2 id="viewTitle">Executive Overview</h2>
+          <div class="subtitle" id="freshness" aria-live="polite"></div>
+        </div>
+        <div class="filters">
+          <div class="field"><label for="monthFilter">Month</label><select id="monthFilter" aria-label="Reporting month"></select></div>
+          <div class="field"><label for="segmentFilter">Segment</label><select id="segmentFilter" aria-label="Merchant segment"></select></div>
+          <div class="field"><label for="methodFilter">Method</label><select id="methodFilter" aria-label="Payment method"></select></div>
+          <div class="field"><label for="channelFilter">Channel</label><select id="channelFilter" aria-label="Transaction channel"></select></div>
+          <div class="field"><label for="searchFilter">Search</label><input id="searchFilter" aria-label="Merchant search" placeholder="Merchant name"></div>
         </div>
       </div>
-    </div>
-    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"digital-payments-profitability","route":"digital-payments-profitability/","no":"08","folder":"Project 08 - Digital Payments Profitability","title":"Digital Payments Profitability","lens":"Payments profitability","summary":"Payments profitability dashboard linking merchant mix, transaction drivers, margin scenarios, and fee economics.","decisionQuestion":"Which merchant segments and fee changes can improve unit profit without sacrificing durable payment volume?","pages":[{"id":"performance-pulse","label":"Performance Pulse"},{"id":"merchant-unit-economics","label":"Merchant Unit Economics"},{"id":"margin-scenario-actions","label":"Margin Scenario & Actions"}],"metrics":[{"value":"$92.5M","label":"TPV","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":90650000,"prior":85100000,"series":[85100000,85772727.27272727,86445454.54545455,87118181.81818181,87790909.0909091,88463636.36363636,89136363.63636364,89809090.9090909,90481818.18181819,91154545.45454545,91827272.72727272,92500000],"sensitivity":1},{"value":"1.28%","label":"take rate","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":1.2544,"prior":1.1776,"series":[1.1776,1.186909090909091,1.1962181818181818,1.2055272727272728,1.2148363636363637,1.2241454545454546,1.2334545454545454,1.2427636363636363,1.2520727272727272,1.2613818181818182,1.270690909090909,1.28],"sensitivity":1},{"value":"38%","label":"gross margin %","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":37.24,"prior":34.96,"series":[34.96,35.236363636363635,35.512727272727275,35.78909090909091,36.06545454545454,36.341818181818184,36.61818181818182,36.89454545454546,37.17090909090909,37.447272727272725,37.723636363636366,38],"sensitivity":1},{"value":"$0.09","label":"unit profit","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":0.0882,"prior":0.0828,"series":[0.0828,0.08345454545454545,0.08410909090909091,0.08476363636363636,0.08541818181818181,0.08607272727272727,0.08672727272727272,0.08738181818181819,0.08803636363636363,0.08869090909090908,0.08934545454545455,0.09],"sensitivity":1}],"bars":[{"label":"TPV","value":90},{"label":"Take rate","value":63},{"label":"Cost to serve","value":58},{"label":"Merchant mix","value":70}],"drivers":[{"label":"Enterprise TPV","value":"+$2.2M","isRisk":false},{"label":"Processing cost","value":"-$0.7M","isRisk":true},{"label":"Fee optimization","value":"+$0.4M","isRisk":false}],"actions":[{"owner":"Commercial","action":"Review low-fee enterprise contracts."},{"owner":"Finance","action":"Model fee tiers by merchant segment."},{"owner":"Ops","action":"Track processing cost exceptions."}],"financeLogic":["Payment volume times take rate equals gross payment revenue.","Revenue less processing, incentive, and risk cost equals gross profit.","Unit profit divides gross profit by completed transactions."],"scopeLabel":"Merchant Segment","scopeOptions":["All Merchants","Enterprise","SMB","Platform Partners"],"breakdownLabel":"Payment Rail","breakdownOptions":["All Rails","Cards","Bank Transfer","Wallet","Instant Pay"],"regionOptions":["All Rails","Cards","Bank Transfer","Wallet","Instant Pay"],"governance":["Settled and reversed transactions reconcile to processor totals.","Merchant contracts map to one effective fee schedule.","Scenario changes preserve volume and cost-unit consistency.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Merchants","region":"All Rails"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Merchant Segment","options":["All Merchants","Enterprise","SMB","Platform Partners"],"default":"All Merchants"},{"id":"region","label":"Payment Rail","options":["All Rails","Cards","Bank Transfer","Wallet","Instant Pay"],"default":"All Rails"}],"dataClassification":"Synthetic public-safe preview data"});</script>
-    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
-  </body>
+      <section id="exec" class="view active" role="tabpanel" aria-labelledby="tab-exec">
+        <div class="kpis" id="execKpis"></div>
+        <div class="grid">
+          <div class="panel span-7"><h3>Indexed GMV, Revenue & Margin Trend</h3><div class="caption">Comparable trajectory · first visible month = 100</div><div class="chart" id="trendChart"></div></div>
+          <div class="panel span-5"><h3>Contribution Margin by Segment</h3><div class="caption">Current month</div><div class="chart" id="segmentChart"></div></div>
+          <div class="panel span-4"><h3>Payment Method Mix</h3><div class="caption">GMV by rail</div><div class="chart" id="methodChart"></div></div>
+          <div class="panel span-8"><h3>Top Merchants</h3><div class="caption">Current month profitability leaders</div><div id="topTable"></div></div>
+        </div>
+      </section>
+      <section id="drivers" class="view" role="tabpanel" aria-labelledby="tab-drivers">
+        <div class="kpis" id="driverKpis"></div>
+        <div class="grid">
+          <div class="panel span-4"><h3>GMV by Channel</h3><div class="caption">Transaction entry point</div><div class="chart" id="channelChart"></div></div>
+          <div class="panel span-4"><h3>Refund by Vertical</h3><div class="caption">Refund amount</div><div class="chart" id="refundChart"></div></div>
+          <div class="panel span-4"><h3>Chargeback Bps by Method</h3><div class="caption">Risk by payment method</div><div class="chart" id="chargebackChart"></div></div>
+          <div class="panel span-6"><h3>Bottom Merchants</h3><div class="caption">Lowest current-month contribution margin</div><div id="bottomTable"></div></div>
+          <div class="panel span-6"><h3>High Risk Merchants</h3><div class="caption">Chargeback and refund pressure</div><div id="riskTable"></div></div>
+        </div>
+      </section>
+      <section id="scenario" class="view" role="tabpanel" aria-labelledby="tab-scenario">
+        <div class="filters" style="justify-content:flex-start;margin-bottom:12px">
+          <div class="field"><label for="scenarioFilter">Scenario</label><select id="scenarioFilter" aria-label="Profitability scenario"></select></div>
+        </div>
+        <div class="kpis" id="scenarioKpis"></div>
+        <div class="grid">
+          <div class="panel span-6"><h3>Fee Revenue Reconciliation</h3><div class="caption">Prior month + GMV volume + take-rate / mix + residual = current month</div><div class="chart" id="bridgeChart"></div></div>
+          <div class="panel span-6"><h3>Cost Per Transaction Trend</h3><div class="caption">Variable cost per transaction</div><div class="chart" id="costChart"></div></div>
+          <div class="panel span-5"><h3>Margin Sensitivity by Segment</h3><div class="caption">Current-month CM%</div><div class="chart" id="sensitivityChart"></div></div>
+          <div class="panel span-7"><h3>Scenario Assumptions</h3><div class="caption">Take-rate, cost, and volume elasticity</div><div id="scenarioTable"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const DATA = (() => {
+      const months = [];
+      for (let y = 2024; y <= 2026; y += 1) for (let m = 1; m <= 12; m += 1) {
+        if (y === 2026 && m > 5) break;
+        months.push(y + "-" + String(m).padStart(2,"0"));
+      }
+      const segments = ["Enterprise","Micro","Mid-Market","SMB"];
+      const methods = ["BNPL","Bank Transfer","Cards","QR / Instant Pay","Wallet"];
+      const channels = ["API","Hosted Checkout","In-App","POS","Payment Link"];
+      const verticals = ["Retail","Travel","Gaming","Services","Education"];
+      const countries = ["Vietnam","Singapore","Thailand","Malaysia"];
+      const records = [];
+      months.forEach((month, mi) => segments.forEach((segment, si) => methods.forEach((method, pi) => channels.forEach((channel, ci) => {
+        const scale = [1.7,0.42,1.15,1][si];
+        const methodScale = [0.18,0.72,2.15,0.38,0.68][pi];
+        const channelScale = [1.15,1.35,0.82,0.55,0.48][ci];
+        const trend = 0.78 + mi * 0.013 + Math.sin((mi + pi) * 0.62) * 0.045;
+        const gmv = 476500 * scale * methodScale * channelScale * trend;
+        const transactions = Math.max(20, Math.round(gmv / (62 + si * 19)));
+        const takeRate = 0.0132 + (si === 1 ? 0.0023 : 0) + (method === "BNPL" ? 0.0036 : 0) - (segment === "Enterprise" ? 0.0012 : 0);
+        const revenue = gmv * takeRate;
+        const unitCost = method === "Cards" ? 0.72 : method === "BNPL" ? 0.88 : 0.42;
+        const cost = (transactions * unitCost + gmv * (method === "Cards" ? 0.0026 : 0.0012)) * 0.885;
+        const refundRate = 0.007 + (pi % 3) * 0.0025 + (si === 1 ? 0.002 : 0);
+        const cbRate = method === "BNPL" ? 0.00115 : method === "Cards" ? 0.00065 : 0.00018;
+        const failed = Math.round(transactions * (0.018 + (ci % 3) * 0.006));
+        records.push({
+          year_month:month,
+          merchant_name:verticals[(si + pi + ci) % verticals.length] + "Pay Merchant " + String(si * 25 + pi * 5 + ci + 1).padStart(4,"0"),
+          merchant_segment:segment, vertical:verticals[(si + pi + ci) % verticals.length],
+          country:countries[(si + ci) % countries.length], risk_tier:cbRate > 0.001 ? "High" : cbRate > 0.0005 ? "Medium" : "Low",
+          payment_method:method, channel, gmv, transaction_count:transactions, revenue_fee:revenue,
+          total_cost:cost, contribution_margin:revenue - cost, refund_amount:gmv * refundRate,
+          chargeback_amount:gmv * cbRate, successful_txn:transactions - failed, failed_txn:failed
+        });
+      }))));
+      const scenarios = [
+        {scenario_id:"S00",scenario_name:"Base",take_rate_delta_bps:0,cost_delta_pct:0,volume_elasticity:0,description:"Current contracted economics."},
+        {scenario_id:"S01",scenario_name:"Raise take rate +10 bps",take_rate_delta_bps:10,cost_delta_pct:0,volume_elasticity:-0.004,description:"Modest price lift with light volume elasticity."},
+        {scenario_id:"S02",scenario_name:"Raise take rate +25 bps",take_rate_delta_bps:25,cost_delta_pct:0,volume_elasticity:-0.014,description:"Aggressive price lift for less-sensitive segments."},
+        {scenario_id:"S03",scenario_name:"Processor renegotiation -8%",take_rate_delta_bps:0,cost_delta_pct:-0.08,volume_elasticity:0,description:"Reduce processor and interchange cost."},
+        {scenario_id:"S04",scenario_name:"Fraud controls -15%",take_rate_delta_bps:0,cost_delta_pct:-0.035,volume_elasticity:-0.002,description:"Reduce risk leakage with minor friction."},
+        {scenario_id:"S05",scenario_name:"Enterprise discount -12 bps",take_rate_delta_bps:-12,cost_delta_pct:0,volume_elasticity:0.018,description:"Protect volume through targeted repricing."}
+      ];
+      const bridge = [
+        {bridge_step:"Previous Revenue",bridge_amount:526900},
+        {bridge_step:"GMV Volume Effect",bridge_amount:5200},
+        {bridge_step:"Take-rate / Mix",bridge_amount:8450},
+        {bridge_step:"Refund Delta",bridge_amount:-245},
+        {bridge_step:"Chargeback Delta",bridge_amount:-15},
+        {bridge_step:"Current Revenue",bridge_amount:540300}
+      ];
+      return {generatedAt:"2026-08-18",latestMonth:"2026-05",records,scenarios,bridge,months,segments,methods,channels};
+    })();
+    const colors = {blue:'#2563EB',cyan:'#0891B2',green:'#16A34A',teal:'#0F766E',amber:'#D97706',red:'#DC2626',violet:'#7C3AED',slate:'#475569'};
+    const methodColors = {Cards:colors.blue,'Bank Transfer':colors.cyan,Wallet:colors.teal,BNPL:colors.red,'QR / Instant Pay':colors.amber};
+    const fmtMoney = v => Math.abs(v)>=1e6 ? '$'+(v/1e6).toFixed(1)+'M' : Math.abs(v)>=1e3 ? '$'+(v/1e3).toFixed(1)+'K' : Math.abs(v)<10 ? '$'+v.toFixed(2) : '$'+v.toFixed(0);
+    const fmtNum = v => Math.abs(v)>=1e6 ? (v/1e6).toFixed(1)+'M' : Math.abs(v)>=1e3 ? (v/1e3).toFixed(1)+'K' : v.toFixed(0);
+    const fmtPct = v => (v*100).toFixed(1)+'%';
+    const byId = id => document.getElementById(id);
+    function fillSelect(id, values, allLabel='All') { const el=byId(id); el.innerHTML='<option value="__all">'+allLabel+'</option>'+values.map(v=>`<option value="${v}">${v}</option>`).join(''); }
+    byId('monthFilter').innerHTML = DATA.months.map(v=>`<option value="${v}">${v}</option>`).join('');
+    byId('monthFilter').value = DATA.latestMonth;
+    fillSelect('segmentFilter', DATA.segments);
+    fillSelect('methodFilter', DATA.methods);
+    fillSelect('channelFilter', DATA.channels);
+    byId('scenarioFilter').innerHTML = DATA.scenarios.map(s=>`<option value="${s.scenario_name}">${s.scenario_name}</option>`).join('');
+    function rawFiltered() {
+      const m=byId('monthFilter').value, seg=byId('segmentFilter').value, method=byId('methodFilter').value, ch=byId('channelFilter').value, q=byId('searchFilter').value.toLowerCase();
+      return DATA.records.filter(r => (seg==='__all'||r.merchant_segment===seg) && (method==='__all'||r.payment_method===method) && (ch==='__all'||r.channel===ch) && (!q||r.merchant_name.toLowerCase().includes(q)));
+    }
+    function scenarioDefinition(){ return DATA.scenarios.find(s=>s.scenario_name===byId('scenarioFilter').value) || DATA.scenarios[0]; }
+    function scenarioRows(rows) {
+      const sc=scenarioDefinition(); if(sc.scenario_name==='Base') return rows;
+      return rows.map(r=>{
+        const progress=.35+.65*(Math.max(0,DATA.months.indexOf(r.year_month))/Math.max(1,DATA.months.length-1));
+        const volume=1+sc.volume_elasticity*progress,gmv=r.gmv*volume,tx=r.transaction_count*volume;
+        const baseTake=r.gmv?r.revenue_fee/r.gmv:0,revenue=gmv*(baseTake+sc.take_rate_delta_bps/10000*progress),cost=r.total_cost*volume*(1+sc.cost_delta_pct*progress);
+        return {...r,gmv,transaction_count:tx,revenue_fee:revenue,total_cost:cost,contribution_margin:revenue-cost,successful_txn:r.successful_txn*volume,failed_txn:r.failed_txn*volume,refund_amount:r.refund_amount*volume,chargeback_amount:r.chargeback_amount*volume};
+      });
+    }
+    function filtered() { return scenarioRows(rawFiltered()); }
+    function latestRows() { const rows=filtered(); return rows.filter(r=>r.year_month===byId('monthFilter').value || (byId('monthFilter').value==='__all' && r.year_month===DATA.latestMonth)); }
+    function latestRawRows() { const rows=rawFiltered(); return rows.filter(r=>r.year_month===byId('monthFilter').value || (byId('monthFilter').value==='__all' && r.year_month===DATA.latestMonth)); }
+    function sum(rows,k) { return rows.reduce((a,r)=>a+(+r[k]||0),0); }
+    function metrics(rows) { const g=sum(rows,'gmv'), tx=sum(rows,'transaction_count'), rev=sum(rows,'revenue_fee'), cost=sum(rows,'total_cost'), margin=sum(rows,'contribution_margin'), succ=sum(rows,'successful_txn'), fail=sum(rows,'failed_txn'); return {gmv:g,tx,rev,cost,margin,take:rev/g,cmPct:margin/rev,costTxn:cost/tx,refund:sum(rows,'refund_amount')/g,cb:sum(rows,'chargeback_amount')/g*10000,auth:succ/(succ+fail)}; }
+    function monthlyMetrics(rows) { return DATA.months.map(month=>{ const rs=rows.filter(r=>r.year_month===month); const m=metrics(rs); return {month,...m}; }).filter(d=>Number.isFinite(d.gmv)); }
+    function sparkSvg(values,color) { const clean=(values||[]).filter(v=>Number.isFinite(v)).slice(-12); if(clean.length<2) return ''; const min=Math.min(...clean), max=Math.max(...clean), range=Math.max(0.0001,max-min); const pts=clean.map((v,i)=>`${8+i*(96/Math.max(1,clean.length-1))},${34-(v-min)/range*24}`).join(' '); const endY=34-(clean.at(-1)-min)/range*24; return `<svg class="spark" viewBox="0 0 112 44" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="104" cy="${endY}" r="3.3" fill="${color}"/></svg>`; }
+    function card(label,value,note,color,series) { return `<div class="card" style="--accent:${color}"><div class="label">${label}</div><div class="value">${value}</div><div class="delta">${note}</div>${sparkSvg(series,color)}</div>`; }
+    function group(rows,key,aggs) { const m=new Map(); rows.forEach(r=>{ const k=r[key]||'Unknown'; if(!m.has(k)) m.set(k,{key:k}); const o=m.get(k); aggs.forEach(a=>o[a]=(o[a]||0)+(+r[a]||0)); }); return [...m.values()]; }
+    function lineChart(id, rows, series) {
+      const w=760,h=220,p=34; const months=[...new Set(rows.map(r=>r.year_month))].sort(); const grouped=months.map(m=>{ const rs=rows.filter(r=>r.year_month===m); return {month:m,gmv:sum(rs,'gmv'),rev:sum(rs,'revenue_fee'),margin:sum(rs,'contribution_margin'),costTxn:sum(rs,'total_cost')/sum(rs,'transaction_count')}; });
+      const sx=i=>p+i*(w-2*p)/Math.max(1,grouped.length-1);
+      const indexed=series.length>1;
+      const plotted=series.map(s=>{const raw=grouped.map(d=>Number(d[s.key]));const base=raw.find(v=>Number.isFinite(v)&&v!==0)||1;return {...s,values:raw.map(v=>indexed?v/base*100:v)}});
+      const allValues=plotted.flatMap(s=>s.values).filter(Number.isFinite);let min=Math.min(...allValues),max=Math.max(...allValues);if(indexed){min=Math.floor(Math.min(min,100)/5)*5;max=Math.ceil(Math.max(max,100)/5)*5;}if(max-min<.0001){min-=1;max+=1;}const sy=v=>h-p-(v-min)/(max-min)*(h-2*p);
+      const paths=plotted.map(s=>`<path d="${s.values.map((v,i)=>(i?'L':'M')+sx(i)+','+sy(v)).join(' ')}" fill="none" stroke="${s.color}" stroke-width="3"/>`).join('');
+      const labels=grouped.map((d,i)=> i%3===0 ? `<text class="tick" x="${sx(i)}" y="${h-7}" text-anchor="middle">${d.month.slice(2)}</text>`:'').join('');
+      const ticks=[min,(min+max)/2,max].map(v=>`<line class="axis" opacity=".45" x1="${p}" y1="${sy(v)}" x2="${w-p}" y2="${sy(v)}"/><text class="tick" x="4" y="${sy(v)+4}">${indexed?Math.round(v):v.toFixed(2)}</text>`).join('');
+      const label=indexed?'Indexed monthly trend; each series begins at 100':`${series[0].name} monthly trend`;
+      byId(id).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}"><title>${label}</title>${ticks}${paths}${labels}${series.map((s,i)=>`<text class="legend" x="${p+i*130}" y="18" fill="${s.color}">${s.name}</text>`).join('')}</svg>`;
+    }
+    function barChart(id, data, labelKey, valueKey, color, horizontal=false) {
+      const w=520,h=220,p=38; const vals=data.map(d=>+d[valueKey]||0); const min=Math.min(0,...vals), max=Math.max(0,...vals), range=Math.max(0.0001,max-min);
+      let bars='';
+      const zeroY=p+(max/range)*(h-2*p);
+      if(horizontal) { const bh=(h-2*p)/data.length*.65; const maxAbs=Math.max(Math.abs(min),Math.abs(max),1); data.forEach((d,i)=>{ const y=p+i*(h-2*p)/data.length; const bw=Math.abs(d[valueKey])/maxAbs*(w-2*p); bars+=`<rect x="${p}" y="${y}" width="${bw}" height="${bh}" fill="${Array.isArray(color)?color[i%color.length]:color}"/><text class="tick" x="4" y="${y+bh*.75}">${d[labelKey]}</text>`; }); }
+      else { const bw=(w-2*p)/data.length*.62; data.forEach((d,i)=>{ const x=p+i*(w-2*p)/data.length; const v=+d[valueKey]||0; const y=p+(max-Math.max(v,0))/range*(h-2*p); const y0=p+(max-0)/range*(h-2*p); const bh=Math.abs(v)/range*(h-2*p); bars+=`<rect x="${x}" y="${Math.min(y,y0)}" width="${bw}" height="${Math.max(1,bh)}" fill="${Array.isArray(color)?color[i%color.length]:color}"/><text class="tick" x="${x+bw/2}" y="${h-8}" text-anchor="middle">${String(d[labelKey]).slice(0,10)}</text>`; }); }
+      const aria=`${id.replace(/([A-Z])/g,' $1')} chart`;
+      byId(id).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${aria}"><title>${aria}</title><line class="axis" x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}"/>${bars}</svg>`;
+    }
+    function revenueBridge(rows,current){
+      const currentIndex=DATA.months.indexOf(byId('monthFilter').value),previousMonth=DATA.months[Math.max(0,currentIndex-1)];
+      const previous=metrics(rows.filter(r=>r.year_month===previousMonth));
+      if(!Number.isFinite(previous.rev)) return [];
+      const volume=(current.gmv-previous.gmv)*previous.take;
+      const rateMix=current.gmv*(current.take-previous.take);
+      const residual=current.rev-previous.rev-volume-rateMix;
+      return [{key:'Prior revenue',value:previous.rev},{key:'GMV volume',value:volume},{key:'Take-rate / mix',value:rateMix},{key:'Residual',value:residual},{key:'Current revenue',value:current.rev}];
+    }
+    function table(id, rows, cols) { byId(id).innerHTML = `<table><thead><tr>${cols.map(c=>`<th class="${c.num?'num':''}">${c.h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td class="${c.num?'num':''}">${c.f?c.f(r[c.k],r):r[c.k]}</td>`).join('')}</tr>`).join('')}</tbody></table>`; }
+    function render() {
+      const all=filtered(), cur=latestRows(), m=metrics(cur), rawAll=rawFiltered(), baseM=metrics(latestRawRows());
+      const monthly=monthlyMetrics(all);
+      byId('freshness').textContent = `Generated ${DATA.generatedAt} | ${cur.length.toLocaleString()} filtered rows`;
+      byId('execKpis').innerHTML=[
+        card('GMV',fmtMoney(m.gmv),'latest selected month',colors.blue,monthly.map(d=>d.gmv)), card('Revenue',fmtMoney(m.rev),fmtPct(m.take)+' take rate',colors.green,monthly.map(d=>d.rev)), card('Contribution Margin',fmtMoney(m.margin),fmtPct(m.cmPct),colors.violet,monthly.map(d=>d.margin)), card('Take Rate',fmtPct(m.take),'fee revenue / GMV',colors.teal,monthly.map(d=>d.take))
+      ].join('');
+      byId('driverKpis').innerHTML=[card('Auth Success',fmtPct(m.auth),'successful / attempts',colors.green,monthly.map(d=>d.auth)), card('Refund Rate',fmtPct(m.refund),'refund / GMV',colors.amber,monthly.map(d=>d.refund)), card('Chargeback Bps',m.cb.toFixed(1),'chargeback / GMV',colors.red,monthly.map(d=>d.cb)), card('Cost / Txn',fmtMoney(m.costTxn),'unit-cost control',colors.amber,monthly.map(d=>d.costTxn))].join('');
+      lineChart('trendChart', all, [{key:'gmv',name:'GMV',color:colors.blue},{key:'rev',name:'Revenue',color:colors.green},{key:'margin',name:'CM',color:colors.violet}]);
+      barChart('segmentChart', group(cur,'merchant_segment',['contribution_margin']).sort((a,b)=>a.contribution_margin-b.contribution_margin),'key','contribution_margin',colors.violet,true);
+      const methodRows=group(cur,'payment_method',['gmv']).sort((a,b)=>b.gmv-a.gmv);
+      barChart('methodChart', methodRows,'key','gmv',methodRows.map(d=>methodColors[d.key]||colors.blue));
+      barChart('channelChart', group(cur,'channel',['gmv']).sort((a,b)=>a.gmv-b.gmv),'key','gmv',colors.cyan,true);
+      barChart('refundChart', group(cur,'vertical',['refund_amount']).sort((a,b)=>b.refund_amount-a.refund_amount).slice(0,8),'key','refund_amount',colors.amber);
+      const cb=group(cur,'payment_method',['gmv','chargeback_amount']).map(d=>({key:d.key,bps:d.chargeback_amount/d.gmv*10000})).sort((a,b)=>a.bps-b.bps); barChart('chargebackChart',cb,'key','bps',colors.red,true);
+      const merch=group(cur,'merchant_name',['gmv','revenue_fee','contribution_margin','refund_amount','chargeback_amount']).map(d=>{ const row={...d,take:d.revenue_fee/d.gmv,cmPct:d.contribution_margin/d.revenue_fee,cb:d.chargeback_amount/d.gmv*10000,refund:d.refund_amount/d.gmv}; row.status=row.cb>10?'Risk':row.cmPct<.20?'Margin watch':'Scale'; row.owner=row.status==='Risk'?'Risk Ops':row.status==='Margin watch'?'Finance':'Commercial'; row.action=row.status==='Risk'?'Reduce disputes':row.status==='Margin watch'?'Reprice / renegotiate':'Protect growth'; row.signal=Math.max(4,Math.min(100,Math.abs(row.contribution_margin)/Math.max(1,m.margin)*100)); return row; });
+      const cols=[{h:'Merchant',k:'key'},{h:'Status',k:'status',f:v=>`<span class="pill ${v==='Scale'?'good':v==='Risk'?'risk':'watch'}">${v}</span>`},{h:'Action',k:'action'},{h:'Owner',k:'owner'},{h:'GMV',k:'gmv',num:true,f:fmtMoney},{h:'CM',k:'contribution_margin',num:true,f:fmtMoney},{h:'Signal',k:'signal',f:(v,r)=>`<span class="microbar"><i style="width:${Math.min(100,v)}%"></i></span>`}];
+      table('topTable', merch.sort((a,b)=>b.contribution_margin-a.contribution_margin).slice(0,10), cols);
+      table('bottomTable', merch.sort((a,b)=>a.contribution_margin-b.contribution_margin).slice(0,10), cols);
+      table('riskTable', merch.sort((a,b)=>b.cb-a.cb).slice(0,10), [{h:'Merchant',k:'key'},{h:'Status',k:'status',f:v=>`<span class="pill ${v==='Risk'?'risk':v==='Scale'?'good':'watch'}">${v}</span>`},{h:'Action',k:'action'},{h:'Owner',k:'owner'},{h:'Refund',k:'refund',num:true,f:fmtPct},{h:'CB Bps',k:'cb',num:true,f:v=>v.toFixed(1)}]);
+      const sc=scenarioDefinition(),cmVariance=m.margin-baseM.margin;
+      byId('scenarioKpis').innerHTML=[card('Baseline Revenue',fmtMoney(baseM.rev),'selected operating lens before scenario',colors.green,monthlyMetrics(rawAll).map(d=>d.rev)),card('Baseline Variable Cost',fmtMoney(baseM.cost),'processing + risk cost before scenario',colors.amber,monthlyMetrics(rawAll).map(d=>d.cost)),card('Scenario CM',fmtMoney(m.margin),`${sc.scenario_name} · ${fmtPct(m.cmPct)} CM`,colors.blue,monthly.map(d=>d.margin)),card('CM Variance',fmtMoney(cmVariance),'scenario minus baseline',cmVariance>=0?colors.teal:colors.red,monthly.map((d,i)=>d.margin-(monthlyMetrics(rawAll)[i]?.margin||0)))].join('');
+      barChart('bridgeChart', revenueBridge(all,m),'key','value',[colors.slate,colors.green,colors.green,colors.amber,colors.blue]);
+      lineChart('costChart', all, [{key:'costTxn',name:'Cost / Txn',color:colors.amber}]);
+      const seg=group(cur,'merchant_segment',['revenue_fee','contribution_margin']).map(d=>({key:d.key,pct:d.contribution_margin/d.revenue_fee*100})); barChart('sensitivityChart',seg,'key','pct',colors.violet);
+      table('scenarioTable', DATA.scenarios, [{h:'Scenario',k:'scenario_name'},{h:'Take Rate',k:'take_rate_delta_bps',num:true,f:v=>(v>0?'+':'')+v+' bps'},{h:'Cost',k:'cost_delta_pct',num:true,f:v=>(v*100).toFixed(1)+'%'},{h:'Volume',k:'volume_elasticity',num:true,f:v=>(v*100).toFixed(1)+'%'},{h:'Description',k:'description'}]);
+    }
+    byId('nav').addEventListener('click', e=>{ if(e.target.tagName!=='BUTTON') return; document.querySelectorAll('.nav button').forEach(b=>{const selected=b===e.target;b.classList.toggle('active',selected);b.setAttribute('aria-selected',String(selected));}); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); e.target.classList.add('active'); byId(e.target.dataset.view).classList.add('active'); byId('viewTitle').textContent=e.target.textContent; render(); });
+    ['monthFilter','segmentFilter','methodFilter','channelFilter','searchFilter','scenarioFilter'].forEach(id=>byId(id).addEventListener('input', render));
+    render();
+  </script>
+</div></div>
+  <script>
+    (() => {
+      const reset = document.createElement("button");
+      reset.type = "button"; reset.id = "resetFilters"; reset.className = "reset-control"; reset.textContent = "Reset lens";
+      document.querySelector(".filters").appendChild(reset);
+      const filterIds = {month:"monthFilter",segment:"segmentFilter",method:"methodFilter",channel:"channelFilter",search:"searchFilter",scenario:"scenarioFilter"};
+      function currentPage() { return document.querySelector("#nav button.active")?.dataset.view || "exec"; }
+      function currentFilters() { return Object.fromEntries(Object.entries(filterIds).map(([k,id]) => [k,document.getElementById(id).value])); }
+      function setPage(page) {
+        const value = String(page || "").toLowerCase();
+        const button = Array.from(document.querySelectorAll("#nav button")).find(b => b.dataset.view === page || b.textContent.toLowerCase().includes(value));
+        if (button) button.click();
+        return currentPage();
+      }
+      function setFilter(key,value) {
+        const id = filterIds[key]; if (!id) return false;
+        const control = document.getElementById(id); control.value = value;
+        control.dispatchEvent(new Event("input",{bubbles:true})); return true;
+      }
+      function resetFilters() {
+        document.getElementById("monthFilter").value = DATA.latestMonth;
+        ["segmentFilter","methodFilter","channelFilter"].forEach(id => document.getElementById(id).value = "__all");
+        document.getElementById("searchFilter").value = "";
+        document.getElementById("scenarioFilter").value = "Base";
+        render(); syncPublicState(); return currentFilters();
+      }
+      const publicState = {};
+      function chartFingerprint() {
+        const signature=root=>Array.from(root.querySelectorAll("svg path,svg polyline,svg rect,svg circle,svg text,table tbody tr,.microbar i")).map(el=>[el.tagName,el.getAttribute("d"),el.getAttribute("points"),el.getAttribute("x"),el.getAttribute("y"),el.getAttribute("cx"),el.getAttribute("cy"),el.getAttribute("r"),el.getAttribute("width"),el.getAttribute("height"),el.getAttribute("style"),el.textContent.trim()].join("|")).join("~");
+        const hash=value=>{let h=2166136261;for(let i=0;i<value.length;i++)h=Math.imul(h^value.charCodeAt(i),16777619);return (h>>>0).toString(16)};
+        return Object.fromEntries(Array.from(document.querySelectorAll("[role=tabpanel]")).map(root=>[root.id,hash(signature(root))]));
+      }
+      function syncPublicState() { Object.assign(publicState,{page:currentPage()},currentFilters()); return publicState; }
+      reset.addEventListener("click",() => { resetFilters(); syncPublicState(); });
+      document.getElementById("nav").addEventListener("click",syncPublicState);
+      Object.values(filterIds).forEach(id => document.getElementById(id).addEventListener("input",syncPublicState));
+      window.previewState = publicState;
+      window.previewActions = Object.freeze({
+        setPage,setFilter,resetFilters,
+        getSummary:() => {const m=metrics(latestRows()),bridge=revenueBridge(filtered(),m);return {project:"08",page:currentPage(),filters:currentFilters(),metrics:m,checks:{contributionMarginTieOut:Math.abs(m.rev-m.cost-m.margin)<.01,revenueBridgeTieOut:!bridge.length||Math.abs(bridge[0].value+bridge.slice(1,-1).reduce((a,r)=>a+r.value,0)-bridge.at(-1).value)<.01}}},
+        getRows:() => latestRows().map(r => ({merchant:r.merchant_name,segment:r.merchant_segment,method:r.payment_method,channel:r.channel,gmv:r.gmv,margin:r.contribution_margin})),
+        getChartFingerprint:chartFingerprint
+      });
+      const qa = {ready:true,project:"08",layoutSource:"project-08-own-dashboard",pageCount:3,filterCount:6,kpiCount:4,hasReset:true,hasTable:true};
+      Object.defineProperty(qa,"chartFingerprint",{enumerable:true,get:()=>{const active=document.querySelector('[role="tabpanel"].active');return chartFingerprint()[active?.id]||"";}});
+      window.__dashboardQa = qa;
+      syncPublicState();
+    })();
+  </script>
+</body>
 </html>

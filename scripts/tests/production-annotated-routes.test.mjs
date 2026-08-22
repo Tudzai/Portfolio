@@ -8,7 +8,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const read = (relativePath) => fs.readFile(path.join(repoRoot, relativePath), "utf8");
 
 const hubRoutes = [
-  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "routes-20260817-powerbi8"],
+  ["showcase/powerbi/index.html", "powerbi", "decision-hub-hero", "routes-20260818-powerbi12"],
   ["showcase/fpa-decision-cases/index.html", "fpa", "decision-hub-hero", "routes-20260816-fpa-simple2"],
   ["showcase/python-automation/index.html", "automation", "decision-hub-hero", "routes-20260811-annotated2"],
   ["showcase/financial-models/index.html", "models", "decision-hub-hero", "routes-20260811-annotated2"],
@@ -74,24 +74,55 @@ test("redesigns the Power BI library from the recruiter shortlist through the fi
   ]);
 
   assert.match(html, /class="start-strip powerbi-shortlist"/);
+  assert.match(html, /<main id="main-content" class="shell" data-stage-content tabindex="-1">/);
+  assert.doesNotMatch(html, /<div id="main-content"/);
   assert.match(html, /class="start-card start-card-primary"/);
   assert.match(html, /class="powerbi-directory"/);
   assert.doesNotMatch(html, /class="chart-mode-panel"/);
+  assert.match(html, /<link rel="icon" href="\.\.\/\.\.\/assets\/favicon\.svg" type="image\/svg\+xml" \/>/);
+  assert.match(html, /<h1>Decisions you can test\.<\/h1>/);
+  assert.match(html, /class="powerbi-hero-feature"/);
+  assert.equal((html.match(/class="powerbi-hero-feature"/g) ?? []).length, 1);
+  assert.doesNotMatch(html, /class="preview-card"/);
+  assert.match(html, /id="case-directory"/);
   assert.match(html, /class="section project-lens project-lens-primary"/);
   assert.match(html, /class="section project-lens project-lens-final"/);
   assert.equal((html.match(/class="project-open"/g) ?? []).length, 17);
   assert.equal((html.match(/class="project-visual"/g) ?? []).length, 20);
 
-  const previewImages = [...html.matchAll(/src="\.\.\/\.\.\/(assets\/powerbi-previews\/[^"?]+\.png)"/g)].map((match) => match[1]);
+  const thumbnailVersion = "own-layout-polish3-20260818";
+  const previewImages = [
+    ...html.matchAll(/src="\.\.\/\.\.\/(assets\/powerbi-previews\/[^"?]+\.png)\?v=own-layout-polish3-20260818"/g),
+  ].map((match) => match[1]);
   assert.equal(previewImages.length, 22);
   assert.equal(new Set(previewImages).size, 20);
   assert.equal((html.match(/<span class="status">Interactive<\/span>/g) ?? []).length, 20);
+  assert.match(html, /Route-level project briefs with live controls, decision logic, and project-specific dashboard layouts\./);
+  assert.match(html, /id="driver-based-forecasting"[\s\S]*?<div class="proof-list"><span>6 pages<\/span>/);
+
+  const projectImageMappings = [
+    ...html.matchAll(
+      /<article class="project-card(?: featured)?" id="([^"]+)"[^>]*>[\s\S]*?<img src="\.\.\/\.\.\/assets\/powerbi-previews\/([^"?]+)\.png\?v=own-layout-polish3-20260818"/g,
+    ),
+  ].map((match) => [match[1], match[2]]);
+  assert.equal(projectImageMappings.length, 20);
+  for (const [projectId, imageId] of projectImageMappings) {
+    assert.equal(imageId, projectId, `${projectId} should use its own live-dashboard thumbnail`);
+  }
 
   assert.match(html, /class="project-card featured" id="board-investor-cfo-pack"/);
-  assert.match(html, /<a class="project-visual" href="board-investor-cfo-pack\/index\.html"[^>]*>[\s\S]*?<img src="\.\.\/\.\.\/assets\/powerbi-previews\/board-investor-cfo-pack\.png"/);
+  assert.match(
+    html,
+    new RegExp(`<a class="project-visual" href="board-investor-cfo-pack/index\\.html"[^>]*>[\\s\\S]*?<img src="\\.\\./\\.\\./assets/powerbi-previews/board-investor-cfo-pack\\.png\\?v=${thumbnailVersion}"`),
+  );
   assert.doesNotMatch(html, /preview-suppressed/);
   assert.match(css, /data-stage-family="powerbi"\] \.project-visual\s*\{[^}]*aspect-ratio:\s*16 \/ 9;[^}]*border:\s*0;[^}]*background:\s*transparent;/s);
   assert.match(css, /data-stage-family="powerbi"\] \.project-visual img\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;[^}]*width:\s*100%;[^}]*height:\s*100%;[^}]*object-fit:\s*cover;/s);
+  assert.match(css, /data-stage-family="powerbi"\] \.project-visual:focus-visible\s*\{[^}]*outline:\s*3px solid/s);
+  assert.match(
+    css,
+    /data-stage-family="powerbi"\] \.powerbi-hero-feature img\s*\{[^}]*width:\s*100%;[^}]*height:\s*auto;[^}]*aspect-ratio:\s*16 \/ 9;/s,
+  );
   assert.match(html, /<article class="project-card" id="esg-carbon-finance">/);
 
   for (const previewImage of new Set(previewImages)) {
@@ -106,5 +137,6 @@ test("redesigns the Power BI library from the recruiter shortlist through the fi
   assert.match(css, /\.powerbi-shortlist\s*\{[^}]*grid-template-columns:\s*minmax\(250px,\s*0\.68fr\)/s);
   assert.match(css, /\.powerbi-directory\s*\{[^}]*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
   assert.match(css, /\.project-lens \.project-grid\s*\{[^}]*repeat\(12,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(css, /@media\s*\(max-width:\s*760px\)[\s\S]*?\.powerbi-library-hero \.lens-nav\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
   assert.match(css, /@media\s*\(max-width:\s*760px\)[\s\S]*?\.project-lens \.project-card[^{]*\{[^}]*grid-column:\s*1 \/ -1/s);
 });

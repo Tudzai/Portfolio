@@ -1,39 +1,2350 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta name="robots" content="noindex, follow" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Driver-Based Forecasting Interactive Preview | Truong Dinh Anh Tu</title>
-    <link rel="canonical" href="index.html" />
-    <link rel="icon" href="../../../assets/favicon.svg" />
-    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
-    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-  <body class="powerbi-standard-preview" data-project-no="02">
-    <div class="preview-frame">
-      <div class="dashboard-shell">
-        <div class="dashboard" role="application" aria-label="Driver-Based Forecasting interactive dashboard">
-          <aside class="sidebar">
-            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Planning model</small></span></div>
-            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
-            <div class="lens-group">
-              <h2 class="lens-title">Global Lens</h2>
-              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
-              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
-            </div>
-            <div class="lens-group">
-              <h2 class="lens-title">Operating Scope</h2>
-              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
-              <label><span class="filter-label">Driver Family</span><span class="select-wrap"><select id="regionFilter" aria-label="Driver Family filter"></select></span></label>
-            </div>
-            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
-          </aside>
-          <main class="dashboard-content" id="content"></main>
+<html lang="en" data-project-number="02" data-layout-source="project-02-own-dashboard">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, follow">
+  <title>Driver-Based Forecasting Interactive Preview</title>
+  <link rel="canonical" href="index.html">
+  <link rel="icon" href="../../../assets/favicon.svg">
+  <style>
+    :root {
+      --canvas: #edf3f9;
+      --panel: #ffffff;
+      --panel-soft: #f7f9fc;
+      --ink: #12233e;
+      --muted: #64728a;
+      --line: #d8e1ee;
+      --line-strong: #c5d1e2;
+      --navy: #0b2d59;
+      --blue: #2259ad;
+      --blue-light: #d7e5f8;
+      --teal: #178f83;
+      --teal-light: #d8efec;
+      --amber: #d4921c;
+      --amber-light: #f8ebc9;
+      --violet: #6e4bd8;
+      --violet-light: #e8e0fa;
+      --rose: #be4655;
+      --rose-light: #f5dde1;
+      --shadow: 0 12px 28px rgba(27, 52, 89, .1);
+      --shadow-soft: 0 5px 16px rgba(27, 52, 89, .07);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 0; background: var(--canvas); color: var(--ink); }
+    body { font-family: "Segoe UI Variable", "Segoe UI", Arial, sans-serif; }
+    button, select, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+      outline: 3px solid #f0b33b;
+      outline-offset: 2px;
+    }
+
+    .preview-frame { width: 100%; overflow: hidden; background: var(--canvas); }
+    .dashboard-shell { height: 720px; overflow: hidden; }
+    .dashboard {
+      width: 1280px;
+      height: 720px;
+      margin-inline: auto;
+      overflow: hidden;
+      transform-origin: 0 0;
+      padding: 12px 16px 14px;
+      background:
+        radial-gradient(620px 250px at 96% -4%, rgba(45, 104, 190, .13), transparent 62%),
+        var(--canvas);
+    }
+
+    .app-header {
+      position: relative;
+      min-height: 82px;
+      display: grid;
+      grid-template-columns: minmax(360px, 1fr) auto;
+      align-items: center;
+      gap: 24px;
+      padding: 12px 14px 12px 18px;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(112deg, #0a2b57 0%, #174f94 65%, #1a639f 100%);
+      box-shadow: 0 12px 26px rgba(14, 46, 88, .17);
+      overflow: hidden;
+    }
+    .app-header::before,
+    .app-header::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+    .app-header::before {
+      width: 320px;
+      height: 180px;
+      top: -105px;
+      right: 310px;
+      border-radius: 50%;
+      background: rgba(87, 165, 232, .2);
+    }
+    .app-header::after {
+      inset: 0;
+      opacity: .18;
+      background-image: linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(90deg, transparent 28%, #000 78%, transparent);
+    }
+    .title-block, .filters { position: relative; z-index: 1; }
+
+    .brandline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+      color: rgba(255, 255, 255, .72);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .brandline .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 7px;
+      border: 1px solid rgba(255, 255, 255, .23);
+      border-radius: 999px;
+      color: #d9fff9;
+      letter-spacing: .08em;
+    }
+
+    .brandline .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #58d2bf;
+      box-shadow: 0 0 0 4px rgba(88, 210, 191, .14);
+    }
+
+    .title-row { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+    .title-row h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.05;
+      letter-spacing: -.025em;
+      white-space: nowrap;
+    }
+    .page-count {
+      color: rgba(255, 255, 255, .66);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .09em;
+      white-space: nowrap;
+    }
+    .title-block p {
+      margin: 5px 0 0;
+      color: rgba(255, 255, 255, .74);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(4, 112px);
+      gap: 6px;
+      align-items: stretch;
+    }
+    .filters.lab-mode { grid-template-columns: 144px; }
+    .filter {
+      min-width: 0;
+      padding: 5px 7px 4px;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .96);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.1;
+      box-shadow: 0 4px 12px rgba(3, 29, 62, .1);
+    }
+    .filter span { display: block; margin: 0 0 2px; }
+    .filter.hidden { display: none; }
+    .filter select {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 1px 16px 1px 0;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .command-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0 7px;
+    }
+    .pagebar {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+    }
+    .pagebar button, .reset {
+      min-height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .86);
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+    }
+    .pagebar button:hover, .reset:hover { transform: translateY(-1px); border-color: #aabbd1; }
+    .pagebar button[aria-selected="true"] {
+      border-color: var(--blue);
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 5px 12px rgba(34, 89, 173, .2);
+    }
+    .pagebar button[aria-selected="true"] span { color: #bfe0ff; }
+    .reset {
+      padding: 0 12px;
+      color: #973847;
+      background: #fff6f7;
+      border-color: #edcbd1;
+      white-space: nowrap;
+    }
+
+    .decision-band {
+      position: relative;
+      min-height: 34px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .76);
+      box-shadow: var(--shadow-soft);
+      font-size: 10px;
+      overflow: hidden;
+    }
+    .decision-band::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--blue), var(--teal));
+    }
+    .lens {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .lens span {
+      padding: 3px 7px;
+      border-radius: 999px;
+      color: #194a84;
+      background: var(--blue-light);
+      font-weight: 800;
+    }
+    .lens span.lens-status { color: #17685f; background: #dff1ed; }
+    .lens span.lens-status.risk { color: #9b3d49; background: #f7e0e4; }
+    .decision-copy { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+    .decision-copy strong { color: var(--ink); }
+    .decision-owner { color: #376b63; font-weight: 800; white-space: nowrap; }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+      margin-bottom: 9px;
+    }
+    .kpis.lab-mode { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .kpi {
+      position: relative;
+      min-height: 82px;
+      overflow: hidden;
+      padding: 10px 11px 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: linear-gradient(145deg, #fff 60%, color-mix(in srgb, var(--accent, var(--blue)) 5%, #fff));
+      box-shadow: var(--shadow-soft);
+    }
+    .kpi::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: var(--accent, var(--blue));
+    }
+    .kpi-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .kpi-label {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .kpi-index {
+      color: var(--accent, var(--blue));
+      font-size: 9px;
+      font-weight: 900;
+    }
+    .kpi-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 68px;
+      align-items: end;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .kpi strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -.02em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .kpi svg { width: 68px; height: 24px; }
+    .kpi small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.2;
+    }
+    .kpi small.good { color: #207267; }
+    .kpi small.risk { color: #a93c4a; }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: 224px 179px;
+      gap: 9px;
+      height: 412px;
+    }
+    .visual-grid.lab-mode { grid-template-rows: 105px 298px; }
+    .panel {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--panel);
+      box-shadow: var(--shadow-soft);
+    }
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(34,89,173,.22), transparent 58%);
+      pointer-events: none;
+    }
+    .panel.span-3 { grid-column: span 3; }
+    .panel.span-4 { grid-column: span 4; }
+    .panel.span-5 { grid-column: span 5; }
+    .panel.span-6 { grid-column: span 6; }
+    .panel.span-7 { grid-column: span 7; }
+    .panel.span-8 { grid-column: span 8; }
+    .panel.span-12 { grid-column: span 12; }
+    .panel h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.2;
+      letter-spacing: -.01em;
+    }
+    .panel-sub {
+      margin: 3px 0 6px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.25;
+    }
+    .panel-action {
+      position: absolute;
+      top: 9px;
+      right: 10px;
+      color: var(--blue);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .chart-wrap { position: relative; height: calc(100% - 29px); min-height: 0; }
+    .chart { display: block; width: 100%; height: 100%; min-height: 132px; overflow: visible; }
+    .chart text { font-family: "Segoe UI Variable", "Segoe UI", Arial, sans-serif; }
+    .chart .gridline { stroke: #e4eaf2; stroke-width: 1; }
+    .chart .axisline { stroke: #cbd6e4; stroke-width: 1; }
+    .chart .tick { fill: #65758d; font-size: 12.5px; }
+    .chart .direct-label { fill: #253a57; font-size: 12.5px; font-weight: 800; }
+    .panel.span-3 .chart .tick { font-size: 17px; }
+    .panel.span-3 .chart .direct-label { font-size: 17px; }
+    .chart .empty-state { fill: #21456f; font-size: 15px; font-weight: 850; }
+    .chart .empty-state-sub { fill: #6d7c91; font-size: 11px; }
+    .chart .series-actual { fill: none; stroke: #697789; stroke-width: 2.1; }
+    .chart .series-base { fill: none; stroke: var(--blue); stroke-width: 2.7; }
+    .chart .series-upside { fill: none; stroke: var(--teal); stroke-width: 2.7; }
+    .chart .series-downside { fill: none; stroke: var(--rose); stroke-width: 2.7; }
+    .chart .series-ebitda { fill: none; stroke: var(--teal); stroke-width: 2.4; }
+    .chart .scenario-mark { cursor: pointer; }
+    .chart .scenario-mark:hover { opacity: .82; }
+
+    .legend {
+      position: absolute;
+      top: -1px;
+      right: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 9px;
+      pointer-events: none;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .legend i { width: 12px; height: 3px; border-radius: 999px; background: var(--legend-color); }
+
+    .bar-list { display: grid; gap: 7px; margin-top: 8px; }
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(80px, 1fr) minmax(90px, 2fr) 56px;
+      align-items: center;
+      gap: 7px;
+      min-height: 20px;
+      font-size: 9px;
+    }
+    .bar-row .bar-name {
+      overflow: hidden;
+      padding: 2px 0;
+      color: #31425a;
+      font-size: 9px;
+      text-align: left;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .bar-row-button {
+      width: 100%;
+      min-height: 24px;
+      padding: 3px 4px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: background .15s ease, transform .15s ease;
+    }
+    .bar-row-button:hover { background: #f2f6fc; transform: translateX(2px); }
+    .bar-row-button[aria-pressed="true"] {
+      background: #eaf2ff;
+      box-shadow: inset 3px 0 var(--blue);
+    }
+    .bar-row-button[aria-pressed="true"] .bar-name { color: var(--blue); font-weight: 900; }
+    .bar-track { height: 10px; overflow: hidden; border-radius: 999px; background: #e8edf4; }
+    .bar-fill { display: block; height: 100%; border-radius: inherit; background: var(--fill, var(--blue)); }
+    .bar-value { color: #33465f; font-weight: 850; text-align: right; font-variant-numeric: tabular-nums; }
+    .empty-list {
+      display: grid;
+      place-items: center;
+      min-height: 112px;
+      margin-top: 8px;
+      border: 1px dashed #cbd7e6;
+      border-radius: 9px;
+      color: var(--muted);
+      background: #f8fafc;
+      font-size: 9px;
+      text-align: center;
+    }
+
+    .table-wrap { width: 100%; height: calc(100% - 30px); overflow: auto; scrollbar-color: #9cafc7 #edf2f8; }
+    .scroll-cue { display: none; }
+    table { width: 100%; border-collapse: collapse; font-size: 9px; }
+    th, td {
+      padding: 3px 6px;
+      border-bottom: 1px solid #e7ecf3;
+      line-height: 1.15;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: var(--muted);
+      background: #f7f9fc;
+      font-weight: 800;
+    }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tbody tr:hover { background: #f2f7fd; }
+    tbody tr[role="button"] { cursor: pointer; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 45px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 8px;
+      font-weight: 850;
+    }
+    .status.good { color: #246a61; background: #dff1ed; }
+    .status.watch { color: #855f19; background: #fbefcf; }
+    .status.risk { color: #993c49; background: #f7e0e4; }
+
+    .driver-list { display: grid; gap: 6px; margin-top: 6px; }
+    .driver {
+      display: grid;
+      grid-template-columns: minmax(90px, 1fr) 68px 46px;
+      align-items: center;
+      gap: 7px;
+      min-height: 24px;
+      padding: 4px 6px;
+      border-radius: 7px;
+      background: #f7f9fc;
+      font-size: 8px;
+    }
+    .driver strong { font-size: 8px; }
+    .driver .impact { text-align: right; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .driver .impact.up { color: #236f65; }
+    .driver .impact.down { color: #a53c49; }
+
+    .lab-controls { display: grid; gap: 8px; margin-top: 8px; }
+    .lab-controls.horizontal { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 6px; }
+    .control {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr) 44px;
+      align-items: center;
+      gap: 8px;
+      min-height: 26px;
+      font-size: 8px;
+    }
+    .control input { width: 100%; accent-color: var(--blue); cursor: pointer; }
+    .control output {
+      padding: 3px 5px;
+      border-radius: 6px;
+      color: #174b88;
+      background: var(--blue-light);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 7px; }
+    .summary-item { padding: 7px; border-radius: 8px; background: #f6f8fb; }
+    .summary-item span { display: block; color: var(--muted); font-size: 7px; }
+    .summary-item strong { display: block; margin-top: 2px; font-size: 12px; }
+    .readback-list { display: grid; gap: 6px; margin-top: 8px; }
+    .readback-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      background: #f6f8fb;
+      font-size: 8px;
+    }
+    .readback-item span { color: var(--muted); }
+    .readback-item strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+    .readback-total {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px 8px;
+      margin-top: 9px;
+      padding: 10px;
+      border: 1px solid #cfdeef;
+      border-radius: 9px;
+      background: #edf4fc;
+      font-size: 9px;
+    }
+    .readback-total span { color: var(--muted); }
+    .readback-total strong { color: var(--blue); font-size: 12px; }
+    .readback-total small { grid-column: 1 / -1; color: var(--muted); font-size: 8px; }
+    .verdict-card {
+      display: grid;
+      align-content: center;
+      min-height: 218px;
+      margin-top: 8px;
+      padding: 16px;
+      border: 1px solid #cfe1dc;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #f0f9f6, #f9fbfd);
+    }
+    .verdict-card.risk { border-color: #efcbd1; background: linear-gradient(145deg, #fff4f5, #f9fbfd); }
+    .verdict-card b { color: var(--muted); font-size: 8px; letter-spacing: .11em; text-transform: uppercase; }
+    .verdict-card strong { margin: 7px 0 5px; color: #187267; font-size: 28px; line-height: 1; }
+    .verdict-card.risk strong { color: #aa3d4b; }
+    .verdict-card span { color: var(--muted); font-size: 9px; line-height: 1.45; }
+    .verdict-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 13px;
+      padding-top: 11px;
+      border-top: 1px solid rgba(23, 114, 103, .17);
+    }
+    .verdict-metrics span { display: grid; gap: 3px; min-width: 0; }
+    .verdict-metrics small { color: var(--muted); font-size: 7px; }
+    .verdict-metrics b { color: var(--ink); font-size: 9px; letter-spacing: 0; text-transform: none; }
+
+    .tooltip {
+      position: fixed;
+      z-index: 50;
+      max-width: 230px;
+      padding: 7px 9px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(10, 31, 58, .95);
+      box-shadow: 0 10px 28px rgba(10, 31, 58, .25);
+      font-size: 9px;
+      line-height: 1.35;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(3px);
+      transition: opacity .12s ease, transform .12s ease;
+    }
+    .tooltip.visible { opacity: 1; transform: translateY(0); }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 760px) {
+      .preview-frame { overflow: visible; }
+      .dashboard-shell { height: auto; overflow: visible; }
+      .dashboard {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        padding: 10px 10px 18px;
+        transform: none !important;
+      }
+      .app-header {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 13px;
+      }
+      .title-row { align-items: flex-start; }
+      .title-row h1 { font-size: 20px; white-space: normal; }
+      .filters { grid-template-columns: 1fr 1fr; gap: 7px; }
+      .filters.lab-mode { grid-template-columns: 1fr; }
+      .filter { min-height: 39px; padding: 6px 9px; }
+      .filter select { font-size: 11px; }
+      .command-row { grid-template-columns: 1fr; }
+      .pagebar { grid-template-columns: repeat(3, 1fr); }
+      .pagebar button, .reset { min-height: 40px; font-size: 9px; }
+      .reset { width: 100%; }
+      .decision-band {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        padding: 9px 10px;
+      }
+      .decision-copy { white-space: normal; }
+      .lens { flex-wrap: wrap; }
+      .kpis { grid-template-columns: 1fr 1fr; }
+      .kpis.lab-mode { grid-template-columns: 1fr 1fr; }
+      .kpi { min-height: 82px; padding-top: 8px; padding-bottom: 7px; }
+      .kpi:last-child:nth-child(odd) { grid-column: 1 / -1; }
+      .kpi strong { font-size: 20px; }
+      .visual-grid {
+        height: auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+      }
+      .visual-grid.lab-mode { grid-template-rows: none; }
+      .panel,
+      .panel.span-3,
+      .panel.span-4,
+      .panel.span-5,
+      .panel.span-6,
+      .panel.span-7,
+      .panel.span-8,
+      .panel.span-12 {
+        grid-column: 1;
+        min-height: 0;
+        overflow: visible;
+      }
+      .panel.chart-panel { min-height: 258px; overflow: hidden; }
+      .panel.bar-panel { min-height: 210px; }
+      .panel.compact-bar-panel { min-height: 174px; }
+      .panel.table-panel { min-height: 0; }
+      .panel.readback-panel { min-height: 205px; }
+      .panel.verdict-panel { min-height: 250px; }
+      .table-wrap { height: auto; max-height: 310px; }
+      .chart-wrap { min-height: 205px; }
+      .chart .tick { font-size: 17px; }
+      .chart .direct-label { font-size: 17px; }
+      .chart .empty-state { font-size: 20px; }
+      .chart .empty-state-sub { font-size: 17px; }
+      .panel.span-3 .chart .tick,
+      .panel.span-3 .chart .direct-label { font-size: 17px; }
+      .legend { font-size: 10px; gap: 8px; }
+      .panel h2 { font-size: 14px; }
+      .panel-sub { font-size: 10px; }
+      .bar-row { grid-template-columns: minmax(92px, 1fr) minmax(80px, 1.4fr) 58px; min-height: 28px; font-size: 10px; }
+      .bar-row .bar-name { font-size: 10px; }
+      table { min-width: 640px; font-size: 10px; }
+      th, td { padding-top: 6px; padding-bottom: 6px; }
+      .scroll-cue {
+        display: block;
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        z-index: 4;
+        padding: 3px 7px;
+        border: 1px solid #cad7e7;
+        border-radius: 999px;
+        color: #174b88;
+        background: rgba(244, 248, 253, .94);
+        box-shadow: 0 3px 9px rgba(28, 64, 108, .12);
+        font-size: 7px;
+        font-weight: 850;
+        pointer-events: none;
+      }
+      .lab-panel { min-height: 320px; }
+      .lab-controls.horizontal { grid-template-columns: 1fr; }
+      .control { grid-template-columns: 102px minmax(0, 1fr) 46px; min-height: 42px; font-size: 9px; }
+      .control input { min-height: 24px; }
+      .verdict-card { min-height: 205px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+  <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+</head>
+<body data-project-number="02" data-layout-source="project-02-own-dashboard">
+  <div class="preview-frame">
+    <div class="dashboard-shell">
+      <main class="dashboard" id="dashboard" role="application" aria-label="Driver-Based Forecasting and Scenario Planning dashboard">
+        <header class="app-header">
+          <div class="title-block">
+            <div class="brandline"><span>TDAT · FP&amp;A planning model</span><span class="live">Interactive · synthetic model</span></div>
+            <div class="title-row"><h1 id="pageTitle">Executive Planning Overview</h1><span class="page-count" id="pageCount">01 / 06</span></div>
+            <p id="subtitle">Actuals through May 2026 · forecast through Dec 2027</p>
+          </div>
+          <section class="filters" aria-label="Shared planning filters">
+            <label class="filter" id="scenarioControl"><span>Scenario</span><select id="scenarioFilter" aria-label="Scenario"><option>Base</option><option>Upside</option><option>Downside</option></select></label>
+            <label class="filter"><span>Year</span><select id="yearFilter" aria-label="Year"><option>2026-2027</option><option>2026</option><option>2027</option></select></label>
+            <label class="filter" id="regionControl"><span>Region</span><select id="regionFilter" aria-label="Region"><option>All Regions</option><option>Vietnam North</option><option>Vietnam South</option><option>Vietnam Central</option><option>Thailand</option><option>China</option></select></label>
+            <label class="filter" id="contextControl"><span id="contextLabel">Service</span><select id="contextFilter" aria-label="Service"></select></label>
+          </section>
+        </header>
+
+        <div class="command-row">
+          <nav class="pagebar" id="pageNav" role="tablist" aria-label="Dashboard pages"></nav>
+          <button class="reset" id="resetFilters" type="button">Reset lens</button>
         </div>
-      </div>
+
+        <section class="decision-band" id="decisionBand" aria-live="polite"></section>
+        <section class="kpis" id="kpis" aria-label="Forecast key performance indicators" aria-live="polite"></section>
+        <section class="visual-grid" id="visuals" role="tabpanel" aria-live="polite"></section>
+        <p class="sr-only" id="srStatus" aria-live="polite"></p>
+      </main>
     </div>
-    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"driver-based-forecasting","route":"driver-based-forecasting/","no":"02","folder":"Project 02 - Driver-Based Forecasting","title":"Driver-Based Forecasting","lens":"Planning model","summary":"Scenario model translating volume, cost, headcount, and cash assumptions into a forecast call for FP&A leaders.","decisionQuestion":"Which operating assumptions change the revenue, EBITDA, and cash outlook enough to require a management call?","pages":[{"id":"forecast-call","label":"Forecast Call"},{"id":"driver-capacity-plan","label":"Driver & Capacity Plan"},{"id":"accuracy-cash-exceptions","label":"Accuracy, Cash & Exceptions"}],"metrics":[{"value":"$273.4M","label":"base forecast revenue","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":267932000,"prior":251528000,"series":[251528000,253516363.63636363,255504727.27272728,257493090.9090909,259481454.54545453,261469818.1818182,263458181.8181818,265446545.45454547,267434909.0909091,269423272.72727275,271411636.3636364,273400000],"sensitivity":1},{"value":"$21.9M","label":"ending cash","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":21462000,"prior":20148000,"series":[20148000,20307272.727272727,20466545.454545453,20625818.181818184,20785090.90909091,20944363.636363637,21103636.363636363,21262909.09090909,21422181.818181816,21581454.545454547,21740727.272727273,21900000],"sensitivity":1},{"value":"6.4%","label":"weighted MAPE","note":"Synthetic preview value.","format":"percent","higherIsBetter":false,"plan":6.5280000000000005,"prior":6.976000000000001,"series":[6.976000000000001,6.923636363636365,6.871272727272728,6.8189090909090915,6.766545454545455,6.714181818181819,6.661818181818182,6.609454545454546,6.55709090909091,6.504727272727273,6.4523636363636365,6.4],"sensitivity":1},{"value":"5","label":"planning pages","note":"Synthetic preview value.","format":"number","higherIsBetter":null,"plan":5,"prior":5,"series":[5,5,5,5,5,5,5,5,5,5,5,5],"sensitivity":0}],"bars":[{"label":"Volume","value":82},{"label":"Rate","value":73},{"label":"Headcount","value":61},{"label":"Cash cover","value":69}],"drivers":[{"label":"Demand assumption","value":"+4.8%","isRisk":false},{"label":"Cost inflation","value":"-2.2%","isRisk":true},{"label":"Hiring phasing","value":"+1.1%","isRisk":false}],"actions":[{"owner":"FP&A","action":"Compare base, upside, and downside assumptions before forecast signoff."},{"owner":"Business owners","action":"Submit driver changes with quantified EBITDA impact."},{"owner":"CFO","action":"Approve cash guardrail for downside case."}],"financeLogic":["Volume times rate builds revenue; variable and fixed costs bridge to EBITDA.","Opening cash plus operating cash flow minus capex equals ending cash.","Weighted MAPE weights absolute error by actual revenue."],"scopeLabel":"Planning Unit","scopeOptions":["Total Company","Core SaaS","Data","Services","Other"],"breakdownLabel":"Driver Family","breakdownOptions":["All Drivers","Volume","Rate","Headcount","Cost"],"regionOptions":["All Drivers","Volume","Rate","Headcount","Cost"],"governance":["Base, upside, and downside scenarios contain every required driver.","Assumption versions are locked at forecast submission.","Forecast and actuals reconcile at a common monthly grain.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"Total Company","region":"All Drivers"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Planning Unit","options":["Total Company","Core SaaS","Data","Services","Other"],"default":"Total Company"},{"id":"region","label":"Driver Family","options":["All Drivers","Volume","Rate","Headcount","Cost"],"default":"All Drivers"}],"dataClassification":"Synthetic public-safe preview data"});</script>
-    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
-  </body>
+  </div>
+  <div class="tooltip" id="tooltip" role="tooltip"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var pages = [
+        { id: "executive-overview", short: "Overview", label: "Executive Planning Overview", sub: "Which scenario should leadership fund, and what cash floor does it create?" },
+        { id: "revenue-cost-drivers", short: "Drivers", label: "Revenue & Cost Drivers", sub: "Which volume, rate, mix, or direct-cost assumption needs challenge?" },
+        { id: "headcount-capacity", short: "Capacity", label: "Headcount & Capacity Plan", sub: "Does forecast demand justify planned FTE, payroll, and OPEX capacity?" },
+        { id: "cash-accuracy", short: "Cash & Accuracy", label: "Cash & Forecast Accuracy", sub: "Will the plan stay liquid, and where is forecast error weakening confidence?" },
+        { id: "detail-exceptions", short: "Exceptions", label: "Detail & Exceptions", sub: "Which plan exceptions need action now, who owns them, and what happens next?" },
+        { id: "scenario-lab", short: "Scenario Lab", label: "Scenario Lab", sub: "Which assumption changes create the largest Revenue, EBITDA, and Cash impact?" }
+      ];
+
+      var colors = ["#2259ad", "#178f83", "#d4921c", "#6e4bd8", "#be4655"];
+      var defaults = {
+        page: pages[0].id,
+        scenario: "Base",
+        year: "2026-2027",
+        region: "All Regions",
+        service: "All Services",
+        department: "All Departments",
+        volume: 0,
+        rate: 0,
+        cost: 0,
+        dso: 0
+      };
+      var state = Object.assign({}, defaults);
+
+      var scenarioProfile = {
+        Base: { revenue: 273.30530879, directCost: 219.57332821, payroll: 17.09512729, opex: 5.26345254, cash: 55.05973591, workingCapital: 9.55191088, operatingCash: 24.62157277, dso: 43, dpo: 31, mape: 6.43840196, bias: 2.3, fte: 547.705263, jobs: 340357, shape: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+        Upside: { revenue: 322.76807604, directCost: 255.03526677, payroll: 18.64869128, opex: 5.35691861, cash: 66.25577831, workingCapital: 8.60952135, operatingCash: 35.81761514, dso: 40, dpo: 33, mape: 6.43840196, bias: 2.3, fte: 594.663157895, jobs: 388144, shape: [.96, .98, 1, 1.01, 1.04, 1.06, 1.08, 1.1, 1.13, 1.15, 1.17, 1.2] },
+        Downside: { revenue: 226.92547239, directCost: 188.11684744, payroll: 15.24380464, opex: 5.20896290, cash: 42.80350273, workingCapital: 11.00358309, operatingCash: 12.36533957, dso: 49, dpo: 29, mape: 6.43840196, bias: 2.3, fte: 492.989473684, jobs: 292807, shape: [1.04, 1.02, 1, .98, .97, .96, .95, .94, .93, .92, .91, .9] }
+      };
+
+      var scenarioYearProfile = {
+        Base: {
+          "2026": { revenue: 89.26102641, directCost: 71.41756967, payroll: 5.90269121, opex: 1.87455097, cash: 39.12319941, workingCapital: 7.95248284, operatingCash: 8.53603624, dso: 43, dpo: 31, fte: 519.271429, jobs: 115170 },
+          "2027": { revenue: 184.04428238, directCost: 148.15575854, payroll: 11.19243608, opex: 3.38890157, cash: 55.05973591, workingCapital: 9.55191088, operatingCash: 16.08553653, dso: 43, dpo: 31, fte: 564.291667, jobs: 225187 }
+        },
+        Upside: {
+          "2026": { revenue: 105.11745179, directCost: 82.63975813, payroll: 6.41781619, opex: 1.90341945, cash: 43.30498538, workingCapital: 7.16559895, operatingCash: 12.71782221, dso: 40, dpo: 33, fte: 561.928571, jobs: 131071 },
+          "2027": { revenue: 217.65062425, directCost: 172.39550864, payroll: 12.23087509, opex: 3.45349916, cash: 66.25577831, workingCapital: 8.60952135, operatingCash: 23.09979293, dso: 40, dpo: 33, fte: 613.758333, jobs: 257073 }
+        },
+        Downside: {
+          "2026": { revenue: 73.91959056, directCost: 61.07411002, payroll: 5.27512488, opex: 1.85912333, cash: 34.46938722, workingCapital: 8.99165979, operatingCash: 3.88222405, dso: 49, dpo: 29, fte: 468.514286, jobs: 99091 },
+          "2027": { revenue: 153.00588183, directCost: 127.04273742, payroll: 9.96867976, opex: 3.34983957, cash: 42.80350273, workingCapital: 11.00358309, operatingCash: 8.48311552, dso: 49, dpo: 29, fte: 507.266667, jobs: 193716 }
+        }
+      };
+
+      var yearProfile = {
+        "2026-2027": { factor: 1, months: ["Jun 26", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan 27", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec 27"] },
+        "2026": { factor: .3266, months: ["Jun 26", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec 26"] },
+        "2027": { factor: .6734, months: ["Jan 27", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec 27"] }
+      };
+
+      var regionProfile = {
+        "All Regions": { factor: 1, wave: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+        "Vietnam North": { factor: .2380817, wave: [1.04, 1.02, .99, .97, .98, 1.01, 1.04, 1.06, 1.08, 1.05, 1.02, 1] },
+        "Vietnam South": { factor: .2673528, wave: [1.06, 1.04, 1.02, 1, .99, 1.01, 1.04, 1.07, 1.09, 1.08, 1.04, 1.01] },
+        "Vietnam Central": { factor: .1675965, wave: [.97, .99, 1.02, 1.05, 1.07, 1.06, 1.03, 1, .98, .97, .99, 1.01] },
+        Thailand: { factor: .1408021, wave: [.94, .97, 1, 1.03, 1.06, 1.09, 1.1, 1.07, 1.04, 1.01, .98, .96] },
+        China: { factor: .1861669, wave: [1.08, 1.05, 1.01, .98, .96, .97, 1, 1.04, 1.08, 1.1, 1.07, 1.03] }
+      };
+
+      var serviceProfile = {
+        "All Services": { factor: 1, costFactor: 1, jobsFactor: 1, payrollFactor: 1, wave: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+        "Air Freight": { factor: .2453755, costFactor: .2467745, jobsFactor: .1124643, payrollFactor: 1, wave: [1.07, 1.03, .99, .96, .95, .98, 1.03, 1.08, 1.1, 1.07, 1.02, .98] },
+        "Ocean FCL": { factor: .2717254, costFactor: .2888581, jobsFactor: .1843286, payrollFactor: 1, wave: [1.04, 1.02, 1, .98, .97, 1, 1.04, 1.07, 1.09, 1.06, 1.02, .99] },
+        "Ocean LCL": { factor: .1276024, costFactor: .1318799, jobsFactor: .1583900, payrollFactor: 1, wave: [.98, 1, 1.02, 1.04, 1.06, 1.05, 1.02, .99, .97, .98, 1.01, 1.03] },
+        "Contract Logistics": { factor: .1764507, costFactor: .1503455, jobsFactor: .0894355, payrollFactor: 1, wave: [.96, .98, 1, 1.03, 1.05, 1.06, 1.04, 1.02, 1, .99, 1.01, 1.03] },
+        "Customs Brokerage": { factor: .0642517, costFactor: .0630500, jobsFactor: .2098955, payrollFactor: 1, wave: [.95, .97, 1.01, 1.05, 1.08, 1.1, 1.06, 1.02, .99, .97, .98, 1.01] },
+        "Domestic Trucking": { factor: .1145943, costFactor: .1190920, jobsFactor: .2454861, payrollFactor: 1, wave: [.91, .94, .98, 1.02, 1.07, 1.1, 1.12, 1.09, 1.05, 1.01, .97, .94] }
+      };
+
+      var departmentProfile = {
+        "All Departments": { fteShare: 1, payrollShare: 1, opexShare: 1, demand: 1 },
+        Operations: { fteShare: .5008, payrollShare: .4432, opexShare: .3001, demand: 1.08 },
+        Sales: { fteShare: .1617, payrollShare: .2006, opexShare: .2627, demand: 1.02 },
+        "Customer Success": { fteShare: .1718, payrollShare: .1359, opexShare: .1290, demand: .97 },
+        Finance: { fteShare: .0745, payrollShare: .0775, opexShare: .1093, demand: .92 },
+        "IT & Data": { fteShare: .0498, payrollShare: .0567, opexShare: .1019, demand: .95 },
+        Management: { fteShare: .0414, payrollShare: .0861, opexShare: .0971, demand: .9 }
+      };
+
+      var serviceOptions = ["All Services", "Air Freight", "Ocean FCL", "Ocean LCL", "Contract Logistics", "Customs Brokerage", "Domestic Trucking"];
+      var departmentOptions = ["All Departments", "Operations", "Sales", "Customer Success", "Finance", "IT & Data", "Management"];
+      var accuracyProfile = {
+        "Air Freight": { mape: 6.801, bias: 3.091 },
+        "Ocean FCL": { mape: 6.125, bias: 2.441 },
+        "Ocean LCL": { mape: 6.590, bias: 2.524 },
+        "Contract Logistics": { mape: 6.465, bias: 1.104 },
+        "Customs Brokerage": { mape: 6.573, bias: 2.885 },
+        "Domestic Trucking": { mape: 6.076, bias: 1.671 }
+      };
+      var monthWeights = [.82, .86, .9, .93, .97, 1, 1.04, 1.06, 1.02, 1.08, 1.11, 1.16, 1.12, 1.18, 1.15, 1.2, 1.17, 1.22, 1.25];
+      var actualSeries = [11.304896, 10.892286, 11.181074, 11.043892, 10.983683, 11.281992, 11.112545, 11.687619, 12.14325, 12.582686, 12.928036, 12.976443];
+      var scenarioMonthly = {
+        Base: {
+          revenue: [12.806492, 12.303598, 12.739833, 12.594346, 12.662664, 13.030031, 13.124062, 13.830493, 14.460913, 15.221614, 15.72237, 15.771534, 15.620159, 14.990837, 15.628345, 15.365407, 15.449057, 16.00716, 15.976393],
+          directCost: [10.226764, 9.800705, 10.188635, 10.093034, 10.158277, 10.441762, 10.508393, 11.07654, 11.558162, 12.21107, 12.651056, 12.64776, 12.580245, 12.048868, 12.604606, 12.411517, 12.497653, 12.951264, 12.917018],
+          payroll: [.838826, .830256, .837735, .836587, .840588, .851733, .866966, .891632, .901897, .921567, .938483, .941544, .938849, .92692, .937794, .934038, .937222, .952549, .969941],
+          opex: [.265999, .265372, .26672, .267007, .267922, .269663, .271869, .275182, .276861, .279561, .281995, .282769, .282903, .281941, .283663, .283645, .284499, .286718, .289165],
+          operatingCash: [1.569415, 1.448583, .976388, 1.26985, 1.128073, .98388, 1.159847, .89186, 1.024988, 1.086151, 1.273096, 1.502678, 1.65628, 1.791418, 1.156394, 1.618404, 1.404747, 1.176585, 1.502936],
+          cash: [32.231078, 33.671162, 34.63905, 35.8769, 36.996473, 37.971853, 39.123199, 40.006559, 41.023047, 42.077197, 43.341793, 44.835971, 46.483751, 48.266669, 49.414564, 51.000968, 52.397215, 53.5653, 55.059736],
+          workingCapital: [7.788316, 7.507763, 7.732171, 7.622427, 7.652932, 7.886557, 7.952483, 8.377948, 8.783876, 9.19954, 9.462639, 9.536513, 9.389308, 9.036369, 9.375868, 9.198517, 9.229407, 9.560624, 9.551911],
+          fte: [519.6, 513.1, 516.9, 515.1, 516.7, 522.6, 530.9, 545, 550.4, 561.2, 570.5, 571.2, 568.6, 560.3, 565.8, 562.5, 563.5, 571.6, 580.9]
+        },
+        Upside: {
+          revenue: [14.911451, 14.46388, 15.021853, 14.908126, 14.981339, 15.42463, 15.406174, 16.304616, 17.120265, 17.925768, 18.513808, 18.66469, 18.384003, 17.888975, 18.518764, 18.26154, 18.342602, 18.882599, 18.842994],
+          directCost: [11.637573, 11.368628, 11.793923, 11.766409, 11.797496, 12.11576, 12.159969, 12.871376, 13.476585, 14.103196, 14.565373, 14.757327, 14.528426, 14.266723, 14.700302, 14.533157, 14.567948, 15.011942, 15.013155],
+          payroll: [.910384, .902748, .912736, .910722, .9128, .926751, .941674, .972078, .984348, 1.006954, 1.024268, 1.029055, 1.024585, 1.016402, 1.027236, 1.021227, 1.026797, 1.038892, 1.059032],
+          opex: [.269892, .26944, .271025, .271202, .271884, .273896, .27608, .279983, .281817, .284871, .287282, .2883, .288159, .287679, .289371, .289128, .290131, .292016, .294762],
+          operatingCash: [2.790647, 1.897065, 1.42052, 1.747998, 1.59588, 1.50886, 1.756852, 1.395003, 1.551535, 1.715788, 1.912956, 2.159681, 2.23301, 2.296245, 1.713758, 2.16607, 1.9701, 1.87639, 2.109258],
+          cash: [33.45231, 35.340875, 36.752894, 38.468893, 40.056273, 41.556633, 43.304985, 44.691488, 46.234523, 47.918311, 49.822767, 51.973947, 54.198457, 56.486202, 58.19146, 60.32553, 62.28713, 64.15502, 66.255778],
+          workingCapital: [7.080604, 6.779682, 7.055822, 6.934451, 6.997873, 7.238837, 7.165599, 7.580974, 8.002777, 8.387509, 8.663168, 8.653194, 8.530735, 8.158572, 8.521354, 8.362248, 8.43206, 8.663662, 8.609521],
+          fte: [561.2, 555.4, 560.5, 558.1, 558.4, 565.9, 574, 591.4, 597.7, 610.4, 619.7, 621.6, 617.5, 611.6, 616.9, 612.3, 614.2, 620.5, 631.3]
+        },
+        Downside: {
+          revenue: [10.564153, 10.221612, 10.579486, 10.402553, 10.570678, 10.773535, 10.807574, 11.537422, 12.014858, 12.615495, 13.075017, 13.141187, 12.902985, 12.514076, 12.9984, 12.807887, 12.829085, 13.251894, 13.317575],
+          directCost: [8.680063, 8.451087, 8.730528, 8.561182, 8.775375, 8.916519, 8.959356, 9.515007, 9.93184, 10.494028, 10.85765, 10.895948, 10.678736, 10.343093, 10.824779, 10.678699, 10.647213, 11.056652, 11.119093],
+          payroll: [.747578, .741733, .749881, .747592, .752188, .762441, .773712, .79365, .80378, .821339, .832174, .837887, .83541, .826298, .836801, .833269, .83581, .847967, .864294],
+          opex: [.263522, .263268, .26472, .264864, .26587, .267533, .269344, .272218, .27387, .276465, .27823, .279342, .279513, .278831, .280551, .280582, .281319, .283209, .285711],
+          operatingCash: [-.005914, .973526, .378115, .813288, .577561, .49155, .654096, .138978, .457583, .412047, .519729, .865194, 1.099832, 1.195421, .551271, 1.012689, .818678, .588377, .823318],
+          cash: [30.655749, 31.620776, 31.990391, 32.771679, 33.34074, 33.823791, 34.469387, 34.599865, 35.048948, 35.428994, 35.940223, 36.796917, 37.888249, 39.07517, 39.617941, 40.59863, 41.408807, 41.988685, 42.803503],
+          workingCapital: [8.864057, 8.525915, 8.840316, 8.715026, 8.782578, 8.977473, 8.99166, 9.646616, 10.023488, 10.461082, 10.860134, 10.931188, 10.752097, 10.441334, 10.766766, 10.596808, 10.661866, 10.956664, 11.003583],
+          fte: [467.4, 462.9, 467.2, 464.8, 466.8, 472.2, 478.3, 489.7, 495, 504.9, 510.6, 513.1, 510.7, 504.1, 509.6, 506.5, 507.1, 513.4, 522.5]
+        }
+      };
+
+      var exceptionFacts = [
+        { region: "China", service: "Air Freight", revenue: [12.517261, 4.111647, 8.405614], gm: [19.108711, 19.503254, 18.915718], mape: 6.569373 },
+        { region: "China", service: "Contract Logistics", revenue: [8.945336, 2.878887, 6.066449], gm: [31.721371, 32.20668, 31.491063], mape: 6.158059 },
+        { region: "China", service: "Customs Brokerage", revenue: [3.26408, 1.053075, 2.211004], gm: [21.537929, 20.816106, 21.881725], mape: 6.605529 },
+        { region: "China", service: "Ocean FCL", revenue: [13.81118, 4.554524, 9.256656], gm: [14.640009, 15.455414, 14.238807], mape: 5.479294 },
+        { region: "China", service: "Ocean LCL", revenue: [6.515985, 2.144605, 4.37138], gm: [17.130223, 17.37613, 17.00958], mape: 5.870647 },
+        { region: "China", service: "Domestic Trucking", revenue: [5.826702, 1.888579, 3.938122], gm: [17.205049, 16.325399, 17.626897], mape: 6.197529, evidenceRank: 1 },
+        { region: "Thailand", service: "Air Freight", revenue: [9.453001, 3.116759, 6.336242], gm: [19.420802, 19.761512, 19.253209], mape: 6.76402 },
+        { region: "Thailand", service: "Contract Logistics", revenue: [6.803123, 2.177568, 4.625555], gm: [31.595961, 32.102679, 31.357414], mape: 7.099314 },
+        { region: "Thailand", service: "Customs Brokerage", revenue: [2.485091, .807475, 1.677617], gm: [19.953441, 17.68144, 21.047006], mape: 6.719157 },
+        { region: "Thailand", service: "Ocean FCL", revenue: [10.455226, 3.438233, 7.016993], gm: [14.425776, 15.130824, 14.080312], mape: 6.336824, evidenceRank: 4 },
+        { region: "Thailand", service: "Ocean LCL", revenue: [4.915276, 1.616329, 3.298947], gm: [17.003317, 16.825281, 17.090546], mape: 6.279725, evidenceRank: 3 },
+        { region: "Thailand", service: "Domestic Trucking", revenue: [4.370208, 1.414182, 2.956026], gm: [16.57175, 16.057768, 16.817643], mape: 6.848157, evidenceRank: 2 },
+        { region: "Vietnam Central", service: "Air Freight", revenue: [11.218911, 3.651511, 7.5674], gm: [19.212123, 19.971353, 18.845771], mape: 7.077039 },
+        { region: "Vietnam Central", service: "Contract Logistics", revenue: [8.133399, 2.626088, 5.507311], gm: [31.479775, 31.869876, 31.293761], mape: 5.747275 },
+        { region: "Vietnam Central", service: "Customs Brokerage", revenue: [2.947563, .952676, 1.994887], gm: [21.106704, 21.335141, 20.997612], mape: 6.548235 },
+        { region: "Vietnam Central", service: "Ocean FCL", revenue: [12.401597, 4.081701, 8.319896], gm: [14.79875, 14.910988, 14.743686], mape: 7.263765, evidenceRank: 5 },
+        { region: "Vietnam Central", service: "Ocean LCL", revenue: [5.878157, 1.929003, 3.949154], gm: [17.07919, 17.136691, 17.051103], mape: 6.990294 },
+        { region: "Vietnam Central", service: "Domestic Trucking", revenue: [5.225372, 1.674481, 3.550892], gm: [15.564794, 15.287836, 15.695398], mape: 5.612608 },
+        { region: "Vietnam North", service: "Air Freight", revenue: [15.921465, 5.206053, 10.715412], gm: [19.152092, 19.876817, 18.799986], mape: 6.635608 },
+        { region: "Vietnam North", service: "Contract Logistics", revenue: [11.495381, 3.720705, 7.774676], gm: [31.46356, 32.136943, 31.141302], mape: 6.464569 },
+        { region: "Vietnam North", service: "Customs Brokerage", revenue: [4.165887, 1.35165, 2.814237], gm: [20.370889, 22.178187, 19.502862], mape: 6.021784 },
+        { region: "Vietnam North", service: "Ocean FCL", revenue: [17.758215, 5.804698, 11.953517], gm: [14.633878, 14.970403, 14.470459], mape: 6.35198 },
+        { region: "Vietnam North", service: "Ocean LCL", revenue: [8.266662, 2.710453, 5.556209], gm: [17.08551, 17.553547, 16.85719], mape: 6.516176 },
+        { region: "Vietnam North", service: "Domestic Trucking", revenue: [7.46137, 2.418815, 5.042555], gm: [16.470163, 16.042232, 16.675434], mape: 5.617843 },
+        { region: "Vietnam South", service: "Air Freight", revenue: [17.951793, 5.936494, 12.015299], gm: [19.195603, 19.83683, 18.878787], mape: 6.960725 },
+        { region: "Vietnam South", service: "Contract Logistics", revenue: [12.84738, 4.162234, 8.685146], gm: [31.509447, 31.720101, 31.408495], mape: 6.853255 },
+        { region: "Vietnam South", service: "Customs Brokerage", revenue: [4.69769, 1.526422, 3.171269], gm: [22.279225, 21.622707, 22.595225], mape: 6.971686 },
+        { region: "Vietnam South", service: "Ocean FCL", revenue: [19.83803, 6.548302, 13.289728], gm: [14.489955, 15.199288, 14.140442], mape: 5.192333 },
+        { region: "Vietnam South", service: "Ocean LCL", revenue: [9.298347, 3.035265, 6.263082], gm: [16.65667, 17.28758, 16.350913], mape: 7.295235 },
+        { region: "Vietnam South", service: "Domestic Trucking", revenue: [8.43562, 2.722613, 5.713007], gm: [16.597983, 16.806575, 16.498576], mape: 6.10402 }
+      ];
+
+      function contextMode() {
+        return state.page === "headcount-capacity" ? "department" : "service";
+      }
+
+      function currencyRate() { return 1; }
+      function symbol() { return "$"; }
+
+      function planningRecord(name) {
+        var record = Object.assign({}, scenarioProfile[name]);
+        if (state.year !== "2026-2027") Object.assign(record, scenarioYearProfile[name][state.year]);
+        return record;
+      }
+
+      function scopeFactor() {
+        var y = planningRecord("Base").revenue / scenarioProfile.Base.revenue;
+        var r = regionProfile[state.region].factor;
+        var s = state.page === "headcount-capacity" || state.page === "scenario-lab" ? 1 : serviceProfile[state.service].factor;
+        return y * r * s;
+      }
+
+      function compute(name) {
+        var scenarioName = name || state.scenario;
+        var scenario = planningRecord(scenarioName);
+        var regionFactor = regionProfile[state.region].factor;
+        var capacityPage = state.page === "headcount-capacity";
+        var planningCashPage = state.page === "cash-accuracy";
+        var service = capacityPage || planningCashPage || state.page === "scenario-lab" ? serviceProfile["All Services"] : serviceProfile[state.service];
+        var department = departmentProfile[state.department];
+        var revenue;
+        var directCost;
+        var payroll;
+        var opex;
+        var cash;
+        var fte;
+        var jobs;
+        var workingCapital;
+        var operatingCash;
+        var dso;
+        var dpo;
+
+        if (state.page === "scenario-lab") {
+          var labBase = planningRecord("Base");
+          var volumeFactor = 1 + state.volume / 100;
+          var rateFactor = 1 + state.rate / 100;
+          var costFactor = 1 + state.cost / 100;
+          revenue = labBase.revenue * volumeFactor * rateFactor;
+          directCost = labBase.directCost * volumeFactor * costFactor;
+          payroll = labBase.payroll;
+          opex = labBase.opex;
+          var adjustedEbitda = revenue - directCost - payroll - opex;
+          var baseEbitda = labBase.revenue - labBase.directCost - payroll - opex;
+          var adjustedAfterTax = adjustedEbitda - Math.max(0, adjustedEbitda * .17);
+          var baseAfterTax = baseEbitda - Math.max(0, baseEbitda * .17);
+          var latestRevenue = 15.978 * (state.year === "2026" ? .97 : state.year === "2027" ? 1.03 : 1);
+          var baseAccountsPayable = 13.34;
+          var baseWorkingCapital = latestRevenue * 43 / 30 - baseAccountsPayable;
+          var adjustedWorkingCapital = latestRevenue * volumeFactor * rateFactor * Math.max(0, 43 + state.dso) / 30 - baseAccountsPayable * volumeFactor * costFactor;
+          cash = labBase.cash + (adjustedAfterTax - baseAfterTax) - (adjustedWorkingCapital - baseWorkingCapital);
+          fte = labBase.fte;
+          jobs = labBase.jobs * volumeFactor;
+          workingCapital = labBase.workingCapital + (adjustedWorkingCapital - baseWorkingCapital);
+          operatingCash = labBase.operatingCash + (adjustedAfterTax - baseAfterTax) - (adjustedWorkingCapital - baseWorkingCapital);
+          dso = labBase.dso + state.dso;
+          dpo = labBase.dpo;
+          scenarioName = "Base";
+        } else if (planningCashPage) {
+          revenue = scenario.revenue;
+          directCost = scenario.directCost;
+          payroll = scenario.payroll;
+          opex = scenario.opex;
+          cash = scenario.cash;
+          fte = scenario.fte;
+          jobs = scenario.jobs;
+          workingCapital = scenario.workingCapital;
+          operatingCash = scenario.operatingCash;
+          dso = scenario.dso;
+          dpo = scenario.dpo;
+        } else if (capacityPage) {
+          revenue = scenario.revenue * regionFactor;
+          directCost = scenario.directCost * regionFactor;
+          payroll = scenario.payroll * regionFactor * department.payrollShare;
+          opex = scenario.opex * regionFactor * department.opexShare;
+          cash = scenario.cash;
+          fte = scenario.fte * regionFactor * department.fteShare;
+          jobs = scenario.jobs * regionFactor;
+          workingCapital = scenario.workingCapital;
+          operatingCash = scenario.operatingCash;
+          dso = scenario.dso;
+          dpo = scenario.dpo;
+        } else {
+          revenue = scenario.revenue * regionFactor * service.factor;
+          directCost = scenario.directCost * regionFactor * service.costFactor;
+          payroll = scenario.payroll * regionFactor;
+          opex = scenario.opex * regionFactor;
+          cash = scenario.cash;
+          fte = scenario.fte * regionFactor;
+          jobs = scenario.jobs * regionFactor * service.jobsFactor;
+          workingCapital = scenario.workingCapital;
+          operatingCash = scenario.operatingCash;
+          dso = scenario.dso;
+          dpo = scenario.dpo;
+        }
+        var ebitda = revenue - directCost - payroll - opex;
+        var grossMargin = revenue ? (revenue - directCost) / revenue * 100 : 0;
+        var revenuePerJob = jobs ? revenue * 1000000 / jobs : 0;
+        var selectedAccuracy = accuracyProfile[state.service];
+        var regionAccuracyShift = state.region === "All Regions" ? 0 : (regionProfile[state.region].wave[2] - 1) * .35;
+        var mape = selectedAccuracy && !capacityPage ? selectedAccuracy.mape + regionAccuracyShift : scenario.mape + regionAccuracyShift;
+        return {
+          scenario: scenarioName,
+          revenue: revenue,
+          directCost: directCost,
+          payroll: payroll,
+          opex: opex,
+          ebitda: ebitda,
+          grossMargin: grossMargin,
+          cash: cash,
+          workingCapital: workingCapital,
+          operatingCash: operatingCash,
+          dso: dso,
+          dpo: dpo,
+          fte: fte,
+          jobs: jobs,
+          revenuePerJob: revenuePerJob,
+          mape: mape,
+          bias: scenario.bias
+        };
+      }
+
+      function scenarioLabBase() {
+        var saved = { volume: state.volume, rate: state.rate, cost: state.cost, dso: state.dso };
+        state.volume = 0;
+        state.rate = 0;
+        state.cost = 0;
+        state.dso = 0;
+        var model = compute("Base");
+        state.volume = saved.volume;
+        state.rate = saved.rate;
+        state.cost = saved.cost;
+        state.dso = saved.dso;
+        return model;
+      }
+
+      function scenarioLabDsoImpact() {
+        var saved = state.dso;
+        state.dso = 0;
+        var cashBeforeDso = compute("Base").cash;
+        state.dso = saved;
+        return compute("Base").cash - cashBeforeDso;
+      }
+
+      function money(value, digits) {
+        return symbol() + value.toFixed(digits == null ? 1 : digits) + "M";
+      }
+
+      function signedMoney(value) {
+        return (value >= 0 ? "+" : "−") + money(Math.abs(value));
+      }
+
+      function compactNumber(value) {
+        if (Math.abs(value) >= 1000000) return (value / 1000000).toFixed(1) + "M";
+        if (Math.abs(value) >= 1000) return Math.round(value / 1000) + "K";
+        return Math.round(value).toString();
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (character) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character];
+        });
+      }
+
+      function normalizedWeights(length, scenarioName) {
+        var groupPlanningPage = state.page === "cash-accuracy" || state.page === "scenario-lab";
+        var regionWave = regionProfile[groupPlanningPage ? "All Regions" : state.region].wave;
+        var serviceWave = serviceProfile[state.page === "headcount-capacity" || groupPlanningPage ? "All Services" : state.service].wave;
+        var scenarioWave = scenarioProfile[scenarioName || (state.page === "scenario-lab" ? "Base" : state.scenario)].shape;
+        var start = state.year === "2027" ? 7 : 0;
+        var values = [];
+        for (var index = 0; index < length; index += 1) {
+          var sourceIndex = start + index;
+          var seasonal = monthWeights[sourceIndex % monthWeights.length];
+          var waveIndex = sourceIndex % 12;
+          values.push(seasonal * regionWave[waveIndex] * serviceWave[waveIndex] * scenarioWave[waveIndex]);
+        }
+        var sum = values.reduce(function (total, value) { return total + value; }, 0);
+        return values.map(function (value) { return value / sum; });
+      }
+
+      function monthlySeries(metric, scenarioName) {
+        var name = scenarioName || (state.page === "scenario-lab" ? "Base" : state.scenario);
+        var source = scenarioMonthly[name];
+        var values;
+        if (state.page === "scenario-lab" && ["revenue", "directCost", "payroll", "opex", "ebitda"].indexOf(metric) >= 0) {
+          var volumeFactor = 1 + state.volume / 100;
+          var rateFactor = 1 + state.rate / 100;
+          var costFactor = 1 + state.cost / 100;
+          var revenue = source.revenue.map(function (value) { return value * volumeFactor * rateFactor; });
+          var directCost = source.directCost.map(function (value) { return value * volumeFactor * costFactor; });
+          values = metric === "revenue" ? revenue : metric === "directCost" ? directCost : metric === "payroll" ? source.payroll.slice() : metric === "opex" ? source.opex.slice() : revenue.map(function (value, index) {
+            return value - directCost[index] - source.payroll[index] - source.opex[index];
+          });
+        } else if (metric === "ebitda") {
+          values = source.revenue.map(function (value, index) {
+            return value - source.directCost[index] - source.payroll[index] - source.opex[index];
+          });
+        } else if (source[metric]) {
+          values = source[metric].slice();
+        } else {
+          var labels = yearProfile[state.year].months;
+          var model = compute(scenarioName);
+          var total = model[metric];
+          var weights = normalizedWeights(labels.length, scenarioName);
+          return weights.map(function (weight) { return total * weight; });
+        }
+
+        values = state.year === "2026" ? values.slice(0, 7) : state.year === "2027" ? values.slice(7) : values;
+        if (["cash", "workingCapital", "operatingCash"].indexOf(metric) >= 0 || state.page === "cash-accuracy" || state.page === "scenario-lab") return values;
+
+        var regionFactor = regionProfile[state.region].factor;
+        if (state.page === "headcount-capacity") {
+          var department = departmentProfile[state.department];
+          var departmentFactor = metric === "fte" ? department.fteShare : metric === "payroll" ? department.payrollShare : metric === "opex" ? department.opexShare : 1;
+          return values.map(function (value) { return value * regionFactor * departmentFactor; });
+        }
+        var service = serviceProfile[state.service];
+        var scope = metric === "revenue" ? regionFactor * service.factor : metric === "directCost" ? regionFactor * service.costFactor : regionFactor;
+        return values.map(function (value) { return value * scope; });
+      }
+
+      function panel(title, subtitle, body, span, extraClass, action) {
+        return '<article class="panel span-' + span + (extraClass ? " " + extraClass : "") + '">' +
+          '<h2>' + title + '</h2>' +
+          '<p class="panel-sub">' + subtitle + '</p>' +
+          (action ? '<span class="panel-action">' + action + '</span>' : "") +
+          body +
+          '</article>';
+      }
+
+      function axisLabel(value, unit) {
+        if (unit === "%") return value.toFixed(0) + "%";
+        if (unit === "count") return compactNumber(value);
+        return symbol() + value.toFixed(value >= 100 ? 0 : 1) + "M";
+      }
+
+      function lineChart(series, options) {
+        var width = 560;
+        var height = 172;
+        var left = 38;
+        var right = 14;
+        var top = 15;
+        var bottom = 25;
+        var plotWidth = width - left - right;
+        var plotHeight = height - top - bottom;
+        var all = [];
+        series.forEach(function (item) { all = all.concat(item.values); });
+        if (options.reference != null) all.push(options.reference);
+        var max = options.max != null ? options.max : Math.max.apply(null, all) * 1.12;
+        var min = options.min != null ? options.min : Math.min(0, Math.min.apply(null, all) * .9);
+        if (max === min) max = min + 1;
+        var labels = options.labels;
+
+        function x(index, length) {
+          return left + (length <= 1 ? plotWidth / 2 : index * plotWidth / (length - 1));
+        }
+        function y(value) {
+          return top + (max - value) / (max - min) * plotHeight;
+        }
+
+        var grid = [0, .5, 1].map(function (ratio) {
+          var value = max - (max - min) * ratio;
+          var yy = top + plotHeight * ratio;
+          return '<line class="gridline" x1="' + left + '" y1="' + yy.toFixed(1) + '" x2="' + (width - right) + '" y2="' + yy.toFixed(1) + '"></line>' +
+            '<text class="tick" x="' + (left - 5) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end">' + axisLabel(value, options.unit) + '</text>';
+        }).join("");
+
+        var reference = options.reference == null ? "" :
+          '<line x1="' + left + '" y1="' + y(options.reference).toFixed(1) + '" x2="' + (width - right) + '" y2="' + y(options.reference).toFixed(1) + '" stroke="#d4921c" stroke-width="1.2" stroke-dasharray="5 4"></line>' +
+          '<text class="direct-label" x="' + (width - right - 2) + '" y="' + (y(options.reference) - 4).toFixed(1) + '" text-anchor="end">' + escapeHtml(options.referenceLabel || "") + '</text>';
+
+        var paths = series.map(function (item) {
+          var points = item.values.map(function (value, index) {
+            return x(index, item.values.length).toFixed(1) + "," + y(value).toFixed(1);
+          }).join(" ");
+          var circles = item.values.map(function (value, index) {
+            var label = labels[index] || "";
+            return '<circle tabindex="0" role="img" aria-label="' + escapeHtml(item.label + " " + label + ": " + item.format(value)) + '" data-tip="' + escapeHtml(item.label + " · " + label + " · " + item.format(value)) + '" cx="' + x(index, item.values.length).toFixed(1) + '" cy="' + y(value).toFixed(1) + '" r="2.8" fill="' + item.color + '" stroke="#fff" stroke-width="1.2"></circle>';
+          }).join("");
+          return '<polyline points="' + points + '" fill="none" stroke="' + item.color + '" stroke-width="' + (item.width || 2.5) + '" stroke-linecap="round" stroke-linejoin="round"' + (item.dash ? ' stroke-dasharray="6 4"' : "") + '></polyline>' + circles;
+        }).join("");
+
+        var labelIndexes = [0, Math.floor((labels.length - 1) / 2), labels.length - 1].filter(function (value, index, array) { return array.indexOf(value) === index; });
+        var xLabels = labelIndexes.map(function (index) {
+          return '<text class="tick" x="' + x(index, labels.length).toFixed(1) + '" y="' + (height - 6) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
+        }).join("");
+
+        return '<div class="chart-wrap">' +
+          '<div class="legend">' + series.map(function (item) { return '<span><i style="--legend-color:' + item.color + '"></i>' + escapeHtml(item.label) + '</span>'; }).join("") + '</div>' +
+          '<svg class="chart" role="img" aria-label="' + escapeHtml(options.ariaLabel) + '" viewBox="0 0 ' + width + " " + height + '">' +
+          grid + reference + paths + '<line class="axisline" x1="' + left + '" y1="' + (height - bottom) + '" x2="' + (width - right) + '" y2="' + (height - bottom) + '"></line>' + xLabels +
+          '</svg></div>';
+      }
+
+      function comboChart() {
+        var actualLabels = ["Jun 25", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan 26", "Feb", "Mar", "Apr", "May 26"];
+        var forecastLabels = yearProfile[state.year].months;
+        var labels = actualLabels.concat(forecastLabels);
+        var actualScope = regionProfile[state.region].factor * serviceProfile[state.service].factor;
+        var actualRevenue = actualSeries.map(function (value) { return value * actualScope; });
+        var actualLabel = state.region === "All Regions" && state.service === "All Services" ? "Actual revenue" : "Allocated actual revenue";
+        var revenue = monthlySeries("revenue");
+        var ebitda = monthlySeries("ebitda");
+        var width = 560, height = 172, left = 42, right = 42, top = 18, bottom = 25;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var maxRevenue = Math.max.apply(null, actualRevenue.concat(revenue).concat([1])) * 1.18;
+        var maxEbitda = Math.max.apply(null, ebitda.concat([1])) * 1.32;
+        var step = plotWidth / labels.length;
+        var bars = revenue.map(function (value, index) {
+          var chartIndex = actualLabels.length + index;
+          var x = left + chartIndex * step + step * .16;
+          var barWidth = Math.max(4, step * .58);
+          var barHeight = value / maxRevenue * plotHeight;
+          return '<rect tabindex="0" role="img" aria-label="Forecast revenue ' + escapeHtml(forecastLabels[index]) + ': ' + money(value) + '" data-tip="Forecast revenue · ' + escapeHtml(forecastLabels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barHeight.toFixed(1) + '" rx="2" fill="#cbdcf3"></rect>';
+        }).join("");
+        var actualPoints = actualRevenue.map(function (value, index) {
+          var x = left + index * step + step * .45;
+          var y = top + (1 - value / maxRevenue) * plotHeight;
+          return x.toFixed(1) + "," + y.toFixed(1);
+        }).join(" ");
+        var actualDots = actualRevenue.map(function (value, index) {
+          var x = left + index * step + step * .45;
+          var y = top + (1 - value / maxRevenue) * plotHeight;
+          return '<circle tabindex="0" role="img" aria-label="' + escapeHtml(actualLabel) + ' ' + escapeHtml(actualLabels[index]) + ': ' + money(value) + '" data-tip="' + escapeHtml(actualLabel) + ' · ' + escapeHtml(actualLabels[index]) + ' · ' + money(value) + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.4" fill="#2259ad" stroke="#fff" stroke-width="1"></circle>';
+        }).join("");
+        var points = ebitda.map(function (value, index) {
+          var chartIndex = actualLabels.length + index;
+          var x = left + chartIndex * step + step * .45;
+          var y = top + (1 - value / maxEbitda) * plotHeight;
+          return x.toFixed(1) + "," + y.toFixed(1);
+        }).join(" ");
+        var dots = ebitda.map(function (value, index) {
+          var chartIndex = actualLabels.length + index;
+          var x = left + chartIndex * step + step * .45;
+          var y = top + (1 - value / maxEbitda) * plotHeight;
+          return '<circle tabindex="0" role="img" aria-label="Forecast EBITDA ' + escapeHtml(forecastLabels[index]) + ': ' + money(value) + '" data-tip="Forecast EBITDA · ' + escapeHtml(forecastLabels[index]) + ' · ' + money(value) + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.7" fill="#178f83" stroke="#fff" stroke-width="1.1"></circle>';
+        }).join("");
+        var grid = [0, .5, 1].map(function (ratio) {
+          var y = top + plotHeight * ratio;
+          var revenueValue = maxRevenue * (1 - ratio);
+          var ebitdaValue = maxEbitda * (1 - ratio);
+          return '<line class="gridline" x1="' + left + '" y1="' + y.toFixed(1) + '" x2="' + (width - right) + '" y2="' + y.toFixed(1) + '"></line>' +
+            '<text class="tick" x="' + (left - 5) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end">' + axisLabel(revenueValue, "currency") + '</text>' +
+            '<text class="tick" x="' + (width - right + 5) + '" y="' + (y + 3).toFixed(1) + '">' + axisLabel(ebitdaValue, "currency") + '</text>';
+        }).join("");
+        var labelIndexes = [0, actualLabels.length - 1, labels.length - 1];
+        var labelsSvg = labelIndexes.map(function (index) {
+          var x = left + index * step + step * .45;
+          return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 6) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
+        }).join("");
+        var boundaryX = left + actualLabels.length * step;
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#2259ad"></i>' + escapeHtml(actualLabel) + '</span><span><i style="--legend-color:#cbdcf3"></i>Forecast revenue</span><span><i style="--legend-color:#178f83"></i>Forecast EBITDA</span></div>' +
+          '<svg class="chart" role="img" aria-label="Monthly revenue columns with EBITDA line" viewBox="0 0 560 172">' + grid + bars +
+          '<line x1="' + boundaryX.toFixed(1) + '" y1="' + top + '" x2="' + boundaryX.toFixed(1) + '" y2="' + (top + plotHeight) + '" stroke="#9cabc0" stroke-width="1" stroke-dasharray="4 4"></line><text class="direct-label" x="' + (boundaryX + 4).toFixed(1) + '" y="' + (top + 8) + '">Forecast</text>' +
+          '<polyline points="' + actualPoints + '" fill="none" stroke="#2259ad" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></polyline>' + actualDots +
+          '<polyline points="' + points + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>' + dots + labelsSvg + '</svg></div>';
+      }
+
+      function scenarioColumns(metric, title) {
+        var scenarios = ["Base", "Upside", "Downside"];
+        var values = scenarios.map(function (name) { return compute(name)[metric] * currencyRate(); });
+        var max = Math.max.apply(null, values) * 1.14 || 1;
+        var width = 430, height = 172, left = 34, right = 12, top = 19, bottom = 27;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom, group = plotWidth / scenarios.length;
+        var bars = scenarios.map(function (name, index) {
+          var value = values[index], barHeight = value / max * plotHeight, active = name === state.scenario;
+          var x = left + group * index + group * .27;
+          var color = name === "Base" ? "#2259ad" : name === "Upside" ? "#178f83" : "#be4655";
+          return '<g class="scenario-mark" tabindex="0" role="button" aria-label="Set scenario to ' + name + '" data-scenario="' + name + '" data-tip="' + escapeHtml(name + " · " + title + " · " + (metric === "grossMargin" ? value.toFixed(1) + "%" : money(compute(name)[metric]))) + '">' +
+            '<rect x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + (group * .46).toFixed(1) + '" height="' + barHeight.toFixed(1) + '" rx="4" fill="' + color + '" opacity="' + (active ? "1" : ".64") + '" stroke="' + (active ? "#0b2d59" : "none") + '" stroke-width="' + (active ? "2" : "0") + '"></rect>' +
+            '<text class="direct-label" x="' + (x + group * .23).toFixed(1) + '" y="' + (top + plotHeight - barHeight - 5).toFixed(1) + '" text-anchor="middle">' + (metric === "grossMargin" ? value.toFixed(1) + "%" : symbol() + value.toFixed(0) + "M") + '</text>' +
+            '<text class="tick" x="' + (x + group * .23).toFixed(1) + '" y="' + (height - 7) + '" text-anchor="middle">' + name + '</text></g>';
+        }).join("");
+        return '<div class="chart-wrap"><svg class="chart" role="img" aria-label="' + escapeHtml(title + " by scenario; select a bar to change scenario") + '" viewBox="0 0 430 172">' +
+          '<line class="gridline" x1="' + left + '" y1="' + (top + plotHeight) + '" x2="' + (width - right) + '" y2="' + (top + plotHeight) + '"></line>' + bars + '</svg></div>';
+      }
+
+      function divergingVariance() {
+        var base = compute("Base"), upside = compute("Upside"), downside = compute("Downside");
+        var rows = [
+          ["Revenue", upside.revenue - base.revenue, downside.revenue - base.revenue],
+          ["EBITDA", upside.ebitda - base.ebitda, downside.ebitda - base.ebitda],
+          ["Ending cash", upside.cash - base.cash, downside.cash - base.cash]
+        ];
+        var max = Math.max.apply(null, rows.reduce(function (all, row) { return all.concat([Math.abs(row[1]), Math.abs(row[2])]); }, [])) || 1;
+        var width = 430, height = 172, center = 236, scale = 150 / max;
+        var body = rows.map(function (row, index) {
+          var y = 35 + index * 43, up = row[1] * currencyRate(), down = row[2] * currencyRate();
+          var upWidth = Math.max(2, up * scale);
+          var downWidth = Math.max(2, Math.abs(down) * scale);
+          return '<text class="direct-label" x="8" y="' + (y + 4) + '">' + row[0] + '</text>' +
+            '<rect tabindex="0" role="img" aria-label="' + escapeHtml(row[0] + " upside variance " + signedMoney(row[1])) + '" data-tip="' + escapeHtml(row[0] + " · Upside · " + signedMoney(row[1])) + '" x="' + center + '" y="' + (y - 10) + '" width="' + (Math.max(2, up * scale)).toFixed(1) + '" height="11" rx="3" fill="#178f83"></rect>' +
+            '<text class="direct-label" x="421" y="' + (y - 1) + '" text-anchor="end">' + signedMoney(row[1]) + '</text>' +
+            '<rect tabindex="0" role="img" aria-label="' + escapeHtml(row[0] + " downside variance " + signedMoney(row[2])) + '" data-tip="' + escapeHtml(row[0] + " · Downside · " + signedMoney(row[2])) + '" x="' + (center - downWidth).toFixed(1) + '" y="' + (y + 3) + '" width="' + downWidth.toFixed(1) + '" height="11" rx="3" fill="#be4655"></rect>' +
+            '<text class="direct-label" x="226" y="' + (y + 13) + '" text-anchor="end">' + signedMoney(row[2]) + '</text>';
+        }).join("");
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#178f83"></i>Upside</span><span><i style="--legend-color:#be4655"></i>Downside</span></div>' +
+          '<svg class="chart" role="img" aria-label="Upside and downside variance to base" viewBox="0 0 430 172"><line x1="' + center + '" y1="17" x2="' + center + '" y2="157" stroke="#aebbd0" stroke-width="1"></line>' + body + '</svg></div>';
+      }
+
+      function barList(titleRows, interactive, type) {
+        if (!titleRows.length) return '<div class="empty-list">No material items in the selected lens.</div>';
+        var max = Math.max.apply(null, titleRows.map(function (row) { return Math.abs(row.value); })) || 1;
+        return '<div class="bar-list">' + titleRows.map(function (row, index) {
+          var selected = interactive && ((type === "service" && state.service === row.name) || (type === "department" && state.department === row.name));
+          var contents = '<span class="bar-name">' + escapeHtml(row.name) + '</span>' +
+            '<span class="bar-track"><i class="bar-fill" style="--fill:' + (row.color || colors[index % colors.length]) + ';width:' + Math.max(3, Math.abs(row.value) / max * 100).toFixed(1) + '%"></i></span>' +
+            '<span class="bar-value">' + escapeHtml(row.label) + '</span>';
+          if (interactive) {
+            return '<button type="button" class="bar-row bar-row-button" data-value="' + row.value.toFixed(4) + '" data-' + type + '="' + escapeHtml(row.name) + '" aria-pressed="' + selected + '" aria-label="' + (selected ? "Clear" : "Filter") + ' ' + type + ' ' + escapeHtml(row.name) + '">' + contents + '</button>';
+          }
+          return '<div class="bar-row" data-value="' + row.value.toFixed(4) + '">' + contents + '</div>';
+        }).join("") + '</div>';
+      }
+
+      function serviceRows(metric) {
+        var names = serviceOptions.slice(1);
+        var scenario = planningRecord(state.scenario);
+        var total = scenario[metric] * regionProfile[state.region].factor;
+        var rawShares = names.map(function (name) {
+          var profile = serviceProfile[name];
+          return metric === "directCost" ? profile.costFactor : profile.factor;
+        });
+        var shareTotal = rawShares.reduce(function (sum, value) { return sum + value; }, 0) || 1;
+        var rows = names.map(function (name, index) {
+          var value = total * rawShares[index] / shareTotal;
+          return { name: name, value: value, label: metric === "grossMargin" ? value.toFixed(1) + "%" : money(value), color: colors[index] };
+        });
+        return state.service === "All Services" ? rows : rows.filter(function (row) { return row.name === state.service; });
+      }
+
+      function departmentRows() {
+        var scenario = planningRecord(state.scenario);
+        var names = departmentOptions.slice(1);
+        var regionFactor = regionProfile[state.region].factor;
+        return names.map(function (name, index) {
+          var profile = departmentProfile[name];
+          var payroll = scenario.payroll * regionFactor * profile.payrollShare;
+          var opex = scenario.opex * regionFactor * profile.opexShare;
+          var fte = scenario.fte * regionFactor * profile.fteShare;
+          return { name: name, value: payroll, payroll: payroll, opex: opex, fte: fte, label: money(payroll), color: colors[index % colors.length] };
+        });
+      }
+
+      function regionRows() {
+        var periodIndex = state.year === "2026" ? 1 : state.year === "2027" ? 2 : 0;
+        var regionNames = ["Vietnam North", "Vietnam South", "Vietnam Central", "Thailand", "China"];
+        if (state.region !== "All Regions") regionNames = [state.region];
+        return regionNames.map(function (name, index) {
+          var value = exceptionFacts.filter(function (fact) {
+            return fact.region === name && (state.service === "All Services" || fact.service === state.service);
+          }).reduce(function (sum, fact) { return sum + fact.revenue[periodIndex]; }, 0);
+          return { name: name, value: value, label: money(value), color: colors[index % colors.length] };
+        });
+      }
+
+      function serviceDriverTable() {
+        var scenario = planningRecord(state.scenario);
+        var regionFactor = regionProfile[state.region].factor;
+        var names = serviceOptions.slice(1);
+        function normalizedShares(property) {
+          var raw = names.map(function (name) { return serviceProfile[name][property]; });
+          var total = raw.reduce(function (sum, value) { return sum + value; }, 0) || 1;
+          return raw.map(function (value) { return value / total; });
+        }
+        var revenueShares = normalizedShares("factor");
+        var costShares = normalizedShares("costFactor");
+        var jobShares = normalizedShares("jobsFactor");
+        var rows = names.map(function (name, index) {
+          var profile = serviceProfile[name];
+          var revenue = scenario.revenue * regionFactor * revenueShares[index];
+          var directCost = scenario.directCost * regionFactor * costShares[index];
+          var jobs = scenario.jobs * regionFactor * jobShares[index];
+          var margin = revenue ? (revenue - directCost) / revenue * 100 : 0;
+          return { name: name, revenue: revenue, directCost: directCost, jobs: jobs, margin: margin, revenuePerJob: jobs ? revenue * 1000000 / jobs : 0 };
+        });
+        if (state.service !== "All Services") rows = rows.filter(function (row) { return row.name === state.service; });
+        return '<div class="table-wrap"><table><thead><tr><th>Service</th><th class="num">Revenue</th><th class="num">Direct cost</th><th class="num">Gross margin</th><th class="num">Revenue / job</th><th>Status</th></tr></thead><tbody>' +
+          rows.map(function (row) {
+            var status = row.margin < 16 ? "Challenge" : row.margin < 19 ? "Watch" : "On plan";
+            var selected = state.service === row.name;
+            return '<tr tabindex="0" role="button" data-service="' + escapeHtml(row.name) + '" aria-pressed="' + selected + '" aria-label="' + (selected ? "Clear" : "Filter") + ' service ' + escapeHtml(row.name) + '"' + (selected ? ' style="background:#eef5ff"' : "") + '><td><strong>' + escapeHtml(row.name) + '</strong></td><td class="num">' + money(row.revenue) + '</td><td class="num">' + money(row.directCost) + '</td><td class="num">' + row.margin.toFixed(1) + '%</td><td class="num">$' + row.revenuePerJob.toFixed(0) + '</td><td><span class="status ' + (status === "Challenge" ? "risk" : status === "Watch" ? "watch" : "good") + '">' + status + '</span></td></tr>';
+          }).join("") + '</tbody></table></div>';
+      }
+
+      function scatterChart() {
+        var services = state.service === "All Services" ? ["Air Freight", "Ocean FCL", "Contract Logistics", "Domestic Trucking"] : [state.service];
+        var scenario = planningRecord(state.scenario);
+        var regionFactor = regionProfile[state.region].factor;
+        var points = services.map(function (name, index) {
+          var profile = serviceProfile[name];
+          var regionShape = regionProfile[state.region].wave[index * 3];
+          var jobs = scenario.jobs * regionFactor * profile.jobsFactor;
+          var revenue = scenario.revenue * regionFactor * profile.factor;
+          return {
+            name: name,
+            x: jobs * regionShape / 1000,
+            y: jobs ? revenue * 1000000 / jobs : 0,
+            size: 8 + index * 2,
+            color: colors[index]
+          };
+        });
+        var maxX = Math.max.apply(null, points.map(function (point) { return point.x; })) * 1.18;
+        var maxY = Math.max.apply(null, points.map(function (point) { return point.y; })) * 1.18;
+        var width = 390, height = 172, left = 39, right = 14, top = 16, bottom = 26;
+        var body = points.map(function (point) {
+          var x = left + point.x / maxX * (width - left - right);
+          var y = top + (1 - point.y / maxY) * (height - top - bottom);
+          return '<circle tabindex="0" role="img" aria-label="' + escapeHtml(point.name + ": " + point.x.toFixed(0) + " thousand jobs at $" + point.y.toFixed(0) + " revenue per job") + '" data-tip="' + escapeHtml(point.name + " · " + point.x.toFixed(0) + "K jobs · $" + point.y.toFixed(0) + " / job") + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + point.size + '" fill="' + point.color + '" opacity=".82"></circle>' +
+            '<text class="direct-label" x="' + (x + point.size + 4).toFixed(1) + '" y="' + (y + 3).toFixed(1) + '">' + escapeHtml(point.name) + '</text>';
+        }).join("");
+        return '<div class="chart-wrap"><svg class="chart" role="img" aria-label="Jobs and revenue per job by service" viewBox="0 0 390 172">' +
+          '<line class="axisline" x1="' + left + '" y1="' + (height - bottom) + '" x2="' + (width - right) + '" y2="' + (height - bottom) + '"></line>' +
+          '<line class="axisline" x1="' + left + '" y1="' + top + '" x2="' + left + '" y2="' + (height - bottom) + '"></line>' + body +
+          '<text class="tick" x="' + (width - right) + '" y="' + (height - 7) + '" text-anchor="end">Jobs (000s)</text>' +
+          '<text class="tick" x="' + (left + 4) + '" y="' + (top + 8) + '">Revenue / job</text></svg></div>';
+      }
+
+      function costStackChart() {
+        var services = ["Air Freight", "Ocean FCL", "Ocean LCL", "Contract Logistics", "Customs Brokerage", "Domestic Trucking"];
+        var model = compute();
+        var width = 560, height = 172, left = 78, right = 30, top = 20, rowGap = 44, max = model.directCost * .48 || 1;
+        var body = services.map(function (name, index) {
+          var share = serviceProfile[name].costFactor;
+          var total = model.directCost * share;
+          var components = [
+            { name: "Carrier", value: total * (.52 + index * .03), color: "#2259ad" },
+            { name: "Fuel", value: total * (.18 - index * .02), color: "#d4921c" },
+            { name: "Handling", value: total * (.2 + index * .01), color: "#178f83" },
+            { name: "Other", value: total * .1, color: "#9aa8bb" }
+          ];
+          var cursor = left;
+          var rects = components.map(function (part) {
+            var segmentWidth = part.value / max * (width - left - right);
+            var rect = '<rect tabindex="0" role="img" aria-label="' + escapeHtml(name + " " + part.name + ": " + money(part.value)) + '" data-tip="' + escapeHtml(name + " · " + part.name + " · " + money(part.value)) + '" x="' + cursor.toFixed(1) + '" y="' + (top + index * rowGap) + '" width="' + Math.max(2, segmentWidth).toFixed(1) + '" height="22" rx="2" fill="' + part.color + '"></rect>';
+            cursor += segmentWidth;
+            return rect;
+          }).join("");
+          return '<text class="direct-label" x="' + (left - 7) + '" y="' + (top + index * rowGap + 14) + '" text-anchor="end">' + escapeHtml(name) + '</text>' + rects +
+            '<text class="direct-label" x="' + (cursor + 5).toFixed(1) + '" y="' + (top + index * rowGap + 14) + '">' + money(total) + '</text>';
+        }).join("");
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#2259ad"></i>Carrier</span><span><i style="--legend-color:#d4921c"></i>Fuel</span><span><i style="--legend-color:#178f83"></i>Handling</span></div>' +
+          '<svg class="chart" role="img" aria-label="Direct cost composition by service" viewBox="0 0 560 172">' + body + '</svg></div>';
+      }
+
+      function workloadChart() {
+        var labels = yearProfile[state.year].months;
+        var fteValues = monthlySeries("fte");
+        var payrollValues = monthlySeries("payroll");
+        var width = 560, height = 172, left = 42, right = 42, top = 18, bottom = 25;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var payrollMax = Math.max.apply(null, payrollValues.concat([1])) * 1.18;
+        var fteMin = Math.min.apply(null, fteValues) * .94;
+        var fteMax = Math.max.apply(null, fteValues) * 1.04;
+        var step = plotWidth / labels.length;
+        function fteY(value) { return top + (fteMax - value) / Math.max(1, fteMax - fteMin) * plotHeight; }
+        var grid = [0, .5, 1].map(function (ratio) {
+          var y = top + plotHeight * ratio;
+          var payrollValue = payrollMax * (1 - ratio);
+          var fteValue = fteMax - (fteMax - fteMin) * ratio;
+          return '<line class="gridline" x1="' + left + '" y1="' + y.toFixed(1) + '" x2="' + (width - right) + '" y2="' + y.toFixed(1) + '"></line>' +
+            '<text class="tick" x="' + (left - 5) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end">' + money(payrollValue) + '</text>' +
+            '<text class="tick" x="' + (width - right + 5) + '" y="' + (y + 3).toFixed(1) + '">' + Math.round(fteValue) + '</text>';
+        }).join("");
+        var bars = payrollValues.map(function (value, index) {
+          var x = left + index * step + step * .18;
+          var barHeight = value / payrollMax * plotHeight;
+          return '<rect tabindex="0" role="img" aria-label="Payroll ' + escapeHtml(labels[index]) + ': ' + money(value) + '" data-tip="Payroll · ' + escapeHtml(labels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + Math.max(4, step * .56).toFixed(1) + '" height="' + Math.max(1, barHeight).toFixed(1) + '" rx="2" fill="#8fb9e8"></rect>';
+        }).join("");
+        var points = fteValues.map(function (value, index) {
+          return (left + index * step + step * .46).toFixed(1) + "," + fteY(value).toFixed(1);
+        }).join(" ");
+        var dots = fteValues.map(function (value, index) {
+          var x = left + index * step + step * .46;
+          return '<circle tabindex="0" role="img" aria-label="Average FTE ' + escapeHtml(labels[index]) + ': ' + value.toFixed(1) + '" data-tip="Average FTE · ' + escapeHtml(labels[index]) + ' · ' + value.toFixed(1) + '" cx="' + x.toFixed(1) + '" cy="' + fteY(value).toFixed(1) + '" r="2.8" fill="#178f83" stroke="#fff" stroke-width="1.1"></circle>';
+        }).join("");
+        var labelIndexes = [0, Math.floor((labels.length - 1) / 2), labels.length - 1];
+        var xLabels = labelIndexes.map(function (index) {
+          var x = left + index * step + step * .46;
+          return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 6) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
+        }).join("");
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#8fb9e8"></i>Payroll · left axis</span><span><i style="--legend-color:#178f83"></i>Average FTE · right axis</span></div><svg class="chart" role="img" aria-label="Monthly payroll columns and average FTE line" viewBox="0 0 560 172">' + grid + bars + '<polyline points="' + points + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>' + dots + xLabels + '</svg></div>';
+      }
+
+      function productivityChart() {
+        var labels = yearProfile[state.year].months;
+        var model = compute();
+        var values = normalizedWeights(labels.length).map(function (weight, index) {
+          return model.jobs / Math.max(1, model.fte) * (1 + (index - labels.length / 2) * .005);
+        });
+        return lineChart([
+          { label: "Jobs / FTE", values: values, color: "#6e4bd8", format: function (value) { return Math.round(value) + " jobs"; } }
+        ], { labels: labels, unit: "count", min: Math.min.apply(null, values) * .92, ariaLabel: "Jobs per FTE trend" });
+      }
+
+      function cashSeries(scenarioName) {
+        if (state.page !== "scenario-lab") return monthlySeries("cash", scenarioName);
+        var labels = yearProfile[state.year].months;
+        var labBaseLine = state.page === "scenario-lab" && scenarioName === "Base";
+        var finalCash = labBaseLine ? scenarioLabBase().cash : compute(scenarioName).cash;
+        var weights = normalizedWeights(labels.length, state.page === "scenario-lab" ? "Base" : scenarioName);
+        var cumulative = 0;
+        var openingReference = state.page === "scenario-lab" ? scenarioLabBase().cash : finalCash;
+        return weights.map(function (weight, index) {
+          cumulative += weight;
+          var opening = Math.max(1.5, openingReference * .14);
+          return opening + (finalCash - opening) * cumulative;
+        });
+      }
+
+      function cashFlowChart() {
+        var labels = yearProfile[state.year].months;
+        var operatingCash = monthlySeries("operatingCash");
+        var endingCash = cashSeries();
+        var floor = 40;
+        var width = 560, height = 172, left = 40, right = 42, top = 18, bottom = 25;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var cashMax = Math.max.apply(null, endingCash.concat([floor])) * 1.1;
+        var flowMax = Math.max.apply(null, operatingCash.concat([1])) * 1.22;
+        var step = plotWidth / labels.length;
+        function cashY(value) { return top + (1 - value / cashMax) * plotHeight; }
+        var grid = [0, .5, 1].map(function (ratio) {
+          var yy = top + plotHeight * ratio;
+          var flowValue = flowMax * (1 - ratio);
+          var cashValue = cashMax * (1 - ratio);
+          return '<line class="gridline" x1="' + left + '" y1="' + yy.toFixed(1) + '" x2="' + (width - right) + '" y2="' + yy.toFixed(1) + '"></line><text class="tick" x="' + (left - 5) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end">' + money(flowValue) + '</text><text class="tick" x="' + (width - right + 5) + '" y="' + (yy + 3).toFixed(1) + '">' + money(cashValue) + '</text>';
+        }).join("");
+        var bars = operatingCash.map(function (value, index) {
+          var barHeight = value / flowMax * plotHeight;
+          var x = left + index * step + step * .18;
+          return '<rect tabindex="0" role="img" aria-label="Operating cash ' + escapeHtml(labels[index]) + ': ' + money(value) + '" data-tip="Operating cash · ' + escapeHtml(labels[index]) + ' · ' + money(value) + '" x="' + x.toFixed(1) + '" y="' + (top + plotHeight - barHeight).toFixed(1) + '" width="' + Math.max(4, step * .56).toFixed(1) + '" height="' + Math.max(1, barHeight).toFixed(1) + '" rx="2" fill="#8fb9e8"></rect>';
+        }).join("");
+        var points = endingCash.map(function (value, index) {
+          return (left + index * step + step * .46).toFixed(1) + "," + cashY(value).toFixed(1);
+        }).join(" ");
+        var dots = endingCash.map(function (value, index) {
+          var x = left + index * step + step * .46;
+          return '<circle tabindex="0" role="img" aria-label="Ending cash ' + escapeHtml(labels[index]) + ': ' + money(value) + '" data-tip="Ending cash · ' + escapeHtml(labels[index]) + ' · ' + money(value) + '" cx="' + x.toFixed(1) + '" cy="' + cashY(value).toFixed(1) + '" r="2.8" fill="#178f83" stroke="#fff" stroke-width="1.1"></circle>';
+        }).join("");
+        var floorY = cashY(floor);
+        var labelIndexes = [0, Math.floor((labels.length - 1) / 2), labels.length - 1];
+        var xLabels = labelIndexes.map(function (index) {
+          var x = left + index * step + step * .46;
+          return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 6) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
+        }).join("");
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#8fb9e8"></i>Operating cash · left axis</span><span><i style="--legend-color:#178f83"></i>Ending cash · right axis</span></div><svg class="chart" role="img" aria-label="Operating cash columns and ending cash line" viewBox="0 0 560 172">' + grid + bars + '<line x1="' + left + '" y1="' + floorY.toFixed(1) + '" x2="' + (width - right) + '" y2="' + floorY.toFixed(1) + '" stroke="#d4921c" stroke-width="1.2" stroke-dasharray="5 4"></line><text class="direct-label" x="' + (width - right - 3) + '" y="' + (floorY - 4).toFixed(1) + '" text-anchor="end">$40M floor</text><polyline points="' + points + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>' + dots + xLabels + '</svg></div>';
+      }
+
+      function forecastAccuracyRows() {
+        var services = ["Air Freight", "Ocean FCL", "Ocean LCL", "Contract Logistics", "Customs Brokerage", "Domestic Trucking"];
+        var scenario = planningRecord(state.scenario);
+        var regionFactor = regionProfile[state.region].factor;
+        var rows = services.map(function (name, index) {
+          var exact = accuracyProfile[name];
+          var regionShift = state.region === "All Regions" ? 0 : (regionProfile[state.region].wave[(index * 2) % 12] - 1) * .35;
+          return {
+            service: name,
+            mape: exact.mape + regionShift,
+            bias: exact.bias + regionShift * .55,
+            revenue: scenario.revenue * regionFactor * serviceProfile[name].factor
+          };
+        });
+        return state.service === "All Services" ? rows : rows.filter(function (row) { return row.service === state.service; });
+      }
+
+      function exceptionRows() {
+        var periodIndex = state.year === "2026" ? 1 : state.year === "2027" ? 2 : 0;
+        var varianceRisk = state.scenario === "Downside" ? 2 : 0;
+        var rows = exceptionFacts.map(function (fact) {
+          var grossMargin = fact.gm[periodIndex];
+          var marginRisk = grossMargin < 18 ? 2 : grossMargin < 20 ? 1 : 0;
+          var accuracyRisk = fact.mape > 7.5 ? 2 : fact.mape > 6 ? 1 : 0;
+          var score = marginRisk + accuracyRisk + varianceRisk;
+          var owner = grossMargin < 18 ? "Commercial Finance" : fact.mape > 7.5 ? "Demand Planning" : state.scenario === "Downside" ? "Sales" : "FP&A";
+          var action = grossMargin < 18 ? "Review price and direct-cost drivers" : fact.mape > 7.5 ? "Recalibrate forecast assumptions" : state.scenario === "Downside" ? "Build recovery plan" : "Monitor next cycle";
+          return {
+            region: fact.region,
+            service: fact.service,
+            exposure: fact.revenue[periodIndex],
+            score: score,
+            priority: score >= 4 ? "P1 - Act now" : score >= 2 ? "P2 - Review" : "Monitor",
+            owner: owner,
+            action: action,
+            evidenceRank: fact.evidenceRank || 99
+          };
+        }).filter(function (row) { return row.score >= 2; });
+        if (state.region !== "All Regions") rows = rows.filter(function (row) { return row.region === state.region; });
+        if (state.service !== "All Services") rows = rows.filter(function (row) { return row.service === state.service; });
+        var acceptedDefault = state.scenario === "Base" && state.year === "2026-2027" && state.region === "All Regions" && state.service === "All Services";
+        return rows.sort(function (a, b) {
+          return b.score - a.score || (acceptedDefault ? a.evidenceRank - b.evidenceRank : b.exposure - a.exposure);
+        });
+      }
+
+      function statusClass(priority) {
+        return priority === "P1 - Act now" ? "risk" : priority === "Monitor" ? "good" : "watch";
+      }
+
+      function exceptionTable(limit) {
+        var rows = exceptionRows().slice(0, limit || 8);
+        return '<div class="table-wrap"><table><thead><tr><th>Region</th><th>Service</th><th class="num">Exposure</th><th class="num">Score</th><th>Priority</th><th>Owner</th><th>Recommended action</th></tr></thead><tbody>' +
+          rows.map(function (row) {
+            return '<tr><td>' + escapeHtml(row.region) + '</td><td>' + escapeHtml(row.service) + '</td><td class="num">' + money(row.exposure) + '</td><td class="num">' + row.score + '</td><td><span class="status ' + statusClass(row.priority) + '">' + row.priority + '</span></td><td>' + escapeHtml(row.owner) + '</td><td>' + escapeHtml(row.action) + '</td></tr>';
+          }).join("") + '</tbody></table></div>';
+      }
+
+      function headcountTable() {
+        var owners = ["COO", "CCO", "Customer Director", "CFO", "CTO", "CEO"];
+        var rows = departmentRows();
+        return '<div class="table-wrap"><table><thead><tr><th>Department</th><th class="num">Average FTE</th><th class="num">Payroll</th><th class="num">Non-payroll OPEX</th><th>Owner</th><th>Plan signal</th></tr></thead><tbody>' +
+          rows.map(function (row, index) {
+            var status = row.opex / Math.max(.001, row.payroll) > .36 ? "Watch" : "On plan";
+            var selected = state.department === row.name;
+            return '<tr tabindex="0" role="button" data-department="' + escapeHtml(row.name) + '" aria-pressed="' + selected + '" aria-label="' + (selected ? "Clear" : "Filter") + ' department ' + escapeHtml(row.name) + '"' + (selected ? ' style="background:#eef5ff"' : "") + '><td>' + escapeHtml(row.name) + '</td><td class="num">' + row.fte.toFixed(1) + '</td><td class="num">' + money(row.payroll) + '</td><td class="num">' + money(row.opex) + '</td><td>' + owners[index] + '</td><td><span class="status ' + (status === "Watch" ? "watch" : "good") + '">' + status + '</span></td></tr>';
+          }).join("") + '</tbody></table></div>';
+      }
+
+      function accuracyTable() {
+        var rows = forecastAccuracyRows();
+        return '<div class="table-wrap"><table><thead><tr><th>Service</th><th class="num">Historical MAPE</th><th class="num">Bias</th><th class="num">Forecast revenue</th><th>Status</th></tr></thead><tbody>' +
+          rows.map(function (row) {
+            var risk = row.mape > 7;
+            return '<tr><td>' + escapeHtml(row.service) + '</td><td class="num">' + row.mape.toFixed(1) + '%</td><td class="num">' + (row.bias >= 0 ? "+" : "") + row.bias.toFixed(1) + '%</td><td class="num">' + money(row.revenue) + '</td><td><span class="status ' + (risk ? "risk" : "good") + '">' + (risk ? "Challenge" : "Within band") + '</span></td></tr>';
+          }).join("") + '</tbody></table></div>';
+      }
+
+      function scenarioSnapshotTable() {
+        return '<div class="table-wrap"><table><thead><tr><th>Scenario</th><th class="num">Revenue</th><th class="num">Direct cost</th><th class="num">Payroll</th><th class="num">OPEX</th><th class="num">EBITDA</th><th class="num">Gross margin</th><th class="num">Ending cash</th></tr></thead><tbody>' +
+          ["Base", "Upside", "Downside"].map(function (name) {
+            var model = compute(name);
+            var active = name === state.scenario;
+            return '<tr data-scenario="' + name + '" tabindex="0" role="button" aria-label="Set scenario to ' + name + '"' + (active ? ' style="background:#eef5ff"' : "") + '><td><strong>' + name + '</strong></td><td class="num">' + money(model.revenue) + '</td><td class="num">' + money(model.directCost) + '</td><td class="num">' + money(model.payroll) + '</td><td class="num">' + money(model.opex) + '</td><td class="num">' + money(model.ebitda) + '</td><td class="num">' + model.grossMargin.toFixed(1) + '%</td><td class="num">' + money(model.cash) + '</td></tr>';
+          }).join("") + '</tbody></table></div>';
+      }
+
+      function miniSparkline(values, color) {
+        var max = Math.max.apply(null, values), min = Math.min.apply(null, values);
+        var points = values.map(function (value, index) {
+          var x = 2 + index * 64 / Math.max(1, values.length - 1);
+          var y = 21 - (value - min) / (max - min || 1) * 17;
+          return x.toFixed(1) + "," + y.toFixed(1);
+        }).join(" ");
+        return '<svg aria-hidden="true" viewBox="0 0 68 24"><polyline points="' + points + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="66" cy="' + points.split(" ").slice(-1)[0].split(",")[1] + '" r="2.2" fill="' + color + '"></circle></svg>';
+      }
+
+      function metricsForPage() {
+        var model = compute();
+        var base = state.page === "scenario-lab" ? scenarioLabBase() : compute("Base");
+        var risk = state.scenario === "Downside";
+        if (state.page === "executive-overview") return [
+          { label: state.scenario + " Revenue", value: money(model.revenue), note: state.scenario === "Base" ? signedMoney(compute("Upside").revenue - base.revenue) + " upside" : signedMoney(model.revenue - base.revenue) + " vs base", tone: risk ? "risk" : "good", spark: monthlySeries("revenue"), color: colors[0] },
+          { label: state.scenario + " EBITDA", value: money(model.ebitda), note: (model.revenue ? model.ebitda / model.revenue * 100 : 0).toFixed(1) + "% EBITDA margin", tone: model.ebitda < 0 ? "risk" : "good", spark: monthlySeries("ebitda"), color: colors[1] },
+          { label: "Gross Margin", value: model.grossMargin.toFixed(1) + "%", note: (model.grossMargin - compute("Downside").grossMargin).toFixed(1) + " pts above downside", tone: model.grossMargin < 17 ? "risk" : "good", spark: monthlySeries("revenue").map(function (value, index) { return model.grossMargin + regionProfile[state.region].wave[index % 12] * .5; }), color: colors[2] },
+          { label: "Ending Cash", value: money(model.cash), note: "Group liquidity · $40M floor", tone: model.cash >= 40 ? "good" : "risk", spark: cashSeries(), color: colors[3] }
+        ];
+        if (state.page === "revenue-cost-drivers") return [
+          { label: "Jobs", value: compactNumber(model.jobs), note: "Forecast volume", tone: "good", spark: normalizedWeights(yearProfile[state.year].months.length).map(function (value) { return value * model.jobs; }), color: colors[0] },
+          { label: "Revenue / Job", value: "$" + model.revenuePerJob.toFixed(0), note: "Yield per shipment", tone: "good", spark: serviceProfile[state.service].wave, color: colors[1] },
+          { label: "Direct Cost", value: money(model.directCost), note: model.grossMargin.toFixed(1) + "% gross margin", tone: model.grossMargin < 17 ? "risk" : "good", spark: monthlySeries("directCost"), color: colors[2] },
+          { label: "Cost / Job", value: "$" + (model.jobs ? model.directCost * 1000000 / model.jobs : 0).toFixed(1), note: "Variable cost intensity", tone: "good", spark: serviceProfile[state.service].wave.map(function (value) { return value * model.directCost / Math.max(1, model.jobs); }), color: colors[3] }
+        ];
+        if (state.page === "headcount-capacity") {
+          var departmentSelected = state.department !== "All Departments";
+          return [
+            { label: "Average FTE", value: model.fte.toFixed(1), note: "Funded capacity plan", tone: "good", spark: yearProfile[state.year].months.map(function (_, index) { return model.fte * (.96 + index * .006); }), color: colors[0] },
+            { label: "Group Jobs / FTE", value: departmentSelected ? "—" : (model.jobs / Math.max(1, model.fte) / yearProfile[state.year].months.length).toFixed(1), note: departmentSelected ? "Not allocated at department grain" : "Monthly productivity", tone: risk ? "risk" : "good", spark: [30.8, 31.2, 31.7, 32.1, 32.4, model.jobs / Math.max(1, model.fte) / yearProfile[state.year].months.length], color: colors[1] },
+            { label: "Payroll Cost", value: money(model.payroll), note: "Scenario payroll plan", tone: "good", spark: monthlySeries("payroll"), color: colors[2] },
+            { label: "Non-payroll OPEX", value: money(model.opex), note: "Department operating cost", tone: "good", spark: monthlySeries("opex"), color: colors[3] }
+          ];
+        }
+        if (state.page === "cash-accuracy") {
+          var planningFloor = 40;
+          return [
+            { label: "Operating Cash Flow", value: money(model.operatingCash), note: "Scenario cash conversion", tone: model.operatingCash >= 0 ? "good" : "risk", spark: monthlySeries("operatingCash"), color: colors[0] },
+            { label: "Ending Cash", value: money(model.cash), note: "Group liquidity · not dimension-allocated", tone: model.cash < planningFloor ? "risk" : "good", spark: cashSeries(), color: colors[1] },
+            { label: "DSO Days", value: model.dso.toFixed(0), note: "Receivables timing · plan", tone: model.dso > 46 ? "risk" : "good", spark: [46, 45, 45, 44, model.dso, model.dso], color: colors[2] },
+            { label: "MAPE", value: model.mape.toFixed(1) + "%", note: "Historical · scenario-stable", tone: model.mape > 7 ? "risk" : "good", spark: [8.2, 7.8, 7.4, 7.0, 6.7, model.mape], color: colors[3] }
+          ];
+        }
+        if (state.page === "detail-exceptions") {
+          var exceptions = exceptionRows();
+          var priority = exceptions.length;
+          var critical = exceptions.filter(function (row) { return row.score >= 4; }).length;
+          var atRisk = exceptions.reduce(function (sum, row) { return sum + row.exposure; }, 0);
+          var accuracy = state.region === "All Regions" ? Object.keys(accuracyProfile).filter(function (service) {
+            return state.service === "All Services" || service === state.service;
+          }).map(function (service) { return accuracyProfile[service].mape; }) : exceptionFacts.filter(function (fact) {
+            return fact.region === state.region && (state.service === "All Services" || fact.service === state.service);
+          }).map(function (fact) { return fact.mape; });
+          var worstMape = accuracy.length ? Math.max.apply(null, accuracy) : 0;
+          return [
+            { label: "Priority Exceptions", value: priority.toString(), note: "Requires plan review", tone: "risk", spark: [28, 26, 25, 23, 22, priority], color: colors[0] },
+            { label: "Critical Exceptions", value: critical.toString(), note: critical ? "Immediate action required" : "No critical items", tone: critical ? "risk" : "good", spark: [3, 2, 1, 1, 0, critical], color: colors[1] },
+            { label: "At-Risk Base Revenue", value: money(atRisk), note: "Base exposure above threshold", tone: "risk", spark: [atRisk * 1.1, atRisk * 1.08, atRisk * 1.04, atRisk], color: colors[2] },
+            { label: "Worst MAPE", value: worstMape.toFixed(2) + "%", note: "Highest service error", tone: worstMape > 7 ? "risk" : "good", spark: [7.4, 7.2, 7.0, 6.9, worstMape], color: colors[3] }
+          ];
+        }
+        if (state.page === "scenario-lab") {
+          return [
+            { label: "Adjusted Revenue", value: money(model.revenue), note: signedMoney(model.revenue - base.revenue) + " vs base", tone: model.revenue >= base.revenue ? "good" : "risk", spark: monthlySeries("revenue"), color: colors[0] },
+            { label: "Adjusted EBITDA", value: money(model.ebitda), note: signedMoney(model.ebitda - base.ebitda) + " vs base", tone: model.ebitda >= base.ebitda ? "good" : "risk", spark: monthlySeries("ebitda"), color: colors[1] },
+            { label: "Adjusted Cash", value: money(model.cash), note: signedMoney(model.cash - base.cash) + " vs base", tone: model.cash >= 40 ? "good" : "risk", spark: cashSeries(), color: colors[2] }
+          ];
+        }
+        return [];
+      }
+
+      function renderKpis() {
+        var metrics = metricsForPage();
+        var root = document.getElementById("kpis");
+        root.classList.toggle("lab-mode", state.page === "scenario-lab");
+        root.innerHTML = metrics.map(function (metric, index) {
+          return '<article class="kpi" style="--accent:' + metric.color + '" aria-label="' + escapeHtml(metric.label + ": " + metric.value + ". " + metric.note) + '">' +
+            '<div class="kpi-head"><span class="kpi-label">' + escapeHtml(metric.label) + '</span><span class="kpi-index">0' + (index + 1) + '</span></div>' +
+            '<div class="kpi-body"><strong>' + escapeHtml(metric.value) + '</strong>' + miniSparkline(metric.spark, metric.color) + '</div>' +
+            '<small class="' + metric.tone + '">' + escapeHtml(metric.note) + '</small></article>';
+        }).join("");
+      }
+
+      function decisionReadout() {
+        var model = compute();
+        var message = "";
+        var owner = "";
+        if (state.page === "executive-overview") {
+          message = model.cash < 40 ?
+            "<strong>Liquidity guardrail breached.</strong> Re-open volume, rate, and DSO assumptions before signoff." :
+            "<strong>" + state.scenario + " case remains financeable.</strong> Revenue and EBITDA reflect the operating lens; cash remains at Group plan grain.";
+          owner = "Owner: CFO + FP&A";
+        } else if (state.page === "revenue-cost-drivers") {
+          message = "<strong>Primary lever: " + (state.service === "All Services" ? "service mix" : state.service) + ".</strong> Price and volume change revenue while cost inflation flows separately to EBITDA.";
+          owner = "Owner: Commercial + Ops";
+        } else if (state.page === "headcount-capacity") {
+          message = "<strong>Capacity follows demand, not a flat multiplier.</strong> Use department bars to isolate payroll and hiring pressure.";
+          owner = "Owner: COO + People";
+        } else if (state.page === "cash-accuracy") {
+          message = "<strong>Cash is linked to EBITDA and collections.</strong> MAPE remains historical; DSO changes liquidity without pretending to improve accuracy.";
+          owner = "Owner: Treasury + FP&A";
+        } else if (state.page === "detail-exceptions") {
+          message = "<strong>Every material exception has an owner and action.</strong> Filter to a service to narrow the review queue.";
+          owner = "Owner: Forecast owners";
+        } else {
+          var labBuffer = model.cash - 40;
+          var neutral = state.volume === 0 && state.rate === 0 && state.cost === 0 && state.dso === 0;
+          message = "<strong>" + (neutral ? "Change an assumption to test the Base plan." : labBuffer < 0 ? "Hold: cash falls below the $40M floor." : model.cash < scenarioLabBase().cash ? "Review: liquidity remains above floor but below Base." : "Viable: the adjusted case protects liquidity.") + "</strong> Revenue, EBITDA, and cash recalculate from the same planning model.";
+          owner = "Owner: Planning team";
+        }
+        var context = contextMode() === "department" ? state.department : state.service;
+        var planSignal = model.cash >= 40 && model.ebitda >= 0 ? "On plan" : "Review";
+        var lens = state.page === "scenario-lab" ? ["Base locked", state.year, "Group"] : [state.scenario, state.year, state.region, context, planSignal];
+        return '<div class="lens">' + lens.map(function (item) { return '<span' + (item === planSignal && state.page !== "scenario-lab" ? ' class="lens-status' + (planSignal === "Review" ? " risk" : "") + '"' : "") + '>' + escapeHtml(item) + '</span>'; }).join("") + '</div>' +
+          '<div class="decision-copy">' + message + '</div><div class="decision-owner">' + owner + '</div>';
+      }
+
+      function renderOverview() {
+        return panel("Revenue & EBITDA Trend", "Monthly revenue columns with EBITDA line · selected scenario", comboChart(), 6, "chart-panel", "Hover for values") +
+          panel("Revenue by Scenario", "Select a scenario to update the entire page", scenarioColumns("revenue", "Revenue"), 3, "chart-panel") +
+          panel("Variance vs Base", "Upside and downside deltas", divergingVariance(), 3, "chart-panel") +
+          panel("Scenario Snapshot", "Revenue − direct cost − payroll − OPEX reconciles to EBITDA", scenarioSnapshotTable(), 12, "table-panel");
+      }
+
+      function renderDrivers() {
+        var serviceRevenue = serviceRows("revenue");
+        var baseGrossMargin = (scenarioProfile.Base.revenue - scenarioProfile.Base.directCost) / scenarioProfile.Base.revenue * 100;
+        var marginDelta = compute().grossMargin - baseGrossMargin;
+        var marginRows = [
+          { name: "Enterprise", value: 19.548 + marginDelta, color: "#2259ad" },
+          { name: "Mid Market", value: 19.936 + marginDelta, color: "#178f83" },
+          { name: "SME", value: 19.817 + marginDelta, color: "#d4921c" },
+          { name: "Strategic Key Account", value: 19.464 + marginDelta, color: "#6e4bd8" }
+        ];
+        marginRows.forEach(function (row) { row.label = row.value.toFixed(1) + "%"; });
+        var directCostRows = serviceRows("directCost");
+        return panel("Service Revenue Ranking", "Select a service to cross-filter every visual", barList(serviceRevenue, true, "service"), 4, "bar-panel", "Interactive") +
+          panel("Gross Margin by Segment", "Margin quality under the current planning lens", barList(marginRows, false), 4, "bar-panel") +
+          panel("Direct Cost by Service", "Carrier, handling, fuel, and customs cost rollup", barList(directCostRows, false), 4, "bar-panel") +
+          panel("Service Driver Table", "Revenue, direct cost, unit economics, and challenge status", serviceDriverTable(), 12, "table-panel");
+      }
+
+      function renderHeadcount() {
+        var department = departmentRows();
+        var visibleDepartments = state.department === "All Departments" ? department : department.filter(function (row) { return row.name === state.department; });
+        var opexRows = visibleDepartments.map(function (row, index) {
+          var value = row.opex;
+          return { name: row.name, value: value, label: money(value), color: colors[index % colors.length] };
+        });
+        return panel("FTE & Payroll Trend", "Monthly payroll columns and average FTE line", workloadChart(), 6, "chart-panel") +
+          panel("Payroll by Department", "Select a department to isolate cost and capacity", barList(visibleDepartments, true, "department"), 3, "bar-panel", "Interactive") +
+          panel("Non-payroll OPEX", "Department operating cost beside payroll", barList(opexRows, false), 3, "bar-panel") +
+          panel("Department Cost Plan", "Average FTE, payroll, and non-payroll OPEX", headcountTable(), 12, "table-panel");
+      }
+
+      function renderCash() {
+        var selectedMape = state.service === "All Services" ? scenarioProfile.Base.mape : accuracyProfile[state.service].mape;
+        var serviceAccuracyFactor = selectedMape / scenarioProfile.Base.mape;
+        var horizonRows = [
+          { name: "1 month", base: 5.387 },
+          { name: "2 months", base: 6.204 },
+          { name: "3 months", base: 7.725 }
+        ].map(function (row, index) {
+          var regionShape = state.region === "All Regions" ? 1 : regionProfile[state.region].wave[index * 3];
+          var value = row.base * serviceAccuracyFactor * regionShape;
+          return { name: row.name, value: value, label: value.toFixed(1) + "%", color: colors[index] };
+        });
+        return panel("Planning Cash Flow & Ending Cash", "Operating cash columns and closing liquidity line use separate labeled axes", cashFlowChart(), 6, "chart-panel") +
+          panel("Working Capital by Scenario", "Latest working-capital requirement; select a scenario", scenarioColumns("workingCapital", "Working capital"), 3, "chart-panel") +
+          panel("MAPE by Horizon", "Historical 1-, 2-, and 3-month forecast error", barList(horizonRows, false), 3, "compact-bar-panel") +
+          panel("Forecast Accuracy by Service", "Historical MAPE and bias stay separate from scenario outputs", accuracyTable(), 12, "table-panel");
+      }
+
+      function renderExceptions() {
+        var rows = exceptionRows();
+        var accuracy = forecastAccuracyRows();
+        var mapeRows = accuracy.map(function (row, index) {
+          return { name: row.service, value: row.mape, label: row.mape.toFixed(1) + "%", color: row.mape > 7 ? "#be4655" : colors[index % colors.length] };
+        });
+        var riskByService = {};
+        rows.forEach(function (row) { riskByService[row.service] = Math.max(riskByService[row.service] || 0, row.score); });
+        var riskRows = Object.keys(riskByService).map(function (service, index) {
+          var score = riskByService[service];
+          return { name: service, value: score, label: score.toString(), color: score >= 4 ? "#be4655" : colors[index % colors.length] };
+        }).sort(function (a, b) { return b.value - a.value; }).slice(0, 3);
+        var revenueDelta = (planningRecord(state.scenario).revenue / planningRecord("Base").revenue - 1) * 100;
+        var scenarioContext = state.scenario === "Downside" ? "Downside adds 2 variance-risk points" : state.scenario === "Upside" ? "Upside uses Base risk score" : "Base risk reference";
+        var scenarioReference = '<div class="bar-list scenario-reference"><div class="bar-row" data-value="' + revenueDelta.toFixed(4) + '"><span class="bar-name">' + scenarioContext + '</span><span class="bar-track"><i class="bar-fill" style="--fill:#8aa9d2;width:' + Math.max(3, Math.abs(revenueDelta) / 20 * 100).toFixed(1) + '%"></i></span><span class="bar-value">' + (revenueDelta > 0 ? "+" : "") + revenueDelta.toFixed(1) + '% rev</span></div></div>';
+        return panel("Base Revenue by Region", "Regional concentration under the current service lens", barList(regionRows(), false), 4, "bar-panel") +
+          panel("Historical MAPE by Service", "Service lines with forecast quality risk", barList(mapeRows, false), 4, "bar-panel") +
+          panel("Exception Risk by Service", "Highest source-defined exception score", scenarioReference + barList(riskRows, false), 4, "bar-panel") +
+          panel("Top 5 Priority Plan Exceptions", "Score >1 with exposure, owner, and governed action", exceptionTable(5), 12, "table-panel");
+      }
+
+      function sensitivityImpactChart() {
+        var labels = yearProfile[state.year].months;
+        var weights = normalizedWeights(labels.length, "Base");
+        var model = compute();
+        var base = scenarioLabBase();
+        var revenueImpact = weights.map(function (weight) { return (model.revenue - base.revenue) * weight; });
+        var ebitdaImpact = weights.map(function (weight) { return (model.ebitda - base.ebitda) * weight; });
+        var cumulativeWeight = 0;
+        var cashImpact = weights.map(function (weight) {
+          cumulativeWeight += weight;
+          return (model.cash - base.cash) * cumulativeWeight;
+        });
+        var width = 560, height = 214, left = 42, right = 18, top = 20, bottom = 28;
+        var plotWidth = width - left - right, plotHeight = height - top - bottom;
+        var neutral = state.volume === 0 && state.rate === 0 && state.cost === 0 && state.dso === 0;
+        if (neutral) {
+          var neutralStep = plotWidth / labels.length;
+          var neutralTicks = labels.map(function (_, index) {
+            var x = left + neutralStep * index + neutralStep * .5;
+            return '<line x1="' + x.toFixed(1) + '" y1="108" x2="' + x.toFixed(1) + '" y2="116" stroke="#c8d3e1" stroke-width="1"></line>';
+          }).join("");
+          return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#c6d9f2"></i>Revenue impact</span><span><i style="--legend-color:#178f83"></i>EBITDA impact</span><span><i style="--legend-color:#6e4bd8"></i>Cash impact</span></div>' +
+            '<svg class="chart" role="img" aria-label="Neutral sensitivity baseline. Change an assumption to reveal monthly impact." viewBox="0 0 560 214">' +
+            '<line x1="42" y1="112" x2="542" y2="112" stroke="#bdc9d8" stroke-width="1.5" stroke-dasharray="6 5"></line>' + neutralTicks +
+            '<circle cx="292" cy="112" r="8" fill="#edf4fc" stroke="#2259ad" stroke-width="2"></circle>' +
+            '<text class="empty-state" x="292" y="87" text-anchor="middle">Neutral Base plan</text>' +
+            '<text class="empty-state-sub" x="292" y="145" text-anchor="middle">Move a driver to reveal monthly Revenue, EBITDA, and Cash impact</text>' +
+            '</svg></div>';
+        }
+        var values = revenueImpact.concat(ebitdaImpact).concat(cashImpact).concat([0]);
+        var max = Math.max.apply(null, values), min = Math.min.apply(null, values);
+        var padding = Math.max(.25, (max - min) * .15);
+        max += padding;
+        min -= padding;
+        var step = plotWidth / labels.length;
+        function y(value) { return top + (max - value) / (max - min || 1) * plotHeight; }
+        var zeroY = y(0);
+        var grid = [0, .5, 1].map(function (ratio) {
+          var value = max - (max - min) * ratio;
+          var yy = top + plotHeight * ratio;
+          return '<line class="gridline" x1="' + left + '" y1="' + yy.toFixed(1) + '" x2="' + (width - right) + '" y2="' + yy.toFixed(1) + '"></line><text class="tick" x="' + (left - 5) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end">' + money(value) + '</text>';
+        }).join("");
+        var bars = revenueImpact.map(function (value, index) {
+          var x = left + index * step + step * .18;
+          var valueY = y(value);
+          return '<rect aria-hidden="true" x="' + x.toFixed(1) + '" y="' + Math.min(zeroY, valueY).toFixed(1) + '" width="' + Math.max(3, step * .55).toFixed(1) + '" height="' + Math.max(1, Math.abs(zeroY - valueY)).toFixed(1) + '" rx="2" fill="#c6d9f2" pointer-events="none"></rect>';
+        }).join("");
+        var ebitdaPoints = ebitdaImpact.map(function (value, index) {
+          return (left + index * step + step * .46).toFixed(1) + "," + y(value).toFixed(1);
+        }).join(" ");
+        var ebitdaDots = ebitdaImpact.map(function (value, index) {
+          var x = left + index * step + step * .46;
+          return '<circle aria-hidden="true" cx="' + x.toFixed(1) + '" cy="' + y(value).toFixed(1) + '" r="3" fill="#178f83" stroke="#fff" stroke-width="1.2" pointer-events="none"></circle>';
+        }).join("");
+        var cashPoints = cashImpact.map(function (value, index) {
+          return (left + index * step + step * .46).toFixed(1) + "," + y(value).toFixed(1);
+        }).join(" ");
+        var cashDots = cashImpact.map(function (value, index) {
+          var x = left + index * step + step * .46;
+          return '<circle aria-hidden="true" cx="' + x.toFixed(1) + '" cy="' + y(value).toFixed(1) + '" r="3.2" fill="#6e4bd8" stroke="#fff" stroke-width="1.2" pointer-events="none"></circle>';
+        }).join("");
+        var hitAreas = labels.map(function (label, index) {
+          var x = left + index * step;
+          var tip = label + " · Revenue " + signedMoney(revenueImpact[index]) + " · EBITDA " + signedMoney(ebitdaImpact[index]) + " · Cash " + signedMoney(cashImpact[index]);
+          return '<rect tabindex="0" role="img" aria-label="' + escapeHtml(tip) + '" data-tip="' + escapeHtml(tip) + '" x="' + x.toFixed(1) + '" y="' + top + '" width="' + Math.max(8, step).toFixed(1) + '" height="' + plotHeight + '" fill="transparent" pointer-events="all"></rect>';
+        }).join("");
+        var xIndexes = [0, Math.floor((labels.length - 1) / 2), labels.length - 1];
+        var xLabels = xIndexes.map(function (index) {
+          var x = left + index * step + step * .46;
+          return '<text class="tick" x="' + x.toFixed(1) + '" y="' + (height - 7) + '" text-anchor="' + (index === 0 ? "start" : index === labels.length - 1 ? "end" : "middle") + '">' + escapeHtml(labels[index]) + '</text>';
+        }).join("");
+        return '<div class="chart-wrap"><div class="legend"><span><i style="--legend-color:#c6d9f2"></i>Revenue impact</span><span><i style="--legend-color:#178f83"></i>EBITDA impact</span><span><i style="--legend-color:#6e4bd8"></i>Cash impact</span></div><svg class="chart" role="img" aria-label="Monthly revenue, EBITDA, and cash sensitivity impact" viewBox="0 0 560 214">' + grid + '<line x1="' + left + '" y1="' + zeroY.toFixed(1) + '" x2="' + (width - right) + '" y2="' + zeroY.toFixed(1) + '" stroke="#8393a8" stroke-width="1.2"></line>' + bars + '<polyline points="' + ebitdaPoints + '" fill="none" stroke="#178f83" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"></polyline>' + ebitdaDots + '<polyline points="' + cashPoints + '" fill="none" stroke="#6e4bd8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"></polyline>' + cashDots + xLabels + hitAreas + '</svg></div>';
+      }
+
+      function renderLab() {
+        var model = compute();
+        var base = scenarioLabBase();
+        var dsoImpact = scenarioLabDsoImpact();
+        var controls = [
+          ["volume", "Volume growth", -20, 20, 2, "%"],
+          ["rate", "Price / rate", -10, 10, 1, "%"],
+          ["cost", "Cost inflation", -5, 15, 1, "%"],
+          ["dso", "DSO change", -10, 20, 1, "d"]
+        ];
+        var drivers = [
+          { name: "Volume impact", value: base.revenue * state.volume / 100, label: signedMoney(base.revenue * state.volume / 100) },
+          { name: "Rate impact", value: base.revenue * (1 + state.volume / 100) * state.rate / 100, label: signedMoney(base.revenue * (1 + state.volume / 100) * state.rate / 100) },
+          { name: "Cost impact", value: -base.directCost * (1 + state.volume / 100) * state.cost / 100, label: signedMoney(-base.directCost * (1 + state.volume / 100) * state.cost / 100) },
+          { name: "DSO cash impact", value: dsoImpact, label: signedMoney(dsoImpact) }
+        ];
+        var controlHtml = '<div class="lab-controls horizontal">' + controls.map(function (control) {
+          return '<label class="control"><span>' + control[1] + '</span><input type="range" min="' + control[2] + '" max="' + control[3] + '" step="' + control[4] + '" value="' + state[control[0]] + '" data-control="' + control[0] + '" aria-label="' + control[1] + '"><output>' + (state[control[0]] > 0 ? "+" : "") + state[control[0]] + control[5] + '</output></label>';
+        }).join("") + '</div>';
+        var readback = '<div class="readback-list">' + [
+          ["Volume", state.volume, "%", drivers[0].label],
+          ["Rate", state.rate, "%", drivers[1].label],
+          ["Cost", state.cost, "%", drivers[2].label],
+          ["DSO", state.dso, "d", drivers[3].label]
+        ].map(function (row) {
+          return '<div class="readback-item"><span>' + row[0] + ' ' + (row[1] > 0 ? "+" : "") + row[1] + row[2] + '</span><strong>' + row[3] + '</strong></div>';
+        }).join("") + '</div><div class="readback-total"><span>Adjusted plan</span><strong>' + money(model.cash) + ' ending cash</strong><small>' + money(model.revenue) + ' Revenue · ' + money(model.ebitda) + ' EBITDA · Base plan locked</small></div>';
+        var floor = 40;
+        var buffer = model.cash - floor;
+        var neutral = state.volume === 0 && state.rate === 0 && state.cost === 0 && state.dso === 0;
+        var margin = model.revenue ? model.ebitda / model.revenue * 100 : 0;
+        var verdict = neutral ? "TEST" : buffer < 0 ? "HOLD" : margin < 10 ? "CHALLENGE" : model.cash < base.cash ? "REVIEW" : "VIABLE";
+        var verdictCopy = neutral ? "Change an assumption to test the Base plan." : money(Math.abs(buffer)) + (buffer >= 0 ? " above" : " below") + " the $40M cash floor.";
+        var verdictBody = '<div class="verdict-card' + (buffer < 0 || margin < 10 ? " risk" : "") + '"><b>Decision verdict</b><strong>' + verdict + '</strong><span>' + verdictCopy + '</span><div class="verdict-metrics">' +
+          '<span><small>Cash buffer</small><b>' + signedMoney(buffer) + '</b></span>' +
+          '<span><small>EBITDA vs Base</small><b>' + signedMoney(model.ebitda - base.ebitda) + '</b></span>' +
+          '<span><small>Revenue vs Base</small><b>' + signedMoney(model.revenue - base.revenue) + '</b></span>' +
+          '</div></div>';
+        return panel("Assumption Controls", "Base plan locked · move a driver to recalculate the outcome", controlHtml, 12, "lab-control-panel", "Live") +
+          panel("Monthly Sensitivity Impact", "Revenue columns with EBITDA and cash impact lines", sensitivityImpactChart(), 6, "chart-panel") +
+          panel("Assumption Readback", "Current driver values and signed effects", readback, 3, "readback-panel") +
+          panel("Decision", "Liquidity guardrail and planning call", verdictBody, 3, "verdict-panel");
+      }
+
+      function renderVisuals() {
+        var html = state.page === "executive-overview" ? renderOverview() :
+          state.page === "revenue-cost-drivers" ? renderDrivers() :
+          state.page === "headcount-capacity" ? renderHeadcount() :
+          state.page === "cash-accuracy" ? renderCash() :
+          state.page === "detail-exceptions" ? renderExceptions() : renderLab();
+        var root = document.getElementById("visuals");
+        root.classList.toggle("lab-mode", state.page === "scenario-lab");
+        root.innerHTML = html;
+      }
+
+      function markScrollableTables() {
+        Array.prototype.forEach.call(document.querySelectorAll(".panel .scroll-cue"), function (cue) { cue.remove(); });
+        Array.prototype.forEach.call(document.querySelectorAll(".table-wrap"), function (wrap) {
+          var scrollable = wrap.scrollWidth > wrap.clientWidth + 1;
+          wrap.tabIndex = scrollable ? 0 : -1;
+          if (scrollable) {
+            wrap.setAttribute("aria-label", "Scrollable data table. Swipe or use arrow keys to view more columns.");
+            var cue = document.createElement("span");
+            cue.className = "scroll-cue";
+            cue.setAttribute("aria-hidden", "true");
+            cue.textContent = "Swipe table →";
+            wrap.closest(".panel").appendChild(cue);
+          } else {
+            wrap.removeAttribute("aria-label");
+          }
+        });
+      }
+
+      function updateContextControl() {
+        var mode = contextMode();
+        var label = document.getElementById("contextLabel");
+        var select = document.getElementById("contextFilter");
+        var options = mode === "department" ? departmentOptions : serviceOptions;
+        var value = mode === "department" ? state.department : state.service;
+        label.textContent = mode === "department" ? "Department" : "Service";
+        select.setAttribute("aria-label", mode === "department" ? "Department" : "Service");
+        select.innerHTML = options.map(function (option) { return '<option' + (option === value ? " selected" : "") + '>' + escapeHtml(option) + '</option>'; }).join("");
+      }
+
+      function renderNavigation() {
+        var activeIndex = pages.findIndex(function (page) { return page.id === state.page; });
+        document.getElementById("pageNav").innerHTML = pages.map(function (page, index) {
+          var active = page.id === state.page;
+          return '<button type="button" role="tab" id="tab-' + page.id + '" aria-controls="visuals" aria-selected="' + active + '" tabindex="' + (active ? "0" : "-1") + '" data-page="' + page.id + '">' +
+            '<span aria-hidden="true">0' + (index + 1) + '</span> ' + escapeHtml(page.short) + '</button>';
+        }).join("");
+        document.getElementById("pageCount").textContent = String(activeIndex + 1).padStart(2, "0") + " / 06";
+      }
+
+      function geometryFingerprint(root) {
+        var selectors = "svg polyline,svg path,svg rect,svg circle,svg line,.bar-fill";
+        var raw = Array.prototype.map.call(root.querySelectorAll(selectors), function (node) {
+          return [
+            node.tagName,
+            node.getAttribute("points"),
+            node.getAttribute("d"),
+            node.getAttribute("x"),
+            node.getAttribute("y"),
+            node.getAttribute("x1"),
+            node.getAttribute("y1"),
+            node.getAttribute("x2"),
+            node.getAttribute("y2"),
+            node.getAttribute("width"),
+            node.getAttribute("height"),
+            node.getAttribute("cx"),
+            node.getAttribute("cy"),
+            node.getAttribute("r"),
+            node.style.width,
+            node.closest("[data-value]") ? node.closest("[data-value]").getAttribute("data-value") : ""
+          ].join("|");
+        }).join(";");
+        var hash = 2166136261;
+        for (var index = 0; index < raw.length; index += 1) {
+          hash ^= raw.charCodeAt(index);
+          hash = Math.imul(hash, 16777619);
+        }
+        return (hash >>> 0).toString(36) + ":" + root.querySelectorAll(selectors).length;
+      }
+
+      function publishQa() {
+        var root = document.getElementById("visuals");
+        var model = compute();
+        window.previewState = Object.assign({}, state);
+        window.__dashboardQa = {
+          ready: true,
+          projectNumber: "02",
+          layoutSource: "project-02-own-dashboard",
+          activePage: state.page,
+          pageCount: pages.length,
+          filterCount: state.page === "scenario-lab" ? 1 : 4,
+          kpiCount: document.querySelectorAll(".kpi").length,
+          panelCount: root.querySelectorAll(".panel").length,
+          tableCount: root.querySelectorAll("table").length,
+          chartFingerprint: geometryFingerprint(root),
+          bodyOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+          pnlTieOut: Math.abs(model.revenue - model.directCost - model.payroll - model.opex - model.ebitda) < .001,
+          finiteValues: [model.revenue, model.directCost, model.payroll, model.ebitda, model.cash, model.mape].every(Number.isFinite)
+        };
+      }
+
+      function fitDashboard() {
+        var frame = document.querySelector(".preview-frame");
+        var shell = document.querySelector(".dashboard-shell");
+        var dashboard = document.querySelector(".dashboard");
+        if (frame.clientWidth <= 760) {
+          dashboard.style.transform = "none";
+          shell.style.height = dashboard.offsetHeight + "px";
+          return;
+        }
+        var scale = Math.min(1, frame.clientWidth / 1280);
+        dashboard.style.transform = "scale(" + scale + ")";
+        shell.style.height = Math.ceil(720 * scale) + "px";
+      }
+
+      function render(announce) {
+        var page = pages.find(function (item) { return item.id === state.page; });
+        var labMode = state.page === "scenario-lab";
+        if (labMode) {
+          state.scenario = "Base";
+          document.getElementById("scenarioFilter").value = "Base";
+        }
+        document.getElementById("scenarioControl").classList.toggle("hidden", labMode);
+        document.getElementById("regionControl").classList.toggle("hidden", labMode);
+        document.getElementById("contextControl").classList.toggle("hidden", labMode);
+        document.querySelector(".filters").classList.toggle("lab-mode", labMode);
+        document.getElementById("pageTitle").textContent = page.label;
+        document.getElementById("subtitle").textContent = page.sub;
+        updateContextControl();
+        renderNavigation();
+        document.getElementById("decisionBand").innerHTML = decisionReadout();
+        renderKpis();
+        renderVisuals();
+        markScrollableTables();
+        publishQa();
+        fitDashboard();
+        if (announce) {
+          document.getElementById("srStatus").textContent = announce + ". " + page.label + " updated.";
+        }
+      }
+
+      function interactiveFocusIndex(type, value, source) {
+        var nodes = Array.prototype.filter.call(document.querySelectorAll("[data-" + type + "]"), function (node) {
+          return node.getAttribute("data-" + type) === value;
+        });
+        return Math.max(0, nodes.indexOf(source));
+      }
+
+      function restoreInteractiveFocus(type, value, index) {
+        if (index == null) return;
+        requestAnimationFrame(function () {
+          var nodes = Array.prototype.filter.call(document.querySelectorAll("[data-" + type + "]"), function (node) {
+            return node.getAttribute("data-" + type) === value;
+          });
+          var target = nodes[Math.min(index, Math.max(0, nodes.length - 1))];
+          if (target) target.focus();
+        });
+      }
+
+      function setScenario(value, announce, focusIndex) {
+        if (!scenarioProfile[value] || state.page === "scenario-lab") return;
+        state.scenario = value;
+        document.getElementById("scenarioFilter").value = value;
+        render(announce || "Scenario set to " + value);
+        restoreInteractiveFocus("scenario", value, focusIndex);
+      }
+
+      function setContext(type, value, focusIndex) {
+        var nextValue = value;
+        if (type === "service" && serviceProfile[value]) {
+          nextValue = state.service === value ? "All Services" : value;
+          state.service = nextValue;
+        }
+        if (type === "department" && departmentProfile[value]) {
+          nextValue = state.department === value ? "All Departments" : value;
+          state.department = nextValue;
+        }
+        render((type === "service" ? "Service" : "Department") + " set to " + nextValue);
+        restoreInteractiveFocus(type, value, focusIndex);
+      }
+
+      function reset() {
+        var currentPage = state.page;
+        state = Object.assign({}, defaults);
+        state.page = currentPage;
+        document.getElementById("scenarioFilter").value = state.scenario;
+        document.getElementById("yearFilter").value = state.year;
+        document.getElementById("regionFilter").value = state.region;
+        render("Planning lens reset");
+      }
+
+      function refreshScenarioLab(announce) {
+        document.getElementById("decisionBand").innerHTML = decisionReadout();
+        renderKpis();
+        var staging = document.createElement("div");
+        staging.innerHTML = renderLab();
+        var nextPanels = Array.prototype.slice.call(staging.children);
+        var root = document.getElementById("visuals");
+        var currentSummary = root.querySelector(".summary-grid");
+        var nextSummary = nextPanels[0] && nextPanels[0].querySelector(".summary-grid");
+        if (currentSummary && nextSummary) currentSummary.replaceWith(nextSummary);
+        while (root.children.length > 1) root.removeChild(root.lastElementChild);
+        nextPanels.slice(1).forEach(function (panelNode) { root.appendChild(panelNode); });
+        markScrollableTables();
+        publishQa();
+        fitDashboard();
+        if (announce) document.getElementById("srStatus").textContent = announce + ". Scenario Lab updated.";
+      }
+
+      function positionTooltip(event, text) {
+        var tooltip = document.getElementById("tooltip");
+        tooltip.textContent = text;
+        tooltip.classList.add("visible");
+        var margin = 12;
+        var left = Math.min(window.innerWidth - tooltip.offsetWidth - margin, Math.max(margin, event.clientX + 12));
+        var top = Math.min(window.innerHeight - tooltip.offsetHeight - margin, Math.max(margin, event.clientY + 12));
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+      }
+
+      function hideTooltip() {
+        document.getElementById("tooltip").classList.remove("visible");
+      }
+
+      document.getElementById("dashboard").addEventListener("click", function (event) {
+        var pageButton = event.target.closest("[data-page]");
+        var scenarioButton = event.target.closest("[data-scenario]");
+        var serviceButton = event.target.closest("[data-service]");
+        var departmentButton = event.target.closest("[data-department]");
+        if (pageButton) {
+          state.page = pageButton.getAttribute("data-page");
+          if (state.page === "scenario-lab") state.scenario = "Base";
+          render("Page changed");
+        } else if (scenarioButton) {
+          var scenarioValue = scenarioButton.getAttribute("data-scenario");
+          setScenario(scenarioValue, "", interactiveFocusIndex("scenario", scenarioValue, scenarioButton));
+        } else if (serviceButton) {
+          var serviceValue = serviceButton.getAttribute("data-service");
+          setContext("service", serviceValue, interactiveFocusIndex("service", serviceValue, serviceButton));
+        } else if (departmentButton) {
+          var departmentValue = departmentButton.getAttribute("data-department");
+          setContext("department", departmentValue, interactiveFocusIndex("department", departmentValue, departmentButton));
+        }
+      });
+
+      document.getElementById("dashboard").addEventListener("keydown", function (event) {
+        var target = event.target;
+        if (target.matches("[role='tab']") && ["ArrowRight", "ArrowLeft", "Home", "End"].indexOf(event.key) >= 0) {
+          event.preventDefault();
+          var tabs = Array.prototype.slice.call(document.querySelectorAll("[role='tab']"));
+          var index = tabs.indexOf(target);
+          if (event.key === "ArrowRight") index = (index + 1) % tabs.length;
+          if (event.key === "ArrowLeft") index = (index - 1 + tabs.length) % tabs.length;
+          if (event.key === "Home") index = 0;
+          if (event.key === "End") index = tabs.length - 1;
+          tabs[index].click();
+          requestAnimationFrame(function () {
+            var active = document.querySelector("[role='tab'][aria-selected='true']");
+            if (active) active.focus();
+          });
+        } else if ((event.key === "Enter" || event.key === " ") && target.closest("[data-scenario]")) {
+          event.preventDefault();
+          var scenarioTarget = target.closest("[data-scenario]");
+          var scenarioKeyValue = scenarioTarget.getAttribute("data-scenario");
+          setScenario(scenarioKeyValue, "", interactiveFocusIndex("scenario", scenarioKeyValue, scenarioTarget));
+        } else if ((event.key === "Enter" || event.key === " ") && target.closest("[data-service]")) {
+          event.preventDefault();
+          var serviceTarget = target.closest("[data-service]");
+          var serviceKeyValue = serviceTarget.getAttribute("data-service");
+          setContext("service", serviceKeyValue, interactiveFocusIndex("service", serviceKeyValue, serviceTarget));
+        } else if ((event.key === "Enter" || event.key === " ") && target.closest("[data-department]")) {
+          event.preventDefault();
+          var departmentTarget = target.closest("[data-department]");
+          var departmentKeyValue = departmentTarget.getAttribute("data-department");
+          setContext("department", departmentKeyValue, interactiveFocusIndex("department", departmentKeyValue, departmentTarget));
+        }
+      });
+
+      ["scenario", "year", "region"].forEach(function (key) {
+        document.getElementById(key + "Filter").addEventListener("change", function (event) {
+          state[key] = event.target.value;
+          render(key.charAt(0).toUpperCase() + key.slice(1) + " set to " + state[key]);
+        });
+      });
+
+      document.getElementById("contextFilter").addEventListener("change", function (event) {
+        var mode = contextMode();
+        state[mode] = event.target.value;
+        render((mode === "service" ? "Service" : "Department") + " set to " + event.target.value);
+      });
+
+      document.getElementById("resetFilters").addEventListener("click", reset);
+
+      document.getElementById("dashboard").addEventListener("input", function (event) {
+        var control = event.target.closest("[data-control]");
+        if (!control) return;
+        var key = control.getAttribute("data-control");
+        state[key] = Number(control.value);
+        var output = control.parentElement.querySelector("output");
+        if (output) output.textContent = (state[key] > 0 ? "+" : "") + state[key] + (key === "dso" ? "d" : "%");
+        refreshScenarioLab(control.getAttribute("aria-label") + " adjusted");
+      });
+
+      document.getElementById("dashboard").addEventListener("mousemove", function (event) {
+        var target = event.target.closest("[data-tip]");
+        if (target) positionTooltip(event, target.getAttribute("data-tip"));
+        else hideTooltip();
+      });
+      document.getElementById("dashboard").addEventListener("mouseleave", hideTooltip);
+      document.getElementById("dashboard").addEventListener("focusin", function (event) {
+        var target = event.target.closest("[data-tip]");
+        if (!target) return;
+        var rect = target.getBoundingClientRect();
+        positionTooltip({ clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2 }, target.getAttribute("data-tip"));
+      });
+      document.getElementById("dashboard").addEventListener("focusout", hideTooltip);
+      window.addEventListener("resize", fitDashboard);
+
+      window.previewActions = {
+        setPage: function (id) {
+          if (pages.some(function (page) { return page.id === id; })) {
+            state.page = id;
+            if (id === "scenario-lab") state.scenario = "Base";
+            render("Page changed");
+          }
+          return window.previewState;
+        },
+        setFilter: function (kind, value) {
+          if (["scenario", "year", "region"].indexOf(kind) >= 0) {
+            state[kind] = value;
+            var element = document.getElementById(kind + "Filter");
+            if (element) element.value = value;
+          } else if (kind === "service" && serviceProfile[value]) {
+            state.service = value;
+          } else if (kind === "department" && departmentProfile[value]) {
+            state.department = value;
+          } else if (["volume", "rate", "cost", "dso"].indexOf(kind) >= 0) {
+            state[kind] = Number(value);
+          }
+          render(kind + " updated");
+          return window.previewState;
+        },
+        resetFilters: function () {
+          reset();
+          return window.previewState;
+        },
+        getSummary: function () {
+          return compute();
+        },
+        getRows: function () {
+          return Array.prototype.map.call(document.querySelectorAll("tbody tr"), function (row) { return row.innerText.trim(); });
+        },
+        getChartFingerprint: function () {
+          return window.__dashboardQa.chartFingerprint;
+        }
+      };
+
+      render();
+    })();
+  </script>
+</body>
 </html>

@@ -1,39 +1,658 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta name="robots" content="noindex, follow" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Manufacturing Cost FP&amp;A Interactive Preview | Truong Dinh Anh Tu</title>
-    <link rel="canonical" href="index.html" />
-    <link rel="icon" href="../../../assets/favicon.svg" />
-    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
-    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-  <body class="powerbi-standard-preview" data-project-no="16">
-    <div class="preview-frame">
-      <div class="dashboard-shell">
-        <div class="dashboard" role="application" aria-label="Manufacturing Cost FP&amp;A interactive dashboard">
-          <aside class="sidebar">
-            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Cost FP&amp;A</small></span></div>
-            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
-            <div class="lens-group">
-              <h2 class="lens-title">Global Lens</h2>
-              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
-              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
-            </div>
-            <div class="lens-group">
-              <h2 class="lens-title">Operating Scope</h2>
-              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
-              <label><span class="filter-label">Product Family</span><span class="select-wrap"><select id="regionFilter" aria-label="Product Family filter"></select></span></label>
-            </div>
-            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
-          </aside>
-          <main class="dashboard-content" id="content"></main>
-        </div>
-      </div>
+<head>
+  <meta charset="utf-8">
+<meta name="robots" content="noindex, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manufacturing Cost FP&amp;A</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --bg:#F6F7F9; --panel:#FFFFFF; --panel-soft:#F8FAFC; --ink:#111827; --muted:#667085;
+      --line:#D9DEE7; --grid:#E2E8F0; --steel:#2563EB; --teal:#0F766E; --amber:#D97706;
+      --red:#DC2626; --violet:#7C3AED; --green:#16A34A; --shadow:0 14px 30px rgba(15,23,42,.07);
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Segoe UI, Arial, sans-serif; background:var(--bg); color:var(--ink); }
+    main { width:min(1320px, calc(100% - 40px)); margin:0 auto; padding:24px 0 34px; }
+    header { display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:22px; align-items:end; margin-bottom:12px; }
+    h1 { margin:0; font-size:30px; line-height:1.12; font-weight:800; }
+    .sub { color:var(--muted); margin-top:7px; line-height:1.45; font-size:14px; }
+    .status-note { color:var(--muted); font-size:13px; line-height:1.4; text-align:right; max-width:390px; }
+    .top-controls { display:grid; grid-template-columns:auto minmax(0, 1fr); gap:12px; align-items:start; margin:10px 0 12px; }
+    .tabs { display:flex; flex-wrap:wrap; gap:8px; }
+    .tabs button { min-height:38px; border:1px solid var(--line); background:#fff; color:var(--muted); padding:9px 13px; border-radius:8px; cursor:pointer; font-weight:750; }
+    .tabs button.active { background:var(--ink); color:#fff; border-color:var(--ink); box-shadow:var(--shadow); }
+    .filter-bar { display:grid; grid-template-columns:repeat(4, minmax(145px, 1fr)); gap:10px; }
+    .filter { min-width:0; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
+    .filter span { display:block; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; margin-bottom:4px; }
+    .filter select { width:100%; border:0; outline:0; background:transparent; color:var(--ink); font-size:13px; font-weight:750; min-height:22px; }
+    .lens { display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:14px; align-items:center; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:12px 14px; margin-bottom:12px; box-shadow:0 10px 24px rgba(15,23,42,.04); }
+    .lens-kicker { color:var(--muted); font-size:11px; font-weight:850; text-transform:uppercase; letter-spacing:.03em; }
+    .lens-text { margin-top:4px; font-size:14px; font-weight:760; line-height:1.35; overflow-wrap:anywhere; }
+    .lens-chips { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+    .lens-chip { min-width:112px; border:1px solid var(--line); border-radius:8px; background:var(--panel-soft); padding:8px 10px; }
+    .lens-chip span { display:block; color:var(--muted); font-size:10px; font-weight:850; text-transform:uppercase; }
+    .lens-chip strong { display:block; margin-top:2px; font-size:18px; line-height:1.05; }
+    .kpi-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin-bottom:12px; }
+    .kpi { position:relative; min-width:0; min-height:132px; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:13px 14px 12px; overflow:hidden; box-shadow:0 8px 20px rgba(15,23,42,.04); }
+    .kpi::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:var(--accent, var(--steel)); }
+    .kpi-title { color:var(--muted); font-size:12px; font-weight:850; text-transform:uppercase; }
+    .kpi-value { margin-top:9px; color:var(--ink); font-size:32px; line-height:1; font-weight:850; letter-spacing:0; }
+    .kpi-spark { position:absolute; right:13px; top:31px; width:126px; height:58px; border-radius:8px; background:var(--panel-soft); border:1px solid #E8EDF4; padding:5px; }
+    .kpi-footer { position:absolute; left:14px; right:14px; bottom:12px; display:flex; align-items:center; gap:7px; font-size:11px; font-weight:800; color:var(--muted); }
+    .pill { display:inline-flex; align-items:center; min-height:22px; border-radius:999px; padding:3px 8px; background:var(--panel-soft); border:1px solid #E8EDF4; white-space:nowrap; }
+    .pill.good { color:var(--green); }
+    .pill.risk { color:var(--red); }
+    .panel-grid { display:grid; grid-template-columns:minmax(0, 1.2fr) minmax(360px, .8fr); gap:12px; margin-bottom:12px; }
+    .panel { min-width:0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:14px; overflow:hidden; }
+    .panel-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+    .panel-label { display:block; color:var(--muted); font-size:11px; font-weight:850; text-transform:uppercase; }
+    .panel h2 { margin:4px 0 0; font-size:17px; line-height:1.18; }
+    .takeaway { color:var(--muted); font-size:12px; line-height:1.35; max-width:390px; text-align:right; }
+    .chart { width:100%; min-height:248px; }
+    .chart.small { min-height:220px; }
+    .table-panel { padding-bottom:8px; margin-bottom:0; }
+    .table-scroll { width:100%; overflow-x:auto; padding-bottom:4px; }
+    .table-scroll table { min-width:680px; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { padding:10px 9px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle; }
+    th { background:var(--panel-soft); color:#334155; font-size:11px; text-transform:uppercase; letter-spacing:.02em; }
+    td { line-height:1.35; }
+    .number { text-align:right; font-variant-numeric:tabular-nums; }
+    .action { color:var(--ink); font-weight:750; }
+    .good-text { color:var(--green); font-weight:850; }
+    .risk-text { color:var(--red); font-weight:850; }
+    .empty { min-height:180px; display:grid; place-items:center; color:var(--muted); font-weight:750; border:1px dashed var(--line); border-radius:8px; background:var(--panel-soft); }
+    .footnote { color:var(--muted); font-size:12px; line-height:1.45; margin-top:10px; }
+    @media (max-width:1040px) {
+      main { width:min(100% - 28px, 1320px); }
+      header, .top-controls, .panel-grid, .lens { grid-template-columns:1fr; }
+      .filter-bar, .kpi-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .status-note, .takeaway { text-align:left; max-width:none; }
+      .lens-chips { justify-content:flex-start; }
+    }
+    @media (max-width:680px) {
+      main { width:min(100% - 20px, 1320px); padding-top:14px; }
+      .filter-bar, .kpi-grid { grid-template-columns:1fr; }
+      .kpi { min-height:236px; padding-bottom:14px; overflow:hidden; }
+      .kpi-value { font-size:30px; }
+      .kpi-spark { position:static; width:100%; height:66px; margin-top:10px; }
+      .kpi-footer { position:static; margin-top:10px; flex-wrap:wrap; }
+      .table-scroll { margin:0 -4px; padding:0 4px 6px; }
+      th, td { padding:8px 6px; font-size:12px; }
+    }
+  </style>
+<link rel="canonical" href="index.html"><link rel="icon" href="../../../assets/favicon.svg"><script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script><style>.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow-x:hidden}.dashboard-shell{position:relative;min-width:0}.preview-reset{border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#17212b;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}.preview-reset:hover{filter:brightness(.97)}</style></head>
+<body data-project-number="16" data-layout-source="project-16-own-dashboard"><div class="preview-frame"><div class="dashboard-shell">
+<main>
+  <header>
+    <div>
+      <h1>Manufacturing Cost FP&amp;A</h1>
+      <div class="sub">Decision-ready manufacturing cost pack: standard cost variance, yield loss, capacity pressure, inventory working capital, and owner actions.</div>
     </div>
-    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"manufacturing-cost-fpa","route":"manufacturing-cost-fpa/","no":"16","folder":"Project 16 - Manufacturing Cost FP&A","title":"Manufacturing Cost FP&A","lens":"Cost FP&A","summary":"Cost FP&A pack decomposing standard cost variance, yield, capacity, inventory days, and margin recovery actions.","decisionQuestion":"Which material, labor, yield, and capacity variances are recoverable, and what is their cash and margin impact?","pages":[{"id":"cost-performance","label":"Cost Performance"},{"id":"variance-recovery","label":"Variance Recovery"},{"id":"yield-cash","label":"Yield & Cash"}],"metrics":[{"value":"$7.3M","label":"cost variance","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":7446000,"prior":7957000.000000001,"series":[7957000.000000001,7897272.727272728,7837545.454545455,7777818.181818183,7718090.90909091,7658363.636363637,7598636.363636364,7538909.090909091,7479181.818181818,7419454.545454546,7359727.2727272725,7300000],"sensitivity":1},{"value":"86%","label":"capacity use","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":84.28,"prior":79.12,"series":[79.12,79.74545454545455,80.3709090909091,80.99636363636364,81.62181818181818,82.24727272727273,82.87272727272727,83.49818181818182,84.12363636363636,84.74909090909091,85.37454545454545,86],"sensitivity":1},{"value":"94.1%","label":"yield","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":92.21799999999999,"prior":86.572,"series":[86.572,87.25636363636364,87.94072727272727,88.62509090909091,89.30945454545454,89.99381818181818,90.67818181818181,91.36254545454545,92.04690909090908,92.73127272727272,93.41563636363635,94.1],"sensitivity":1},{"value":"48","label":"inventory days","note":"Synthetic preview value.","format":"days","higherIsBetter":false,"plan":48.96,"prior":52.32000000000001,"series":[52.32000000000001,51.92727272727274,51.53454545454546,51.14181818181819,50.74909090909092,50.35636363636364,49.96363636363637,49.57090909090909,49.17818181818182,48.78545454545455,48.39272727272727,48],"sensitivity":1}],"bars":[{"label":"Material","value":66},{"label":"Labor","value":58},{"label":"Overhead","value":61},{"label":"Yield","value":76}],"drivers":[{"label":"Material price","value":"-$1.2M","isRisk":true},{"label":"Yield recovery","value":"+$0.5M","isRisk":false},{"label":"Idle capacity","value":"-$0.7M","isRisk":true}],"actions":[{"owner":"Operations","action":"Recover yield on underperforming lines."},{"owner":"Procurement","action":"Negotiate material price variance."},{"owner":"Finance","action":"Track margin recovery by plant."}],"financeLogic":["Standard cost variance separates price, usage, labor, and overhead effects.","Yield divides good output by total input at the same production stage.","Inventory days use average inventory divided by annualized cost of goods sold."],"scopeLabel":"Plant","scopeOptions":["All Plants","Plant North","Plant Central","Plant South"],"breakdownLabel":"Product Family","breakdownOptions":["All Products","Alpha","Beta","Gamma","Custom"],"regionOptions":["All Products","Alpha","Beta","Gamma","Custom"],"governance":["Production quantities reconcile to inventory movement.","Standard-cost versions are effective-dated and approved.","Recovery actions identify plant, owner, value, and due date.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Plants","region":"All Products"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Plant","options":["All Plants","Plant North","Plant Central","Plant South"],"default":"All Plants"},{"id":"region","label":"Product Family","options":["All Products","Alpha","Beta","Gamma","Custom"],"default":"All Products"}],"dataClassification":"Synthetic public-safe preview data"});</script>
-    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
-  </body>
+    <div class="status-note">Synthetic fixed-seed data | Latest complete month: <strong id="latest-month-label"></strong><br>HTML preview mirrors the generated Project 16 source model.</div>
+  </header>
+
+  <section class="top-controls">
+    <nav class="tabs" aria-label="Dashboard pages">
+      <button class="active" type="button" data-tab="overview">Overview</button>
+      <button type="button" data-tab="variance">Cost Variance</button>
+      <button type="button" data-tab="ops">Yield &amp; WC</button>
+    </nav>
+    <div class="filter-bar" aria-label="Dashboard filters">
+      <label class="filter"><span>Month</span><select id="filter-month"></select></label>
+      <label class="filter"><span>Plant</span><select id="filter-plant"></select></label>
+      <label class="filter"><span>Product Line</span><select id="filter-product-line"></select></label>
+      <label class="filter"><span id="context-filter-name">Line</span><select id="filter-context"></select></label>
+    </div>
+  </section>
+
+  <section class="lens" aria-label="Current Lens">
+    <div>
+      <div class="lens-kicker">Current Lens</div>
+      <div class="lens-text" id="lens-text"></div>
+    </div>
+    <div class="lens-chips" id="lens-chips"></div>
+  </section>
+
+  <section class="kpi-grid" id="kpi-grid" aria-label="KPI summary"></section>
+  <section class="panel-grid" id="primary-panels"></section>
+  <section class="panel-grid" id="secondary-panels"></section>
+  <section class="panel table-panel" id="table-panel"></section>
+  <p class="footnote">Public-safe synthetic portfolio preview. No raw confidential data, PBIX internals, private source data, or machine-specific paths are embedded in this HTML artifact.</p>
+</main>
+
+<script>
+  const DATA = {"latestMonth":"2026-05","previousMonth":"2026-04","months":["2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05"],"plants":["Bac Ninh Electronics","Da Nang Assembly","HCMC Precision","Johor Packaging Systems","Rayong Components"],"productLines":["Electronics Assembly","Industrial Components","Packaging Systems","Precision Parts"],"lines":["Assembly Cell","CNC Cell 1","CNC Cell 2","Final Assembly","Foundry Cell","Machining Cell","Mixed Assembly","Packaging Cell","Packaging Line 1","Packaging Line 2","SMT Line 1","SMT Line 2"],"scenarios":[{"scenario_id":"S00","scenario_name":"Base","material_cost_reduction_pct":0,"labor_efficiency_gain_pct":0,"overhead_absorption_gain_pct":0,"scrap_reduction_pct":0,"volume_delta_pct":0,"description":"Current run rate."},{"scenario_id":"S01","scenario_name":"Supplier renegotiation","material_cost_reduction_pct":0.035,"labor_efficiency_gain_pct":0,"overhead_absorption_gain_pct":0,"scrap_reduction_pct":0,"volume_delta_pct":-0.004,"description":"Reduce material price with limited supply friction."},{"scenario_id":"S02","scenario_name":"Yield recovery sprint","material_cost_reduction_pct":0,"labor_efficiency_gain_pct":0,"overhead_absorption_gain_pct":0,"scrap_reduction_pct":0.18,"volume_delta_pct":0.006,"description":"Scrap/rework kaizen on the highest variance lines."},{"scenario_id":"S03","scenario_name":"Overtime control","material_cost_reduction_pct":0,"labor_efficiency_gain_pct":0.075,"overhead_absorption_gain_pct":0,"scrap_reduction_pct":0.03,"volume_delta_pct":-0.01,"description":"Reduce overtime and stabilize schedules."},{"scenario_id":"S04","scenario_name":"Capacity leveling","material_cost_reduction_pct":0,"labor_efficiency_gain_pct":0.025,"overhead_absorption_gain_pct":0.06,"scrap_reduction_pct":0.05,"volume_delta_pct":0.018,"description":"Move demand from constrained lines to available capacity."},{"scenario_id":"S05","scenario_name":"Full cost reset","material_cost_reduction_pct":0.045,"labor_efficiency_gain_pct":0.06,"overhead_absorption_gain_pct":0.055,"scrap_reduction_pct":0.12,"volume_delta_pct":0.01,"description":"Combined procurement, labor, overhead, and yield program."}],"rows":[{"year_month":"2025-10","month_index":22,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":105680,"good_units":101939,"scrap_units":3740,"capacity_units":88999,"run_hours":1676.0600000000002,"available_hours":2167.2,"actual_revenue":6161044.62,"budget_revenue":6359750.2700000005,"standard_cogs":3092935.51,"actual_cogs":3305914.0599999996,"gross_margin":2855130.5600000005,"material_variance":97073.23000000001,"labor_variance":19799.52,"overhead_variance":2330.0600000000004,"yield_loss_cost":93775.74,"cost_variance":212978.55000000002,"inventory_value":2911544.76,"slow_moving_inventory_value":236687.36000000002},{"year_month":"2025-11","month_index":23,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":112400,"good_units":108119,"scrap_units":4280,"capacity_units":88999,"run_hours":1768.7199999999998,"available_hours":2167.2,"actual_revenue":6494205.8,"budget_revenue":6764110.6899999995,"standard_cogs":3256623.0900000003,"actual_cogs":3515946.1,"gross_margin":2978259.6999999997,"material_variance":131624.13,"labor_variance":19103.449999999997,"overhead_variance":3235.6800000000003,"yield_loss_cost":105359.75000000001,"cost_variance":259323.01,"inventory_value":3005188.5300000003,"slow_moving_inventory_value":227836.49000000002},{"year_month":"2025-12","month_index":24,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":126686,"good_units":121207,"scrap_units":5480,"capacity_units":88999,"run_hours":1968.04,"available_hours":2167.2,"actual_revenue":7210382.07,"budget_revenue":7181315.23,"standard_cogs":3617837.6899999995,"actual_cogs":3929827.0799999996,"gross_margin":3280554.99,"material_variance":156010.63,"labor_variance":34764.72,"overhead_variance":-8844.820000000002,"yield_loss_cost":130058.87,"cost_variance":311989.39000000025,"inventory_value":3373295.5199999996,"slow_moving_inventory_value":294967.32},{"year_month":"2026-01","month_index":25,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":78055,"good_units":75777,"scrap_units":2278,"capacity_units":88999,"run_hours":1234.97,"available_hours":2167.2,"actual_revenue":4576068.4399999995,"budget_revenue":4987363.529999999,"standard_cogs":2261588.57,"actual_cogs":2415341.52,"gross_margin":2160726.9099999997,"material_variance":85958.73999999999,"labor_variance":6913.549999999999,"overhead_variance":4849.41,"yield_loss_cost":56031.25000000001,"cost_variance":153752.95,"inventory_value":2406381.72,"slow_moving_inventory_value":300725.37},{"year_month":"2026-02","month_index":26,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":83909,"good_units":81435,"scrap_units":2474,"capacity_units":88999,"run_hours":1334.9,"available_hours":2167.2,"actual_revenue":4935455.140000001,"budget_revenue":5054628.01,"standard_cogs":2460456.2399999998,"actual_cogs":2662805.85,"gross_margin":2272649.27,"material_variance":133013.02,"labor_variance":11326.42,"overhead_variance":-2874.0299999999997,"yield_loss_cost":60884.23000000001,"cost_variance":202349.61000000004,"inventory_value":2185980.3,"slow_moving_inventory_value":157241.93},{"year_month":"2026-03","month_index":27,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":96978,"good_units":93339,"scrap_units":3639,"capacity_units":88999,"run_hours":1493.61,"available_hours":2167.2,"actual_revenue":5536819.54,"budget_revenue":5640524.75,"standard_cogs":2726807.92,"actual_cogs":2916354.1000000006,"gross_margin":2620465.44,"material_variance":81403.20999999999,"labor_variance":18495.42,"overhead_variance":3204.7200000000003,"yield_loss_cost":86442.86,"cost_variance":189546.17999999996,"inventory_value":2419856.58,"slow_moving_inventory_value":246309.09000000003},{"year_month":"2026-04","month_index":28,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":100568,"good_units":97250,"scrap_units":3317,"capacity_units":88999,"run_hours":1602.36,"available_hours":2167.2,"actual_revenue":5936965.550000001,"budget_revenue":5861322.680000001,"standard_cogs":2940542.14,"actual_cogs":3132613.8200000003,"gross_margin":2804351.7299999995,"material_variance":100162.44,"labor_variance":16717.62,"overhead_variance":-9876.89,"yield_loss_cost":85068.51000000001,"cost_variance":192071.67999999993,"inventory_value":2626492.17,"slow_moving_inventory_value":272547.72000000003},{"year_month":"2026-05","month_index":29,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 1","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":97498,"good_units":94478,"scrap_units":3020,"capacity_units":88999,"run_hours":1512.44,"available_hours":2167.2,"actual_revenue":5605164.079999999,"budget_revenue":5777576.649999999,"standard_cogs":2777225.82,"actual_cogs":2951006.07,"gross_margin":2654158.0100000002,"material_variance":73334.67,"labor_variance":17544.809999999998,"overhead_variance":9338.269999999999,"yield_loss_cost":73562.48,"cost_variance":173780.25000000023,"inventory_value":2161085.85,"slow_moving_inventory_value":209254.31},{"year_month":"2025-10","month_index":22,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":87155,"good_units":83697,"scrap_units":3460,"capacity_units":76000,"run_hours":1342.64,"available_hours":2064,"actual_revenue":4927550.33,"budget_revenue":5208725.46,"standard_cogs":2447598.11,"actual_cogs":2614691.9899999998,"gross_margin":2312858.3400000003,"material_variance":69815.21999999999,"labor_variance":11178.46,"overhead_variance":6546.110000000001,"yield_loss_cost":79554.09999999999,"cost_variance":167093.88000000006,"inventory_value":2059525.31,"slow_moving_inventory_value":197152.2},{"year_month":"2025-11","month_index":23,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":98628,"good_units":94817,"scrap_units":3809,"capacity_units":76000,"run_hours":1542.41,"available_hours":2064,"actual_revenue":5789243.33,"budget_revenue":5469047.05,"standard_cogs":2858008.3400000003,"actual_cogs":3091244.71,"gross_margin":2697998.6099999994,"material_variance":116280.15,"labor_variance":24571.559999999998,"overhead_variance":-377.18000000000006,"yield_loss_cost":92761.83,"cost_variance":233236.3699999999,"inventory_value":2464676.6500000004,"slow_moving_inventory_value":290737.01999999996},{"year_month":"2025-12","month_index":24,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":93089,"good_units":89995,"scrap_units":3092,"capacity_units":76000,"run_hours":1435.98,"available_hours":2064,"actual_revenue":5338833.24,"budget_revenue":5866704.22,"standard_cogs":2628797.4000000004,"actual_cogs":2805564.09,"gross_margin":2533269.15,"material_variance":91863.73999999999,"labor_variance":17530.739999999998,"overhead_variance":-6650.589999999998,"yield_loss_cost":74022.81,"cost_variance":176766.69000000018,"inventory_value":2342834.83,"slow_moving_inventory_value":252155.12},{"year_month":"2026-01","month_index":25,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":72114,"good_units":69875,"scrap_units":2238,"capacity_units":76000,"run_hours":1128.15,"available_hours":2064,"actual_revenue":4188268.99,"budget_revenue":4344172.300000001,"standard_cogs":2084457.4999999998,"actual_cogs":2227493.59,"gross_margin":1960775.4,"material_variance":74953.53,"labor_variance":7637.45,"overhead_variance":2660.04,"yield_loss_cost":57785.05,"cost_variance":143036.09000000005,"inventory_value":1517986.0399999998,"slow_moving_inventory_value":148140.63},{"year_month":"2026-02","month_index":26,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":68310,"good_units":66162,"scrap_units":2148,"capacity_units":71440,"run_hours":1068.94,"available_hours":2064,"actual_revenue":3950654.7399999998,"budget_revenue":4028139.48,"standard_cogs":1962606.42,"actual_cogs":2083220.6400000001,"gross_margin":1867434.1,"material_variance":54682.98,"labor_variance":8685.93,"overhead_variance":3108.5,"yield_loss_cost":54136.840000000004,"cost_variance":120614.22000000003,"inventory_value":2047144.68,"slow_moving_inventory_value":243326.37},{"year_month":"2026-03","month_index":27,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":84045,"good_units":81206,"scrap_units":2839,"capacity_units":76000,"run_hours":1311.96,"available_hours":2064,"actual_revenue":4902085.350000001,"budget_revenue":5093457.24,"standard_cogs":2415470.37,"actual_cogs":2554737.4399999995,"gross_margin":2347347.92,"material_variance":50772.33,"labor_variance":13487.529999999999,"overhead_variance":5171.549999999999,"yield_loss_cost":69835.67,"cost_variance":139267.06999999995,"inventory_value":1726490.2899999998,"slow_moving_inventory_value":166436.07},{"year_month":"2026-04","month_index":28,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":88672,"good_units":86034,"scrap_units":2638,"capacity_units":76000,"run_hours":1374.83,"available_hours":2064,"actual_revenue":5134418.160000001,"budget_revenue":5369144.67,"standard_cogs":2534493.2699999996,"actual_cogs":2670312.6199999996,"gross_margin":2464105.5199999996,"material_variance":55501.28999999999,"labor_variance":15839.35,"overhead_variance":-2295.87,"yield_loss_cost":66774.56999999999,"cost_variance":135819.34999999986,"inventory_value":2445001.1599999997,"slow_moving_inventory_value":265546.53},{"year_month":"2026-05","month_index":29,"plant_name":"Bac Ninh Electronics","region":"Vietnam North","country":"Vietnam","line_name":"SMT Line 2","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":84928,"good_units":82330,"scrap_units":2599,"capacity_units":76000,"run_hours":1335.8,"available_hours":2064,"actual_revenue":4931922.02,"budget_revenue":5460805.1,"standard_cogs":2462927.6199999996,"actual_cogs":2686947.45,"gross_margin":2244974.58,"material_variance":135206.52,"labor_variance":10523.539999999999,"overhead_variance":12341.300000000001,"yield_loss_cost":65948.47,"cost_variance":224019.82999999996,"inventory_value":2680328.45,"slow_moving_inventory_value":188093.40000000002},{"year_month":"2025-10","month_index":22,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":39016,"good_units":37651,"scrap_units":1368,"capacity_units":42999,"run_hours":1395.82,"available_hours":2476.8,"actual_revenue":3127353.29,"budget_revenue":3231635.95,"standard_cogs":1722091.45,"actual_cogs":1788073.7500000002,"gross_margin":1339279.5499999998,"material_variance":12968.61,"labor_variance":8084.42,"overhead_variance":1375.2599999999998,"yield_loss_cost":43554.02,"cost_variance":65982.30000000002,"inventory_value":1342125.6700000002,"slow_moving_inventory_value":167280.49},{"year_month":"2025-11","month_index":23,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":42141,"good_units":40751,"scrap_units":1391,"capacity_units":42999,"run_hours":1503.09,"available_hours":2476.8,"actual_revenue":3346212.6300000004,"budget_revenue":3579396.86,"standard_cogs":1850269.9799999997,"actual_cogs":1971357.46,"gross_margin":1374855.1800000002,"material_variance":54500.28999999999,"labor_variance":10587.24,"overhead_variance":11189.779999999999,"yield_loss_cost":44810.19,"cost_variance":121087.48000000004,"inventory_value":1477477.05,"slow_moving_inventory_value":164817.41},{"year_month":"2025-12","month_index":24,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":45673,"good_units":44098,"scrap_units":1576,"capacity_units":42999,"run_hours":1610.69,"available_hours":2476.8,"actual_revenue":3607603.89,"budget_revenue":3662053.92,"standard_cogs":1975192.5899999999,"actual_cogs":2115873.1999999997,"gross_margin":1491730.6899999997,"material_variance":79379.54999999999,"labor_variance":5341.099999999999,"overhead_variance":5199.84,"yield_loss_cost":50760.090000000004,"cost_variance":140680.6099999999,"inventory_value":1808989.29,"slow_moving_inventory_value":257814.89000000004},{"year_month":"2026-01","month_index":25,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":33239,"good_units":32177,"scrap_units":1063,"capacity_units":42999,"run_hours":1181.28,"available_hours":2476.8,"actual_revenue":2649619.36,"budget_revenue":2749408.89,"standard_cogs":1454291.9500000002,"actual_cogs":1533343.27,"gross_margin":1116276.1,"material_variance":42797.96,"labor_variance":4878,"overhead_variance":-4410.29,"yield_loss_cost":35785.630000000005,"cost_variance":79051.31999999989,"inventory_value":1463210.6,"slow_moving_inventory_value":190707.37},{"year_month":"2026-02","month_index":26,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":32567,"good_units":31475,"scrap_units":1092,"capacity_units":42999,"run_hours":1153.2800000000002,"available_hours":2476.8,"actual_revenue":2559480.88,"budget_revenue":2788532.3899999997,"standard_cogs":1417757.36,"actual_cogs":1500278.04,"gross_margin":1059202.81,"material_variance":45494.520000000004,"labor_variance":3568.18,"overhead_variance":-2358.7,"yield_loss_cost":35816.68,"cost_variance":82520.68000000002,"inventory_value":1314177.71,"slow_moving_inventory_value":204056.48999999996},{"year_month":"2026-03","month_index":27,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":38182,"good_units":36907,"scrap_units":1275,"capacity_units":42999,"run_hours":1349.46,"available_hours":2476.8,"actual_revenue":2986949.9800000004,"budget_revenue":3133900.6599999997,"standard_cogs":1655593.4800000002,"actual_cogs":1793761.72,"gross_margin":1193188.26,"material_variance":89942.43,"labor_variance":5738.14,"overhead_variance":1661.8099999999997,"yield_loss_cost":40825.86,"cost_variance":138168.24,"inventory_value":1758729.58,"slow_moving_inventory_value":252104.86000000004},{"year_month":"2026-04","month_index":28,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":38117,"good_units":36888,"scrap_units":1228,"capacity_units":42999,"run_hours":1363.56,"available_hours":2476.8,"actual_revenue":3071417.11,"budget_revenue":3130048.4899999993,"standard_cogs":1689051.89,"actual_cogs":1805751.06,"gross_margin":1265666.04,"material_variance":67368.45000000001,"labor_variance":4054.54,"overhead_variance":4324.9800000000005,"yield_loss_cost":40951.2,"cost_variance":116699.17000000007,"inventory_value":1599873.37,"slow_moving_inventory_value":211691.8},{"year_month":"2026-05","month_index":29,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 1","product":"Portfolio mix","product_line":"Precision Parts","produced_units":37979,"good_units":36615,"scrap_units":1364,"capacity_units":42999,"run_hours":1356.93,"available_hours":2476.8,"actual_revenue":3029380.83,"budget_revenue":3222018.6899999995,"standard_cogs":1675589.37,"actual_cogs":1749269.05,"gross_margin":1280111.77,"material_variance":27474.459999999995,"labor_variance":-226.87000000000006,"overhead_variance":3188.59,"yield_loss_cost":43243.5,"cost_variance":73679.67999999996,"inventory_value":1609234.45,"slow_moving_inventory_value":210568.31000000003},{"year_month":"2025-10","month_index":22,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":36483,"good_units":35383,"scrap_units":1099,"capacity_units":39000,"run_hours":1315.6299999999999,"available_hours":2270.4,"actual_revenue":2967482.03,"budget_revenue":3141571.61,"standard_cogs":1629692.74,"actual_cogs":1735165.4900000002,"gross_margin":1232316.54,"material_variance":53135.310000000005,"labor_variance":8112.12,"overhead_variance":7087.0199999999995,"yield_loss_cost":37138.3,"cost_variance":105472.75000000003,"inventory_value":1453191.7599999998,"slow_moving_inventory_value":208964.89},{"year_month":"2025-11","month_index":23,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":38037,"good_units":36706,"scrap_units":1332,"capacity_units":39000,"run_hours":1367.89,"available_hours":2270.4,"actual_revenue":3032824.3,"budget_revenue":3160021.8200000003,"standard_cogs":1691525.06,"actual_cogs":1786630.3499999999,"gross_margin":1246193.9500000002,"material_variance":40056,"labor_variance":5878.860000000001,"overhead_variance":4507.24,"yield_loss_cost":44663.21,"cost_variance":95105.29000000004,"inventory_value":1656487.6099999999,"slow_moving_inventory_value":200551.65000000002},{"year_month":"2025-12","month_index":24,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":39522,"good_units":38179,"scrap_units":1342,"capacity_units":39000,"run_hours":1415.95,"available_hours":2270.4,"actual_revenue":3213468.29,"budget_revenue":3266108.39,"standard_cogs":1751203.7599999998,"actual_cogs":1876904.8299999998,"gross_margin":1336563.44,"material_variance":59034.630000000005,"labor_variance":8929.38,"overhead_variance":12401.73,"yield_loss_cost":45335.35999999999,"cost_variance":125701.07000000007,"inventory_value":1689411.89,"slow_moving_inventory_value":246133.87999999998},{"year_month":"2026-01","month_index":25,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":29838,"good_units":28918,"scrap_units":920,"capacity_units":39000,"run_hours":1058.95,"available_hours":2270.4,"actual_revenue":2384538.15,"budget_revenue":2528634.79,"standard_cogs":1301480.77,"actual_cogs":1406745.31,"gross_margin":977792.8400000001,"material_variance":65301.32,"labor_variance":1726.23,"overhead_variance":7576.09,"yield_loss_cost":30660.91,"cost_variance":105264.53999999992,"inventory_value":1216298.04,"slow_moving_inventory_value":144859.92},{"year_month":"2026-02","month_index":26,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":29661,"good_units":28602,"scrap_units":1059,"capacity_units":39000,"run_hours":1065.89,"available_hours":2270.4,"actual_revenue":2390359.38,"budget_revenue":2463174.73,"standard_cogs":1318265.18,"actual_cogs":1383904.73,"gross_margin":1006454.6300000001,"material_variance":31682.979999999996,"labor_variance":2627.5999999999995,"overhead_variance":-3741.3300000000004,"yield_loss_cost":35070.31,"cost_variance":65639.55000000005,"inventory_value":1089217.28,"slow_moving_inventory_value":169336.23},{"year_month":"2026-03","month_index":27,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":32519,"good_units":31497,"scrap_units":1021,"capacity_units":39000,"run_hours":1164.68,"available_hours":2270.4,"actual_revenue":2609949.63,"budget_revenue":2768025.37,"standard_cogs":1440013.77,"actual_cogs":1541768.5899999999,"gross_margin":1068181.05,"material_variance":62962.34,"labor_variance":180.4699999999999,"overhead_variance":5756.749999999999,"yield_loss_cost":32855.240000000005,"cost_variance":101754.82000000004,"inventory_value":1372938.1800000002,"slow_moving_inventory_value":156202.76},{"year_month":"2026-04","month_index":28,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":35170,"good_units":34064,"scrap_units":1105,"capacity_units":39000,"run_hours":1247.2599999999998,"available_hours":2270.4,"actual_revenue":2831946.4099999997,"budget_revenue":2868797.9899999998,"standard_cogs":1535078.8499999996,"actual_cogs":1611299.8399999999,"gross_margin":1220646.5699999998,"material_variance":36393.9,"labor_variance":1162.68,"overhead_variance":2515.12,"yield_loss_cost":36149.3,"cost_variance":76220.99000000002,"inventory_value":1229453.95,"slow_moving_inventory_value":154753.43},{"year_month":"2026-05","month_index":29,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"CNC Cell 2","product":"Portfolio mix","product_line":"Precision Parts","produced_units":35181,"good_units":34167,"scrap_units":1014,"capacity_units":39000,"run_hours":1263.8200000000002,"available_hours":2270.4,"actual_revenue":2882494,"budget_revenue":3013092.98,"standard_cogs":1564231.0899999999,"actual_cogs":1671064.81,"gross_margin":1211429.1600000001,"material_variance":73407.27,"labor_variance":5719.120000000001,"overhead_variance":-5616.01,"yield_loss_cost":33323.36,"cost_variance":106833.72,"inventory_value":1474610.36,"slow_moving_inventory_value":197108.45999999996},{"year_month":"2025-10","month_index":22,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":29699,"good_units":28671,"scrap_units":1028,"capacity_units":34001,"run_hours":1025.2800000000002,"available_hours":2064,"actual_revenue":3033348.2500000005,"budget_revenue":3090684.9499999997,"standard_cogs":1708347.38,"actual_cogs":1811209.27,"gross_margin":1222138.98,"material_variance":45358.53999999999,"labor_variance":3834.71,"overhead_variance":5670.779999999999,"yield_loss_cost":47997.850000000006,"cost_variance":102861.88999999996,"inventory_value":1691979.99,"slow_moving_inventory_value":220643.95},{"year_month":"2025-11","month_index":23,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":29114,"good_units":28150,"scrap_units":963,"capacity_units":34001,"run_hours":991.72,"available_hours":2064,"actual_revenue":2918252.9400000004,"budget_revenue":3040075.7,"standard_cogs":1653257.36,"actual_cogs":1786008.6800000002,"gross_margin":1132244.28,"material_variance":85714.58,"labor_variance":3863.79,"overhead_variance":-691.0500000000002,"yield_loss_cost":43863.990000000005,"cost_variance":132751.32000000007,"inventory_value":1420629.92,"slow_moving_inventory_value":169131.69},{"year_month":"2025-12","month_index":24,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":31267,"good_units":30230,"scrap_units":1038,"capacity_units":34001,"run_hours":1061.0000000000002,"available_hours":2064,"actual_revenue":3143550.39,"budget_revenue":3318342.43,"standard_cogs":1772297.2000000002,"actual_cogs":1878009.38,"gross_margin":1265541.01,"material_variance":49192.67,"labor_variance":2022.2100000000003,"overhead_variance":7659.39,"yield_loss_cost":46837.939999999995,"cost_variance":105712.18,"inventory_value":1834344.63,"slow_moving_inventory_value":164648.58999999997},{"year_month":"2026-01","month_index":25,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":22012,"good_units":21307,"scrap_units":703,"capacity_units":34001,"run_hours":759.72,"available_hours":2064,"actual_revenue":2241222.66,"budget_revenue":2445930.09,"standard_cogs":1264286.4700000002,"actual_cogs":1312396.33,"gross_margin":928826.34,"material_variance":15256.79,"labor_variance":-1682.5999999999997,"overhead_variance":1287.8300000000002,"yield_loss_cost":33247.84,"cost_variance":48109.860000000044,"inventory_value":1353248.26,"slow_moving_inventory_value":118091.27000000002},{"year_month":"2026-02","month_index":26,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":22194,"good_units":21470,"scrap_units":726,"capacity_units":31961,"run_hours":764.4300000000002,"available_hours":2064,"actual_revenue":2247043.2,"budget_revenue":2396030.77,"standard_cogs":1273978.5399999998,"actual_cogs":1344495.3599999999,"gross_margin":902547.8599999999,"material_variance":38925.17000000001,"labor_variance":25.690000000000055,"overhead_variance":-1265.22,"yield_loss_cost":32831.17,"cost_variance":70516.81999999999,"inventory_value":1003854.5800000001,"slow_moving_inventory_value":122019.38999999998},{"year_month":"2026-03","month_index":27,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":25998,"good_units":25204,"scrap_units":792,"capacity_units":34001,"run_hours":884.9399999999999,"available_hours":2064,"actual_revenue":2596370.6900000004,"budget_revenue":2676161.2399999998,"standard_cogs":1477691.5999999999,"actual_cogs":1552313.8800000001,"gross_margin":1044056.81,"material_variance":32645.890000000003,"labor_variance":2076.2499999999995,"overhead_variance":5167.290000000001,"yield_loss_cost":34732.84,"cost_variance":74622.28000000001,"inventory_value":1246722.44,"slow_moving_inventory_value":78351.55},{"year_month":"2026-04","month_index":28,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":29038,"good_units":28069,"scrap_units":970,"capacity_units":34001,"run_hours":977.85,"available_hours":2064,"actual_revenue":2888035.02,"budget_revenue":2910857.03,"standard_cogs":1631250.6500000001,"actual_cogs":1758976.4599999997,"gross_margin":1129058.56,"material_variance":91420.02,"labor_variance":1405.88,"overhead_variance":-8913.97,"yield_loss_cost":43813.89,"cost_variance":127725.8099999999,"inventory_value":1730586.4700000002,"slow_moving_inventory_value":258218.32000000004},{"year_month":"2026-05","month_index":29,"plant_name":"HCMC Precision","region":"Vietnam South","country":"Vietnam","line_name":"Assembly Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":28340,"good_units":27355,"scrap_units":984,"capacity_units":34001,"run_hours":986.5600000000001,"available_hours":2064,"actual_revenue":2849329.5000000005,"budget_revenue":2938020.42,"standard_cogs":1641706.7799999998,"actual_cogs":1739329.3599999999,"gross_margin":1110000.15,"material_variance":39201.83,"labor_variance":4156.219999999999,"overhead_variance":6816.349999999999,"yield_loss_cost":47448.15,"cost_variance":97622.57999999996,"inventory_value":1758963.66,"slow_moving_inventory_value":181187.38},{"year_month":"2025-10","month_index":22,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":61993,"good_units":59647,"scrap_units":2346,"capacity_units":54001,"run_hours":1020.1099999999999,"available_hours":1857.6,"actual_revenue":3572874.7,"budget_revenue":3730508.3600000003,"standard_cogs":1794574.1400000001,"actual_cogs":1950134.6500000001,"gross_margin":1622740.0499999998,"material_variance":80655.27,"labor_variance":10103.560000000001,"overhead_variance":6647.87,"yield_loss_cost":58153.82,"cost_variance":155560.51000000004,"inventory_value":1895418.67,"slow_moving_inventory_value":189198.49000000002},{"year_month":"2025-11","month_index":23,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":66460,"good_units":64380,"scrap_units":2079,"capacity_units":54001,"run_hours":1106.57,"available_hours":1857.6,"actual_revenue":3910323.51,"budget_revenue":4074333.68,"standard_cogs":1947219.3399999999,"actual_cogs":2096727.6799999997,"gross_margin":1813595.81,"material_variance":72062.51,"labor_variance":14255.199999999999,"overhead_variance":8737.8,"yield_loss_cost":54452.799999999996,"cost_variance":149508.34,"inventory_value":1555944.1,"slow_moving_inventory_value":158882.5},{"year_month":"2025-12","month_index":24,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":72162,"good_units":69471,"scrap_units":2692,"capacity_units":54001,"run_hours":1188.44,"available_hours":1857.6,"actual_revenue":4201571.55,"budget_revenue":4230224.579999999,"standard_cogs":2087808.4199999997,"actual_cogs":2280176.1,"gross_margin":1921395.4700000002,"material_variance":100661.76000000001,"labor_variance":15388.09,"overhead_variance":9176.38,"yield_loss_cost":67141.45000000001,"cost_variance":192367.67999999996,"inventory_value":1736798.59,"slow_moving_inventory_value":194115.62000000002},{"year_month":"2026-01","month_index":25,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":54205,"good_units":52654,"scrap_units":1550,"capacity_units":54001,"run_hours":893.6,"available_hours":1857.6,"actual_revenue":3154680.08,"budget_revenue":3208421.04,"standard_cogs":1569253.03,"actual_cogs":1635285.8399999999,"gross_margin":1519394.24,"material_variance":19773.44,"labor_variance":7310.29,"overhead_variance":-874.1699999999996,"yield_loss_cost":39823.240000000005,"cost_variance":66032.80999999997,"inventory_value":1053911.8599999999,"slow_moving_inventory_value":78400.79},{"year_month":"2026-02","month_index":26,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":52926,"good_units":51493,"scrap_units":1434,"capacity_units":54001,"run_hours":856.8299999999999,"available_hours":1857.6,"actual_revenue":3056720.29,"budget_revenue":3137521.18,"standard_cogs":1497514.14,"actual_cogs":1585271.6400000001,"gross_margin":1471448.66,"material_variance":48230.31999999999,"labor_variance":3612.98,"overhead_variance":-105.81999999999948,"yield_loss_cost":36020.01,"cost_variance":87757.49999999997,"inventory_value":1543324.1,"slow_moving_inventory_value":135349.34},{"year_month":"2026-03","month_index":27,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":54956,"good_units":53271,"scrap_units":1684,"capacity_units":54001,"run_hours":918.27,"available_hours":1857.6,"actual_revenue":3285296.04,"budget_revenue":3346366.26,"standard_cogs":1624671.3699999999,"actual_cogs":1728239.0700000003,"gross_margin":1557056.99,"material_variance":54202.740000000005,"labor_variance":3278.55,"overhead_variance":3145.39,"yield_loss_cost":42941,"cost_variance":103567.6999999999,"inventory_value":1331103.31,"slow_moving_inventory_value":106629.46999999999},{"year_month":"2026-04","month_index":28,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":60248,"good_units":58228,"scrap_units":2018,"capacity_units":54001,"run_hours":1004.8199999999999,"available_hours":1857.6,"actual_revenue":3502125.35,"budget_revenue":3608110.1799999997,"standard_cogs":1759394.91,"actual_cogs":1872011.6500000001,"gross_margin":1630113.6999999997,"material_variance":52501.39,"labor_variance":6797.24,"overhead_variance":4121.04,"yield_loss_cost":49197.06,"cost_variance":112616.73999999996,"inventory_value":1859123.6199999999,"slow_moving_inventory_value":126365.7},{"year_month":"2026-05","month_index":29,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Mixed Assembly","product":"Portfolio mix","product_line":"Electronics Assembly","produced_units":61806,"good_units":59896,"scrap_units":1910,"capacity_units":54001,"run_hours":1032,"available_hours":1857.6,"actual_revenue":3646192.2900000005,"budget_revenue":3672516.4400000004,"standard_cogs":1819545.6,"actual_cogs":1936313.06,"gross_margin":1709879.23,"material_variance":46296.11,"labor_variance":10184.23,"overhead_variance":9129.42,"yield_loss_cost":51157.719999999994,"cost_variance":116767.45999999999,"inventory_value":1576108.4,"slow_moving_inventory_value":131970.59},{"year_month":"2025-10","month_index":22,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":66709,"good_units":64551,"scrap_units":2157,"capacity_units":63000,"run_hours":1683.21,"available_hours":1754.4,"actual_revenue":4393000.95,"budget_revenue":4446076.34,"standard_cogs":2505814.46,"actual_cogs":2725752.27,"gross_margin":1667248.68,"material_variance":130670.63,"labor_variance":12485.62,"overhead_variance":1440.4499999999994,"yield_loss_cost":75341.12,"cost_variance":219937.80999999988,"inventory_value":2021991.96,"slow_moving_inventory_value":318796.19999999995},{"year_month":"2025-11","month_index":23,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":67702,"good_units":65641,"scrap_units":2058,"capacity_units":63000,"run_hours":1743.09,"available_hours":1754.4,"actual_revenue":4577157.13,"budget_revenue":4693243.38,"standard_cogs":2599951.93,"actual_cogs":2758225.46,"gross_margin":1818931.67,"material_variance":78099.5,"labor_variance":10557.5,"overhead_variance":4726.370000000001,"yield_loss_cost":64890.159999999996,"cost_variance":158273.5300000001,"inventory_value":2176665.89,"slow_moving_inventory_value":313090.89},{"year_month":"2025-12","month_index":24,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":70945,"good_units":68385,"scrap_units":2560,"capacity_units":63000,"run_hours":1842.02,"available_hours":1754.4,"actual_revenue":4739240.75,"budget_revenue":4870276.140000001,"standard_cogs":2740531.05,"actual_cogs":2955811.92,"gross_margin":1783428.8199999998,"material_variance":100966.75,"labor_variance":23809.84,"overhead_variance":7359.28,"yield_loss_cost":83144.98000000001,"cost_variance":215280.87000000002,"inventory_value":2160074.55,"slow_moving_inventory_value":347816.13},{"year_month":"2026-01","month_index":25,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":47096,"good_units":45508,"scrap_units":1587,"capacity_units":63000,"run_hours":1234.4,"available_hours":1754.4,"actual_revenue":3151488.6900000004,"budget_revenue":3440281.3200000003,"standard_cogs":1826417.52,"actual_cogs":1933638.5099999998,"gross_margin":1217850.1600000001,"material_variance":52943.28,"labor_variance":1709.94,"overhead_variance":-3202.1299999999997,"yield_loss_cost":55769.92,"cost_variance":107220.9899999999,"inventory_value":1931638.71,"slow_moving_inventory_value":239850.53},{"year_month":"2026-02","month_index":26,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":50586,"good_units":49003,"scrap_units":1582,"capacity_units":63000,"run_hours":1297.6799999999998,"available_hours":1754.4,"actual_revenue":3369955.09,"budget_revenue":3696909.6999999997,"standard_cogs":1925600.4500000002,"actual_cogs":2002403.04,"gross_margin":1367552.03,"material_variance":16872.589999999997,"labor_variance":4061.5299999999997,"overhead_variance":2878.4900000000002,"yield_loss_cost":52989.97,"cost_variance":76802.58999999994,"inventory_value":1392418.78,"slow_moving_inventory_value":173958.37},{"year_month":"2026-03","month_index":27,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":58815,"good_units":56948,"scrap_units":1867,"capacity_units":63000,"run_hours":1573.1799999999998,"available_hours":1754.4,"actual_revenue":4090466.6399999997,"budget_revenue":4287809.43,"standard_cogs":2330699.34,"actual_cogs":2511295.42,"gross_margin":1579171.2300000002,"material_variance":101604.8,"labor_variance":6375.36,"overhead_variance":9413.65,"yield_loss_cost":63202.240000000005,"cost_variance":180596.08000000005,"inventory_value":2320371.58,"slow_moving_inventory_value":389941.71},{"year_month":"2026-04","month_index":28,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":67569,"good_units":65483,"scrap_units":2087,"capacity_units":63000,"run_hours":1772.12,"available_hours":1754.4,"actual_revenue":4621277.85,"budget_revenue":4432014.15,"standard_cogs":2651524.7,"actual_cogs":2795638.57,"gross_margin":1825639.27,"material_variance":60828.38,"labor_variance":13707.029999999999,"overhead_variance":3834.6400000000003,"yield_loss_cost":65743.85,"cost_variance":144113.87000000005,"inventory_value":2476393.96,"slow_moving_inventory_value":361339.37999999995},{"year_month":"2026-05","month_index":29,"plant_name":"Da Nang Assembly","region":"Vietnam Central","country":"Vietnam","line_name":"Packaging Cell","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":60787,"good_units":58966,"scrap_units":1819,"capacity_units":63000,"run_hours":1571.4500000000003,"available_hours":1754.4,"actual_revenue":4017570.6000000006,"budget_revenue":4092656.13,"standard_cogs":2324809.7,"actual_cogs":2502236.63,"gross_margin":1515333.98,"material_variance":97574.4,"labor_variance":10092.14,"overhead_variance":540.8499999999999,"yield_loss_cost":69219.51000000001,"cost_variance":177426.92999999993,"inventory_value":1898415.61,"slow_moving_inventory_value":178079.91},{"year_month":"2025-10","month_index":22,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":24644,"good_units":23802,"scrap_units":842,"capacity_units":28002,"run_hours":769.02,"available_hours":2580,"actual_revenue":2404513.53,"budget_revenue":2422536.6799999997,"standard_cogs":1422743.37,"actual_cogs":1514777.9400000002,"gross_margin":889735.59,"material_variance":48714.86,"labor_variance":2882.85,"overhead_variance":2182.5499999999997,"yield_loss_cost":38254.3,"cost_variance":92034.56999999998,"inventory_value":1644633.15,"slow_moving_inventory_value":166211.79},{"year_month":"2025-11","month_index":23,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":27676,"good_units":26810,"scrap_units":866,"capacity_units":28002,"run_hours":865.9700000000001,"available_hours":2580,"actual_revenue":2690400.9,"budget_revenue":2694194.62,"standard_cogs":1601308.56,"actual_cogs":1718906.5299999998,"gross_margin":971494.39,"material_variance":70508.70999999999,"labor_variance":3827.9,"overhead_variance":3455.8999999999996,"yield_loss_cost":39805.469999999994,"cost_variance":117597.97000000002,"inventory_value":1561185,"slow_moving_inventory_value":169075.93},{"year_month":"2025-12","month_index":24,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":26733,"good_units":25937,"scrap_units":794,"capacity_units":28002,"run_hours":842.56,"available_hours":2580,"actual_revenue":2677894.75,"budget_revenue":2705069.55,"standard_cogs":1554915.4,"actual_cogs":1607790.6600000001,"gross_margin":1070104.1,"material_variance":12804.39,"labor_variance":6130.5199999999995,"overhead_variance":-1680.0700000000004,"yield_loss_cost":35620.43,"cost_variance":52875.259999999995,"inventory_value":1455860.5900000003,"slow_moving_inventory_value":121965.06000000001},{"year_month":"2026-01","month_index":25,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":18974,"good_units":18302,"scrap_units":672,"capacity_units":28002,"run_hours":596.1400000000001,"available_hours":2580,"actual_revenue":1879192.1300000004,"budget_revenue":2033396.2200000002,"standard_cogs":1100926.8099999998,"actual_cogs":1129425.6600000001,"gross_margin":749766.4700000001,"material_variance":-905.4800000000002,"labor_variance":3001.12,"overhead_variance":-5746.22,"yield_loss_cost":32149.44,"cost_variance":28498.850000000006,"inventory_value":1139781.48,"slow_moving_inventory_value":107302.92000000001},{"year_month":"2026-02","month_index":26,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":16966,"good_units":16486,"scrap_units":480,"capacity_units":26320,"run_hours":527.19,"available_hours":2580,"actual_revenue":1663755.23,"budget_revenue":1819452.94,"standard_cogs":976934.1099999999,"actual_cogs":1021197.3699999999,"gross_margin":642557.87,"material_variance":17014.06,"labor_variance":2442.9,"overhead_variance":2579.1700000000005,"yield_loss_cost":22227.13,"cost_variance":44263.26000000001,"inventory_value":924816.1399999999,"slow_moving_inventory_value":65682.90000000001},{"year_month":"2026-03","month_index":27,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":22872,"good_units":22008,"scrap_units":863,"capacity_units":28002,"run_hours":719.63,"available_hours":2580,"actual_revenue":2258754.3000000003,"budget_revenue":2301881.12,"standard_cogs":1329160.2899999998,"actual_cogs":1437958.21,"gross_margin":820796.1,"material_variance":62372.07,"labor_variance":3524.41,"overhead_variance":3084.4600000000005,"yield_loss_cost":39816.95,"cost_variance":108797.92000000003,"inventory_value":1564316.58,"slow_moving_inventory_value":177094.13999999998},{"year_month":"2026-04","month_index":28,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":21618,"good_units":20958,"scrap_units":659,"capacity_units":28002,"run_hours":675.82,"available_hours":2580,"actual_revenue":2155498.89,"budget_revenue":2246453.9400000004,"standard_cogs":1253409.36,"actual_cogs":1327268.21,"gross_margin":828230.6700000002,"material_variance":39977.08,"labor_variance":-643.33,"overhead_variance":4009.0899999999992,"yield_loss_cost":30516.04,"cost_variance":73858.85000000002,"inventory_value":1177376.6099999999,"slow_moving_inventory_value":114403.5},{"year_month":"2026-05","month_index":29,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Foundry Cell","product":"Portfolio mix","product_line":"Industrial Components","produced_units":24551,"good_units":23775,"scrap_units":776,"capacity_units":28002,"run_hours":789.5999999999999,"available_hours":2580,"actual_revenue":2464935.99,"budget_revenue":2381579.03,"standard_cogs":1457993.27,"actual_cogs":1536514.3399999999,"gross_margin":928421.6400000001,"material_variance":39017.46,"labor_variance":4539.11,"overhead_variance":-1701.3899999999999,"yield_loss_cost":36665.869999999995,"cost_variance":78521.07000000005,"inventory_value":1472002.55,"slow_moving_inventory_value":154192.21},{"year_month":"2025-10","month_index":22,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":32708,"good_units":31595,"scrap_units":1113,"capacity_units":35999,"run_hours":1085.5700000000002,"available_hours":2373.6,"actual_revenue":2650769.66,"budget_revenue":2696477.6799999997,"standard_cogs":1500024.38,"actual_cogs":1586825.4899999998,"gross_margin":1063944.17,"material_variance":40594.82,"labor_variance":1917.6999999999998,"overhead_variance":7447.04,"yield_loss_cost":36841.53,"cost_variance":86801.10999999999,"inventory_value":1372749.85,"slow_moving_inventory_value":190336.75},{"year_month":"2025-11","month_index":23,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":34813,"good_units":33590,"scrap_units":1222,"capacity_units":35999,"run_hours":1152.83,"available_hours":2373.6,"actual_revenue":2813956.6,"budget_revenue":2846583.83,"standard_cogs":1592004.1400000001,"actual_cogs":1680167.5400000003,"gross_margin":1133789.06,"material_variance":33215.12,"labor_variance":4945.53,"overhead_variance":9436.15,"yield_loss_cost":40566.590000000004,"cost_variance":88163.39999999997,"inventory_value":1774966.23,"slow_moving_inventory_value":236579.93000000002},{"year_month":"2025-12","month_index":24,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":36723,"good_units":35562,"scrap_units":1159,"capacity_units":35999,"run_hours":1212.48,"available_hours":2373.6,"actual_revenue":2968537.9699999997,"budget_revenue":3164191.3800000004,"standard_cogs":1671794.4699999997,"actual_cogs":1782464.2599999998,"gross_margin":1186073.7,"material_variance":53357.35,"labor_variance":9408.31,"overhead_variance":8943.09,"yield_loss_cost":38961.04000000001,"cost_variance":110669.78999999998,"inventory_value":1544116.54,"slow_moving_inventory_value":202816.9},{"year_month":"2026-01","month_index":25,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":26164,"good_units":25342,"scrap_units":821,"capacity_units":35999,"run_hours":863.38,"available_hours":2373.6,"actual_revenue":2117079.77,"budget_revenue":2178021.89,"standard_cogs":1190406.04,"actual_cogs":1256889.84,"gross_margin":860189.9400000001,"material_variance":34468.38,"labor_variance":2279.1200000000003,"overhead_variance":2422.77,"yield_loss_cost":27313.539999999997,"cost_variance":66483.80000000003,"inventory_value":1161977.6,"slow_moving_inventory_value":165169.63999999998},{"year_month":"2026-02","month_index":26,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":32119,"good_units":31143,"scrap_units":977,"capacity_units":35999,"run_hours":1069.29,"available_hours":2373.6,"actual_revenue":2607520.38,"budget_revenue":2498170.68,"standard_cogs":1481568.0399999998,"actual_cogs":1565115.1400000001,"gross_margin":1042405.21,"material_variance":40894.34999999999,"labor_variance":2988.5500000000006,"overhead_variance":6076.65,"yield_loss_cost":33587.58,"cost_variance":83547.10000000003,"inventory_value":1464848.0499999998,"slow_moving_inventory_value":235146.37},{"year_month":"2026-03","month_index":27,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":29374,"good_units":28438,"scrap_units":936,"capacity_units":35999,"run_hours":978.06,"available_hours":2373.6,"actual_revenue":2389211.33,"budget_revenue":2552439.5100000002,"standard_cogs":1351262.45,"actual_cogs":1420264.0699999998,"gross_margin":968947.2300000001,"material_variance":40157.659999999996,"labor_variance":3352.6,"overhead_variance":-5671.469999999999,"yield_loss_cost":31162.85,"cost_variance":69001.62,"inventory_value":1325619.48,"slow_moving_inventory_value":193393.52},{"year_month":"2026-04","month_index":28,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":31441,"good_units":30607,"scrap_units":833,"capacity_units":35999,"run_hours":1036.3799999999999,"available_hours":2373.6,"actual_revenue":2542244.4800000004,"budget_revenue":2670827.68,"standard_cogs":1427574.32,"actual_cogs":1500460.87,"gross_margin":1041783.6,"material_variance":35866.740000000005,"labor_variance":2649.33,"overhead_variance":6245.32,"yield_loss_cost":28125.159999999996,"cost_variance":72886.55000000002,"inventory_value":1540795.8699999999,"slow_moving_inventory_value":269026.67000000004},{"year_month":"2026-05","month_index":29,"plant_name":"Rayong Components","region":"Thailand","country":"Thailand","line_name":"Machining Cell","product":"Portfolio mix","product_line":"Precision Parts","produced_units":33315,"good_units":32021,"scrap_units":1294,"capacity_units":35999,"run_hours":1100.9099999999999,"available_hours":2373.6,"actual_revenue":2670514.04,"budget_revenue":2684185.5300000003,"standard_cogs":1520534.99,"actual_cogs":1632792.6800000002,"gross_margin":1037721.3699999999,"material_variance":50560.53,"labor_variance":7834.74,"overhead_variance":10545.33,"yield_loss_cost":43317.060000000005,"cost_variance":112257.69000000002,"inventory_value":1582365.6300000001,"slow_moving_inventory_value":243657.26},{"year_month":"2025-10","month_index":22,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":87559,"good_units":84462,"scrap_units":3096,"capacity_units":92001,"run_hours":1922.0700000000002,"available_hours":2064,"actual_revenue":5596081.79,"budget_revenue":6037441.4,"standard_cogs":3360532.01,"actual_cogs":3519225.97,"gross_margin":2076855.8199999998,"material_variance":37773.42,"labor_variance":16292.75,"overhead_variance":-5778.280000000001,"yield_loss_cost":110406.05,"cost_variance":158693.9600000003,"inventory_value":3657988.05,"slow_moving_inventory_value":422243.79999999993},{"year_month":"2025-11","month_index":23,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":104102,"good_units":100348,"scrap_units":3755,"capacity_units":92001,"run_hours":2244.5,"available_hours":2064,"actual_revenue":6571627.5600000005,"budget_revenue":6741262.74,"standard_cogs":3946573.38,"actual_cogs":4194863.4,"gross_margin":2376764.16,"material_variance":73864.58,"labor_variance":30514.56,"overhead_variance":15625.289999999997,"yield_loss_cost":128285.60999999999,"cost_variance":248290.0199999999,"inventory_value":4218469.13,"slow_moving_inventory_value":716718.6799999999},{"year_month":"2025-12","month_index":24,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":100228,"good_units":97081,"scrap_units":3147,"capacity_units":92001,"run_hours":2380.42,"available_hours":2064,"actual_revenue":6969189.069999999,"budget_revenue":6708975.029999999,"standard_cogs":4175037.41,"actual_cogs":4369508.1,"gross_margin":2599680.96,"material_variance":57466.369999999995,"labor_variance":24279.43,"overhead_variance":-9068.48,"yield_loss_cost":121793.39,"cost_variance":194470.69000000006,"inventory_value":4626554.55,"slow_moving_inventory_value":519655.30000000005},{"year_month":"2026-01","month_index":25,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":78208,"good_units":75886,"scrap_units":2322,"capacity_units":92001,"run_hours":1624.0800000000002,"available_hours":2064,"actual_revenue":4792308.84,"budget_revenue":5198034.77,"standard_cogs":2810284.39,"actual_cogs":3060668.59,"gross_margin":1731640.26,"material_variance":149047.80000000002,"labor_variance":17376.25,"overhead_variance":10039.11,"yield_loss_cost":73921.02,"cost_variance":250384.20000000004,"inventory_value":2751593.31,"slow_moving_inventory_value":413680.56000000006},{"year_month":"2026-02","month_index":26,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":79799,"good_units":77353,"scrap_units":2444,"capacity_units":86480,"run_hours":1707.6599999999999,"available_hours":2064,"actual_revenue":5069554.7,"budget_revenue":4850785.27,"standard_cogs":2990216.6999999997,"actual_cogs":3222967.05,"gross_margin":1846587.6300000001,"material_variance":133944.18,"labor_variance":12130.890000000001,"overhead_variance":11131.58,"yield_loss_cost":75543.70999999999,"cost_variance":232750.35000000006,"inventory_value":2234441.9,"slow_moving_inventory_value":310790.72},{"year_month":"2026-03","month_index":27,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":81745,"good_units":79093,"scrap_units":2653,"capacity_units":92001,"run_hours":1792.3199999999997,"available_hours":2064,"actual_revenue":5222672.77,"budget_revenue":5630796.039999999,"standard_cogs":3101602.8099999996,"actual_cogs":3324172.36,"gross_margin":1898500.4,"material_variance":122472.20000000001,"labor_variance":2722.3199999999997,"overhead_variance":10866.73,"yield_loss_cost":86508.31,"cost_variance":222569.55000000016,"inventory_value":2936713.72,"slow_moving_inventory_value":397331.33},{"year_month":"2026-04","month_index":28,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":85695,"good_units":83097,"scrap_units":2599,"capacity_units":92001,"run_hours":1824.91,"available_hours":2064,"actual_revenue":5345600.359999999,"budget_revenue":5724818.29,"standard_cogs":3155101.99,"actual_cogs":3371200.6,"gross_margin":1974399.7600000002,"material_variance":124094.69,"labor_variance":8561.08,"overhead_variance":1395.3100000000013,"yield_loss_cost":82047.54000000001,"cost_variance":216098.60999999993,"inventory_value":3024097.19,"slow_moving_inventory_value":459718.38},{"year_month":"2026-05","month_index":29,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 1","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":90761,"good_units":88035,"scrap_units":2724,"capacity_units":92001,"run_hours":1973.62,"available_hours":2064,"actual_revenue":5756792.95,"budget_revenue":6192557.720000001,"standard_cogs":3417819.33,"actual_cogs":3596589.12,"gross_margin":2160203.83,"material_variance":76102.47,"labor_variance":13836.53,"overhead_variance":59.23000000000047,"yield_loss_cost":88771.57,"cost_variance":178769.7899999998,"inventory_value":3887058.12,"slow_moving_inventory_value":597173.33},{"year_month":"2025-10","month_index":22,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":80296,"good_units":77980,"scrap_units":2317,"capacity_units":84000,"run_hours":1881.6799999999998,"available_hours":2064,"actual_revenue":5461458.08,"budget_revenue":5597435.970000001,"standard_cogs":3228438.33,"actual_cogs":3462934.98,"gross_margin":1998523.1,"material_variance":146055.07,"labor_variance":14210.480000000001,"overhead_variance":-3801.1399999999994,"yield_loss_cost":78032.24,"cost_variance":234496.65000000002,"inventory_value":3633722.2300000004,"slow_moving_inventory_value":378016.99},{"year_month":"2025-11","month_index":23,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":90074,"good_units":86610,"scrap_units":3464,"capacity_units":84000,"run_hours":1956.7199999999998,"available_hours":2064,"actual_revenue":5608419.01,"budget_revenue":6071139.1899999995,"standard_cogs":3382755.8600000003,"actual_cogs":3636792.13,"gross_margin":1971626.8699999999,"material_variance":118436.32,"labor_variance":26712.64,"overhead_variance":5270.9,"yield_loss_cost":103616.41999999998,"cost_variance":254036.27000000008,"inventory_value":3220893.1900000004,"slow_moving_inventory_value":483966.57999999996},{"year_month":"2025-12","month_index":24,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":94779,"good_units":91281,"scrap_units":3499,"capacity_units":84000,"run_hours":2039.0900000000001,"available_hours":2064,"actual_revenue":5910220.5200000005,"budget_revenue":5968591.140000001,"standard_cogs":3495064.51,"actual_cogs":3668284.3099999996,"gross_margin":2241936.21,"material_variance":46074.490000000005,"labor_variance":16478.93,"overhead_variance":3841.47,"yield_loss_cost":106824.88,"cost_variance":173219.7999999998,"inventory_value":3380904.8,"slow_moving_inventory_value":542877.67},{"year_month":"2026-01","month_index":25,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":69735,"good_units":67673,"scrap_units":2061,"capacity_units":84000,"run_hours":1537.9900000000002,"available_hours":2064,"actual_revenue":4392600,"budget_revenue":4367464.29,"standard_cogs":2638731.58,"actual_cogs":2800239.34,"gross_margin":1592360.6800000002,"material_variance":72642.1,"labor_variance":4977.82,"overhead_variance":12492.51,"yield_loss_cost":71395.31999999999,"cost_variance":161507.76,"inventory_value":2656620.04,"slow_moving_inventory_value":458385.31},{"year_month":"2026-02","month_index":26,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":73825,"good_units":71674,"scrap_units":2153,"capacity_units":84000,"run_hours":1669.27,"available_hours":2064,"actual_revenue":4780479.37,"budget_revenue":4820547.48,"standard_cogs":2876889.33,"actual_cogs":2976624.4400000004,"gross_margin":1803854.94,"material_variance":24102.42,"labor_variance":3501.670000000001,"overhead_variance":-4221.43,"yield_loss_cost":76352.39,"cost_variance":99735.1100000002,"inventory_value":3079952.7800000003,"slow_moving_inventory_value":400172.9},{"year_month":"2026-03","month_index":27,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":80061,"good_units":77287,"scrap_units":2774,"capacity_units":84000,"run_hours":1839.18,"available_hours":2064,"actual_revenue":5341850.98,"budget_revenue":5465798.66,"standard_cogs":3163720.7199999997,"actual_cogs":3385975.88,"gross_margin":1955875.11,"material_variance":103318.06,"labor_variance":15920.529999999999,"overhead_variance":6122.889999999999,"yield_loss_cost":96893.69,"cost_variance":222255.1600000001,"inventory_value":2957268.4000000004,"slow_moving_inventory_value":431861.61},{"year_month":"2026-04","month_index":28,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":88411,"good_units":85682,"scrap_units":2729,"capacity_units":84000,"run_hours":1895.14,"available_hours":2064,"actual_revenue":5538657.46,"budget_revenue":5543868.21,"standard_cogs":3262481.08,"actual_cogs":3487258.83,"gross_margin":2051398.6400000001,"material_variance":104184.81,"labor_variance":25303.18,"overhead_variance":4510.12,"yield_loss_cost":90779.63,"cost_variance":224777.75,"inventory_value":2196639.8899999997,"slow_moving_inventory_value":225299.14},{"year_month":"2026-05","month_index":29,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Packaging Line 2","product":"Portfolio mix","product_line":"Packaging Systems","produced_units":84789,"good_units":81970,"scrap_units":2820,"capacity_units":84000,"run_hours":1954.69,"available_hours":2064,"actual_revenue":5601576.93,"budget_revenue":5621484.029999999,"standard_cogs":3371492.0900000003,"actual_cogs":3668801.3,"gross_margin":1932775.63,"material_variance":186314.5,"labor_variance":11599.33,"overhead_variance":-4623.7300000000005,"yield_loss_cost":104019.1,"cost_variance":297309.21,"inventory_value":2816707.12,"slow_moving_inventory_value":394798.24},{"year_month":"2025-10","month_index":22,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":27987,"good_units":27018,"scrap_units":970,"capacity_units":30999,"run_hours":918.68,"available_hours":1960.8,"actual_revenue":2767315.62,"budget_revenue":2769138.44,"standard_cogs":1600758.1699999997,"actual_cogs":1707223.41,"gross_margin":1060092.24,"material_variance":51689.24,"labor_variance":6691.19,"overhead_variance":4219.95,"yield_loss_cost":43864.850000000006,"cost_variance":106465.2400000001,"inventory_value":1692592.5999999999,"slow_moving_inventory_value":148302.12999999998},{"year_month":"2025-11","month_index":23,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":26247,"good_units":25349,"scrap_units":899,"capacity_units":30999,"run_hours":865.4699999999999,"available_hours":1960.8,"actual_revenue":2608994.66,"budget_revenue":2710661.7800000003,"standard_cogs":1505837.7099999997,"actual_cogs":1585489.53,"gross_margin":1023505.13,"material_variance":34814.13,"labor_variance":-1056.3600000000001,"overhead_variance":3636.9700000000003,"yield_loss_cost":42257.07,"cost_variance":79651.81999999999,"inventory_value":1740867.98,"slow_moving_inventory_value":200147.11},{"year_month":"2025-12","month_index":24,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":26988,"good_units":26157,"scrap_units":829,"capacity_units":30999,"run_hours":897.22,"available_hours":1960.8,"actual_revenue":2669748.2199999997,"budget_revenue":2946149.3200000003,"standard_cogs":1558752.59,"actual_cogs":1623124.1300000001,"gross_margin":1046624.0599999999,"material_variance":20271.83,"labor_variance":4892.83,"overhead_variance":-132.47999999999996,"yield_loss_cost":39339.38,"cost_variance":64371.54000000004,"inventory_value":1669450.33,"slow_moving_inventory_value":178709.83},{"year_month":"2026-01","month_index":25,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":20429,"good_units":19752,"scrap_units":678,"capacity_units":30999,"run_hours":670.2099999999999,"available_hours":1960.8,"actual_revenue":2007849.3399999999,"budget_revenue":2172529.2699999996,"standard_cogs":1168062.9400000002,"actual_cogs":1250021.7000000002,"gross_margin":757827.6399999999,"material_variance":47296.3,"labor_variance":1663.9399999999996,"overhead_variance":2081.1,"yield_loss_cost":30917.45,"cost_variance":81958.76000000002,"inventory_value":1042122.71,"slow_moving_inventory_value":107285.03000000001},{"year_month":"2026-02","month_index":26,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":23375,"good_units":22609,"scrap_units":766,"capacity_units":30999,"run_hours":788.0699999999999,"available_hours":1960.8,"actual_revenue":2368739.76,"budget_revenue":2328624.48,"standard_cogs":1367919.5,"actual_cogs":1457758.4299999997,"gross_margin":910981.33,"material_variance":50053.32,"labor_variance":2156.0099999999998,"overhead_variance":2033.1,"yield_loss_cost":35596.51,"cost_variance":89838.92999999998,"inventory_value":1205021.44,"slow_moving_inventory_value":95165.25},{"year_month":"2026-03","month_index":27,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":26216,"good_units":25370,"scrap_units":847,"capacity_units":30999,"run_hours":865.5599999999998,"available_hours":1960.8,"actual_revenue":2598771.5799999996,"budget_revenue":2621465.08,"standard_cogs":1502914.8299999998,"actual_cogs":1643146.3799999997,"gross_margin":955625.2300000002,"material_variance":91988.83999999998,"labor_variance":4387.45,"overhead_variance":4685.91,"yield_loss_cost":39169.35,"cost_variance":140231.55,"inventory_value":1512140.1600000001,"slow_moving_inventory_value":149372.03999999998},{"year_month":"2026-04","month_index":28,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":24522,"good_units":23814,"scrap_units":710,"capacity_units":30999,"run_hours":802.0999999999999,"available_hours":1960.8,"actual_revenue":2439017.72,"budget_revenue":2586883.96,"standard_cogs":1392366.01,"actual_cogs":1466339.5699999998,"gross_margin":972678.12,"material_variance":34234.5,"labor_variance":3168.8700000000003,"overhead_variance":3625.6100000000006,"yield_loss_cost":32944.579999999994,"cost_variance":73973.55999999997,"inventory_value":1335532.27,"slow_moving_inventory_value":174447.69000000003},{"year_month":"2026-05","month_index":29,"plant_name":"Johor Packaging Systems","region":"Malaysia","country":"Malaysia","line_name":"Final Assembly","product":"Portfolio mix","product_line":"Industrial Components","produced_units":26303,"good_units":25502,"scrap_units":800,"capacity_units":30999,"run_hours":872.8399999999999,"available_hours":1960.8,"actual_revenue":2628956.33,"budget_revenue":2635315.96,"standard_cogs":1517591.6600000001,"actual_cogs":1629965.6899999997,"gross_margin":998990.65,"material_variance":64970.05,"labor_variance":2612.4699999999993,"overhead_variance":7649.570000000001,"yield_loss_cost":37141.909999999996,"cost_variance":112374.02999999998,"inventory_value":1424159.57,"slow_moving_inventory_value":114888.44}]};
+  const COLORS = {
+    steel: '#2563EB', teal: '#0F766E', amber: '#D97706', red: '#DC2626', violet: '#7C3AED',
+    green: '#16A34A', muted: '#667085', line: '#D9DEE7', grid: '#E2E8F0', panelSoft: '#F8FAFC', ink: '#111827'
+  };
+  const state = { tab: 'overview', month: DATA.latestMonth, plant: 'All', productLine: 'All', line: 'All', scenario: 'Base' };
+  const pageDefs = {
+    overview: { contextMode: 'line', kpis: [
+      { key: 'actualRevenue', label: 'Revenue', accent: COLORS.steel, kind: 'money', positiveGood: true },
+      { key: 'grossMargin', label: 'Gross Profit', accent: COLORS.teal, kind: 'money', positiveGood: true },
+      { key: 'costVariance', label: 'Cost Var · A−Std', accent: COLORS.amber, kind: 'money', positiveGood: false },
+      { key: 'yieldPct', label: 'Yield', accent: COLORS.green, kind: 'pct', positiveGood: true }
+    ] },
+    variance: { contextMode: 'line', kpis: [
+      { key: 'materialVariance', label: 'Material Var', accent: COLORS.amber, kind: 'money', positiveGood: false },
+      { key: 'laborVariance', label: 'Labor Var', accent: COLORS.red, kind: 'money', positiveGood: false },
+      { key: 'overheadVariance', label: 'OH Var', accent: COLORS.violet, kind: 'money', positiveGood: false },
+      { key: 'yieldLossCost', label: 'Yield Loss', accent: COLORS.red, kind: 'money', positiveGood: false }
+    ] },
+    ops: { contextMode: 'scenario', kpis: [
+      { key: 'yieldPct', label: 'Yield', accent: COLORS.teal, kind: 'pct', positiveGood: true },
+      { key: 'scrapRate', label: 'Scrap Rate', accent: COLORS.red, kind: 'pct', positiveGood: false },
+      { key: 'utilizationPct', label: 'Utilization', accent: COLORS.steel, kind: 'pct', positiveGood: true },
+      { key: 'scenarioUplift', label: 'Scenario Uplift', accent: COLORS.green, kind: 'money', positiveGood: true }
+    ] }
+  };
+  const byId = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const sum = (rows, field) => rows.reduce((total, row) => total + Number(row[field] || 0), 0);
+  const pct = value => Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : '0.0%';
+  const pts = value => `${(value * 100).toFixed(1)} pts`;
+  const num = value => {
+    const abs = Math.abs(value || 0);
+    if (abs >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+    if (abs >= 1000) return `${(value / 1000).toFixed(1)}K`;
+    return `${Math.round(value || 0).toLocaleString()}`;
+  };
+  const money = value => {
+    const sign = value < 0 ? '-' : '';
+    const abs = Math.abs(value || 0);
+    if (abs >= 1000000) return `${sign}$${(abs / 1000000).toFixed(1)}M`;
+    if (abs >= 1000) return `${sign}$${(abs / 1000).toFixed(1)}K`;
+    return `${sign}$${Math.round(abs).toLocaleString()}`;
+  };
+  const formatValue = (value, kind) => kind === 'money' ? money(value) : kind === 'pct' ? pct(value) : num(value);
+  const scenarioByName = name => DATA.scenarios.find(scenario => scenario.scenario_name === name) || DATA.scenarios[0];
+  const previousMonth = month => DATA.months[Math.max(0, DATA.months.indexOf(month) - 1)] || month;
+
+  function rowsFor(options = {}) {
+    const tab = options.tab || state.tab;
+    const month = options.month ?? state.month;
+    const plant = options.plant ?? state.plant;
+    const productLine = options.productLine ?? state.productLine;
+    const line = options.line ?? state.line;
+    const applyLine = pageDefs[tab].contextMode === 'line';
+    return DATA.rows.filter(row => {
+      if (row.year_month !== month) return false;
+      if (plant !== 'All' && row.plant_name !== plant) return false;
+      if (productLine !== 'All' && row.product_line !== productLine) return false;
+      if (applyLine && line !== 'All' && row.line_name !== line) return false;
+      return true;
+    });
+  }
+
+  function aggregate(rows, scenarioName = state.scenario) {
+    const produced = sum(rows, 'produced_units');
+    const good = sum(rows, 'good_units');
+    const actualRevenue = sum(rows, 'actual_revenue');
+    const actualCogs = sum(rows, 'actual_cogs');
+    const standardCogs = sum(rows, 'standard_cogs');
+    const grossMargin = sum(rows, 'gross_margin');
+    const inventoryValue = sum(rows, 'inventory_value');
+    const materialVariance = sum(rows, 'material_variance');
+    const laborVariance = sum(rows, 'labor_variance');
+    const overheadVariance = sum(rows, 'overhead_variance');
+    const yieldLossCost = sum(rows, 'yield_loss_cost');
+    const scenario = scenarioByName(scenarioName);
+    const scenarioSavings = materialVariance * Number(scenario.material_cost_reduction_pct || 0) + laborVariance * Number(scenario.labor_efficiency_gain_pct || 0) + overheadVariance * Number(scenario.overhead_absorption_gain_pct || 0) + yieldLossCost * Number(scenario.scrap_reduction_pct || 0);
+    const scenarioGrossMargin = grossMargin + scenarioSavings + grossMargin * Number(scenario.volume_delta_pct || 0);
+    return {
+      actualRevenue, actualCogs, standardCogs, grossMargin,
+      grossMarginPct: actualRevenue ? grossMargin / actualRevenue : 0,
+      costVariance: actualCogs - standardCogs,
+      materialVariance, laborVariance, overheadVariance, yieldLossCost,
+      yieldPct: produced ? good / produced : 0,
+      scrapRate: produced ? sum(rows, 'scrap_units') / produced : 0,
+      utilizationPct: sum(rows, 'available_hours') ? sum(rows, 'run_hours') / sum(rows, 'available_hours') : 0,
+      inventoryValue,
+      inventoryDays: actualCogs ? 30 * inventoryValue / actualCogs : 0,
+      slowMovingInventory: sum(rows, 'slow_moving_inventory_value'),
+      scenarioSavings,
+      scenarioGrossMargin,
+      scenarioUplift: scenarioGrossMargin - grossMargin,
+      producedUnits: produced,
+      rowCount: rows.length
+    };
+  }
+
+  function metricFor(rows, key, scenarioName = state.scenario) {
+    return aggregate(rows, scenarioName)[key] ?? 0;
+  }
+
+  function fillSelect(select, values, selected, includeAll = true) {
+    const options = includeAll ? ['All', ...values] : values;
+    select.innerHTML = options.map(value => `<option value="${esc(value)}">${esc(value)}</option>`).join('');
+    select.value = options.includes(selected) ? selected : options[0];
+  }
+
+  function refreshContextFilter() {
+    const def = pageDefs[state.tab];
+    const contextSelect = byId('filter-context');
+    if (def.contextMode === 'scenario') {
+      byId('context-filter-name').textContent = 'Scenario';
+      fillSelect(contextSelect, DATA.scenarios.map(s => s.scenario_name), state.scenario, false);
+      state.scenario = contextSelect.value;
+    } else {
+      byId('context-filter-name').textContent = 'Line';
+      const filteredLines = Array.from(new Set(DATA.rows.filter(row => {
+        if (state.plant !== 'All' && row.plant_name !== state.plant) return false;
+        if (state.productLine !== 'All' && row.product_line !== state.productLine) return false;
+        return true;
+      }).map(row => row.line_name))).sort();
+      fillSelect(contextSelect, filteredLines, state.line, true);
+      state.line = contextSelect.value;
+    }
+  }
+
+  function initControls() {
+    byId('latest-month-label').textContent = DATA.latestMonth;
+    fillSelect(byId('filter-month'), DATA.months.slice().reverse(), state.month, false);
+    fillSelect(byId('filter-plant'), DATA.plants, state.plant, true);
+    fillSelect(byId('filter-product-line'), DATA.productLines, state.productLine, true);
+    refreshContextFilter();
+    byId('filter-month').addEventListener('change', event => { state.month = event.target.value; render(); });
+    byId('filter-plant').addEventListener('change', event => { state.plant = event.target.value; state.line = 'All'; render(); });
+    byId('filter-product-line').addEventListener('change', event => { state.productLine = event.target.value; state.line = 'All'; render(); });
+    byId('filter-context').addEventListener('change', event => {
+      if (pageDefs[state.tab].contextMode === 'scenario') state.scenario = event.target.value;
+      else state.line = event.target.value;
+      render();
+    });
+    document.querySelectorAll('.tabs button').forEach(button => {
+      button.addEventListener('click', () => {
+        state.tab = button.dataset.tab;
+        document.querySelectorAll('.tabs button').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === state.tab));
+        render();
+      });
+    });
+  }
+
+  function sparkline(key, accent) {
+    const selectedIndex = DATA.months.indexOf(state.month);
+    const months = DATA.months.slice(Math.max(0, selectedIndex - 7), selectedIndex + 1);
+    const values = months.map(month => metricFor(rowsFor({ month }), key));
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min || Math.max(Math.abs(max), 1);
+    const points = values.map((value, index) => {
+      const x = 6 + index * (108 / Math.max(1, values.length - 1));
+      const y = 46 - ((value - min) / range) * 34;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    const end = points.split(' ').pop() || '114,28';
+    const [endX, endY] = end.split(',');
+    return `<svg viewBox="0 0 120 52" role="img" aria-label="KPI trend"><line x1="6" y1="42" x2="114" y2="42" stroke="${COLORS.grid}" stroke-width="1"/><polyline points="${points}" fill="none" stroke="${accent}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${endX}" cy="${endY}" r="3.7" fill="${accent}"/></svg>`;
+  }
+
+  function deltaChip(def, current, prior) {
+    const diff = current - prior;
+    const isPct = def.kind === 'pct';
+    const label = isPct ? pts(diff) : (Math.abs(prior) > 1 ? `${diff >= 0 ? '+' : ''}${((diff / Math.abs(prior)) * 100).toFixed(1)}%` : formatValue(diff, def.kind));
+    const good = def.positiveGood ? diff >= 0 : diff <= 0;
+    return `<span class="pill ${good ? 'good' : 'risk'}">vs prior ${label}</span>`;
+  }
+
+  function renderKpis() {
+    const def = pageDefs[state.tab];
+    const current = aggregate(rowsFor());
+    const prior = aggregate(rowsFor({ month: previousMonth(state.month) }));
+    byId('kpi-grid').innerHTML = def.kpis.map(kpi => {
+      const value = current[kpi.key] || 0;
+      const priorValue = prior[kpi.key] || 0;
+      return `<article class="kpi" style="--accent:${kpi.accent}"><div class="kpi-title">${esc(kpi.label)}</div><div class="kpi-value">${formatValue(value, kpi.kind)}</div><div class="kpi-spark">${sparkline(kpi.key, kpi.accent)}</div><div class="kpi-footer"><span class="pill">${esc(state.month)}</span>${deltaChip(kpi, value, priorValue)}</div></article>`;
+    }).join('');
+  }
+
+  function groupBy(rows, dimension, metricKey, limit = 6, scenarioName = state.scenario) {
+    const map = new Map();
+    rows.forEach(row => {
+      const key = row[dimension] || 'Other';
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(row);
+    });
+    return Array.from(map, ([name, groupedRows]) => ({ name, value: metricFor(groupedRows, metricKey, scenarioName), rows: groupedRows }))
+      .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+      .slice(0, limit);
+  }
+
+  function lineChart(seriesDefs, title) {
+    const selectedIndex = DATA.months.indexOf(state.month);
+    const months = DATA.months.slice(Math.max(0, selectedIndex - 11), selectedIndex + 1);
+    const series = seriesDefs.map(def => ({ ...def, values: months.map(month => metricFor(rowsFor({ month }), def.key)) }));
+    const allValues = series.flatMap(s => s.values);
+    const min = Math.min(...allValues, 0);
+    const max = Math.max(...allValues, 1);
+    const range = max - min || 1;
+    const xFor = index => 52 + index * (650 / Math.max(1, months.length - 1));
+    const yFor = value => 214 - ((value - min) / range) * 160;
+    const lines = series.map(s => `<polyline points="${s.values.map((value, index) => `${xFor(index).toFixed(1)},${yFor(value).toFixed(1)}`).join(' ')}" fill="none" stroke="${s.color}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"${s.dashed ? ' stroke-dasharray="8 7"' : ''}/>`).join('');
+    const legend = series.map((s, index) => `<text x="${52 + index * 160}" y="250" fill="${COLORS.muted}" font-size="12" font-weight="800"><tspan fill="${s.color}">●</tspan> ${esc(s.label)}</text>`).join('');
+    return `<svg class="chart" viewBox="0 0 760 270" role="img" aria-label="${esc(title)}"><rect width="760" height="270" rx="8" fill="${COLORS.panelSoft}"/><g stroke="${COLORS.grid}" stroke-width="1"><line x1="52" y1="54" x2="710" y2="54"/><line x1="52" y1="108" x2="710" y2="108"/><line x1="52" y1="162" x2="710" y2="162"/><line x1="52" y1="216" x2="710" y2="216"/></g>${lines}<text x="52" y="238" fill="${COLORS.muted}" font-size="12" font-weight="800">${esc(months[0])}</text><text x="650" y="238" fill="${COLORS.muted}" font-size="12" font-weight="800">${esc(months[months.length - 1])}</text>${legend}</svg>`;
+  }
+
+  function barChart(items, kind = 'money', color = COLORS.steel) {
+    if (!items.length) return '<div class="empty">No rows in current filter state</div>';
+    const max = Math.max(...items.map(item => Math.abs(item.value)), 1);
+    const rows = items.map((item, index) => {
+      const y = 36 + index * 34;
+      const width = 430 * Math.abs(item.value) / max;
+      return `<g><text x="14" y="${y + 15}" fill="${COLORS.ink}" font-size="12" font-weight="760">${esc(item.name)}</text><rect x="210" y="${y}" width="430" height="18" rx="5" fill="${COLORS.grid}"/><rect x="210" y="${y}" width="${width.toFixed(1)}" height="18" rx="5" fill="${color}" opacity=".88"/><text x="656" y="${y + 14}" fill="${COLORS.ink}" font-size="12" font-weight="850" text-anchor="end">${formatValue(item.value, kind)}</text></g>`;
+    }).join('');
+    return `<svg class="chart small" viewBox="0 0 700 ${Math.max(230, 58 + items.length * 34)}" role="img" aria-label="Bar chart">${rows}</svg>`;
+  }
+
+  function waterfallChart(metrics) {
+    const steps = [
+      { label: 'Standard COGS', value: metrics.standardCogs, color: COLORS.steel },
+      { label: 'Material', value: metrics.materialVariance, color: COLORS.amber },
+      { label: 'Labor', value: metrics.laborVariance, color: COLORS.red },
+      { label: 'Overhead', value: metrics.overheadVariance, color: COLORS.violet },
+      { label: 'Yield loss', value: metrics.yieldLossCost, color: COLORS.red },
+      { label: 'Actual COGS', value: metrics.actualCogs, color: COLORS.teal }
+    ];
+    const max = Math.max(...steps.map(step => Math.abs(step.value)), 1);
+    const rows = steps.map((step, index) => {
+      const y = 30 + index * 33;
+      const w = 390 * Math.abs(step.value) / max;
+      return `<g><text x="14" y="${y + 15}" fill="${COLORS.ink}" font-size="12" font-weight="760">${esc(step.label)}</text><rect x="170" y="${y}" width="${w.toFixed(1)}" height="18" rx="5" fill="${step.color}" opacity=".9"/><text x="650" y="${y + 14}" fill="${COLORS.ink}" font-size="12" font-weight="850" text-anchor="end">${money(step.value)}</text></g>`;
+    }).join('');
+    return `<svg class="chart small" viewBox="0 0 700 240" role="img" aria-label="COGS variance bridge">${rows}</svg>`;
+  }
+
+  function tableHtml(headers, rows) {
+    if (!rows.length) return '<div class="empty">No action rows for current filter state</div>';
+    return `<div class="table-scroll" role="region" aria-label="Scrollable data table"><table><thead><tr>${headers.map(header => `<th>${esc(header)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  }
+
+  function groupedRows(dimensions, sortMetric) {
+    const map = new Map();
+    rowsFor().forEach(row => {
+      const key = dimensions.map(d => row[d]).join('|');
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(row);
+    });
+    return Array.from(map, ([key, values]) => ({ labels: key.split('|'), metrics: aggregate(values), rows: values }))
+      .sort((a, b) => Math.abs(b.metrics[sortMetric]) - Math.abs(a.metrics[sortMetric]));
+  }
+
+  function actionFor(row) {
+    const m = row.metrics;
+    if (m.materialVariance >= Math.max(m.laborVariance, m.yieldLossCost)) return ['Procurement', 'Renegotiate material variance'];
+    if (m.yieldPct < 0.965 || m.yieldLossCost > 60000) return ['Operations', 'Recover yield and scrap'];
+    if (m.inventoryDays > 30) return ['Supply Chain', 'Reduce slow inventory'];
+    return ['Finance', 'Track margin recovery'];
+  }
+
+  function renderTables() {
+    let headers;
+    let bodyRows;
+    if (state.tab === 'overview') {
+      headers = ['Plant', 'Line', 'Product', 'Revenue', 'GM %', 'Cost Var', 'Owner Action'];
+      bodyRows = groupedRows(['plant_name', 'line_name', 'product'], 'costVariance').slice(0, 5).map(row => {
+        const action = actionFor(row);
+        return `<tr><td>${esc(row.labels[0])}</td><td>${esc(row.labels[1])}</td><td>${esc(row.labels[2])}</td><td class="number">${money(row.metrics.actualRevenue)}</td><td class="number">${pct(row.metrics.grossMarginPct)}</td><td class="number risk-text">${money(row.metrics.costVariance)}</td><td class="action">${esc(action[0])}: ${esc(action[1])}</td></tr>`;
+      });
+      byId('table-panel').innerHTML = `<div class="panel-head"><div><span class="panel-label">Action table</span><h2>Margin action list</h2></div><div class="takeaway">Rows rank by cost variance in the current filter context.</div></div>${tableHtml(headers, bodyRows)}`;
+    } else if (state.tab === 'variance') {
+      headers = ['Product Line', 'Plant', 'Material', 'Labor', 'OH', 'Yield Loss', 'Finance Call'];
+      bodyRows = groupedRows(['product_line', 'plant_name'], 'costVariance').slice(0, 6).map(row => {
+        const call = row.metrics.costVariance > 150000 ? 'Recovery required' : 'Monitor';
+        return `<tr><td>${esc(row.labels[0])}</td><td>${esc(row.labels[1])}</td><td class="number">${money(row.metrics.materialVariance)}</td><td class="number">${money(row.metrics.laborVariance)}</td><td class="number">${money(row.metrics.overheadVariance)}</td><td class="number">${money(row.metrics.yieldLossCost)}</td><td class="${call === 'Recovery required' ? 'risk-text' : 'good-text'}">${esc(call)}</td></tr>`;
+      });
+      byId('table-panel').innerHTML = `<div class="panel-head"><div><span class="panel-label">Variance table</span><h2>Driver-to-owner diagnostics</h2></div><div class="takeaway">Bridge drivers reconcile to total cost variance for the selected lens.</div></div>${tableHtml(headers, bodyRows)}`;
+    } else {
+      headers = ['Scenario', 'Line', 'Yield', 'Utilization', 'Inventory Days', 'Uplift', 'Next Action'];
+      bodyRows = groupedRows(['line_name', 'product_line'], 'inventoryDays').slice(0, 5).map(row => {
+        const action = actionFor(row);
+        return `<tr><td>${esc(state.scenario)}</td><td>${esc(row.labels[0])}</td><td class="number">${pct(row.metrics.yieldPct)}</td><td class="number">${pct(row.metrics.utilizationPct)}</td><td class="number">${row.metrics.inventoryDays.toFixed(1)}</td><td class="number good-text">${money(aggregate(row.rows, state.scenario).scenarioUplift)}</td><td class="action">${esc(action[0])}: ${esc(action[1])}</td></tr>`;
+      });
+      byId('table-panel').innerHTML = `<div class="panel-head"><div><span class="panel-label">Scenario and bottleneck review</span><h2>Owner action queue</h2></div><div class="takeaway">Scenario uplift updates from the selected scenario while line priorities follow the active plant/product lens.</div></div>${tableHtml(headers, bodyRows)}`;
+    }
+  }
+
+  function panel(title, label, takeaway, chartHtml) {
+    return `<article class="panel"><div class="panel-head"><div><span class="panel-label">${esc(label)}</span><h2>${esc(title)}</h2></div><div class="takeaway">${esc(takeaway)}</div></div>${chartHtml}</article>`;
+  }
+
+  function renderCharts(metrics) {
+    const rows = rowsFor();
+    if (state.tab === 'overview') {
+      byId('primary-panels').innerHTML =
+        panel('Revenue vs COGS trend', 'Trend and forecast call', 'Revenue remains the first check; cost movement explains margin pressure.', lineChart([
+          { key: 'actualRevenue', label: 'Revenue', color: COLORS.steel },
+          { key: 'actualCogs', label: 'Actual COGS', color: COLORS.amber, dashed: true },
+          { key: 'standardCogs', label: 'Standard COGS', color: COLORS.muted, dashed: true }
+        ], 'Revenue vs COGS trend')) +
+        panel('Cost variance by plant', 'Driver split', 'Bars rank the highest plant-level recovery opportunities.', barChart(groupBy(rows, 'plant_name', 'costVariance', 5), 'money', COLORS.amber));
+      byId('secondary-panels').innerHTML =
+        panel('Gross margin by product line', 'Margin mix', 'Product lines with high margin but rising variance need protection.', barChart(groupBy(rows, 'product_line', 'grossMargin', 5), 'money', COLORS.teal)) +
+        panel('Inventory days by product line', 'Working capital', 'Inventory days identify cash tied behind production mix.', barChart(groupBy(rows, 'product_line', 'inventoryDays', 5), 'num', COLORS.violet));
+    } else if (state.tab === 'variance') {
+      byId('primary-panels').innerHTML =
+        panel('COGS variance bridge', 'Bridge and tie-out', `Actual COGS ${money(metrics.actualCogs)} ties to standard plus variance drivers.`, waterfallChart(metrics)) +
+        panel('Material variance by product line', 'Procurement pressure', 'Material is sorted by magnitude so owner calls are obvious.', barChart(groupBy(rows, 'product_line', 'materialVariance', 5), 'money', COLORS.amber));
+      byId('secondary-panels').innerHTML =
+        panel('Labor variance by plant', 'Efficiency pressure', 'Labor variance highlights overtime or efficiency gaps.', barChart(groupBy(rows, 'plant_name', 'laborVariance', 5), 'money', COLORS.red)) +
+        panel('Yield loss by line', 'Scrap and rework', 'Yield loss ties operations recovery to cost impact.', barChart(groupBy(rows, 'line_name', 'yieldLossCost', 5), 'money', COLORS.red));
+    } else {
+      byId('primary-panels').innerHTML =
+        panel('Yield and scrap trend', 'Operational quality', 'Yield and scrap move together under the current lens.', lineChart([
+          { key: 'yieldPct', label: 'Yield', color: COLORS.teal },
+          { key: 'scrapRate', label: 'Scrap', color: COLORS.red, dashed: true }
+        ], 'Yield and scrap trend')) +
+        panel('Utilization by line', 'Capacity pressure', 'Lines above the pack average are capacity recovery candidates.', barChart(groupBy(rows, 'line_name', 'utilizationPct', 5), 'pct', COLORS.steel));
+      byId('secondary-panels').innerHTML =
+        panel('Inventory days by product line', 'Cash discipline', 'Working capital pressure is visible by product line.', barChart(groupBy(rows, 'product_line', 'inventoryDays', 5), 'num', COLORS.violet)) +
+        panel('Scenario cost savings by line', 'Scenario impact', 'Scenario uplift is computed from selected driver levers.', barChart(groupBy(rows, 'line_name', 'scenarioUplift', 5, state.scenario), 'money', COLORS.green));
+    }
+  }
+
+  function renderLens(metrics) {
+    const contextLabel = pageDefs[state.tab].contextMode === 'scenario' ? `Scenario ${state.scenario}` : `Line ${state.line}`;
+    byId('lens-text').textContent = `${state.month} | Plant ${state.plant} | Product Line ${state.productLine} | ${contextLabel}`;
+    const chips = [['Rows', metrics.rowCount.toLocaleString()], ['GM %', pct(metrics.grossMarginPct)], ['Inv Days', metrics.inventoryDays.toFixed(1)]];
+    if (state.tab === 'ops') chips.push(['Scenario', money(metrics.scenarioUplift)]);
+    byId('lens-chips').innerHTML = chips.map(([label, value]) => `<div class="lens-chip"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join('');
+  }
+
+  function render() {
+    refreshContextFilter();
+    const metrics = aggregate(rowsFor());
+    renderLens(metrics);
+    renderKpis();
+    renderCharts(metrics);
+    renderTables();
+  }
+
+  function setDashboardState(patch) {
+    Object.assign(state, patch || {});
+    document.querySelectorAll('.tabs button').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === state.tab));
+    byId('filter-month').value = state.month;
+    byId('filter-plant').value = state.plant;
+    byId('filter-product-line').value = state.productLine;
+    render();
+  }
+
+  function snapshotState() {
+    const metrics = aggregate(rowsFor());
+    return {
+      state: { ...state },
+      kpis: pageDefs[state.tab].kpis.map(kpi => ({ label: kpi.label, value: formatValue(metrics[kpi.key] || 0, kpi.kind) })),
+      lens: byId('lens-text').textContent,
+      firstChartText: byId('primary-panels').innerText.slice(0, 500),
+      tableRows: Array.from(byId('table-panel').querySelectorAll('tbody tr')).slice(0, 3).map(row => row.innerText)
+    };
+  }
+
+  initControls();
+  render();
+  window.p16Dashboard = { state, setState: setDashboardState, snapshot: snapshotState };
+</script>
+<script>
+(() => {
+  const projectNumber = "16";
+  const layoutSource = "project-16-own-dashboard";
+  const selects = Array.from(document.querySelectorAll("select"));
+  let defaults = {};
+  const publicState = {};
+  const normalizedValue = (select) => select.value || select.options[select.selectedIndex]?.textContent.trim() || "All";
+  const captureDefaults = () => { defaults = Object.fromEntries(selects.map((select) => [select.id, select.value])); };
+  const activePage = () => {
+    const button = document.querySelector("button[data-page].active, button[data-tab].active");
+    return button ? (button.dataset.page || button.dataset.tab) : "overview";
+  };
+  const sync = () => {
+    Object.keys(publicState).forEach((key) => delete publicState[key]);
+    publicState.projectNumber = projectNumber;
+    publicState.layoutSource = layoutSource;
+    publicState.page = activePage();
+    selects.forEach((select) => { publicState[select.id] = normalizedValue(select); });
+    return publicState;
+  };
+  const pageButtons = () => Array.from(document.querySelectorAll("button[data-page], button[data-tab]")).filter((button, index, all) => all.findIndex((item) => (item.dataset.page || item.dataset.tab) === (button.dataset.page || button.dataset.tab)) === index);
+  const reset = document.createElement("button");
+  reset.id = "previewReset";
+  reset.type = "button";
+  reset.textContent = "Reset Lens";
+  reset.className = "preview-reset";
+  const resetHosts = {
+    "13": "header nav",
+    "14": ".tabs",
+    "15": "aside",
+    "16": ".tabs",
+    "17": ".page-nav",
+    "18": ".page-nav",
+    "19": ".tabs",
+  };
+  const resetHost = document.querySelector(resetHosts[projectNumber] || ".filters, .filter-bar, .slicers, .rail, aside");
+  if (resetHost) resetHost.appendChild(reset);
+  const setPage = (page) => {
+    const button = pageButtons().find((item) => (item.dataset.page || item.dataset.tab) === page);
+    if (!button) return false;
+    button.click();
+    sync();
+    return true;
+  };
+  const setFilter = (id, value) => {
+    const aliases = { year: "yearFilter", scenario: "scenarioFilter", region: "regionFilter", entity: "entityFilter", period: "periodFilter", scope: "scopeFilter", business: "businessFilter", plant: "filter-plant", productLine: "filter-product-line", workspace: "filter-workspace", domain: "filter-domain" };
+    const select = document.getElementById(id) || document.getElementById(aliases[id]);
+    if (!select) return false;
+    const option = Array.from(select.options).find((item) => (item.value || item.textContent.trim() || "All") === String(value));
+    if (!option) return false;
+    select.value = option.value;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    sync();
+    return true;
+  };
+  const resetFilters = () => {
+    selects.forEach((select) => {
+      const requested = defaults[select.id];
+      const hasRequested = Array.from(select.options).some((option) => option.value === requested);
+      select.value = hasRequested ? requested : (select.options[0]?.value || "");
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    const first = pageButtons()[0];
+    if (first) first.click();
+    sync();
+    return getSummary();
+  };
+  const getRows = () => Array.from(document.querySelectorAll(".page.active table tbody tr, .dashboard-page.active table tbody tr, .tab.active table tbody tr, main > section:not([hidden]) table tbody tr"))
+    .filter((row) => row.offsetParent !== null)
+    .map((row) => Array.from(row.cells).map((cell) => cell.textContent.trim()));
+  const getSummary = () => ({
+    projectNumber,
+    layoutSource,
+    page: activePage(),
+    filters: Object.fromEntries(selects.map((select) => [select.id, normalizedValue(select)])),
+    kpis: Array.from(document.querySelectorAll(".kpi, .kpi-card, .card")).filter((node) => node.offsetParent !== null).slice(0, 8).map((node) => node.textContent.replace(/\s+/g, " ").trim()),
+    visibleRows: getRows().length,
+  });
+  const chartFingerprint = () => {
+    const visible = (node) => {
+      const style = getComputedStyle(node);
+      const rect = node.getBoundingClientRect();
+      return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+    };
+    const page = activePage();
+    const roots = Array.from(document.querySelectorAll(".page.active,.dashboard-page.active,section.tab.active,[role='tabpanel'][aria-hidden='false']"));
+    const root = roots.find(visible) || document.getElementById("page-" + page) || document.getElementById(page) || document.querySelector("main") || document.body;
+    const attrs = ["d","points","x","y","width","height","cx","cy","r","x1","x2","y1","y2","transform","viewBox"];
+    const geometry = Array.from(root.querySelectorAll("svg")).filter(visible).filter((svg) => !svg.closest(".kpi,.kpi-card,.card:not(.panel)")).map((svg) => [
+      svg.id || svg.getAttribute("aria-label") || "svg",
+      svg.getAttribute("viewBox") || "",
+      ...Array.from(svg.querySelectorAll("path,polyline,polygon,rect,circle,line,ellipse")).map((shape) =>
+        shape.tagName + ":" + attrs.map((name) => shape.getAttribute(name) || "").join(",") + ":" + (shape.getAttribute("style") || "")
+      )
+    ]);
+    const bars = Array.from(root.querySelectorAll(".bar-fill,.mini-bar,.bar,.bar-segment,[class*='heat-cell']")).filter(visible).map((node) => {
+      const rect = node.getBoundingClientRect();
+      return [String(node.className), node.getAttribute("style") || "", Math.round(rect.width * 10) / 10, Math.round(rect.height * 10) / 10];
+    });
+    const rows = Array.from(root.querySelectorAll("table tbody tr")).filter(visible).map((row) => Array.from(row.cells).map((cell) => cell.textContent.replace(/\s+/g, " ").trim()));
+    const raw = JSON.stringify({ geometry, bars, rows });
+    let hash = 2166136261;
+    for (let index = 0; index < raw.length; index += 1) { hash ^= raw.charCodeAt(index); hash = Math.imul(hash, 16777619); }
+    return (hash >>> 0).toString(16).padStart(8, "0");
+  };
++  reset.addEventListener("click", resetFilters);
+  document.addEventListener("change", sync);
+  document.addEventListener("click", (event) => { if (event.target.closest("button[data-page], button[data-tab]")) requestAnimationFrame(sync); });
+  window.previewState = publicState;
+  window.previewActions = { setPage, setFilter, resetFilters, getSummary, getRows };
+  const publicQa = {
+    ready: true,
+    projectNumber,
+    layoutSource,
+    getState: () => ({ ...sync() }),
+    getSummary,
+    geometry: () => ({
+      bodyOverflowX: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      bodyOverflowY: Math.max(0, document.documentElement.scrollHeight - document.documentElement.clientHeight),
+      shellHeight: Math.round(document.querySelector(".dashboard-shell")?.getBoundingClientRect().height || 0),
+    }),
+  };
+  Object.defineProperty(publicQa, "pages", { enumerable: true, get: () => pageButtons().map((button) => ({ id: button.dataset.page || button.dataset.tab, label: button.textContent.trim() })) });
+  Object.defineProperty(publicQa, "filters", { enumerable: true, get: () => selects.map((select) => ({ id: select.id, options: Array.from(select.options).map((option) => option.value || option.textContent.trim() || "All") })) });
+  Object.defineProperty(publicQa, "chartFingerprint", { enumerable: true, get: chartFingerprint });
+  const nativeQa = window.__dashboardQa;
+  Object.defineProperty(window, "__dashboardQa", {
+    configurable: true,
+    get: () => publicQa,
+    set: (value) => { publicQa.native = value; },
+  });
+  if (nativeQa) publicQa.native = nativeQa;
+  const initializePublicApi = () => {
+    selects.forEach((select) => { if (select.selectedIndex < 0 && select.options.length) select.value = select.options[0].value; });
+    captureDefaults();
+    sync();
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializePublicApi);
+  else initializePublicApi();
+  window.addEventListener("load", initializePublicApi, { once: true });
+  if (projectNumber === "13") {
+    const sourceNode = document.getElementById("sources");
+    if (sourceNode) {
+      const clearEmptyReferences = () => { if (sourceNode.textContent.trim()) sourceNode.replaceChildren(); };
+      new MutationObserver(clearEmptyReferences).observe(sourceNode, { childList: true, subtree: true, characterData: true });
+      requestAnimationFrame(clearEmptyReferences);
+    }
+  }
+  sync();
+})();
+</script><style id="decision-accessibility-style">button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #2563eb!important;outline-offset:2px!important}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style><script id="decision-accessibility">
+(() => {
+  const labels = {"filter-month":"Reporting month","filter-plant":"Plant","filter-product-line":"Product line","filter-context":"Production line or scenario"};
+  const panelFor = key => document.getElementById(key) || document.getElementById(`page-${key}`) || document.getElementById(`${key}Page`) || document.querySelector(`.page[data-page="${key}"],.dashboard-page[data-page="${key}"]`) || document.querySelector("main");
+  const enhance = () => { document.querySelectorAll("select").forEach(select => select.setAttribute("aria-label", labels[select.id] || "Dashboard filter")); const buttons = Array.from(document.querySelectorAll("button[data-page],button[data-tab]")); buttons.forEach((button,index) => { const key=button.dataset.page||button.dataset.tab; const active=button.classList.contains("active"); const panel=panelFor(key); button.id||=`p16-view-${key}-${index+1}`; button.setAttribute("role","tab"); button.setAttribute("aria-selected",String(active)); button.setAttribute("aria-pressed",String(active)); if(panel){panel.id||=`p16-panel-${key}`;panel.setAttribute("role","tabpanel");panel.setAttribute("aria-hidden",String(!active));panel.setAttribute("aria-labelledby",button.id);button.setAttribute("aria-controls",panel.id);} }); const reset=document.getElementById("previewReset"); if(reset)reset.setAttribute("aria-label","Reset all dashboard filters and return to the first view"); document.querySelectorAll(".kpi-card svg,.kpi svg").forEach(svg=>svg.setAttribute("aria-hidden","true")); document.querySelectorAll("svg:not([aria-hidden='true'])").forEach(svg=>{const host=svg.closest(".panel,.chart-card,.section-card,.table-card");svg.setAttribute("role","img");svg.setAttribute("aria-label",host?.querySelector("h2,h3")?.textContent.trim()||"Dashboard chart");}); document.querySelectorAll("table:not(:has(caption))").forEach(table=>{const caption=document.createElement("caption");caption.className="sr-only";caption.textContent=`${table.closest(".panel,.chart-card,.section-card,.table-card")?.querySelector("h2,h3")?.textContent.trim()||"Dashboard detail"} table`;table.prepend(caption);}); };
+  document.addEventListener("keydown",event=>{const button=event.target.closest("button[data-page],button[data-tab]");if(!button||!["ArrowLeft","ArrowRight"].includes(event.key))return;const buttons=Array.from(document.querySelectorAll("button[data-page],button[data-tab]"));const step=event.key==="ArrowRight"?1:-1;const next=buttons[(buttons.indexOf(button)+step+buttons.length)%buttons.length];event.preventDefault();next.focus();next.click();}); const queue=()=>requestAnimationFrame(enhance);document.addEventListener("click",queue);document.addEventListener("change",queue);new MutationObserver(queue).observe(document.querySelector(".dashboard-shell")||document.body,{childList:true,subtree:true});enhance();
+})();
+</script></div></div></body>
 </html>

@@ -138,6 +138,13 @@ body.board-pack-page .board-button--secondary:hover {
   background: rgba(124, 58, 237, 0.06);
 }
 
+body.board-pack-page .board-button:focus-visible,
+body.board-pack-page .board-breadcrumb a:focus-visible,
+body.board-pack-page .board-note a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--stage-violet) 72%, white);
+  outline-offset: 3px;
+}
+
 body.board-pack-page .board-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -161,15 +168,16 @@ body.board-pack-page .board-metrics span,
 body.board-pack-page .board-metrics small {
   color: var(--stage-muted);
   font-family: var(--stage-mono);
-  font-size: 0.62rem;
   line-height: 1.45;
 }
 
 body.board-pack-page .board-metrics small {
   color: var(--stage-violet-dark);
+  font-size: 0.68rem;
 }
 
 body.board-pack-page .board-metrics span {
+  font-size: 0.62rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -363,7 +371,7 @@ body.board-pack-page .board-note a:hover {
 
 @media (max-width: 620px) {
   body.board-pack-page[data-stage-template="case"] > main.board-case[data-stage-content] {
-    width: min(100% - 24px, 1240px);
+    width: var(--stage-shell);
   }
 
   body.board-pack-page .board-intro {

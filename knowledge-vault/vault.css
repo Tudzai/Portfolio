@@ -24,7 +24,7 @@
   --shadow: 0 28px 90px rgba(3, 2, 10, 0.42);
   --sidebar-width: 328px;
   --header-height: 70px;
-  --shell: 1520px;
+  --shell: min(1240px, calc(100% - 48px));
   --reader-scale: 1;
   --font-sans: "Aptos", "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
@@ -355,7 +355,7 @@ body:not(.is-locked) .security-status__dot {
   grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.65fr);
   gap: clamp(48px, 8vw, 130px);
   align-items: center;
-  width: min(calc(100% - 40px), 1240px);
+  width: var(--shell);
   min-height: calc(100vh - 138px);
   margin: 0 auto;
   padding: 76px 0 88px;
@@ -2942,6 +2942,18 @@ body.focus-mode .reader-wrap {
   font-weight: 780;
 }
 
+@media (min-width: 1600px) {
+  :root {
+    --shell: min(1640px, calc(100% - 96px));
+  }
+}
+
+@media (min-width: 2200px) {
+  :root {
+    --shell: min(1760px, calc(100% - 144px));
+  }
+}
+
 @media (max-width: 1180px) {
   :root {
     --sidebar-width: 292px;
@@ -3083,10 +3095,14 @@ body.focus-mode .reader-wrap {
 }
 
 @media (max-width: 720px) {
+  :root {
+    --shell: calc(100% - 32px);
+  }
+
   .site-header,
   .public-footer,
   .unlock-view {
-    width: min(calc(100% - 28px), var(--shell));
+    width: var(--shell);
   }
 
   .unlock-view {

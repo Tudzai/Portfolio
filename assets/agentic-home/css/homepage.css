@@ -15,7 +15,7 @@
   --display: "Manrope", sans-serif;
   --body: "DM Sans", sans-serif;
   --mono: "IBM Plex Mono", monospace;
-  --shell: min(1240px, calc(100% - 48px));
+  --shell: var(--stage-shell);
   --header-height: 78px;
   --radius-lg: 24px;
   --radius-md: 16px;
@@ -2659,7 +2659,7 @@ footer a {
 
 @media (max-width: 760px) {
   :root {
-    --shell: calc(100% - 32px);
+    --shell: var(--stage-shell);
     --header-height: 70px;
     --stage-header-height: 70px;
   }
@@ -3451,7 +3451,7 @@ footer a {
 
 @media (min-width: 1600px) {
   :root {
-    --shell: min(1640px, calc(100% - 96px));
+    --shell: var(--stage-shell);
   }
 
   .hero-scoreboard {
@@ -3469,7 +3469,7 @@ footer a {
 
 @media (min-width: 2200px) {
   :root {
-    --shell: min(1760px, calc(100% - 144px));
+    --shell: var(--stage-shell);
     --header-height: 86px;
   }
 
@@ -3523,7 +3523,7 @@ footer a {
     --desktop-frame-dvh: 75dvh;
     --desktop-demo-window: calc((75svh - 96px) * 1.7778);
     --stage-shell: min(1640px, calc(100% - 96px));
-    --shell: min(1640px, calc(100% - 96px));
+    --shell: var(--stage-shell);
     --stage-header-height: 116px;
     --header-height: 116px;
   }
@@ -3540,7 +3540,7 @@ footer a {
     --desktop-frame-dvh: 50dvh;
     --desktop-demo-window: calc((50svh - 96px) * 1.7778);
     --stage-shell: min(1640px, calc(100% - 96px));
-    --shell: min(1640px, calc(100% - 96px));
+    --shell: var(--stage-shell);
     --stage-header-height: 116px;
     --header-height: 116px;
   }

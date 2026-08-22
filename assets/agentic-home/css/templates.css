@@ -59,7 +59,7 @@ body[data-stage-template] .stage-media-fallback {
 
 @media (max-width: 760px) {
   body[data-stage-template] :is(.page-shell, .shell, .dashboard) {
-    width: min(100% - 32px, 1240px);
+    width: var(--stage-shell);
   }
 }
 
@@ -372,10 +372,6 @@ body[data-stage-template] main[data-stage-content] td {
 }
 
 @media (max-width: 760px) {
-  body[data-stage-template]:not([data-stage-template="homepage"]) > main[data-stage-content] {
-    width: min(100% - 32px, 1240px);
-  }
-
   body[data-stage-template] main[data-stage-content] > :is(.detail-hero, .hero, .cv-hero):first-child {
     padding: 3.5rem 0 3rem;
   }

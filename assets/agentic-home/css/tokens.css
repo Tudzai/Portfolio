@@ -91,6 +91,12 @@ body[data-stage-family="blog"] {
   --stage-accent-strong: var(--stage-violet-dark);
 }
 
+@media (max-width: 760px) {
+  :root {
+    --stage-shell: calc(100% - 32px);
+  }
+}
+
 /* Keep the interface at a useful optical scale on large desktop displays. */
 @media (min-width: 1600px) {
   :root {

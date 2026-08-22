@@ -1,39 +1,576 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta name="robots" content="noindex, follow" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>WealthTech AUM Client Retention Interactive Preview | Truong Dinh Anh Tu</title>
-    <link rel="canonical" href="index.html" />
-    <link rel="icon" href="../../../assets/favicon.svg" />
-    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
-    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-  <body class="powerbi-standard-preview" data-project-no="12">
-    <div class="preview-frame">
-      <div class="dashboard-shell">
-        <div class="dashboard" role="application" aria-label="WealthTech AUM Client Retention interactive dashboard">
-          <aside class="sidebar">
-            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Wealth analytics</small></span></div>
-            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
-            <div class="lens-group">
-              <h2 class="lens-title">Global Lens</h2>
-              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
-              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
-            </div>
-            <div class="lens-group">
-              <h2 class="lens-title">Operating Scope</h2>
-              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
-              <label><span class="filter-label">Portfolio</span><span class="select-wrap"><select id="regionFilter" aria-label="Portfolio filter"></select></span></label>
-            </div>
-            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
-          </aside>
-          <main class="dashboard-content" id="content"></main>
-        </div>
+<head>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="index.html">
+<link rel="icon" href="../../../assets/favicon.svg">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WealthTech / Robo-Advisor AUM Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23102033'/%3E%3Cpath d='M8 21l5-8 4 5 6-10' stroke='%232563eb' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<style>
+:root {
+  --bg: #f5f7fa;
+  --panel: #ffffff;
+  --ink: #172033;
+  --muted: #667085;
+  --line: #d6dee8;
+  --navy: #102033;
+  --blue: #2563eb;
+  --teal: #0f8b8d;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --indigo: #4f46e5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+  letter-spacing: 0;
+}
+.app { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
+.side {
+  background: var(--navy);
+  color: #f8fafc;
+  padding: 22px 18px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.brand { display: grid; gap: 10px; margin-bottom: 24px; }
+.mark {
+  width: 42px; height: 42px; border-radius: 8px;
+  background: linear-gradient(135deg, #0f8b8d, #2563eb);
+  display: grid; place-items: center; font-weight: 800;
+}
+h1 { font-size: 18px; line-height: 1.15; margin: 0; }
+.side small { color: #c9d6e4; line-height: 1.45; }
+.tab {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.12);
+  color: #dbe7f3;
+  background: rgba(255,255,255,.04);
+  padding: 11px 12px;
+  border-radius: 7px;
+  margin-bottom: 8px;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 600;
+}
+.tab.active { background: #f8fafc; color: var(--navy); border-color: #f8fafc; }
+.filters { margin-top: 18px; display: grid; gap: 10px; }
+label { color: #c9d6e4; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+select {
+  width: 100%; border: 1px solid rgba(255,255,255,.18); border-radius: 7px;
+  background: rgba(255,255,255,.08); color: #f8fafc; padding: 9px 10px;
+}
+select option { color: #172033; }
+button:focus-visible, select:focus-visible { outline: 3px solid #60a5fa; outline-offset: 3px; }
+.main { padding: 22px; min-width: 0; }
+.topbar { display:flex; justify-content:space-between; align-items:flex-start; gap: 16px; margin-bottom: 18px; }
+.topbar h2 { margin: 0 0 5px; font-size: 25px; }
+.topbar p { margin: 0; color: var(--muted); }
+.freshness { color: var(--muted); font-size: 12px; text-align:right; }
+.grid { display: grid; gap: 14px; }
+.kpis { grid-template-columns: repeat(6, minmax(136px, 1fr)); }
+.cards4 { grid-template-columns: repeat(4, minmax(170px, 1fr)); }
+.panel {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(16, 32, 51, .05);
+  min-width: 0;
+}
+.card { padding: 14px 14px 12px; min-height: 118px; position: relative; overflow: hidden; }
+.card .label { font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase; }
+.card .value { font-size: 24px; font-weight: 800; margin-top: 7px; white-space: nowrap; }
+.card .delta { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.spark { width: 100%; height: 30px; margin-top: 8px; }
+.lens { margin-bottom: 14px; padding: 14px 16px; display:grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 14px; align-items:center; }
+.lens strong { display:block; font-size: 13px; }
+.lens span { color: var(--muted); font-size: 12px; }
+.lens b { color: var(--navy); font-size: 16px; }
+.blue { color: var(--blue); } .teal { color: var(--teal); } .green { color: var(--green); }
+.amber { color: var(--amber); } .red { color: var(--red); } .indigo { color: var(--indigo); }
+.layout-2 { grid-template-columns: minmax(0, 1.2fr) minmax(340px, .8fr); margin-top: 14px; }
+.layout-3 { grid-template-columns: minmax(0, .9fr) minmax(0, .9fr) minmax(330px, .7fr); margin-top: 14px; }
+.chart { padding: 14px; min-height: 280px; }
+.chart h3 { margin: 0 0 2px; font-size: 14px; }
+.chart p { margin: 0 0 10px; font-size: 12px; color: var(--muted); }
+svg { width: 100%; height: 220px; display:block; overflow: visible; }
+.legend { display:flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 12px; margin-top: 8px; }
+.legend span::before { content: ""; display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; background: var(--c); }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th, td { padding: 9px 10px; border-bottom: 1px solid #edf1f5; text-align: left; white-space: nowrap; }
+th { color: var(--muted); font-size: 11px; text-transform: uppercase; }
+td.num, th.num { text-align: right; }
+.table-wrap { overflow:auto; max-height: 310px; }
+.pill { display:inline-flex; padding: 3px 7px; border-radius: 999px; font-weight: 700; font-size: 11px; background:#eef2f7; color:#344054; }
+.pill.High { color:#991b1b; background:#fee2e2; }
+.pill.Medium { color:#92400e; background:#fef3c7; }
+.pill.Low { color:#065f46; background:#d1fae5; }
+.tabpage { display:none; } .tabpage.active { display:block; }
+.method { margin-top: 14px; padding: 12px 14px; font-size: 12px; color: var(--muted); }
+@media (max-width: 1100px) {
+  .app { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; }
+  .kpis, .cards4, .layout-2, .layout-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 680px) {
+  .side { padding: 16px 18px 14px; }
+  .brand { grid-template-columns: 42px 1fr; align-items: center; margin-bottom: 14px; }
+  .brand small { display: none; }
+  h1 { font-size: 17px; }
+  .tab { padding: 9px 10px; margin-bottom: 6px; }
+  .filters { margin-top: 12px; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .filters label { display: none; }
+  select { padding: 8px 9px; font-size: 12px; }
+  .main { padding: 14px; }
+  .kpis, .cards4 { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .layout-2, .layout-3 { grid-template-columns: 1fr; }
+  .card { min-height: 124px; padding: 12px; }
+  .card .value { font-size: 21px; }
+  .topbar { display:block; }
+  .topbar h2 { font-size: 22px; }
+  .freshness { text-align:left; margin-top:8px; }
+  .lens { grid-template-columns: 1fr; gap: 8px; }
+  .lens div:not(:first-child) { display:flex; justify-content:space-between; gap: 10px; }
+}
+.preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{width:100%;border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:6px;padding:10px 12px;margin-top:8px;font-weight:700;cursor:pointer}
+</style>
+<script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+</head>
+<body data-project-number="12" data-layout-source="project-12-own-dashboard">
+<div class="preview-frame"><div class="dashboard-shell">
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="mark">WT</div>
+      <div>
+        <h1>WealthTech AUM Dashboard</h1>
+        <small>Robo-advisor growth, portfolio quality, suitability, and retention actions.</small>
       </div>
     </div>
-    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"wealthtech-aum-client-retention","route":"wealthtech-aum-client-retention/","no":"12","folder":"Project 12 - WealthTech AUM Client Retention","title":"WealthTech AUM Client Retention","lens":"Wealth analytics","summary":"AUM retention dashboard combining portfolio mix, client risk, suitability, and retention actions.","decisionQuestion":"Which client and portfolio exposures threaten retained AUM and fee revenue, and who should intervene?","pages":[{"id":"aum-revenue","label":"AUM & Revenue"},{"id":"portfolio-client-mix","label":"Portfolio & Client Mix"},{"id":"suitability-churn-retention","label":"Suitability, Churn & Retention"}],"metrics":[{"value":"$1.8B","label":"AUM","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":1764000000,"prior":1656000000,"series":[1656000000,1669090909.090909,1682181818.1818182,1695272727.2727273,1708363636.3636363,1721454545.4545455,1734545454.5454545,1747636363.6363637,1760727272.7272727,1773818181.8181818,1786909090.909091,1800000000],"sensitivity":1},{"value":"94.2%","label":"client retention","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":92.316,"prior":86.664,"series":[86.664,87.3490909090909,88.03418181818182,88.71927272727272,89.40436363636364,90.08945454545454,90.77454545454546,91.45963636363636,92.14472727272728,92.82981818181818,93.5149090909091,94.2],"sensitivity":1},{"value":"7.6%","label":"outflow risk","note":"Synthetic preview value.","format":"percent","higherIsBetter":false,"plan":7.752,"prior":8.284,"series":[8.284,8.221818181818183,8.159636363636364,8.097454545454546,8.035272727272728,7.973090909090909,7.910909090909091,7.848727272727273,7.786545454545454,7.724363636363636,7.662181818181818,7.6],"sensitivity":1},{"value":"$46M","label":"at-risk AUM","note":"Synthetic preview value.","format":"currency","higherIsBetter":false,"plan":46920000,"prior":50140000,"series":[50140000,49763636.36363637,49387272.72727273,49010909.09090909,48634545.45454545,48258181.81818182,47881818.18181818,47505454.54545455,47129090.90909091,46752727.27272727,46376363.63636364,46000000],"sensitivity":1}],"bars":[{"label":"AUM","value":89},{"label":"Retention","value":84},{"label":"Suitability","value":72},{"label":"Outflow risk","value":39}],"drivers":[{"label":"Advisor coverage","value":"+$18M","isRisk":false},{"label":"Market drawdown","value":"-$11M","isRisk":true},{"label":"Suitability gap","value":"-$7M","isRisk":true}],"actions":[{"owner":"Advisory","action":"Contact high-AUM at-risk clients."},{"owner":"Risk","action":"Resolve suitability exceptions."},{"owner":"Finance","action":"Track fee revenue exposure."}],"financeLogic":["Closing AUM equals opening AUM plus net flows plus market movement.","Fee revenue applies the effective fee rate to eligible average AUM.","At-risk fee revenue uses exposed AUM and the contracted fee schedule."],"scopeLabel":"Client Segment","scopeOptions":["All Clients","Affluent","Emerging Wealth","Institutional"],"breakdownLabel":"Portfolio","breakdownOptions":["All Portfolios","Growth","Balanced","Income","Cash"],"regionOptions":["All Portfolios","Growth","Balanced","Income","Cash"],"governance":["Synthetic client records contain no personal information.","Portfolio holdings reconcile to the AUM roll-forward.","Suitability exceptions have severity, owner, and remediation date.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Clients","region":"All Portfolios"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Client Segment","options":["All Clients","Affluent","Emerging Wealth","Institutional"],"default":"All Clients"},{"id":"region","label":"Portfolio","options":["All Portfolios","Growth","Balanced","Income","Cash"],"default":"All Portfolios"}],"dataClassification":"Synthetic public-safe preview data"});</script>
-    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
-  </body>
+    <nav class="side-tabs" role="tablist" aria-label="WealthTech dashboard views">
+      <button class="tab active" id="tab-overview" type="button" role="tab" aria-selected="true" aria-controls="overview" data-tab="overview">AUM & Revenue Overview</button>
+      <button class="tab" id="tab-segments" type="button" role="tab" aria-selected="false" aria-controls="segments" data-tab="segments">Portfolio & Client Segments</button>
+      <button class="tab" id="tab-risk" type="button" role="tab" aria-selected="false" aria-controls="risk" data-tab="risk">Risk, Suitability & Retention</button>
+    </nav>
+    <div class="filters">
+      <label for="segmentFilter">Client Segment</label>
+      <select id="segmentFilter"></select>
+      <label for="riskFilter">Risk Profile</label>
+      <select id="riskFilter"></select>
+      <label for="regionFilter">Region</label>
+      <select id="regionFilter"></select>
+      <label for="modelFilter">Model Portfolio</label>
+      <select id="modelFilter"></select>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 id="pageTitle">AUM & Revenue Overview</h2>
+        <p id="pageSubtitle">Executive view of AUM, net new money, flows, revenue, and active clients.</p>
+      </div>
+      <div class="freshness">Synthetic portfolio demo<br>Latest complete month: May 2026</div>
+    </div>
+    <div class="panel lens" id="currentLens" aria-live="polite"></div>
+
+    <section id="overview" class="tabpage active" role="tabpanel" aria-labelledby="tab-overview">
+      <div class="grid kpis" id="overviewKpis"></div>
+      <div class="grid layout-2">
+        <div class="panel chart">
+          <h3>AUM Growth Trend</h3><p>Monthly ending AUM on a decision-scale axis; advisory revenue is carried in the KPI ribbon.</p>
+          <svg id="aumTrend"></svg><div class="legend"><span style="--c:var(--blue)">AUM</span></div>
+        </div>
+        <div class="panel chart">
+          <h3>Flow Composition</h3><p>NNM = inflows − outflows; market effect completes the AUM roll-forward.</p>
+          <svg id="flowBars"></svg><div class="legend"><span style="--c:var(--green)">Inflows</span><span style="--c:var(--red)">Outflows</span></div>
+        </div>
+      </div>
+      <div class="grid layout-2">
+        <div class="panel chart">
+          <h3>AUM by Client Segment</h3><p>Client mix and monetization base.</p>
+          <svg id="segmentBars"></svg>
+        </div>
+        <div class="panel chart">
+          <h3>Top Client Concentration</h3><p>Largest relationships and retention exposure.</p>
+          <div class="table-wrap"><table id="topClientTable"></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="segments" class="tabpage" role="tabpanel" aria-labelledby="tab-segments">
+      <div class="grid cards4" id="segmentKpis"></div>
+      <div class="grid layout-3">
+        <div class="panel chart">
+          <h3>Return vs Benchmark</h3><p>Weighted portfolio return versus assigned benchmark.</p>
+          <svg id="returnTrend"></svg><div class="legend"><span style="--c:var(--blue)">Portfolio</span><span style="--c:var(--amber)">Benchmark</span></div>
+        </div>
+        <div class="panel chart">
+          <h3>Asset Allocation</h3><p>Latest AUM by asset class.</p>
+          <svg id="allocationDonut"></svg>
+        </div>
+        <div class="panel chart">
+          <h3>AUM by Risk Profile</h3><p>Risk bands drive allocation and suitability monitoring.</p>
+          <svg id="riskBars"></svg>
+        </div>
+      </div>
+      <div class="panel chart">
+        <h3>Portfolio Model Detail</h3><p>Model-level AUM, alpha, and benchmark comparison.</p>
+        <div class="table-wrap"><table id="portfolioTable"></table></div>
+      </div>
+    </section>
+
+    <section id="risk" class="tabpage" role="tabpanel" aria-labelledby="tab-risk">
+      <div class="grid kpis" id="riskKpis"></div>
+      <div class="grid layout-3">
+        <div class="panel chart">
+          <h3>Risk Mismatch Trend</h3><p>Suitability drift and profile mismatch by month.</p>
+          <svg id="riskMismatchTrend"></svg>
+        </div>
+        <div class="panel chart">
+          <h3>Churn Risk AUM by Segment</h3><p>AUM exposed to churn-risk threshold.</p>
+          <svg id="churnSegmentBars"></svg>
+        </div>
+        <div class="panel chart">
+          <h3>Retention Action Mix</h3><p>Next-best action queue for advisors.</p>
+          <svg id="actionBars"></svg>
+        </div>
+      </div>
+      <div class="panel chart">
+        <h3>Retention Action Queue</h3><p>High-value clients needing outreach, suitability review, or rebalancing.</p>
+        <div class="table-wrap"><table id="actionsTable"></table></div>
+      </div>
+    </section>
+
+    <div class="panel method">
+      Deterministic synthetic portfolio data through May 2026. Public demonstration only; no client-identifiable or confidential source data is included.
+    </div>
+  </main>
+</div>
+<script>
+const DATA = (() => {
+  const segments = ["Digital Starter","HNW","Mass Affluent","Retirement","UHNW"];
+  const risks = ["Aggressive","Balanced","Conservative","Growth"];
+  const regions = ["APAC","Europe","LATAM","North America"];
+  const models = ["Balanced Core","Equity Edge","Growth Builder","Income Shield"];
+  const assets = ["Equity","Fixed Income","Alternatives","Cash","Crypto"];
+  const months = [];
+  for (let y=2024;y<=2026;y+=1) for(let m=1;m<=12;m+=1){ if(y===2026&&m>5) break; months.push({MonthStart:y+"-"+String(m).padStart(2,"0")+"-01",MonthLabel:new Date(y,m-1,1).toLocaleString("en-US",{month:"short",year:"numeric"}),MonthIndex:months.length+1,Year:y}); }
+  const monthlyFacts = [];
+  months.forEach((month,mi)=>segments.forEach((segment,si)=>risks.forEach((risk,ri)=>regions.forEach((region,gi)=>models.forEach((model,pi)=>{
+    const weight=(0.72+si*.32+ri*.12+gi*.08+pi*.09);
+    const growth=1+mi*.048+Math.sin((mi+si+ri)*.56)*.025;
+    const total=605000*weight*growth;
+    const beginning=total/(1.035+Math.sin(mi*.4)*.008);
+    const inflows=total*(.036+si*.003);
+    const outflows=total*(.022+ri*.0025);
+    const nnm=inflows-outflows;
+    const ret=.006+Math.sin((mi+ri)*.55)*.012+(risk==="Aggressive"?.004:0);
+    const benchmark=ret-(.0006+(pi%3)*.00025);
+    const active=Math.max(1,Math.round(1+weight*.85+mi*.012));
+    monthlyFacts.push({...month,ClientSegment:segment,RiskProfile:risk,Region:region,ModelPortfolio:model,
+      TotalAUM:total,BeginningAUM:beginning,Inflows:inflows,Outflows:outflows,NetNewMoney:nnm,MarketEffect:total-beginning-nnm,
+      AdvisoryRevenue:total*.00049,ActiveClients:active,ReturnWeight:total*ret,BenchmarkWeight:total*benchmark,
+      RiskMismatchClients:(si+ri+pi+mi)%7===0?1:0,RebalanceNeededClients:(si+gi+mi)%5===0?1:0,
+      HighChurnRiskClients:(si+ri+gi+mi)%19===0?1:0,HighOutflowRiskClients:(si+pi+mi)%13===0?1:0,
+      ChurnRiskAUM:(si+ri+gi+mi)%19===0?total*.34:0});
+  })))));
+  const latestClientFacts = [];
+  let clientNo=0;
+  segments.forEach((segment,si)=>risks.forEach((risk,ri)=>regions.forEach((region,gi)=>models.forEach((model,pi)=>{
+    clientNo+=1;
+    const ending=560000+(clientNo%23)*88000+si*210000+gi*65000;
+    const pReturn=.009+ri*.0025+Math.sin(clientNo)*.006;
+    const bReturn=pReturn-.0007;
+    const churn=((clientNo*17)%100)/100;
+    const outflow=((clientNo*29)%100)/100;
+    latestClientFacts.push({MonthStart:"2026-05-01",MonthLabel:"May 2026",MonthIndex:29,Year:2026,
+      ClientID:"C"+String(clientNo).padStart(4,"0"),ClientName:"Portfolio Client "+String(clientNo).padStart(3,"0"),
+      ClientSegment:segment,RiskProfile:risk,Region:region,AdvisorName:["A. Chen","M. Tran","S. Patel","L. Nguyen"][gi],
+      ModelPortfolio:model,BeginningAUM:ending*.98,EndingAUM:ending,Inflows:ending*.035,Outflows:ending*.018,
+      NetNewMoney:ending*.017,MarketEffect:ending*.003,AdvisoryRevenue:ending*.00049,
+      PortfolioReturnPct:pReturn,BenchmarkReturnPct:bReturn,RiskMismatchFlag:clientNo%7===0?1:0,
+      RebalanceNeededFlag:clientNo%5===0?1:0,ChurnRiskScore:churn,OutflowRiskScore:outflow,ActiveClientFlag:1});
+  }))));
+  const actions = latestClientFacts.filter((_,i)=>i%4===0).slice(0,80).map((c,i)=>({
+    ActionID:"A"+String(i+1).padStart(3,"0"),MonthStart:"2026-05-01",ClientID:c.ClientID,
+    ActionType:["Advisor outreach","Suitability review","Rebalance","Retention offer"][i%4],
+    Priority:["P1","P2","P3"][i%3],RiskReason:c.ChurnRiskScore>=.7?"High churn score":c.OutflowRiskScore>=.65?"Outflow signal":"Portfolio drift",
+    Status:["Open","In progress","Scheduled"][i%3],ExpectedRetainedAUM:c.EndingAUM*(.12+(i%4)*.03),
+    ClientName:c.ClientName,ClientSegment:c.ClientSegment,RiskProfile:c.RiskProfile,Region:c.Region,AdvisorName:c.AdvisorName,
+    ModelPortfolio:c.ModelPortfolio,EndingAUM:c.EndingAUM,ChurnRiskScore:c.ChurnRiskScore,OutflowRiskScore:c.OutflowRiskScore
+  }));
+  const allocationFacts=[];
+  latestClientFacts.forEach((c,i)=>assets.forEach((asset,ai)=>{
+    const mix=[.54,.27,.09,.07,.03][ai]+(c.RiskProfile==="Aggressive"&&asset==="Equity"?.12:0);
+    allocationFacts.push({MonthStart:"2026-05-01",MonthIndex:29,Year:2026,ClientSegment:c.ClientSegment,RiskProfile:c.RiskProfile,
+      Region:c.Region,ModelPortfolio:c.ModelPortfolio,AssetClass:asset,AllocationAmount:c.EndingAUM*mix});
+  }));
+  const portfolio=models.map((model,i)=>({ModelPortfolio:model,Benchmark:["60/40 Composite","MSCI World","Growth Composite","Income Composite"][i]}));
+  const allocation=assets.map((AssetClass,i)=>({AssetClass,AllocationAmount:[54,27,9,7,3][i],AllocationPct:[.54,.27,.09,.07,.03][i]}));
+  const latest={MonthStart:"2026-05-01",MonthLabel:"May 2026",MonthIndex:29,Year:2026,TotalAUM:811053076,BeginningAUM:791066304,Inflows:28236442,Outflows:25286840,NetNewMoney:2949602,MarketEffect:17037171,AdvisoryRevenue:393622,ActiveClients:860,PortfolioReturnPct:.02158,BenchmarkReturnPct:.0215,RiskMismatchClients:149,RebalanceNeededClients:181,HighChurnRiskClients:6,HighOutflowRiskClients:30,ChurnRiskAUM:4877501,Top10AUMShare:.1368};
+  return {actions,allocation,allocationFacts,filterOptions:{segments,risks,regions,models},latest,latestClientFacts,monthlyFacts,portfolio};
+})();
+const colors = { blue:'#2563eb', teal:'#0f8b8d', green:'#16a34a', amber:'#d97706', red:'#dc2626', indigo:'#4f46e5', muted:'#667085', line:'#d6dee8' };
+const fmtMoney = v => {
+  v = Number(v || 0); const s = v < 0 ? '-' : ''; v = Math.abs(v);
+  if (v >= 1e9) return `${s}$${(v/1e9).toFixed(2)}B`;
+  if (v >= 1e6) return `${s}$${(v/1e6).toFixed(1)}M`;
+  if (v >= 1e3) return `${s}$${(v/1e3).toFixed(1)}K`;
+  return `${s}$${v.toFixed(0)}`;
+};
+const fmtNum = v => Number(v || 0).toLocaleString();
+const fmtPct = v => `${(Number(v || 0)*100).toFixed(1)}%`;
+function sparkSvg(rows, key, color) {
+  const vals = rows.map(r => Number(r[key] || 0));
+  const min = Math.min(...vals), max = Math.max(...vals), range = Math.max(1, max-min);
+  const points = vals.map((v,i)=>`${6 + i*(156/Math.max(1, vals.length-1))},${25 - ((v-min)/range)*18}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 168 30" aria-hidden="true"><line x1="6" y1="18" x2="162" y2="18" stroke="${colors.line}" stroke-dasharray="3 4"/><polyline fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${points}"/><circle cx="162" cy="${points.split(' ').pop().split(',')[1]}" r="3.8" fill="${color}" stroke="#fff" stroke-width="2"/></svg>`;
+}
+const card = (label, value, delta, cls='blue', spark='') => `<div class="panel card"><div class="label">${label}</div><div class="value ${cls}">${value}</div><div class="delta">${delta}</div>${spark}</div>`;
+function setOptions(id, values) {
+  const el = document.getElementById(id); el.innerHTML = '<option value="All">All</option>' + values.map(v => `<option>${v}</option>`).join('');
+}
+function filters() {
+  return {
+    segment: document.getElementById('segmentFilter').value,
+    risk: document.getElementById('riskFilter').value,
+    region: document.getElementById('regionFilter').value,
+    model: document.getElementById('modelFilter').value
+  };
+}
+function passRow(r, f) {
+  return (f.segment === 'All' || r.ClientSegment === f.segment)
+    && (f.risk === 'All' || r.RiskProfile === f.risk)
+    && (f.region === 'All' || r.Region === f.region)
+    && (f.model === 'All' || r.ModelPortfolio === f.model);
+}
+function monthlyRows() {
+  const f = filters();
+  const rows = DATA.monthlyFacts.filter(r => passRow(r, f));
+  return rows.length ? rows : DATA.monthlyFacts;
+}
+function latestClientRows() {
+  const f = filters();
+  const rows = DATA.latestClientFacts.filter(r => passRow(r, f));
+  return rows.length ? rows : DATA.latestClientFacts;
+}
+function actionRows() {
+  const f = filters();
+  return DATA.actions.filter(r => passRow(r, f));
+}
+function allocationRows() {
+  const f = filters();
+  return DATA.allocationFacts.filter(r => passRow(r, f));
+}
+function aggregateMonthly(rows) {
+  const by = new Map();
+  rows.forEach(r => {
+    const k = r.MonthIndex;
+    if (!by.has(k)) by.set(k, {MonthIndex:r.MonthIndex, MonthLabel:r.MonthLabel, Year:r.Year, TotalAUM:0, BeginningAUM:0, Inflows:0, Outflows:0, NetNewMoney:0, MarketEffect:0, AdvisoryRevenue:0, ActiveClients:0, ReturnWeight:0, BenchmarkWeight:0, RiskMismatchClients:0, RebalanceNeededClients:0, HighChurnRiskClients:0, HighOutflowRiskClients:0, ChurnRiskAUM:0});
+    const o = by.get(k), aum = Number(r.TotalAUM || 0);
+    o.TotalAUM += aum; o.BeginningAUM += Number(r.BeginningAUM || 0); o.Inflows += Number(r.Inflows || 0); o.Outflows += Number(r.Outflows || 0);
+    o.NetNewMoney += Number(r.NetNewMoney || 0); o.MarketEffect += Number(r.MarketEffect || 0); o.AdvisoryRevenue += Number(r.AdvisoryRevenue || 0);
+    o.ActiveClients += Number(r.ActiveClients || 0); o.ReturnWeight += Number(r.ReturnWeight || 0); o.BenchmarkWeight += Number(r.BenchmarkWeight || 0);
+    o.RiskMismatchClients += Number(r.RiskMismatchClients || 0); o.RebalanceNeededClients += Number(r.RebalanceNeededClients || 0);
+    o.HighChurnRiskClients += Number(r.HighChurnRiskClients || 0); o.HighOutflowRiskClients += Number(r.HighOutflowRiskClients || 0);
+    o.ChurnRiskAUM += Number(r.ChurnRiskAUM || 0);
+  });
+  return [...by.values()].sort((a,b)=>a.MonthIndex-b.MonthIndex).map(o => ({...o, PortfolioReturnPct:o.TotalAUM ? o.ReturnWeight/o.TotalAUM : 0, BenchmarkReturnPct:o.TotalAUM ? o.BenchmarkWeight/o.TotalAUM : 0, Top10AUMShare:0}));
+}
+function latestMetrics(monthlySource, clients) {
+  const monthly = aggregateMonthly(monthlySource), snap = monthly[monthly.length - 1] || DATA.latest;
+  const top10 = [...clients].sort((a,b)=>Number(b.EndingAUM)-Number(a.EndingAUM)).slice(0,10).reduce((a,r)=>a+Number(r.EndingAUM||0),0);
+  return {...snap, Top10AUMShare: snap.TotalAUM ? top10 / snap.TotalAUM : 0};
+}
+function groupLatest(rows, key, valueKey='EndingAUM') {
+  const by = new Map();
+  rows.forEach(r => {
+    if (!by.has(r[key])) by.set(r[key], {[key]: r[key], TotalAUM:0, NetNewMoney:0, EndingAUM:0, ReturnWeight:0, BenchmarkWeight:0, Count:0});
+    const o = by.get(r[key]), aum = Number(r.EndingAUM || 0);
+    o.TotalAUM += aum; o.EndingAUM += aum; o.NetNewMoney += Number(r.NetNewMoney || 0); o.ReturnWeight += aum * Number(r.PortfolioReturnPct || 0); o.BenchmarkWeight += aum * Number(r.BenchmarkReturnPct || 0); o.Count += 1;
+  });
+  return [...by.values()].map(o => ({...o, PortfolioReturnPct:o.TotalAUM ? o.ReturnWeight/o.TotalAUM : 0, BenchmarkReturnPct:o.TotalAUM ? o.BenchmarkWeight/o.TotalAUM : 0, AlphaPct:o.TotalAUM ? (o.ReturnWeight-o.BenchmarkWeight)/o.TotalAUM : 0})).sort((a,b)=>Number(b[valueKey]||0)-Number(a[valueKey]||0));
+}
+function latestAllocation(rows) {
+  if (!rows.length) return DATA.allocation;
+  const maxMonth = Math.max(...rows.map(r => Number(r.MonthIndex || 0)));
+  const latest = rows.filter(r => Number(r.MonthIndex) === maxMonth), by = new Map();
+  latest.forEach(r => by.set(r.AssetClass, (by.get(r.AssetClass) || 0) + Number(r.AllocationAmount || 0)));
+  const total = [...by.values()].reduce((a,v)=>a+v,0);
+  return [...by.entries()].map(([AssetClass, AllocationAmount]) => ({AssetClass, AllocationAmount, AllocationPct: total ? AllocationAmount / total : 0})).sort((a,b)=>b.AllocationAmount-a.AllocationAmount);
+}
+function renderLens(latest, f) {
+  const state = latest.ChurnRiskAUM / Math.max(1, latest.TotalAUM) >= .015 ? 'Retention pressure' : latest.NetNewMoney < 0 ? 'Outflow watch' : latest.NetNewMoney / Math.max(1, latest.BeginningAUM) < .005 ? 'Flow discipline' : 'Growth stable';
+  const context = [f.segment, f.risk, f.region, f.model].filter(v => v !== 'All').join(' | ') || 'All segments | all regions | all models';
+  document.getElementById('currentLens').innerHTML = `<div><strong>Current Lens: ${state}</strong><span>${context} · market effect ${fmtMoney(latest.MarketEffect)}</span></div><div><span>Ending AUM</span><b>${fmtMoney(latest.TotalAUM)}</b></div><div><span>Net new money</span><b>${fmtMoney(latest.NetNewMoney)}</b></div>`;
+}
+function lineChart(id, rows, series, opts={}) {
+  const svg = document.getElementById(id), w = svg.clientWidth || 700, h = 220, pad = {l:46,r:16,t:12,b:34};
+  const vals = rows.flatMap(r => series.map(s => Number(r[s.key] || 0)));
+  const min = opts.zero ? 0 : Math.min(...vals), max = Math.max(...vals);
+  const y = v => h-pad.b - ((Number(v)-min) / Math.max(1, max-min)) * (h-pad.t-pad.b);
+  const x = i => pad.l + i * ((w-pad.l-pad.r) / Math.max(1, rows.length-1));
+  let out = `<line x1="${pad.l}" y1="${pad.t}" x2="${w-pad.r}" y2="${pad.t}" stroke="${colors.line}" stroke-dasharray="3 4"/><line x1="${pad.l}" y1="${h-pad.b}" x2="${w-pad.r}" y2="${h-pad.b}" stroke="${colors.line}"/>`;
+  series.forEach(s => {
+    const points = rows.map((r,i)=>`${x(i)},${y(r[s.key])}`).join(' ');
+    out += `<polyline fill="none" stroke="${s.color}" stroke-width="2.5" points="${points}"/>`;
+  });
+  rows.forEach((r,i)=> { if (i % 4 === 0 || i === rows.length-1) out += `<text x="${x(i)}" y="${h-12}" text-anchor="middle" font-size="10" fill="${colors.muted}">${r.MonthLabel.split(' ')[0]}</text>`; });
+  const formatter=opts.formatMax || (v=>Number(v).toFixed(0));
+  out += `<text x="4" y="18" font-size="10" fill="${colors.muted}">${formatter(max)}</text><text x="4" y="${h-pad.b+4}" font-size="10" fill="${colors.muted}">${formatter(min)}</text>`;
+  const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'WealthTech trend chart';
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
+}
+function barChart(id, rows, labelKey, valueKey, color, formatter=fmtMoney) {
+  const svg = document.getElementById(id), w = svg.clientWidth || 500, h = 220, pad = {l:118,r:18,t:10,b:22};
+  const data = rows.slice(0, 8), max = Math.max(...data.map(r => Math.abs(Number(r[valueKey] || 0))), 1);
+  const bh = (h-pad.t-pad.b) / data.length - 8;
+  let out = '';
+  data.forEach((r,i)=> {
+    const y = pad.t + i * ((h-pad.t-pad.b) / data.length);
+    const bw = Math.abs(Number(r[valueKey] || 0)) / max * (w-pad.l-pad.r);
+    out += `<text x="0" y="${y+bh*.65}" font-size="10" fill="${colors.muted}">${String(r[labelKey]).slice(0,18)}</text>`;
+    out += `<rect x="${pad.l}" y="${y}" width="${bw}" height="${bh}" rx="4" fill="${color}"/>`;
+    out += `<text x="${pad.l+bw+5}" y="${y+bh*.65}" font-size="10" fill="${colors.muted}">${formatter(r[valueKey])}</text>`;
+  });
+  const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'WealthTech bar chart';
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
+}
+function groupedFlow(id, rows) {
+  const svg = document.getElementById(id), w = svg.clientWidth || 500, h = 220, pad = {l:34,r:14,t:10,b:30};
+  const vals = rows.flatMap(r => [Number(r.Inflows), Number(r.Outflows)]);
+  const max = Math.max(...vals, 1); const bw = (w-pad.l-pad.r)/rows.length * .34;
+  let out = `<line x1="${pad.l}" y1="${h-pad.b}" x2="${w-pad.r}" y2="${h-pad.b}" stroke="${colors.line}"/>`;
+  rows.forEach((r,i)=> {
+    const x0 = pad.l + i*((w-pad.l-pad.r)/rows.length)+2;
+    const h1 = Number(r.Inflows)/max*(h-pad.t-pad.b); const h2 = Number(r.Outflows)/max*(h-pad.t-pad.b);
+    out += `<rect x="${x0}" y="${h-pad.b-h1}" width="${bw}" height="${h1}" fill="${colors.green}" rx="3"/>`;
+    out += `<rect x="${x0+bw+2}" y="${h-pad.b-h2}" width="${bw}" height="${h2}" fill="${colors.red}" rx="3"/>`;
+    if (i % 5 === 0) out += `<text x="${x0}" y="${h-10}" font-size="9" fill="${colors.muted}">${r.MonthLabel.split(' ')[0]}</text>`;
+  });
+  const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'AUM flow chart';
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
+}
+function donut(id, rows) {
+  const svg = document.getElementById(id), w = svg.clientWidth || 360, h = 220, cx=105, cy=108, r=74, sw=24;
+  const total = rows.reduce((a,r)=>a+Number(r.AllocationAmount||0),0); let a0=-Math.PI/2;
+  const palette=[colors.blue, colors.teal, colors.green, colors.amber, colors.indigo];
+  function arc(a1,a2) {
+    const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1), x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+    const large = a2-a1 > Math.PI ? 1 : 0; return `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`;
+  }
+  let out = '';
+  rows.forEach((row,i)=> { const a1=a0, a2=a0 + Number(row.AllocationAmount||0)/total*Math.PI*2; out += `<path d="${arc(a1,a2)}" fill="none" stroke="${palette[i%palette.length]}" stroke-width="${sw}" />`; a0=a2; });
+  out += `<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="18" font-weight="800" fill="#172033">${fmtMoney(total)}</text><text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="11" fill="${colors.muted}">allocated</text>`;
+  rows.forEach((row,i)=> { out += `<rect x="210" y="${32+i*28}" width="10" height="10" rx="2" fill="${palette[i%palette.length]}"/><text x="226" y="${41+i*28}" font-size="11" fill="${colors.muted}">${row.AssetClass} ${fmtPct(row.AllocationPct)}</text>`; });
+  const title=svg.closest('.chart')?.querySelector('h3')?.textContent.trim() || 'Asset allocation chart';
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role','img'); svg.setAttribute('aria-label',title); svg.innerHTML = `<title>${title}</title>${out}`;
+}
+function table(id, headers, rows) {
+  document.getElementById(id).innerHTML = `<thead><tr>${headers.map(h=>`<th class="${h.cls||''}">${h.label}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(r => `<tr>${headers.map(h=>`<td class="${h.cls||''}">${h.render ? h.render(r[h.key], r) : (r[h.key] ?? '')}</td>`).join('')}</tr>`).join('') + '</tbody>';
+}
+function render() {
+  const monthlySource = monthlyRows(), clients = latestClientRows(), f = filters(), monthlyAll = aggregateMonthly(monthlySource), monthly = monthlyAll.slice(-18), latest = latestMetrics(monthlySource, clients);
+  renderLens(latest, f);
+  document.getElementById('overviewKpis').innerHTML = [
+    card('Total AUM', fmtMoney(latest.TotalAUM), `${fmtPct(latest.TotalAUM/latest.BeginningAUM-1)} vs opening AUM`, 'blue', sparkSvg(monthly, 'TotalAUM', colors.blue)),
+    card('Net New Money', fmtMoney(latest.NetNewMoney), `Inflows − outflows · ${fmtPct(latest.NetNewMoney/latest.BeginningAUM)} flow rate`, 'teal', sparkSvg(monthly, 'NetNewMoney', colors.teal)),
+    card('Inflows', fmtMoney(latest.Inflows), 'Gross client subscriptions', 'green', sparkSvg(monthly, 'Inflows', colors.green)),
+    card('Outflows', fmtMoney(latest.Outflows), 'Client withdrawals and transfers', 'red', sparkSvg(monthly, 'Outflows', colors.red)),
+    card('Advisory Revenue', fmtMoney(latest.AdvisoryRevenue), 'May recurring advisory fees', 'indigo', sparkSvg(monthly, 'AdvisoryRevenue', colors.indigo)),
+    card('Active Clients', fmtNum(latest.ActiveClients), 'Funded accounts in selected lens', 'amber', sparkSvg(monthly, 'ActiveClients', colors.amber))
+  ].join('');
+  lineChart('aumTrend', monthly, [{key:'TotalAUM', color:colors.blue}], {zero:false, formatMax:fmtMoney});
+  groupedFlow('flowBars', monthly.slice(-14));
+  barChart('segmentBars', groupLatest(clients, 'ClientSegment'), 'ClientSegment', 'TotalAUM', colors.blue, fmtMoney);
+  table('topClientTable', [
+    {label:'Client', key:'ClientName'}, {label:'Segment', key:'ClientSegment'}, {label:'AUM', key:'EndingAUM', cls:'num', render:fmtMoney},
+    {label:'Return', key:'PortfolioReturnPct', cls:'num', render:fmtPct}
+  ], clients.sort((a,b)=>Number(b.EndingAUM)-Number(a.EndingAUM)).slice(0,12));
+  document.getElementById('segmentKpis').innerHTML = [
+    card('Portfolio Return', fmtPct(latest.PortfolioReturnPct), 'Weighted client return', 'blue', sparkSvg(monthly, 'PortfolioReturnPct', colors.blue)),
+    card('Benchmark Return', fmtPct(latest.BenchmarkReturnPct), 'Assigned benchmarks', 'amber', sparkSvg(monthly, 'BenchmarkReturnPct', colors.amber)),
+    card('Alpha', `${((latest.PortfolioReturnPct-latest.BenchmarkReturnPct)*10000).toFixed(1)} bps`, 'Portfolio return − benchmark', latest.PortfolioReturnPct >= latest.BenchmarkReturnPct ? 'green':'red', sparkSvg(monthly.map(r => ({...r, AlphaPct:r.PortfolioReturnPct-r.BenchmarkReturnPct})), 'AlphaPct', latest.PortfolioReturnPct >= latest.BenchmarkReturnPct ? colors.green : colors.red)),
+    card('Top 10 AUM Share', fmtPct(latest.Top10AUMShare), latest.Top10AUMShare<.15?'Within <15% guardrail':'Above 15% guardrail', latest.Top10AUMShare<.15?'indigo':'red')
+  ].join('');
+  lineChart('returnTrend', monthly, [{key:'PortfolioReturnPct', color:colors.blue}, {key:'BenchmarkReturnPct', color:colors.amber}], {formatMax:fmtPct});
+  donut('allocationDonut', latestAllocation(allocationRows()));
+  barChart('riskBars', groupLatest(clients, 'RiskProfile'), 'RiskProfile', 'TotalAUM', colors.teal, fmtMoney);
+  const portfolioRows = groupLatest(clients, 'ModelPortfolio').map(r => ({...r, Benchmark:(DATA.portfolio.find(p=>p.ModelPortfolio===r.ModelPortfolio)||{}).Benchmark || ''}));
+  table('portfolioTable', [
+    {label:'Model', key:'ModelPortfolio'}, {label:'Benchmark', key:'Benchmark'}, {label:'AUM', key:'TotalAUM', cls:'num', render:fmtMoney},
+    {label:'NNM', key:'NetNewMoney', cls:'num', render:fmtMoney}, {label:'Return', key:'PortfolioReturnPct', cls:'num', render:fmtPct},
+    {label:'Benchmark', key:'BenchmarkReturnPct', cls:'num', render:fmtPct}, {label:'Alpha', key:'AlphaPct', cls:'num', render:fmtPct}
+  ], portfolioRows);
+  document.getElementById('riskKpis').innerHTML = [
+    card('Risk Mismatch', fmtNum(latest.RiskMismatchClients), `${fmtPct(latest.RiskMismatchClients/latest.ActiveClients)} of active clients`, 'red', sparkSvg(monthly, 'RiskMismatchClients', colors.red)),
+    card('Rebalance Needed', fmtNum(latest.RebalanceNeededClients), `${fmtPct(latest.RebalanceNeededClients/latest.ActiveClients)} of active clients`, 'amber', sparkSvg(monthly, 'RebalanceNeededClients', colors.amber)),
+    card('Churn Risk AUM', fmtMoney(latest.ChurnRiskAUM), `${fmtPct(latest.ChurnRiskAUM/latest.TotalAUM)} of AUM`, 'red', sparkSvg(monthly, 'ChurnRiskAUM', colors.red)),
+    card('High Churn Clients', fmtNum(latest.HighChurnRiskClients), 'Risk score >= 0.70', 'red', sparkSvg(monthly, 'HighChurnRiskClients', colors.red)),
+    card('High Outflow Risk', fmtNum(latest.HighOutflowRiskClients), 'Outflow score >= 0.65', 'amber', sparkSvg(monthly, 'HighOutflowRiskClients', colors.amber)),
+    card('Action AUM', fmtMoney(actionRows().reduce((a,r)=>a+Number(r.ExpectedRetainedAUM||0),0)), 'Expected retained AUM', 'green')
+  ].join('');
+  lineChart('riskMismatchTrend', monthly, [{key:'RiskMismatchClients', color:colors.red}, {key:'RebalanceNeededClients', color:colors.amber}], {zero:true, formatMax:fmtNum});
+  const churnSeg = groupLatest(clients.filter(r=>Number(r.ChurnRiskScore||0)>=.70), 'ClientSegment').map(r=>({...r, ChurnRiskAUM:r.TotalAUM}));
+  barChart('churnSegmentBars', churnSeg, 'ClientSegment', 'ChurnRiskAUM', colors.red, fmtMoney);
+  const mix = Object.values(actionRows().reduce((a,r)=>{ a[r.ActionType] = a[r.ActionType] || {ActionType:r.ActionType, Count:0}; a[r.ActionType].Count++; return a; }, {}));
+  barChart('actionBars', mix, 'ActionType', 'Count', colors.green, fmtNum);
+  table('actionsTable', [
+    {label:'Priority', key:'Priority', render:v=>`<span class="pill ${v}">${v}</span>`}, {label:'Client', key:'ClientName'}, {label:'Segment', key:'ClientSegment'},
+    {label:'Advisor', key:'AdvisorName'}, {label:'Action', key:'ActionType'}, {label:'Reason', key:'RiskReason'}, {label:'Status', key:'Status'},
+    {label:'Retained AUM', key:'ExpectedRetainedAUM', cls:'num', render:fmtMoney}, {label:'Churn', key:'ChurnRiskScore', cls:'num', render:v=>Number(v||0).toFixed(2)}
+  ], actionRows().sort((a,b)=>Number(b.ExpectedRetainedAUM)-Number(a.ExpectedRetainedAUM)).slice(0,80));
+}
+document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(el => { el.classList.remove('active'); el.setAttribute('aria-selected','false'); });
+  document.querySelectorAll('.tabpage').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active'); btn.setAttribute('aria-selected','true'); document.getElementById(btn.dataset.tab).classList.add('active');
+  const titles = {
+    overview: ['AUM & Revenue Overview','Executive view of AUM, net new money, flows, revenue, and active clients.'],
+    segments: ['Portfolio & Client Segments','Performance versus benchmark, allocation, concentration, and client mix.'],
+    risk: ['Risk, Suitability & Retention','Mismatch, rebalance needs, churn risk, and advisor action queue.']
+  };
+  document.getElementById('pageTitle').textContent = titles[btn.dataset.tab][0];
+  document.getElementById('pageSubtitle').textContent = titles[btn.dataset.tab][1];
+  render();
+}));
+setOptions('segmentFilter', DATA.filterOptions.segments);
+setOptions('riskFilter', DATA.filterOptions.risks);
+setOptions('regionFilter', DATA.filterOptions.regions);
+setOptions('modelFilter', DATA.filterOptions.models);
+['segmentFilter','riskFilter','regionFilter','modelFilter'].forEach(id => document.getElementById(id).addEventListener('change', render));
+render();
+</script>
+</div></div>
+<script>
+(() => {
+  const reset=document.createElement("button"); reset.type="button"; reset.id="resetFilters"; reset.className="reset-control"; reset.textContent="Reset lens"; document.querySelector(".filters").appendChild(reset);
+  const ids={segment:"segmentFilter",risk:"riskFilter",region:"regionFilter",model:"modelFilter"};
+  const page=()=>document.querySelector(".tab.active")?.dataset.tab||"overview";
+  const current=()=>Object.fromEntries(Object.entries(ids).map(([k,id])=>[k,document.getElementById(id).value]));
+  function setPage(value){const v=String(value||"").toLowerCase();const b=Array.from(document.querySelectorAll(".tab")).find(x=>x.dataset.tab===value||x.textContent.toLowerCase().includes(v));if(b)b.click();return page();}
+  function setFilter(key,value){if(!ids[key])return false;const el=document.getElementById(ids[key]);el.value=value;el.dispatchEvent(new Event("change",{bubbles:true}));return true;}
+  function resetFilters(){Object.values(ids).forEach(id=>document.getElementById(id).value="All");render();syncPublicState();return current();}
+  reset.addEventListener("click",resetFilters);
+  const publicState={};
+  function syncPublicState(){Object.assign(publicState,{page:page()},current());return publicState;}
+  document.querySelectorAll(".tab").forEach(button=>button.addEventListener("click",()=>setTimeout(syncPublicState,0)));
+  Object.values(ids).forEach(id=>document.getElementById(id).addEventListener("change",syncPublicState));
+  window.previewState=publicState;
+  function summary(){const metrics=latestMetrics(monthlyRows(),latestClientRows()),rollForward=metrics.BeginningAUM+metrics.Inflows-metrics.Outflows+metrics.MarketEffect,alpha=metrics.PortfolioReturnPct-metrics.BenchmarkReturnPct;return {project:"12",page:page(),filters:current(),metrics,alphaBps:alpha*10000,checks:{rollForwardTieOut:Math.abs(rollForward-metrics.TotalAUM)<.01,alphaTieOut:Math.abs(alpha-(metrics.PortfolioReturnPct-metrics.BenchmarkReturnPct))<1e-12}};}
+  function chartFingerprint(){const signature=root=>Array.from(root.querySelectorAll("svg path,svg polyline,svg rect,svg circle,svg text,table tbody tr")).map(el=>[el.tagName,el.getAttribute("d"),el.getAttribute("points"),el.getAttribute("x"),el.getAttribute("y"),el.getAttribute("cx"),el.getAttribute("cy"),el.getAttribute("r"),el.getAttribute("width"),el.getAttribute("height"),el.getAttribute("style"),el.textContent.trim()].join("|")).join("~"),hash=value=>{let h=2166136261;for(let i=0;i<value.length;i++)h=Math.imul(h^value.charCodeAt(i),16777619);return(h>>>0).toString(16)};return Object.fromEntries(Array.from(document.querySelectorAll('[role="tabpanel"]')).map(root=>[root.id,hash(signature(root))]));}
+  window.previewActions=Object.freeze({setPage,setFilter,resetFilters,getSummary:summary,getRows:()=>latestClientRows().map(r=>({client:r.ClientName,segment:r.ClientSegment,risk:r.RiskProfile,region:r.Region,aum:r.EndingAUM})),getChartFingerprint:chartFingerprint});
+  const qa={ready:true,project:"12",layoutSource:"project-12-own-dashboard",pageCount:3,filterCount:4,kpiCount:6,hasReset:true,hasTable:true};
+  Object.defineProperty(qa,"chartFingerprint",{enumerable:true,get:()=>{const active=document.querySelector('[role="tabpanel"].active');return chartFingerprint()[active?.id]||"";}});
+  window.__dashboardQa=qa;
+  syncPublicState();
+})();
+</script>
+</body>
 </html>

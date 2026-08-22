@@ -1364,10 +1364,11 @@ body.simple-three-model-library .model-role-tabs button > span {
 }
 
 body.simple-three-model-library .model-role-tabs button strong {
-  overflow: hidden;
+  overflow: visible;
   font-size: 0.75rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 body.simple-three-model-library .model-role-tabs button small {

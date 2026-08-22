@@ -15,10 +15,10 @@
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1" />
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1" />
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/case.css?v=routes-20260810-hybrid1" />
-    <link rel="stylesheet" href="../board-investor-cfo-pack/board-pack-page.css?v=standard-20260818-responsive1" />
+    <link rel="stylesheet" href="../board-investor-cfo-pack/board-pack-page.css?v=standard-20260818-polish2" />
     <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body class="board-pack-page powerbi-standard-page" data-stage-family="powerbi" data-stage-template="case" data-project-no="11">
+  <body class="board-pack-page powerbi-project-page" data-stage-family="powerbi" data-stage-template="case" data-project-no="11">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -67,10 +67,10 @@
           <a class="board-button board-button--primary" href="#interactive-preview">Explore dashboard <span aria-hidden="true">&darr;</span></a>
         </header>
         <div class="board-metrics" aria-label="Headline metrics">
-          <article><span>funded accounts · 2026</span><strong>520K</strong><small>Synthetic preview value.</small></article>
-          <article><span>M2 active · 2026</span><strong>72%</strong><small>Synthetic preview value.</small></article>
-          <article><span>LTV/CAC · 2026</span><strong>2.7x</strong><small>Synthetic preview value.</small></article>
-          <article><span>monthly churn · 2026</span><strong>8.8%</strong><small>Synthetic preview value.</small></article>
+          <article><span>active users · May 2026</span><strong>19,336</strong><small>Funded monthly active customers.</small></article>
+          <article><span>revenue · May 2026</span><strong>$189.1K</strong><small>Monthly net banking and interchange revenue.</small></article>
+          <article><span>funded accounts · May 2026</span><strong>1,867</strong><small>19.65% of May sign-ups reached first funding.</small></article>
+          <article><span>LTV / CAC · May 2026</span><strong>2.1x</strong><small>$145 blended value versus $69 acquisition cost.</small></article>
         </div>
       </section>
 
@@ -79,12 +79,12 @@
           <div>
             <p class="board-kicker">Interactive dashboard</p>
             <h2 id="interactive-title">Explore the decision pack</h2>
-            <p>Move through Growth Economics, Funnel &amp; Cohort Retention, LTV, Churn &amp; Actions. Change the filters to test the synthetic baseline; Reset Lens restores the default view.</p>
+            <p>Move through Growth Overview, Funnel &amp; Cohort Retention, and LTV, Churn &amp; Marketing ROI. Year, segment, channel, and scenario controls recompute the original neobank sidebar experience.</p>
           </div>
-          <a class="board-button board-button--secondary" href="preview.html?v=standard-20260818-responsive1">Full screen <span aria-hidden="true">&nearr;</span></a>
+          <a class="board-button board-button--secondary" href="preview.html?v=own-layout-polish3-20260818">Full screen <span aria-hidden="true">&nearr;</span></a>
         </header>
         <div class="board-dashboard-shell">
-          <iframe data-standard-preview id="powerbi-preview-11" src="preview.html?v=standard-20260818-responsive1" title="Neobank Growth Retention LTV interactive preview" loading="eager"></iframe>
+          <iframe data-project-preview id="powerbi-preview-11" src="preview.html?v=own-layout-polish3-20260818" title="Neobank Growth Retention LTV interactive preview" loading="eager"></iframe>
         </div>
       </section>
 
@@ -98,14 +98,15 @@
         </div>
         <div class="board-note">
           <p>Portfolio demonstration only. Values are synthetic; no raw source files, PBIX/PBIT files, local paths, or company-confidential data are published.</p>
-          <div><a href="preview.html?v=standard-20260818-responsive1">Open full screen</a></div>
+          <div><a href="preview.html?v=own-layout-polish3-20260818">Open full screen</a></div>
         </div>
       </section>
     </main>
 
     <script>
       (() => {
-        const frames = Array.from(document.querySelectorAll("iframe[data-standard-preview]"));
+        const frames = Array.from(document.querySelectorAll("iframe[data-project-preview]"));
+        const frameObservers = new WeakMap();
         let resizeTimer;
 
         function resizeDashboardFrame(frame) {
@@ -121,10 +122,25 @@
             const previewStyle = previewWindow.getComputedStyle(preview);
             const paddingTop = Number.parseFloat(previewStyle.paddingTop) || 0;
             const paddingBottom = Number.parseFloat(previewStyle.paddingBottom) || 0;
-            const targetHeight = Math.max(420, Math.ceil(dashboardShell.getBoundingClientRect().height + paddingTop + paddingBottom));
+            const targetHeight = Math.max(1, Math.ceil(dashboardShell.getBoundingClientRect().height + paddingTop + paddingBottom));
             if (Math.abs(frame.clientHeight - targetHeight) > 1) frame.style.height = `${targetHeight}px`;
           } catch {
             /* Keep the CSS fallback if the preview is not same-origin. */
+          }
+        }
+
+        function observeDashboardFrame(frame) {
+          try {
+            const previewWindow = frame.contentWindow;
+            const dashboardShell = frame.contentDocument?.querySelector(".dashboard-shell");
+            const ResizeObserverCtor = previewWindow?.ResizeObserver || window.ResizeObserver;
+            if (!previewWindow || !dashboardShell || !ResizeObserverCtor) return;
+            frameObservers.get(frame)?.disconnect();
+            const observer = new ResizeObserverCtor(() => queueResize());
+            observer.observe(dashboardShell);
+            frameObservers.set(frame, observer);
+          } catch {
+            /* Keep window-resize fallback if observation is unavailable. */
           }
         }
 
@@ -133,10 +149,16 @@
           resizeTimer = window.setTimeout(() => window.requestAnimationFrame(() => frames.forEach(resizeDashboardFrame)), delay);
         }
 
-        frames.forEach((frame) => frame.addEventListener("load", () => {
+        function connectDashboardFrame(frame) {
+          observeDashboardFrame(frame);
           window.requestAnimationFrame(() => resizeDashboardFrame(frame));
           queueResize(180);
-        }));
+        }
+
+        frames.forEach((frame) => {
+          frame.addEventListener("load", () => connectDashboardFrame(frame));
+          if (frame.contentDocument?.readyState === "complete") connectDashboardFrame(frame);
+        });
         window.addEventListener("resize", () => queueResize(80), { passive: true });
         queueResize(180);
       })();

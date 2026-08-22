@@ -1,39 +1,625 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta name="robots" content="noindex, follow" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Marketplace Seller Performance Interactive Preview | Truong Dinh Anh Tu</title>
-    <link rel="canonical" href="index.html" />
-    <link rel="icon" href="../../../assets/favicon.svg" />
-    <link rel="stylesheet" href="../../../assets/powerbi-standard/preview.css?v=standard-20260818-responsive1" />
-    <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
-  </head>
-  <body class="powerbi-standard-preview" data-project-no="07">
-    <div class="preview-frame">
-      <div class="dashboard-shell">
-        <div class="dashboard" role="application" aria-label="Marketplace Seller Performance interactive dashboard">
-          <aside class="sidebar">
-            <div class="preview-brand"><span class="preview-brand-mark" aria-hidden="true">AT</span><span class="preview-brand-copy"><b>TDAT</b><small>Marketplace operations</small></span></div>
-            <nav class="project-nav" id="projectNav" aria-label="Dashboard pages"></nav>
-            <div class="lens-group">
-              <h2 class="lens-title">Global Lens</h2>
-              <label><span class="filter-label">Year</span><span class="select-wrap"><select id="yearFilter" aria-label="Year filter"></select></span></label>
-              <label><span class="filter-label">Scenario</span><span class="select-wrap"><select id="scenarioFilter" aria-label="Scenario filter"></select></span></label>
-            </div>
-            <div class="lens-group">
-              <h2 class="lens-title">Operating Scope</h2>
-              <label><span class="filter-label" id="scopeFilterLabel">Scope</span><span class="select-wrap"><select id="scopeFilter" aria-label="Scope filter"></select></span></label>
-              <label><span class="filter-label">Category</span><span class="select-wrap"><select id="regionFilter" aria-label="Category filter"></select></span></label>
-            </div>
-            <button id="resetFilters" class="reset-button" type="button">Reset Lens</button>
-          </aside>
-          <main class="dashboard-content" id="content"></main>
+<head>
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="index.html">
+  <link rel="icon" href="../../../assets/favicon.svg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project 07 - Marketplace Seller Performance Dashboard</title>
+  <style>
+    :root {
+      --bg:#F4F6FA; --panel:#FFFFFF; --ink:#101828; --muted:#667085; --line:#D9E0EA; --line2:#EEF2F7;
+      --orange:#EE4D2D; --blue:#2563EB; --cyan:#0EA5E9; --teal:#0F766E; --green:#16A34A;
+      --amber:#D97706; --red:#DC2626; --violet:#7C3AED; --rail:#142033; --rail2:#1D2B44;
+      --shadow:0 12px 28px rgba(16,24,40,.07);
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--bg); font-family:"Segoe UI", Arial, sans-serif; }
+    button, select, input { font:inherit; }
+    button:focus-visible, select:focus-visible, input:focus-visible { outline:3px solid #FDBA74; outline-offset:2px; }
+    .shell { min-height:100vh; display:grid; grid-template-columns:274px minmax(0,1fr); }
+    aside { background:linear-gradient(180deg,var(--rail),var(--rail2)); color:#F9FAFB; padding:22px 18px; position:sticky; top:0; height:100vh; overflow:auto; }
+    .brand { font-size:12px; color:#CBD5E1; text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
+    h1 { font-size:25px; line-height:1.16; margin:0 0 18px; letter-spacing:0; }
+    .rail-metric { display:grid; gap:8px; margin:16px 0 22px; padding:13px; border:1px solid rgba(255,255,255,.12); border-radius:8px; background:rgba(255,255,255,.06); }
+    .rail-metric span { color:#C6D3E1; font-size:12px; }
+    .rail-metric strong { font-size:20px; }
+    .nav { display:grid; gap:8px; margin:20px 0; }
+    .nav button { border:1px solid rgba(255,255,255,.13); color:#D1D5DB; background:transparent; border-radius:8px; padding:10px 12px; text-align:left; cursor:pointer; }
+    .nav button.active { color:#FFFFFF; border-color:rgba(238,77,45,.72); background:rgba(238,77,45,.20); box-shadow:inset 3px 0 0 var(--orange); }
+    .side-note { color:#CBD5E1; font-size:12px; line-height:1.55; border-top:1px solid rgba(255,255,255,.10); padding-top:16px; }
+    main { padding:20px 24px 34px; min-width:0; }
+    .topbar { display:flex; gap:12px; align-items:flex-end; justify-content:space-between; margin-bottom:12px; }
+    .title h2 { margin:0; font-size:23px; letter-spacing:0; }
+    .subtitle { color:var(--muted); font-size:13px; margin-top:4px; }
+    .filters { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .field { display:grid; gap:4px; }
+    label { color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    select, input { height:36px; min-width:134px; border:1px solid var(--line); border-radius:7px; background:#FFFFFF; color:var(--ink); padding:0 10px; outline:none; }
+    input { min-width:190px; }
+    .lens { display:grid; grid-template-columns:minmax(260px,1.4fr) repeat(4,minmax(112px,.55fr)); gap:10px; align-items:stretch; margin:0 0 13px; }
+    .lens-main, .lens-chip { background:var(--panel); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
+    .lens-main { padding:13px 15px; display:grid; gap:6px; }
+    .lens-title { color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+    .lens-state { font-size:15px; font-weight:760; }
+    .lens-context { color:var(--muted); font-size:12px; line-height:1.4; }
+    .lens-chip { min-height:76px; padding:11px 12px; display:grid; align-content:center; gap:4px; }
+    .lens-chip span { color:var(--muted); font-size:11px; font-weight:750; }
+    .lens-chip strong { color:var(--ink); font-size:20px; }
+    .kpis { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+    .card, .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
+    .card { min-height:146px; padding:12px; position:relative; overflow:hidden; display:grid; grid-template-rows:auto 1fr auto; gap:8px; }
+    .card:before { content:""; position:absolute; top:12px; bottom:12px; left:0; width:4px; background:var(--accent); }
+    .card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; padding-left:8px; }
+    .card .label { color:var(--muted); font-size:12px; font-weight:800; line-height:1.2; }
+    .card .value { margin-top:7px; font-size:27px; line-height:1; font-weight:800; color:var(--accent); }
+    .status-dot { width:9px; height:9px; margin-top:4px; border-radius:99px; background:var(--accent); box-shadow:0 0 0 4px rgba(16,24,40,.08); }
+    .spark { min-height:48px; padding-left:8px; }
+    .card-foot { display:flex; gap:6px; flex-wrap:wrap; padding-left:8px; }
+    .chip { display:inline-flex; align-items:center; min-height:23px; border-radius:6px; padding:2px 7px; border:1px solid var(--line); color:var(--muted); background:#F8FAFC; font-size:11px; font-weight:750; }
+    .chip.good { border-color:#BCE7C9; color:#166534; background:#F0FDF4; }
+    .chip.bad { border-color:#F9C6C6; color:#991B1B; background:#FEF2F2; }
+    .chip.warn { border-color:#FCDFAA; color:#92400E; background:#FFFBEB; }
+    .grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:14px; }
+    .panel { padding:14px; min-height:250px; overflow:hidden; }
+    .panel h3 { margin:0; font-size:14px; }
+    .panel .caption { color:var(--muted); font-size:12px; margin-top:3px; }
+    .chart { margin-top:10px; min-height:190px; }
+    .span-3 { grid-column:span 3; } .span-4 { grid-column:span 4; } .span-5 { grid-column:span 5; } .span-6 { grid-column:span 6; } .span-7 { grid-column:span 7; } .span-8 { grid-column:span 8; } .span-12 { grid-column:span 12; }
+    .view { display:none; } .view.active { display:block; }
+    .table-wrap { margin-top:10px; overflow:auto; border:1px solid var(--line2); border-radius:8px; }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th { text-align:left; color:#344054; font-size:10px; text-transform:uppercase; letter-spacing:.04em; background:#F1F5F9; position:sticky; top:0; z-index:1; }
+    th, td { padding:9px 10px; border-bottom:1px solid var(--line2); white-space:nowrap; vertical-align:middle; }
+    td.num, th.num { text-align:right; }
+    tbody tr:nth-child(even) { background:#FAFBFD; }
+    tbody tr:hover { background:#F8FAFC; }
+    .seller-cell { display:grid; gap:2px; }
+    .seller-cell b { font-size:12px; }
+    .seller-cell span { color:var(--muted); font-size:11px; }
+    .micro { display:inline-grid; grid-template-columns:minmax(54px,1fr) auto; gap:7px; align-items:center; min-width:118px; }
+    .micro i { display:block; height:8px; border-radius:99px; background:#E9EEF6; overflow:hidden; }
+    .micro i:before { content:""; display:block; width:var(--w); height:100%; border-radius:99px; background:var(--c); }
+    .pill { display:inline-flex; align-items:center; justify-content:center; min-height:23px; border-radius:6px; padding:2px 8px; font-size:11px; font-weight:800; border:1px solid var(--line); background:#F8FAFC; color:var(--muted); }
+    .pill.good { background:#ECFDF3; border-color:#BCE7C9; color:#166534; }
+    .pill.warn { background:#FFFBEB; border-color:#FCDFAA; color:#92400E; }
+    .pill.bad { background:#FEF2F2; border-color:#F9C6C6; color:#991B1B; }
+    .mini-spark { width:82px; height:26px; display:inline-block; vertical-align:middle; }
+    .good { color:var(--green); } .bad { color:var(--red); } .warn { color:var(--amber); }
+    svg { width:100%; height:100%; display:block; overflow:visible; }
+    .axis { stroke:var(--line); stroke-width:1; } .gridline { stroke:var(--line2); stroke-width:1; }
+    .tick { fill:var(--muted); font-size:11px; } .legend { fill:var(--muted); font-size:12px; }
+    .empty { color:var(--muted); font-size:13px; padding:22px; text-align:center; border:1px dashed var(--line); border-radius:8px; }
+    @media (max-width:1400px) { .kpis { grid-template-columns:repeat(3,minmax(0,1fr)); } .lens { grid-template-columns:1fr 1fr; } .lens-main { grid-column:1/-1; } }
+    @media (max-width:1180px) { .shell { grid-template-columns:1fr; } aside { position:relative; height:auto; } .nav { grid-template-columns:repeat(4,minmax(0,1fr)); } .span-3,.span-4,.span-5,.span-6,.span-7,.span-8 { grid-column:span 12; } .topbar { align-items:stretch; flex-direction:column; } .filters { justify-content:flex-start; } }
+    @media (min-width:1181px) { .kpis { grid-template-columns:repeat(6,minmax(0,1fr)); } .lens { grid-template-columns:minmax(260px,1.4fr) repeat(4,minmax(112px,.55fr)); } .lens-main { grid-column:auto; } }
+    @media (max-width:720px) { main { padding:16px; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .lens, .nav { grid-template-columns:1fr; } select,input { min-width:100%; } .field { width:100%; } table { font-size:11px; } th,td { padding:7px 6px; } .card { min-height:132px; } .card .value { font-size:23px; } }
+  .preview-frame,.dashboard-shell{width:100%;min-height:0}.preview-frame{overflow:hidden}.reset-control{height:36px;border:1px solid var(--line);border-radius:7px;background:var(--rail);color:#fff;padding:0 13px;font-weight:700;cursor:pointer}.reset-control:hover{background:var(--rail2)}
+  </style>
+  <script src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
+</head>
+<body data-project-number="07" data-layout-source="project-07-own-dashboard">
+<div class="preview-frame"><div class="dashboard-shell">
+  <div class="shell">
+    <aside>
+      <div class="brand">Project 07 BI</div>
+      <h1>Marketplace Seller Performance</h1>
+      <div class="rail-metric">
+        <span>Decision lens</span>
+        <strong id="railDecision">Margin-quality watch</strong>
+        <span id="railContext">Latest complete month: 2026-05</span>
+      </div>
+      <div class="nav" id="nav" role="tablist" aria-label="Marketplace dashboard pages">
+        <button id="tab-executive" class="active" data-view="executive" role="tab" aria-controls="executive" aria-selected="true">Executive Cockpit</button>
+        <button id="tab-portfolio" data-view="portfolio" role="tab" aria-controls="portfolio" aria-selected="false">Seller Portfolio</button>
+        <button id="tab-growth" data-view="growth" role="tab" aria-controls="growth" aria-selected="false">Growth Drivers</button>
+        <button id="tab-risk" data-view="risk" role="tab" aria-controls="risk" aria-selected="false">Ops Risk</button>
+      </div>
+      <div class="side-note">
+        Synthetic Shopee/Lazada/Tiki-style operating pack. The dashboard links GMV, fulfillment, cancellation, seller quality, and owner actions for FP&A review.
+      </div>
+    </aside>
+    <main>
+      <div class="topbar">
+        <div class="title">
+          <h2 id="viewTitle">Executive Cockpit</h2>
+          <div class="subtitle" id="freshness"></div>
+        </div>
+        <div class="filters">
+          <div class="field"><label for="monthFilter">Month</label><select id="monthFilter"></select></div>
+          <div class="field"><label for="platformFilter">Platform</label><select id="platformFilter"></select></div>
+          <div class="field"><label for="tierFilter">Seller Tier</label><select id="tierFilter"></select></div>
+          <div class="field"><label for="searchFilter">Seller Search</label><input id="searchFilter" aria-label="Seller search" placeholder="Type seller name"></div>
         </div>
       </div>
-    </div>
-    <script>window.__POWERBI_PROJECT_CONFIG__ = Object.freeze({"id":"marketplace-seller-performance","route":"marketplace-seller-performance/","no":"07","folder":"Project 07 - Marketplace Seller Performance","title":"Marketplace Seller Performance","lens":"Marketplace operations","summary":"Seller performance dashboard ranking GMV, fulfillment, cancellation, rating, stock risk, and growth actions.","decisionQuestion":"Which sellers merit growth support, and which operational risks require intervention before they erode GMV and margin?","pages":[{"id":"marketplace-pulse","label":"Marketplace Pulse"},{"id":"seller-portfolio-growth","label":"Seller Portfolio & Growth"},{"id":"ops-risk-owner-actions","label":"Ops Risk & Owner Actions"}],"metrics":[{"value":"119","label":"active sellers","note":"Synthetic preview value.","format":"number","higherIsBetter":true,"plan":116.62,"prior":109.48,"series":[109.48,110.34545454545454,111.2109090909091,112.07636363636364,112.94181818181818,113.80727272727273,114.67272727272727,115.53818181818183,116.40363636363637,117.2690909090909,118.13454545454546,119],"sensitivity":1},{"value":"97.7%","label":"fulfillment SLA","note":"Synthetic preview value.","format":"percent","higherIsBetter":true,"plan":95.746,"prior":89.884,"series":[89.884,90.59454545454545,91.30509090909091,92.01563636363636,92.72618181818181,93.43672727272727,94.14727272727274,94.85781818181819,95.56836363636364,96.2789090909091,96.98945454545455,97.7],"sensitivity":1},{"value":"3.8%","label":"cancel rate","note":"Synthetic preview value.","format":"percent","higherIsBetter":false,"plan":3.876,"prior":4.142,"series":[4.142,4.110909090909091,4.079818181818182,4.048727272727273,4.017636363636364,3.9865454545454546,3.9554545454545456,3.9243636363636365,3.893272727272727,3.862181818181818,3.831090909090909,3.8],"sensitivity":1},{"value":"$3.1M","label":"GMV growth pool","note":"Synthetic preview value.","format":"currency","higherIsBetter":true,"plan":3038000,"prior":2852000,"series":[2852000,2874545.4545454546,2897090.909090909,2919636.3636363638,2942181.8181818184,2964727.272727273,2987272.727272727,3009818.1818181816,3032363.6363636362,3054909.090909091,3077454.5454545454,3100000],"sensitivity":1}],"bars":[{"label":"Top sellers","value":86},{"label":"Fulfillment","value":80},{"label":"Stock health","value":64},{"label":"Rating","value":72}],"drivers":[{"label":"Top seller expansion","value":"+$1.4M","isRisk":false},{"label":"Cancellation risk","value":"-$0.3M","isRisk":true},{"label":"Stockout pressure","value":"-$0.6M","isRisk":true}],"actions":[{"owner":"Marketplace","action":"Prioritize seller enablement for high-GMV accounts."},{"owner":"Operations","action":"Resolve stockout and cancellation root causes."},{"owner":"Finance","action":"Quantify margin from seller quality actions."}],"financeLogic":["Seller GMV equals completed order quantity times realized selling price.","Net GMV excludes cancellations, returns, and invalid transactions.","Seller contribution deducts fulfillment and support cost from commission revenue."],"scopeLabel":"Seller Tier","scopeOptions":["All Sellers","Strategic","Growth","Long Tail"],"breakdownLabel":"Category","breakdownOptions":["All Categories","Electronics","Home","Beauty","Lifestyle"],"regionOptions":["All Categories","Electronics","Home","Beauty","Lifestyle"],"governance":["Seller identity and category mappings are unique and complete.","SLA clocks exclude approved operational exceptions.","Growth pools use contribution margin after fulfillment cost.","All displayed values are synthetic and public-safe."],"yearOptions":["2026","2025"],"scenarioOptions":["Base","Upside","Downside"],"defaults":{"year":"2026","scenario":"Base","scope":"All Sellers","region":"All Categories"},"filters":[{"id":"year","label":"Year","options":["2026","2025"],"default":"2026"},{"id":"scenario","label":"Scenario","options":["Base","Upside","Downside"],"default":"Base"},{"id":"scope","label":"Seller Tier","options":["All Sellers","Strategic","Growth","Long Tail"],"default":"All Sellers"},{"id":"region","label":"Category","options":["All Categories","Electronics","Home","Beauty","Lifestyle"],"default":"All Categories"}],"dataClassification":"Synthetic public-safe preview data"});</script>
-    <script src="../../../assets/powerbi-standard/preview.js?v=standard-20260818-responsive1"></script>
-  </body>
+      <section class="lens" id="currentLens" aria-label="Current decision lens" aria-live="polite"></section>
+      <section class="kpis" id="kpis"></section>
+
+      <section class="view active" id="executive" role="tabpanel" aria-labelledby="tab-executive">
+        <div class="grid">
+          <div class="panel span-7"><h3>Is marketplace GMV expanding with quality?</h3><div class="caption">Net seller GMV by month, filtered by platform, tier, and seller search.</div><div class="chart" id="gmvTrend"></div></div>
+          <div class="panel span-5"><h3>Which platform owns the current GMV mix?</h3><div class="caption">Marketplace contribution for selected month.</div><div class="chart" id="platformBars"></div></div>
+          <div class="panel span-6"><h3>Scale Sellers</h3><div class="caption">Highest GMV sellers with quality guardrails and owner action.</div><div id="topSellers"></div></div>
+          <div class="panel span-6"><h3>Recovery Sellers</h3><div class="caption">Lowest blended score among sellers with meaningful activity.</div><div id="bottomSellers"></div></div>
+        </div>
+      </section>
+
+      <section class="view" id="portfolio" role="tabpanel" aria-labelledby="tab-portfolio">
+        <div class="grid">
+          <div class="panel span-7"><h3>Where is growth quality breaking?</h3><div class="caption">GMV vs cancellation; bubble size = order item volume.</div><div class="chart" id="portfolioScatter"></div></div>
+          <div class="panel span-5"><h3>How concentrated is seller GMV?</h3><div class="caption">Pareto curve across seller ranks.</div><div class="chart" id="paretoCurve"></div></div>
+          <div class="panel span-5"><h3>Which seller tier carries the book?</h3><div class="caption">Commercial segment contribution.</div><div class="chart" id="tierBars"></div></div>
+          <div class="panel span-7"><h3>Seller Leaderboard</h3><div class="caption">Ranked seller performance with score, trend, and account owner.</div><div id="leaderboard"></div></div>
+        </div>
+      </section>
+
+      <section class="view" id="growth" role="tabpanel" aria-labelledby="tab-growth">
+        <div class="grid">
+          <div class="panel span-6"><h3>Which categories deserve push or protection?</h3><div class="caption">Current GMV share vs month-over-month growth.</div><div class="chart" id="categoryQuadrant"></div></div>
+          <div class="panel span-6"><h3>Is spend translating into marketplace GMV?</h3><div class="caption">Demand generation spend pressure against GMV.</div><div class="chart" id="spendTrend"></div></div>
+          <div class="panel span-12"><h3>Opportunity Sellers</h3><div class="caption">Good quality sellers with weak growth, suitable for exposure or campaign push.</div><div id="opportunityTable"></div></div>
+        </div>
+      </section>
+
+      <section class="view" id="risk" role="tabpanel" aria-labelledby="tab-risk">
+        <div class="grid">
+          <div class="panel span-5"><h3>Is operating risk improving or worsening?</h3><div class="caption">Cancellation and stockout pressure over time.</div><div class="chart" id="riskTrend"></div></div>
+          <div class="panel span-3"><h3>What is driving cancellations?</h3><div class="caption">Selected month reason mix.</div><div class="chart" id="reasonBars"></div></div>
+          <div class="panel span-4"><h3>Which sellers put GMV at risk?</h3><div class="caption">High-risk sellers by risk score and GMV exposure.</div><div class="chart" id="riskBubble"></div></div>
+          <div class="panel span-12"><h3>Action Queue</h3><div class="caption">Prioritized seller follow-up list with owner and next step.</div><div id="riskTable"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const DATA = (() => {
+      const months = ["2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05"];
+      const platforms = ["Shopee","Lazada","Tiki"];
+      const tiers = ["Key","Strategic","Mid","New","Long-tail"];
+      const regions = ["HCMC","Hanoi","Da Nang","Can Tho","Nationwide"];
+      const managers = ["AM North","AM South","AM Central","AM Growth","AM Key"];
+      const categories = ["Electronics","Home & Living","Beauty","Lifestyle"];
+      const reasons = ["Buyer request","Out of stock","Late confirmation","Payment issue","Price error"];
+      const monthRows = [];
+      for (let mi = 0; mi < months.length; mi += 1) {
+        for (let i = 1; i <= 120; i += 1) {
+          const platform = platforms[i % platforms.length];
+          const tier = tiers[i % tiers.length];
+          const season = 0.94 + mi * 0.012 + Math.sin((mi + i % 5) * 0.7) * 0.035;
+          const gross = (980 + (i % 17) * 92 + (platform === "Shopee" ? 420 : platform === "Tiki" ? 180 : 0)) * season * 0.89;
+          const cancellation = Math.max(0.025, 0.078 + (i % 9) * 0.004 - mi * 0.0007);
+          const orderItems = 24 + (i % 34);
+          const cancelled = Math.round(orderItems * cancellation);
+          const eligible = orderItems;
+          const fulfillment = Math.min(0.997, 0.951 + (i % 8) * 0.006 + mi * 0.00045);
+          const stock = Math.min(0.995, 0.848 + (i % 10) * 0.011 + mi * 0.0008);
+          const rating = Math.min(4.85, 3.78 + (i % 12) * 0.055 + mi * 0.003);
+          monthRows.push({
+            year_month: months[mi], platform_name: platform, seller_id: "S" + String(i).padStart(3,"0"),
+            seller_name: platform + " Seller " + String(i).padStart(3,"0"), seller_tier: tier,
+            category: categories[i % categories.length], cancellation_reason: reasons[(i + mi) % reasons.length],
+            region: regions[i % regions.length], account_manager: managers[i % managers.length],
+            lifecycle_status: i % 7 === 0 ? "Watch" : "Active", official_store_flag: i % 4 === 0 ? 1 : 0,
+            seller_gmv_net: gross * (1 - cancellation), gross_gmv: gross, commission_revenue: gross * 0.072,
+            order_items: orderItems, orders: Math.round(orderItems * 0.82), cancelled_items: cancelled,
+            returned_items: Math.round(orderItems * (0.012 + (i % 3) * 0.004)), eligible_items: eligible,
+            fulfilled_items: Math.round(eligible * fulfillment), late_items: Math.round(eligible * (1 - fulfillment)),
+            sku_day_count: 100 + (i % 20) * 5, in_stock_sku_days: (100 + (i % 20) * 5) * stock,
+            rating_weighted_sum: rating * (12 + i % 24), rating_weight: 12 + i % 24, rating_count: 12 + i % 24,
+            fulfillment_rate: fulfillment, cancellation_rate: cancellation, stock_availability_rate: stock, avg_rating: rating,
+            campaign_spend: gross * (0.024 + (i % 4) * 0.004)
+          });
+        }
+      }
+      const categoryRows = [];
+      const cancelReasonRows = [];
+      const adsRows = [];
+      months.forEach((month, mi) => platforms.forEach((platform, pi) => {
+        categories.forEach((category, ci) => categoryRows.push({
+          year_month: month, platform_name: platform, category,
+          gmv: (21000 + pi * 4800 + ci * 2700) * (0.91 + mi * 0.014 + Math.sin(mi + ci) * 0.025),
+          orders: 220 + mi * 5 + ci * 18, items: 310 + mi * 7 + ci * 21
+        }));
+        reasons.forEach((reason, ri) => cancelReasonRows.push({
+          year_month: month, platform_name: platform, cancellation_reason: reason,
+          items: Math.round(18 + pi * 7 + ri * 9 + mi * 1.1), gmv: 0
+        }));
+        const spend = 2600 + pi * 1400 + mi * 65;
+        adsRows.push({year_month: month, platform_name: platform, ads_spend: spend, voucher_cost: spend * 0.48, total_spend: spend * 1.48});
+      }));
+      return {generatedAt:"2026-08-18", latestMonth:"2026-05", months, platforms, tiers, regions, monthRows, categoryRows, cancelReasonRows, adsRows};
+    })();
+    const palette = { orange:"#EE4D2D", blue:"#2563EB", cyan:"#0EA5E9", teal:"#0F766E", green:"#16A34A", amber:"#D97706", red:"#DC2626", violet:"#7C3AED", slate:"#475569", line:"#D9E0EA", muted:"#667085" };
+    const platformColor = { Shopee: palette.orange, Lazada: palette.blue, Tiki: palette.cyan };
+    const state = { view:"executive", month:DATA.latestMonth, platform:"All", tier:"All", search:"" };
+
+    const money = v => new Intl.NumberFormat("en-US", { style:"currency", currency:"USD", maximumFractionDigits:0 }).format(v || 0);
+    const compact = v => new Intl.NumberFormat("en-US", { notation:"compact", maximumFractionDigits:1 }).format(v || 0);
+    const moneyCompact = v => "$" + compact(v || 0);
+    const pct = v => ((v || 0) * 100).toFixed(1) + "%";
+    const pts = v => ((v || 0) * 100).toFixed(1) + " pts";
+    const num = v => new Intl.NumberFormat("en-US", { maximumFractionDigits:0 }).format(v || 0);
+    const safe = v => Number.isFinite(v) ? v : 0;
+    const esc = v => String(v ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+
+    function populateFilters() {
+      const month = document.getElementById("monthFilter");
+      DATA.months.slice().reverse().forEach(m => month.add(new Option(m, m, false, m === state.month)));
+      ["All", ...DATA.platforms].forEach(v => document.getElementById("platformFilter").add(new Option(v, v)));
+      ["All", ...DATA.tiers].forEach(v => document.getElementById("tierFilter").add(new Option(v, v)));
+      month.onchange = e => { state.month = e.target.value; render(); };
+      document.getElementById("platformFilter").onchange = e => { state.platform = e.target.value; render(); };
+      document.getElementById("tierFilter").onchange = e => { state.tier = e.target.value; render(); };
+      document.getElementById("searchFilter").oninput = e => { state.search = e.target.value.toLowerCase().trim(); render(); };
+      document.querySelectorAll("#nav button").forEach(btn => btn.onclick = () => {
+        state.view = btn.dataset.view;
+        document.querySelectorAll("#nav button").forEach(b => { const selected=b===btn; b.classList.toggle("active", selected); b.setAttribute("aria-selected",String(selected)); });
+        document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === state.view));
+        document.getElementById("viewTitle").textContent = btn.textContent;
+        render();
+      });
+    }
+
+    function rowPassBase(r) {
+      return (state.platform === "All" || r.platform_name === state.platform) &&
+        (state.tier === "All" || r.seller_tier === state.tier) &&
+        (!state.search || r.seller_name.toLowerCase().includes(state.search));
+    }
+    function monthRows(month=state.month) { return DATA.monthRows.filter(r => r.year_month === month && rowPassBase(r)); }
+    function trendRowsFor(month) { return DATA.monthRows.filter(r => r.year_month === month && rowPassBase(r)); }
+    function categoryRows(month=state.month) {
+      const grouped = new Map();
+      trendRowsFor(month).forEach(r => { const o=grouped.get(r.category)||{year_month:month,category:r.category,gmv:0,orders:0,items:0};o.gmv+=r.seller_gmv_net;o.orders+=r.orders;o.items+=r.order_items;grouped.set(r.category,o); });
+      return [...grouped.values()];
+    }
+    function adsRows() {
+      return DATA.months.map(month => { const rows=trendRowsFor(month);return {year_month:month,total_spend:rows.reduce((a,r)=>a+r.campaign_spend,0),ads_spend:rows.reduce((a,r)=>a+r.campaign_spend*.68,0),voucher_cost:rows.reduce((a,r)=>a+r.campaign_spend*.32,0)}; });
+    }
+    function reasonRows(month=state.month) {
+      const grouped = new Map();
+      trendRowsFor(month).forEach(r => grouped.set(r.cancellation_reason,(grouped.get(r.cancellation_reason)||0)+r.cancelled_items));
+      return [...grouped.entries()].map(([cancellation_reason,items])=>({year_month:month,cancellation_reason,items}));
+    }
+    function prevMonth(m) { const idx = DATA.months.indexOf(m); return idx > 0 ? DATA.months[idx - 1] : m; }
+
+    function aggregate(rows, prevRows=null) {
+      const gmv = rows.reduce((s,r)=>s+r.seller_gmv_net,0);
+      const prev = prevRows ?? monthRows(prevMonth(state.month));
+      const prevGmv = prev.reduce((s,r)=>s+r.seller_gmv_net,0);
+      const orderItems = rows.reduce((s,r)=>s+r.order_items,0);
+      const cancelled = rows.reduce((s,r)=>s+r.cancelled_items,0);
+      const eligible = rows.reduce((s,r)=>s+r.eligible_items,0);
+      const fulfilled = rows.reduce((s,r)=>s+r.fulfilled_items,0);
+      const late = rows.reduce((s,r)=>s+r.late_items,0);
+      const inStock = rows.reduce((s,r)=>s+r.in_stock_sku_days,0);
+      const skuDays = rows.reduce((s,r)=>s+r.sku_day_count,0);
+      const ratingSum = rows.reduce((s,r)=>s+r.rating_weighted_sum,0);
+      const ratingWeight = rows.reduce((s,r)=>s+r.rating_weight,0);
+      return {
+        gmv, prevGmv, growth: prevGmv ? (gmv / prevGmv - 1) : 0,
+        fulfillment: eligible ? fulfilled / eligible : 0,
+        cancellation: orderItems ? cancelled / orderItems : 0,
+        late: eligible ? late / eligible : 0,
+        rating: ratingWeight ? ratingSum / ratingWeight : 0,
+        stock: skuDays ? inStock / skuDays : 0,
+        active: new Set(rows.map(r=>r.seller_id)).size,
+        orderItems
+      };
+    }
+    function metricSeries(key) {
+      return DATA.months.map(m => {
+        const rows = trendRowsFor(m);
+        const a = aggregate(rows, trendRowsFor(prevMonth(m)));
+        return { label:m, y:key(a) };
+      });
+    }
+    function performanceScore(r) { return safe(r.seller_gmv_net) * 0.00002 + r.fulfillment_rate * 25 + (1 - r.cancellation_rate) * 20 + (r.avg_rating / 5) * 10 + r.stock_availability_rate * 5; }
+    function riskScore(r) { return r.cancellation_rate * 45 + (1 - r.fulfillment_rate) * 35 + (1 - r.stock_availability_rate) * 20; }
+    function groupBy(rows, key, valueFn) {
+      const map = new Map();
+      rows.forEach(r => map.set(key(r), (map.get(key(r)) || 0) + valueFn(r)));
+      return [...map.entries()].map(([name,value]) => ({ name, value }));
+    }
+
+    function sparkSvg(series, color) {
+      const data = series.filter(d => Number.isFinite(d.y));
+      const w=180,h=48,p=6;
+      if (!data.length) return "";
+      const ys = data.map(d=>d.y);
+      const min = Math.min(...ys), max = Math.max(...ys);
+      const range = Math.max(max-min, 0.0001);
+      const x = i => p + (data.length === 1 ? 0 : i*(w-p*2)/(data.length-1));
+      const y = v => h-p - ((v-min)/range)*(h-p*2);
+      const line = data.map((d,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(d.y).toFixed(1)}`).join(" ");
+      const area = `${line} L${x(data.length-1).toFixed(1)},${h-p} L${p},${h-p} Z`;
+      return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${area}" fill="${color}" opacity=".11"/><path d="${line}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${x(data.length-1).toFixed(1)}" cy="${y(data[data.length-1].y).toFixed(1)}" r="4" fill="${color}"/></svg>`;
+    }
+    function micro(value, max, color, formatter) {
+      const w = Math.max(4, Math.min(100, (safe(value) / Math.max(max, 1)) * 100)).toFixed(0) + "%";
+      return `<span class="micro"><i style="--w:${w};--c:${color}"></i><b>${formatter(value)}</b></span>`;
+    }
+    function sellerCell(r) {
+      return `<span class="seller-cell"><b>${esc(r.seller_name)}</b><span>${esc(r.account_manager || "Owner tbd")} | ${esc(r.region || "")}</span></span>`;
+    }
+    function statusPill(label, cls) { return `<span class="pill ${cls || ""}">${esc(label)}</span>`; }
+    function trendForSeller(r) {
+      const series = DATA.months.map(m => DATA.monthRows.find(x => x.year_month === m && x.seller_id === r.seller_id)).filter(Boolean).map(x => ({label:x.year_month, y:x.seller_gmv_net}));
+      return `<span class="mini-spark">${sparkSvg(series, platformColor[r.platform_name] || palette.blue)}</span>`;
+    }
+    function actionFor(r) {
+      if (r.cancellation_rate > 0.08) return "Audit cancellation";
+      if (r.stock_availability_rate < 0.88) return "Recover stock";
+      if (r.fulfillment_rate < 0.95) return "SLA coaching";
+      if (r.growth < -0.1) return "Boost exposure";
+      return "Scale campaign";
+    }
+    function priorityFor(r) {
+      const risk = riskScore(r);
+      if (risk >= 8 || r.cancellation_rate > 0.10) return ["Critical", "bad"];
+      if (risk >= 5 || r.stock_availability_rate < 0.9) return ["Watch", "warn"];
+      return ["Healthy", "good"];
+    }
+    function renderCurrentLens(rows, k) {
+      const riskRows = rows.filter(r=>r.order_items>=20).map(r=>({...r, risk:riskScore(r)}));
+      const watch = riskRows.filter(r=>r.risk>=5 || r.cancellation_rate>.08 || r.stock_availability_rate<.9).length;
+      const topPlatform = groupBy(rows, r=>r.platform_name, r=>r.seller_gmv_net).sort((a,b)=>b.value-a.value)[0]?.name || "No platform";
+      const stateLabel = !rows.length ? "No matching sellers" : k.cancellation > .08 ? "Cancellation pressure" : k.stock < .90 ? "Inventory watch" : k.growth < 0 ? "GMV recovery" : "Quality-led growth";
+      const context = `Month ${state.month} | Platform ${state.platform} | Tier ${state.tier} | ${rows.length} seller-month row(s) selected`;
+      document.getElementById("railDecision").textContent = stateLabel;
+      document.getElementById("railContext").textContent = context;
+      document.getElementById("freshness").textContent = `Latest complete month: ${state.month} | Generated: ${DATA.generatedAt} | Source: synthetic seller-month operating model`;
+      document.getElementById("currentLens").innerHTML = `
+        <div class="lens-main"><div class="lens-title">Current Lens</div><div class="lens-state">${stateLabel}</div><div class="lens-context">${context}. Top GMV platform: ${topPlatform}. Next call: protect GMV while reducing cancellation and stockout exposure.</div></div>
+        <div class="lens-chip"><span>Seller GMV</span><strong>${moneyCompact(k.gmv)}</strong></div>
+        <div class="lens-chip"><span>Vs prior month</span><strong>${pct(k.growth)}</strong></div>
+        <div class="lens-chip"><span>Watch sellers</span><strong>${num(watch)}</strong></div>
+        <div class="lens-chip"><span>Owners with actions</span><strong>${num(new Set(riskRows.map(r=>r.account_manager)).size)}</strong></div>`;
+    }
+    function renderKpis(rows) {
+      const k = aggregate(rows);
+      if (!rows.length) {
+        const cards = [
+          ["Seller GMV", "$0", "No rows", palette.orange],
+          ["Fulfillment", "n/a", "No rows", palette.green],
+          ["Cancellation", "n/a", "No rows", palette.red],
+          ["Avg Rating", "n/a", "No rows", palette.teal],
+          ["Stock Availability", "n/a", "No rows", palette.violet],
+          ["Active Sellers", "0", "Adjust filters", palette.blue]
+        ];
+        document.getElementById("kpis").innerHTML = cards.map(c => `
+          <div class="card" style="--accent:${c[3]}">
+            <div class="card-head"><div><div class="label">${c[0]}</div><div class="value">${c[1]}</div></div><i class="status-dot"></i></div>
+            <div class="spark">${sparkSvg([], c[3])}</div>
+            <div class="card-foot"><span class="chip warn">${c[2]}</span></div>
+          </div>`).join("");
+        renderCurrentLens(rows, k);
+        return;
+      }
+      const series = {
+        gmv: metricSeries(a=>a.gmv),
+        fulfillment: metricSeries(a=>a.fulfillment),
+        cancellation: metricSeries(a=>a.cancellation),
+        rating: metricSeries(a=>a.rating),
+        stock: metricSeries(a=>a.stock),
+        active: metricSeries(a=>a.active)
+      };
+      const cards = [
+        {label:"Seller GMV", value:moneyCompact(k.gmv), prior:`Prev ${moneyCompact(k.prevGmv)}`, delta:pct(k.growth), cls:k.growth>=0?"good":"bad", color:palette.orange, series:series.gmv},
+        {label:"Fulfillment", value:pct(k.fulfillment), prior:"Target 97.0%", delta:pts(k.fulfillment-.97), cls:k.fulfillment>=.97?"good":"warn", color:palette.green, series:series.fulfillment},
+        {label:"Cancellation", value:pct(k.cancellation), prior:"Guardrail 8.0%", delta:pts(k.cancellation-.08), cls:k.cancellation<=.08?"good":"bad", color:palette.red, series:series.cancellation},
+        {label:"Avg Rating", value:k.rating.toFixed(2), prior:"Target 4.20", delta:(k.rating-4.2).toFixed(2), cls:k.rating>=4.2?"good":"warn", color:palette.teal, series:series.rating},
+        {label:"Stock Availability", value:pct(k.stock), prior:"Target 92.0%", delta:pts(k.stock-.92), cls:k.stock>=.92?"good":"warn", color:palette.violet, series:series.stock},
+        {label:"Active Sellers", value:num(k.active), prior:`${num(k.orderItems)} order items`, delta:`${(k.orderItems/Math.max(1,k.active)).toFixed(1)} items / seller`, cls:"", color:palette.blue, series:series.active}
+      ];
+      document.getElementById("kpis").innerHTML = cards.map(c => `
+        <div class="card" style="--accent:${c.color}">
+          <div class="card-head"><div><div class="label">${c.label}</div><div class="value">${c.value}</div></div><i class="status-dot"></i></div>
+          <div class="spark">${sparkSvg(c.series, c.color)}</div>
+          <div class="card-foot"><span class="chip">${c.prior}</span><span class="chip ${c.cls}">${c.delta}</span></div>
+        </div>`).join("");
+      renderCurrentLens(rows, k);
+    }
+
+    function renderTable(target, rows, columns, empty="No rows for this selection") {
+      const el = document.getElementById(target);
+      if (!rows.length) { el.innerHTML = `<div class="empty">${empty}</div>`; return; }
+      const head = `<thead><tr>${columns.map(c=>`<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("")}</tr></thead>`;
+      const body = `<tbody>${rows.map(r=>`<tr>${columns.map(c=>`<td class="${c.num ? "num" : ""}">${c.render ? c.render(r) : esc(r[c.key])}</td>`).join("")}</tr>`).join("")}</tbody>`;
+      el.innerHTML = `<div class="table-wrap"><table>${head}${body}</table></div>`;
+    }
+    function svgLine(target, series, opts={}) {
+      const el = document.getElementById(target);
+      if (!series.length) { el.innerHTML = `<div class="empty">No trend data</div>`; return; }
+      const w=720,h=230,ml=48,mr=20,mt=18,mb=44;
+      const ys = series.flatMap(d => opts.y2 ? [d.y, d.y2] : [d.y]);
+      const maxY = Math.max(...ys, 1) * 1.12;
+      const x = i => ml + (series.length === 1 ? 0 : i * (w - ml - mr) / (series.length - 1));
+      const y = v => h - mb - (v / maxY) * (h - mt - mb);
+      const path = key => series.map((d,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(d[key]).toFixed(1)}`).join(" ");
+      const grid = [0,.25,.5,.75,1].map(t => `<line class="gridline" x1="${ml}" x2="${w-mr}" y1="${mt+t*(h-mt-mb)}" y2="${mt+t*(h-mt-mb)}"/>`).join("");
+      const labels = series.map((d,i)=> i % Math.ceil(series.length/8) === 0 ? `<text class="tick" x="${x(i)}" y="${h-18}" text-anchor="middle">${d.label}</text>` : "").join("");
+      const dots = series.map((d,i)=>`<circle cx="${x(i)}" cy="${y(d.y)}" r="3.5" fill="${opts.color||palette.orange}"/>`).join("");
+      const second = opts.y2 ? `<path d="${path("y2")}" fill="none" stroke="${opts.color2||palette.violet}" stroke-width="2.4"/><text class="legend" x="${w-146}" y="18" fill="${opts.color2||palette.violet}">${opts.label2||"Series 2"}</text>` : "";
+      el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opts.ariaLabel || (opts.y2 ? `${opts.label||"Series"} and ${opts.label2||"comparison"} trend` : `${opts.label||"Series"} trend`))}">${grid}<path d="${path("y")}" fill="none" stroke="${opts.color||palette.orange}" stroke-width="3"/><text class="legend" x="${ml}" y="18" fill="${opts.color||palette.orange}">${opts.label||"Series"}</text>${second}${dots}${labels}</svg>`;
+    }
+    function svgBars(target, rows, opts={}) {
+      const el = document.getElementById(target);
+      const data = rows.filter(d => safe(d.value) > 0).slice(0, opts.limit || 10);
+      if (!data.length) { el.innerHTML = `<div class="empty">No bar data</div>`; return; }
+      const w=600,h=Math.max(210, data.length*34+28),ml=128,mr=24,mt=18,mb=20;
+      const max = Math.max(...data.map(d=>d.value), 1);
+      const barH = Math.min(24, (h-mt-mb)/data.length - 8);
+      const lines = data.map((d,i) => {
+        const y = mt + i*((h-mt-mb)/data.length);
+        const bw = (d.value/max)*(w-ml-mr);
+        const color = d.color || opts.color || platformColor[d.name] || palette.blue;
+        return `<text class="tick" x="${ml-10}" y="${y+barH*.72}" text-anchor="end">${esc(d.name)}</text><rect x="${ml}" y="${y}" width="${bw}" height="${barH}" rx="5" fill="${color}"/><text class="tick" x="${ml+bw+7}" y="${y+barH*.72}">${opts.format ? opts.format(d.value) : compact(d.value)}</text>`;
+      }).join("");
+      el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opts.ariaLabel || `${target.replace(/([A-Z])/g," $1")} bar chart`)}">${lines}</svg>`;
+    }
+    function svgScatter(target, rows, opts={}) {
+      const el = document.getElementById(target);
+      const data = rows.filter(r => safe(r.seller_gmv_net) > 0).slice(0, opts.limit || 160);
+      if (!data.length) { el.innerHTML = `<div class="empty">No seller data</div>`; return; }
+      const w=720,h=250,ml=52,mr=22,mt=18,mb=42;
+      const maxX = Math.max(...data.map(r=>r.seller_gmv_net), 1) * 1.08;
+      const maxY = Math.max(...data.map(r=>r.cancellation_rate), .01) * 1.20;
+      const maxO = Math.max(...data.map(r=>r.order_items), 1);
+      const x = v => ml + (v/maxX)*(w-ml-mr);
+      const y = v => h-mb - (v/maxY)*(h-mt-mb);
+      const grid = [0,.25,.5,.75,1].map(t => `<line class="gridline" x1="${ml}" x2="${w-mr}" y1="${mt+t*(h-mt-mb)}" y2="${mt+t*(h-mt-mb)}"/>`).join("");
+      const ptsSvg = data.map(r => `<circle cx="${x(r.seller_gmv_net)}" cy="${y(r.cancellation_rate)}" r="${4 + (r.order_items/maxO)*13}" fill="${platformColor[r.platform_name] || palette.blue}" opacity=".66"><title>${esc(r.seller_name)} | ${moneyCompact(r.seller_gmv_net)} | Cancel ${pct(r.cancellation_rate)}</title></circle>`).join("");
+      el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Seller GMV versus cancellation rate; bubble size represents order volume">${grid}<line class="axis" x1="${ml}" x2="${w-mr}" y1="${h-mb}" y2="${h-mb}"/><line class="axis" x1="${ml}" x2="${ml}" y1="${mt}" y2="${h-mb}"/>${ptsSvg}<text class="tick" x="${w/2}" y="${h-10}" text-anchor="middle">GMV</text><text class="tick" x="12" y="${h/2}" transform="rotate(-90 12 ${h/2})" text-anchor="middle">Cancellation rate</text></svg>`;
+    }
+
+    function renderExecutive(rows) {
+      svgLine("gmvTrend", metricSeries(a=>a.gmv), { color:palette.orange, label:"Seller GMV" });
+      svgBars("platformBars", groupBy(rows, r=>r.platform_name, r=>r.seller_gmv_net).sort((a,b)=>b.value-a.value), { format:moneyCompact });
+      const maxGmv = Math.max(...rows.map(r=>r.seller_gmv_net), 1);
+      const cols = [
+        { label:"Seller / Owner", render:sellerCell },
+        { label:"Platform", render:r=>statusPill(r.platform_name, r.platform_name==="Shopee"?"bad":r.platform_name==="Lazada"?"warn":"good") },
+        { label:"GMV Signal", render:r=>micro(r.seller_gmv_net, maxGmv, platformColor[r.platform_name] || palette.blue, moneyCompact) },
+        { label:"Trend", render:trendForSeller },
+        { label:"Guardrail", render:r=>statusPill(r.cancellation_rate>.08?"Cancel watch":r.stock_availability_rate<.9?"Stock watch":"Healthy", priorityFor(r)[1]) },
+        { label:"Action", render:r=>esc(actionFor(r)) }
+      ];
+      renderTable("topSellers", rows.slice().sort((a,b)=>b.seller_gmv_net-a.seller_gmv_net).slice(0,8), cols);
+      renderTable("bottomSellers", rows.slice().filter(r=>r.order_items>=20).sort((a,b)=>performanceScore(a)-performanceScore(b)).slice(0,8), cols);
+    }
+    function renderPortfolio(rows) {
+      svgScatter("portfolioScatter", rows, { limit:180 });
+      const paretoRows = rows.slice().sort((a,b)=>b.seller_gmv_net-a.seller_gmv_net);
+      let cum = 0; const total = paretoRows.reduce((s,r)=>s+r.seller_gmv_net,0) || 1;
+      svgLine("paretoCurve", paretoRows.map((r,i)=>{ cum += r.seller_gmv_net; return { label:String(i+1), y:cum/total*100 }; }), { color:palette.blue, label:"Cumulative GMV %" });
+      svgBars("tierBars", groupBy(rows, r=>r.seller_tier, r=>r.seller_gmv_net).sort((a,b)=>b.value-a.value), { color:palette.teal, format:moneyCompact });
+      const maxScore = Math.max(...rows.map(performanceScore), 1);
+      renderTable("leaderboard", rows.slice().sort((a,b)=>performanceScore(b)-performanceScore(a)).slice(0,12), [
+        { label:"Seller / Owner", render:sellerCell },
+        { label:"Tier", render:r=>esc(r.seller_tier) },
+        { label:"Score", render:r=>micro(performanceScore(r), maxScore, palette.teal, v=>v.toFixed(1)) },
+        { label:"GMV", num:true, render:r=>moneyCompact(r.seller_gmv_net) },
+        { label:"Rating", num:true, render:r=>r.avg_rating.toFixed(2) },
+        { label:"Trend", render:trendForSeller }
+      ]);
+    }
+    function renderGrowth(rows) {
+      const prevCat = categoryRows(prevMonth(state.month));
+      const currCat = categoryRows(state.month);
+      const prevMap = new Map(prevCat.map(r=>[r.category, r.gmv]));
+      const total = currCat.reduce((s,r)=>s+r.gmv,0) || 1;
+      const quad = currCat.map(r=>({...r, share:r.gmv/total, growth:prevMap.get(r.category) ? r.gmv/prevMap.get(r.category)-1 : 0}));
+      svgCategoryQuadrant("categoryQuadrant", quad);
+      const spendMap = new Map(adsRows().map(r=>[r.year_month, r.total_spend]));
+      const trend = DATA.months.map(m => ({ label:m, y:aggregate(trendRowsFor(m)).gmv, y2:spendMap.get(m) || 0 }));
+      svgLine("spendTrend", trend, { color:palette.orange, label:"GMV", y2:true, color2:palette.violet, label2:"Ads + voucher" });
+      const prevSeller = new Map(monthRows(prevMonth(state.month)).map(r=>[r.seller_id, r.seller_gmv_net]));
+      const opp = rows.filter(r => r.avg_rating >= 4.15 && r.stock_availability_rate >= .82)
+        .map(r => ({...r, growth:prevSeller.get(r.seller_id) ? r.seller_gmv_net/prevSeller.get(r.seller_id)-1 : 0}))
+        .sort((a,b)=>a.growth-b.growth).slice(0,12);
+      const maxGmv = Math.max(...opp.map(r=>r.seller_gmv_net), 1);
+      renderTable("opportunityTable", opp, [
+        { label:"Seller / Owner", render:sellerCell },
+        { label:"Platform", render:r=>esc(r.platform_name) },
+        { label:"GMV Signal", render:r=>micro(r.seller_gmv_net, maxGmv, platformColor[r.platform_name] || palette.blue, moneyCompact) },
+        { label:"Growth", num:true, render:r=>`<span class="${r.growth<0?"bad":"good"}">${pct(r.growth)}</span>` },
+        { label:"Trend", render:trendForSeller },
+        { label:"Action", render:r=>statusPill(actionFor(r), "warn") }
+      ]);
+    }
+    function svgCategoryQuadrant(target, rows) {
+      const el = document.getElementById(target);
+      if (!rows.length) { el.innerHTML = `<div class="empty">No category data</div>`; return; }
+      const w=620,h=250,ml=58,mr=24,mt=18,mb=44;
+      const maxX = Math.max(...rows.map(r=>r.share), .01)*1.2;
+      const minY = Math.min(...rows.map(r=>r.growth), 0);
+      const maxY = Math.max(...rows.map(r=>r.growth), .01);
+      const yRange = (maxY - minY) || 1;
+      const x = v => ml + (v/maxX)*(w-ml-mr);
+      const y = v => h-mb - ((v-minY)/yRange)*(h-mt-mb);
+      const body = rows.map(r => `<circle cx="${x(r.share)}" cy="${y(r.growth)}" r="10" fill="${palette.teal}" opacity=".72"><title>${esc(r.category)} | Share ${pct(r.share)} | Growth ${pct(r.growth)}</title></circle><text class="tick" x="${x(r.share)+13}" y="${y(r.growth)+4}">${esc(r.category)}</text>`).join("");
+      el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Category GMV share versus month-over-month growth"><line class="axis" x1="${ml}" x2="${w-mr}" y1="${h-mb}" y2="${h-mb}"/><line class="axis" x1="${ml}" x2="${ml}" y1="${mt}" y2="${h-mb}"/>${body}<text class="tick" x="${w/2}" y="${h-10}" text-anchor="middle">GMV share</text><text class="tick" x="12" y="${h/2}" transform="rotate(-90 12 ${h/2})" text-anchor="middle">MoM growth</text></svg>`;
+    }
+    function renderRisk(rows) {
+      const trend = DATA.months.map(m => { const a = aggregate(trendRowsFor(m)); return { label:m, y:a.cancellation*100, y2:(1-a.stock)*100 }; });
+      svgLine("riskTrend", trend, { color:palette.red, label:"Cancellation %", y2:true, color2:palette.amber, label2:"Stockout %" });
+      svgBars("reasonBars", reasonRows().map(r=>({name:r.cancellation_reason, value:r.items})).sort((a,b)=>b.value-a.value), { color:palette.red, format:num, limit:7 });
+      svgScatter("riskBubble", rows.slice().sort((a,b)=>riskScore(b)-riskScore(a)).slice(0,70), { limit:70 });
+      const riskRows = rows.filter(r=>r.order_items>=20).map(r=>({...r, risk:riskScore(r)})).sort((a,b)=>b.risk-a.risk).slice(0,14);
+      const maxRisk = Math.max(...riskRows.map(r=>r.risk), 1);
+      renderTable("riskTable", riskRows, [
+        { label:"Seller / Owner", render:sellerCell },
+        { label:"Priority", render:r=>statusPill(priorityFor(r)[0], priorityFor(r)[1]) },
+        { label:"Risk", render:r=>micro(r.risk, maxRisk, palette.red, v=>v.toFixed(1)) },
+        { label:"GMV", num:true, render:r=>moneyCompact(r.seller_gmv_net) },
+        { label:"Cancel", num:true, render:r=>`<span class="${r.cancellation_rate>.08?"bad":"warn"}">${pct(r.cancellation_rate)}</span>` },
+        { label:"Trend", render:trendForSeller },
+        { label:"Next Step", render:r=>esc(actionFor(r)) }
+      ]);
+    }
+    function render() {
+      const rows = monthRows();
+      renderKpis(rows);
+      if (state.view === "executive") renderExecutive(rows);
+      if (state.view === "portfolio") renderPortfolio(rows);
+      if (state.view === "growth") renderGrowth(rows);
+      if (state.view === "risk") renderRisk(rows);
+    }
+    populateFilters();
+    render();
+  </script>
+</div></div>
+  <script>
+    (() => {
+      const rootState = state;
+      const reset = document.createElement("button");
+      reset.type = "button";
+      reset.className = "reset-control";
+      reset.id = "resetFilters";
+      reset.textContent = "Reset lens";
+      document.querySelector(".filters").appendChild(reset);
+      function syncControls() {
+        document.getElementById("monthFilter").value = rootState.month;
+        document.getElementById("platformFilter").value = rootState.platform;
+        document.getElementById("tierFilter").value = rootState.tier;
+        document.getElementById("searchFilter").value = rootState.search;
+      }
+      function setPage(page) {
+        const id = String(page || "").replace(/^(01|02|03|04)[ -]*/,"").toLowerCase();
+        const button = Array.from(document.querySelectorAll("#nav button")).find(b => b.dataset.view === page || b.textContent.toLowerCase().includes(id));
+        if (button) button.click();
+        return rootState.view;
+      }
+      function setFilter(key, value) {
+        const map = {month:"monthFilter", platform:"platformFilter", tier:"tierFilter", search:"searchFilter"};
+        if (!map[key]) return false;
+        const control = document.getElementById(map[key]);
+        control.value = value;
+        control.dispatchEvent(new Event(key === "search" ? "input" : "change", {bubbles:true}));
+        return true;
+      }
+      function resetFilters() {
+        rootState.month = DATA.latestMonth; rootState.platform = "All"; rootState.tier = "All"; rootState.search = "";
+        syncControls(); render(); return {...rootState};
+      }
+      reset.addEventListener("click", resetFilters);
+      function chartFingerprint() {
+        const signature = root => Array.from(root.querySelectorAll("svg path,svg polyline,svg rect,svg circle,svg text,table tbody tr,.micro i")).map(el=>[el.tagName,el.getAttribute("d"),el.getAttribute("points"),el.getAttribute("x"),el.getAttribute("y"),el.getAttribute("cx"),el.getAttribute("cy"),el.getAttribute("r"),el.getAttribute("width"),el.getAttribute("height"),el.getAttribute("style"),el.textContent.trim()].join("|")).join("~");
+        const hash = value => { let h=2166136261;for(let i=0;i<value.length;i++)h=Math.imul(h^value.charCodeAt(i),16777619);return (h>>>0).toString(16); };
+        return Object.fromEntries(Array.from(document.querySelectorAll("[role=tabpanel]")).map(root=>[root.id,hash(signature(root))]));
+      }
+      window.previewState = rootState;
+      window.previewActions = Object.freeze({
+        setPage, setFilter, resetFilters,
+        getSummary: () => ({project:"07", page:rootState.view, filters:{month:rootState.month,platform:rootState.platform,tier:rootState.tier,search:rootState.search}, metrics:aggregate(monthRows())}),
+        getRows: () => monthRows().map(r => ({seller:r.seller_name,platform:r.platform_name,tier:r.seller_tier,gmv:r.seller_gmv_net,cancellation:r.cancellation_rate})),
+        getChartFingerprint: chartFingerprint
+      });
+      const qa = {ready:true,project:"07",layoutSource:"project-07-own-dashboard",pageCount:4,filterCount:4,kpiCount:6,hasReset:true,hasTable:true};
+      Object.defineProperty(qa,"chartFingerprint",{enumerable:true,get:()=>{const active=document.querySelector('[role="tabpanel"].active');return chartFingerprint()[active?.id]||"";}});
+      window.__dashboardQa = qa;
+    })();
+  </script>
+</body>
 </html>
