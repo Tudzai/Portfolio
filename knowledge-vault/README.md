@@ -48,7 +48,7 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
   lessons keep all eleven sections but show a curated core path first; full view reveals every supporting detail.
   Shorter lessons keep the safest beginner sections visible. References remain available in both.
 - Jump also provides continue reading, surprise discovery, a deterministic daily spark, saved lessons, reading size,
-  essential/full view, focus mode, a session-only 15-minute timer, theme access, and keyboard shortcuts without adding
+  essential/full view, focus mode, a session-only 15-minute timer, theme access, and the Ctrl/Cmd+K and Escape shortcuts without adding
   a separate control panel.
 - Theme Studio offers twelve palettes: Midnight, Pearl, Nebula, Aurora, Ember, Tide, Sakura, Solstice, Washi, Grove,
   Noir, and Atelier. Offline actions can shuffle the mood or match one preset to the current local hour. The selected

@@ -23,6 +23,42 @@ const forbidMatch = (value, pattern, label) => {
   if (pattern.test(value)) failures.push(label);
 };
 
+function hasBalancedCssBlocks(source) {
+  let depth = 0;
+  let quote = null;
+  let escaped = false;
+  let inComment = false;
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    const next = source[index + 1];
+    if (inComment) {
+      if (character === "*" && next === "/") {
+        inComment = false;
+        index += 1;
+      }
+      continue;
+    }
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === quote) quote = null;
+      continue;
+    }
+    if (character === "/" && next === "*") {
+      inComment = true;
+      index += 1;
+    } else if (character === '"' || character === "'") {
+      quote = character;
+    } else if (character === "{") {
+      depth += 1;
+    } else if (character === "}") {
+      depth -= 1;
+      if (depth < 0) return false;
+    }
+  }
+  return depth === 0 && !quote && !inComment;
+}
+
 function collectStartTags(source, tagName) {
   const cleaned = source.replace(/<!--[\s\S]*?-->/g, "");
   const lower = cleaned.toLocaleLowerCase("en-US");
@@ -72,7 +108,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260822-simple-themes1|vault.js?v=20260822-simple-themes1") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260822-detail-polish2|vault.js?v=20260822-detail-polish2") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -80,7 +116,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260822-simple-themes1") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260822-detail-polish2") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -92,6 +128,12 @@ forbidMatch(js, /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon)\b/,
 forbidMatch(js, /\b(?:innerHTML|outerHTML|insertAdjacentHTML|document\.write|eval|Function)\b/, "unsafe rendering sink");
 forbidMatch(js, /\bnew\s+Image\b|\.src\s*=|\blocation\s*=/, "background navigation or image exfiltration sink");
 forbidMatch(css, /@import|url\(\s*["']?(?:https?:)?\/\//i, "remote CSS dependency");
+if (!hasBalancedCssBlocks(css)) failures.push("balanced CSS blocks");
+requireMatch(
+  css,
+  /@media \(min-width: 2200px\)\s*\{\s*:root\s*\{[^{}]*\}\s*\}\s*\/\* Preset character/,
+  "wide-screen media boundary",
+);
 
 try {
   new Function(js);
@@ -574,6 +616,15 @@ requireMatch(js, /"khac-biet":\s*"Khác biệt theo bối cảnh"/, "lifestyle c
 ].forEach((token) => requireMatch(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `missing style contract: ${token}`));
 
 requireMatch(css, /@media\s*\(max-width:\s*720px\)\s*and\s*\(max-height:\s*760px\)/, "short-height mobile unlock layout");
+requireMatch(html, /<main\s+id="main-content"\s+tabindex="-1">/, "focusable locked skip-link destination");
+requireMatch(html, /<article\s+id="vault-content"[^>]*tabindex="-1"/, "focusable unlocked skip-link destination");
+requireMatch(js, /skipLink\?\.setAttribute\("href", "#vault-content"\)/, "unlocked skip-link destination");
+requireMatch(js, /skipLink\?\.addEventListener\("click"[\s\S]*?target\.focus\(\{ preventScroll: true \}\)/, "skip-link focus transfer");
+requireMatch(js, /layout\.append\(createLessonOutline\(entry\), body\)/, "responsive outline DOM order");
+requireMatch(js, /matchMedia\?\.\("\(max-width: 1080px\)"\)/, "compact sidebar runtime breakpoint");
+requireMatch(css, /@media\s*\(max-width:\s*1080px\)/, "compact sidebar CSS breakpoint");
+requireMatch(js, /responsiveMaximum\s*=\s*viewportWidth\s*<=\s*1320\s*\?\s*364\s*:\s*SIDEBAR_MAX_WIDTH/, "medium-width sidebar cap");
+forbidMatch(html, /<kbd>[GRDFE]<\/kbd>/, "unmodified single-key shortcut");
 requireMatch(css, /body\.essentials-mode\s+\.learning-layer-detail\s*\{[\s\S]*?display:\s*none\s*!important/, "essential view hides detail-only blocks");
 
 [js, schemaValidator, encryptTool, passwordVerifier].forEach((artifact, index) => {

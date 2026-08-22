@@ -175,6 +175,7 @@
 
   const unlockView = document.querySelector("[data-unlock-view]");
   const vaultView = document.querySelector("[data-vault-view]");
+  const skipLink = document.querySelector(".skip-link");
   const unlockCard = document.querySelector("[data-unlock-card]");
   const unlockForm = document.querySelector("[data-unlock-form]");
   const passwordInput = document.querySelector("[data-password-input]");
@@ -265,8 +266,6 @@
     focusTimerAnnouncedMinute: null,
     searchMatches: [],
     searchIndex: -1,
-    shortcutPrefix: "",
-    shortcutTimer: null,
     previousFocus: null,
     sidebarWidth: SIDEBAR_DEFAULT_WIDTH,
     sidebarResize: null,
@@ -1698,12 +1697,13 @@
   }
 
   function isCompactSidebar() {
-    return window.matchMedia?.("(max-width: 960px)").matches ?? false;
+    return window.matchMedia?.("(max-width: 1080px)").matches ?? false;
   }
 
   function sidebarMaximumWidth() {
     const viewportWidth = Number(window.innerWidth) || 1440;
-    return Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, Math.floor(viewportWidth * 0.44)));
+    const responsiveMaximum = viewportWidth <= 1320 ? 364 : SIDEBAR_MAX_WIDTH;
+    return Math.max(SIDEBAR_MIN_WIDTH, Math.min(responsiveMaximum, Math.floor(viewportWidth * 0.44)));
   }
 
   function clampSidebarWidth(value) {
@@ -2673,7 +2673,7 @@
     const references = renderReferences(entry.lesson, entry.collection.kind);
     references.classList.add("is-essential");
     body.append(references);
-    layout.append(body, createLessonOutline(entry));
+    layout.append(createLessonOutline(entry), body);
     fragment.append(layout, renderLessonNavigation(entry));
     return fragment;
   }
@@ -3555,12 +3555,9 @@
 
   function lockVault() {
     window.clearTimeout(state.toastTimer);
-    window.clearTimeout(state.shortcutTimer);
     stopFocusTimer();
     hideTermHintTooltip();
     state.toastTimer = null;
-    state.shortcutTimer = null;
-    state.shortcutPrefix = "";
     state.data = null;
     state.sourceMap = new Map();
     state.selectedId = null;
@@ -3593,6 +3590,7 @@
     passwordInput.type = "password";
     passwordToggle.textContent = "Show";
     passwordToggle.setAttribute("aria-label", "Show password");
+    skipLink?.setAttribute("href", "#main-content");
     document.body.classList.add("is-locked");
     document.body.classList.remove("sidebar-open");
     document.body.classList.remove("is-resizing-sidebar");
@@ -3655,6 +3653,7 @@
       document.body.classList.remove("is-locked");
       unlockView.hidden = true;
       vaultView.hidden = false;
+      skipLink?.setAttribute("href", "#vault-content");
       headerStatus.textContent = "Open · locally decrypted";
       if (curriculumMeta) curriculumMeta.textContent = `${data.collections.length} collections · ${allLessons().length} reading items`;
       renderHome({ focusHeading: true });
@@ -3958,6 +3957,14 @@
   focusButton?.addEventListener("click", () => setFocusMode(!state.focusMode));
   focusTimerButton?.addEventListener("click", toggleFocusTimer);
   focusTimerStopButton?.addEventListener("click", () => stopFocusTimer({ announce: true }));
+  skipLink?.addEventListener("click", (event) => {
+    const selector = skipLink.getAttribute("href");
+    const target = selector ? document.querySelector(selector) : null;
+    if (!(target instanceof HTMLElement)) return;
+    event.preventDefault();
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: "start" });
+  });
   shortcutsButton?.addEventListener("click", openShortcuts);
   shortcutsCloseButtons.forEach((button) => button.addEventListener("click", closeShortcuts));
   sidebarOpenButton?.addEventListener("click", () => {
@@ -4059,51 +4066,6 @@
         setFocusMode(false);
       }
       return;
-    }
-    const target = event.target;
-    const isTyping = target instanceof HTMLInputElement
-      || target instanceof HTMLTextAreaElement
-      || target?.isContentEditable;
-    if (isTyping || event.ctrlKey || event.metaKey || event.altKey) return;
-
-    const key = event.key.toLocaleLowerCase();
-    if (state.shortcutPrefix === "g") {
-      window.clearTimeout(state.shortcutTimer);
-      state.shortcutPrefix = "";
-      if (key === "h") {
-        event.preventDefault();
-        closeCompactSidebarForShortcut();
-        renderHome({ focusHeading: true });
-      } else if (key === "s") {
-        event.preventDefault();
-        closeCompactSidebarForShortcut();
-        renderBookmarksHome();
-      }
-      return;
-    }
-    if (key === "g") {
-      state.shortcutPrefix = "g";
-      state.shortcutTimer = window.setTimeout(() => {
-        state.shortcutPrefix = "";
-      }, 900);
-      return;
-    }
-    if (key === "r") {
-      event.preventDefault();
-      closeCompactSidebarForShortcut();
-      selectRandomLesson();
-    } else if (key === "d") {
-      event.preventDefault();
-      closeCompactSidebarForShortcut();
-      openDailySpark();
-    } else if (key === "f") {
-      event.preventDefault();
-      closeCompactSidebarForShortcut();
-      setFocusMode(!state.focusMode);
-    } else if (key === "e") {
-      event.preventDefault();
-      closeCompactSidebarForShortcut();
-      toggleReadingMode();
     }
   });
 
