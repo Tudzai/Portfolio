@@ -16,9 +16,9 @@
     />
     <title>Knowledge Library | Private Learning Space</title>
     <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-    <link rel="stylesheet" href="vault.css?v=20260822-simple-themes1" />
-    <script src="vault-data.js?v=20260822-simple-themes1" defer></script>
-    <script src="vault.js?v=20260822-simple-themes1" defer></script>
+    <link rel="stylesheet" href="vault.css?v=20260822-detail-polish2" />
+    <script src="vault-data.js?v=20260822-detail-polish2" defer></script>
+    <script src="vault.js?v=20260822-detail-polish2" defer></script>
   </head>
   <body class="is-locked">
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -36,7 +36,7 @@
       </div>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
       <section class="unlock-view" data-unlock-view aria-labelledby="unlock-title">
         <div class="unlock-intro">
           <h1 id="unlock-title">A quiet world of ideas waits inside.</h1>
@@ -183,7 +183,7 @@
             <output class="sr-only" data-focus-timer-live aria-live="polite" aria-atomic="true"></output>
 
             <div class="reader-wrap">
-              <article class="lesson-reader" data-lesson-reader></article>
+              <article id="vault-content" class="lesson-reader" data-lesson-reader tabindex="-1" aria-label="Library content"></article>
             </div>
           </div>
         </div>
@@ -220,12 +220,6 @@
         </div>
         <dl class="shortcut-list">
           <div><dt><kbd>Ctrl</kbd> <kbd>K</kbd></dt><dd>Jump anywhere</dd></div>
-          <div><dt><kbd>G</kbd> <kbd>H</kbd></dt><dd>Go to the library home</dd></div>
-          <div><dt><kbd>G</kbd> <kbd>S</kbd></dt><dd>Open saved lessons</dd></div>
-          <div><dt><kbd>R</kbd></dt><dd>Open a surprise lesson</dd></div>
-          <div><dt><kbd>D</kbd></dt><dd>Open today's daily spark</dd></div>
-          <div><dt><kbd>F</kbd></dt><dd>Toggle focus mode</dd></div>
-          <div><dt><kbd>E</kbd></dt><dd>Toggle essential view</dd></div>
           <div><dt><kbd>Esc</kbd></dt><dd>Close the active panel</dd></div>
         </dl>
       </section>
