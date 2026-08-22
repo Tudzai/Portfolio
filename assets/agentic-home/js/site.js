@@ -279,4 +279,91 @@
       getCurrentScene: () => slideScenes.get(orderedSlides[currentSlide]) ?? 0,
     };
   }
+
+  const article = document.querySelector('.aabw-article-page article');
+  if (article) {
+    const articleSections = [...article.querySelectorAll('.article-section')]
+      .map((section) => {
+        const heading = section.querySelector('h2[id]');
+        if (!heading || !section.getClientRects().length) return null;
+        const kicker = section.querySelector('.section-kicker');
+        return {
+          id: heading.id,
+          label: kicker?.textContent.trim() || heading.textContent.trim(),
+          section,
+        };
+      })
+      .filter(Boolean);
+
+    document.querySelectorAll('[data-article-toc]').forEach((toc) => {
+      const fragment = document.createDocumentFragment();
+      articleSections.forEach(({ id, label }, index) => {
+        const link = document.createElement('a');
+        link.href = `#${id}`;
+
+        const number = document.createElement('span');
+        number.textContent = String(index + 1).padStart(2, '0');
+        const text = document.createElement('span');
+        text.textContent = label;
+        link.append(number, text);
+
+        link.addEventListener('click', () => {
+          const mobileToc = link.closest('details');
+          if (mobileToc) mobileToc.open = false;
+        });
+        fragment.append(link);
+      });
+      toc.replaceChildren(fragment);
+    });
+
+    document.querySelectorAll('.article-mobile-toc summary span').forEach((count) => {
+      count.textContent = `${articleSections.length} ${articleSections.length === 1 ? 'section' : 'sections'}`;
+    });
+
+    const articleHeader = document.querySelector('[data-header]');
+    let progressBar = document.querySelector('[data-article-progress]');
+    if (articleHeader && !progressBar) {
+      const progressTrack = document.createElement('div');
+      progressTrack.className = 'article-progress';
+      progressTrack.setAttribute('aria-hidden', 'true');
+      progressBar = document.createElement('span');
+      progressBar.dataset.articleProgress = '';
+      progressTrack.append(progressBar);
+      articleHeader.append(progressTrack);
+    }
+
+    const setActiveSection = (id) => {
+      document.querySelectorAll('[data-article-toc] a').forEach((link) => {
+        const active = link.getAttribute('href') === `#${id}`;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    let articleFrame = 0;
+    const syncArticleNavigation = () => {
+      articleFrame = 0;
+      const marker = (articleHeader?.offsetHeight || 72) + 48;
+      let activeSection = articleSections[0];
+      articleSections.forEach((candidate) => {
+        if (candidate.section.getBoundingClientRect().top <= marker) activeSection = candidate;
+      });
+      if (activeSection) setActiveSection(activeSection.id);
+
+      if (progressBar) {
+        const articleTop = article.getBoundingClientRect().top + window.scrollY;
+        const articleDistance = Math.max(article.offsetHeight - window.innerHeight, 1);
+        const progress = Math.min(Math.max((window.scrollY - articleTop) / articleDistance, 0), 1);
+        progressBar.style.transform = `scaleX(${progress})`;
+      }
+    };
+    const scheduleArticleNavigation = () => {
+      if (articleFrame) return;
+      articleFrame = window.requestAnimationFrame(syncArticleNavigation);
+    };
+    window.addEventListener('scroll', scheduleArticleNavigation, { passive: true });
+    window.addEventListener('resize', scheduleArticleNavigation);
+    syncArticleNavigation();
+  }
 })();

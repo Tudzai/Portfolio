@@ -15,6 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg?v=at-orbit-harmony-20260620" />
     <link rel="stylesheet" href="../../styles.css" />
       <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/tokens.css?v=routes-20260818-responsive-all1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/base.css?v=routes-20260811-annotated1">
@@ -22,9 +23,10 @@
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
     <link rel="stylesheet" data-agentic-theme href="../../assets/agentic-home/css/templates/hub.css?v=routes-20260816-fpa-simple2">
-      <script src="../../analytics.js?v=posthog-replay-fix-20260816"></script>
+    <link rel="stylesheet" href="../../assets/agentic-home/css/featured-route-polish.css?v=featured-routes-20260822-9">
+      <script defer src="../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body class="detail-page" data-stage-family="fpa" data-stage-template="hub">
+  <body class="detail-page polished-route" data-stage-family="fpa" data-stage-template="hub">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -32,7 +34,7 @@
           <span class="brand-mark stage-shell-brand-mark" aria-hidden="true"></span>
           <span class="brand-copy stage-shell-brand-copy"><strong>Truong Dinh Anh Tu</strong><small>Finance &times; AI</small></span>
         </a>
-        <div class="header-actions stage-shell-actions">
+        <nav class="header-actions stage-shell-actions" aria-label="Primary">
           <button class="menu-button stage-shell-menu-button" type="button" data-stage-menu-toggle aria-expanded="false"
             aria-controls="primary-navigation" aria-label="Open capabilities menu">
             <span>Capabilities</span><i aria-hidden="true"></i>
@@ -41,7 +43,7 @@
           <a class="header-link" href="../../index.html#contact">Contact</a>
           <a class="header-link" href="../../blog/index.html">Blog</a>
           <a class="nav-cv" href="../../cv.html">View CV</a>
-        </div>
+        </nav>
         <nav class="stage-shell-menu" id="primary-navigation" data-stage-menu aria-label="Capabilities" aria-hidden="true" inert>
           <p class="nav-panel-label">Capabilities</p>
           <div class="capability-nav stage-shell-capabilities">
@@ -61,128 +63,134 @@
         </nav>
       </div>
     </header>
-    <div id="main-content" tabindex="-1"></div>
-    <main class="page-shell" data-stage-content>
+    <main id="main-content" class="page-shell" data-stage-content tabindex="-1">
 <section class="detail-hero decision-hub-hero fpa-library-hero">
         <div class="decision-hub-copy">
           <p class="breadcrumb"><a href="../../index.html">Home</a> / Decision Cases</p>
-          <p class="eyebrow">Executive FP&amp;A Decision Support</p>
-          <h1>Real operating decisions, summarized without exposing company data.</h1>
+          <p class="eyebrow">Sanitized real-work evidence</p>
+          <h1>Real FP&amp;A work, distilled into decision evidence.</h1>
           <p>
-            These public summaries describe real FP&amp;A support work from my previous roles at the decision level:
-            the question management needed to answer, the analysis method, the scale of work, and the action enabled.
-            Company files, names, raw comments, screenshots, and source-level financial values are intentionally excluded.
+            Four public-safe summaries from previous roles—each shows the management question, analysis lens,
+            operating scale, and action enabled. Company names, source files, raw comments, and financial detail stay private.
           </p>
+          <dl class="decision-hero-proof" aria-label="Decision case proof points">
+            <div><dt>Decision cases</dt><dd>4</dd></div>
+            <div><dt>Largest analysis</dt><dd>212,573 rows</dd></div>
+            <div><dt>Operating scope</dt><dd>11 departments + 3 offices</dd></div>
+            <div><dt>Review standard</dt><dd>CFO-validated</dd></div>
+          </dl>
           <div class="hero-actions">
             <a class="button primary" href="#decision-cases">
               Review the cases
             </a>
             <a class="button secondary detail-secondary" href="../python-automation/index.html">
-              See automation proof
+              See automation cases
             </a>
           </div>
         </div>
         <aside class="decision-hub-panel" aria-label="Real-work evidence boundary">
-          <p class="decision-hub-panel-label">What this page shows</p>
+          <p class="decision-hub-panel-label">How to read each case</p>
           <ol class="decision-hub-steps">
-            <li><span>01</span><div><strong>Real work</strong><small>FP&amp;A analysis completed in my previous roles.</small></div></li>
-            <li><span>02</span><div><strong>Decision evidence</strong><small>The question, method, scale, action, and outcome.</small></div></li>
-            <li><span>03</span><div><strong>Public-safe summary</strong><small>Confidential source material and identities stay private.</small></div></li>
+            <li><span>01</span><div><strong>Management question</strong><small>What the business needed finance to resolve.</small></div></li>
+            <li><span>02</span><div><strong>Evidence and scale</strong><small>The operating lens and scope behind the call.</small></div></li>
+            <li><span>03</span><div><strong>Action and result</strong><small>What changed, who used it, and what followed.</small></div></li>
           </ol>
-          <p class="decision-hub-assurance">Real work &middot; sanitized for public view</p>
+          <p class="decision-hub-assurance">Public-safe &middot; no company files exposed</p>
         </aside>
       </section>
 
       <section class="detail-section" id="decision-cases">
         <div class="section-heading decision-cases-heading">
           <div>
-            <h2>Real FP&amp;A work from previous roles.</h2>
-            <p>Four sanitized summaries showing the question, analysis, scale, action, and outcome.</p>
+            <p class="section-kicker">Decision library</p>
+            <h2>Four decisions. Four management questions.</h2>
+            <p>Scan the question, evidence, operating scale, and action—not a gallery of disconnected dashboards.</p>
           </div>
         </div>
         <div class="decision-case-grid real-decision-grid">
           <article class="decision-card featured">
-            <div class="case-icon"><i data-lucide="network"></i></div>
-            <p class="case-label">CFO / BOD decision support</p>
-            <h2>HCM operating diagnosis and action plan</h2>
-            <p>
-              Combined interviews across 11 departments and 3 satellite offices with a 3-year operating dataset to
-              identify process bottlenecks, cross-team friction, and management actions for branch improvement.
+            <span class="case-number" aria-hidden="true">01</span>
+            <p class="case-label">CFO / Board decision support</p>
+            <h3>Ho Chi Minh City operating diagnosis</h3>
+            <p class="decision-card-context">
+              Synthesized interviews across 11 departments and three offices with three years of operating data to
+              isolate branch bottlenecks and the management actions needed to address them.
             </p>
             <dl class="mini-metrics">
               <div><dt>Source work</dt><dd>Interviews + data</dd></div>
-              <div><dt>Data scale</dt><dd>212,573 rows / 80+ cols</dd></div>
+              <div><dt>Data scale</dt><dd>212,573 rows / 80+ fields</dd></div>
               <div><dt>Management use</dt><dd>CFO-validated pack</dd></div>
-              <div><dt>5M result</dt><dd>Revenue +21% / EBIT +5%</dd></div>
+              <div><dt>Vs target, first 5 months</dt><dd>Revenue +21% / operating profit +5%</dd></div>
             </dl>
-            <p>
-              Decision value: turned disconnected pain points into a structured executive narrative that could be
-              reviewed by finance leadership and translated into implementation priorities. After HCM missed target
-              last year, the first five months are now tracking above target on both revenue and EBIT.
+            <p class="decision-card-outcome">
+              <span>Decision value</span>
+              Turned cross-functional pain points into a CFO-validated plan. After missing its prior target, the
+              branch beat both revenue and EBIT targets in the first five months.
             </p>
           </article>
 
           <article class="decision-card">
-            <div class="case-icon"><i data-lucide="chart-no-axes-combined"></i></div>
+            <span class="case-number" aria-hidden="true">02</span>
             <p class="case-label">Quarterly sales governance</p>
-            <h2>Sales performance review for branch directors</h2>
-            <p>
-              Built a recurring view of salesperson performance so office leadership can understand output quality,
-              identify support needs, and manage long-running underperformance before it affects branch stability.
+            <h3>Sales performance review for branch directors</h3>
+            <p class="decision-card-context">
+              Built a quarterly performance view so office directors could distinguish coaching needs, coverage gaps,
+              and persistent underperformance.
             </p>
             <dl class="mini-metrics">
               <div><dt>Cadence</dt><dd>Quarterly</dd></div>
               <div><dt>Audience</dt><dd>Office directors</dd></div>
               <div><dt>Action</dt><dd>Coach / rebalance</dd></div>
             </dl>
-            <p>
-              Decision value: helped leaders shift from anecdotal sales review to a consistent evidence base for
-              coaching, coverage, target pressure, and team optimization.
+            <p class="decision-card-outcome">
+              <span>Decision value</span>
+              Replaced anecdotal reviews with consistent evidence for coaching, target pressure, coverage, and team
+              rebalancing.
             </p>
           </article>
 
           <article class="decision-card">
-            <div class="case-icon"><i data-lucide="users-round"></i></div>
+            <span class="case-number" aria-hidden="true">03</span>
             <p class="case-label">Customer margin optimization</p>
-            <h2>Low-margin customer and resource load review</h2>
-            <p>
-              Reviewed customer margin and operating load to identify accounts that consumed heavy company resources
-              without enough contribution, especially where back-office capacity was already under pressure.
+            <h3>Low-margin customer and resource load review</h3>
+            <p class="decision-card-context">
+              Mapped customer margin against service effort to expose accounts consuming disproportionate back-office
+              capacity.
             </p>
             <dl class="mini-metrics">
               <div><dt>Lens</dt><dd>Customer economics</dd></div>
               <div><dt>Constraint</dt><dd>Operational load</dd></div>
               <div><dt>Action</dt><dd>Reprice / prioritize</dd></div>
             </dl>
-            <p>
-              Decision value: supported customer-level prioritization, repricing discussions, service-level resets,
-              and resource-allocation choices aimed at protecting margin and reducing support overload.
+            <p class="decision-card-outcome">
+              <span>Decision value</span>
+              Focused repricing, service resets, and capacity on accounts where contribution and workload were out of
+              balance.
             </p>
           </article>
 
           <article class="decision-card">
-            <div class="case-icon"><i data-lucide="wallet-cards"></i></div>
-            <p class="case-label">Credit limit and AR control</p>
-            <h2>Customer credit limit review for cash protection</h2>
-            <p>
-              Reviewed customer credit exposure so accounting, sales, and office leadership could set or update debt
-              limits, align on collection follow-up, and reduce the risk of customers occupying company working capital.
+            <span class="case-number" aria-hidden="true">04</span>
+            <p class="case-label">Credit limits and receivables control</p>
+            <h3>Customer credit limit review for cash protection</h3>
+            <p class="decision-card-context">
+              Mapped customer credit exposure so finance, sales, and office leaders could reset limits and coordinate
+              collection follow-up.
             </p>
             <dl class="mini-metrics">
-              <div><dt>Cutoff</dt><dd>31.03.2026</dd></div>
+              <div><dt>Cutoff</dt><dd>31 Mar 2026</dd></div>
               <div><dt>Audience</dt><dd>Finance + sales</dd></div>
               <div><dt>Action</dt><dd>Limit / collect</dd></div>
             </dl>
-            <p>
-              Decision value: gave managers a tighter control layer for customer credit, cash-flow protection, and
-              collaboration between accounting and sales on overdue balances.
+            <p class="decision-card-outcome">
+              <span>Decision value</span>
+              Created a shared control point for credit limits, cash protection, and overdue collection ownership.
             </p>
           </article>
         </div>
         <p class="portfolio-note">
-          Sanitization rule: this page names the business problem, scope, and decision supported. It does not publish
-          company workbooks, raw interview notes, customer names, salesperson names, internal comments, or
-          source-level financial values.
+          <strong>Public-safe boundary.</strong> This page names the problem, scope, and decision supported. Company
+          workbooks, interview notes, customer and employee identities, internal comments, and source-level values are excluded.
         </p>
       </section>
     </main>
@@ -195,7 +203,7 @@
         </a>
       </div>
     </footer>
-      <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=routes-20260810-hybrid1"></script>
-    <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=routes-20260818-back-to-top1"></script>
+      <script data-agentic-theme src="../../assets/agentic-home/js/navigation.js?v=featured-routes-20260822-1"></script>
+    <script data-agentic-theme src="../../assets/agentic-home/js/site.js?v=featured-routes-20260822-1"></script>
   </body>
 </html>
