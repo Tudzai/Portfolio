@@ -414,7 +414,7 @@ body.blog-editorial-page .blog-editorial-hero h1 {
 
 @media (max-width: 620px) {
   body.blog-editorial-page main.blog-editorial-main {
-    width: min(100% - 28px, 520px);
+    width: var(--stage-shell);
     gap: 18px;
     padding: 20px 0 48px;
   }

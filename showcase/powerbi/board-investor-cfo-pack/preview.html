@@ -783,6 +783,161 @@
         padding: 12px;
       }
     }
+
+    @media (max-width: 620px) {
+      .preview-frame {
+        min-height: 100vh;
+        padding: 10px;
+        overflow: visible;
+      }
+
+      .dashboard-shell {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0;
+      }
+
+      .dashboard {
+        display: grid;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        gap: 10px;
+        padding: 10px;
+        overflow: visible;
+        box-shadow: none;
+        transform: none !important;
+      }
+
+      .sidebar {
+        position: static;
+        display: grid;
+        width: auto;
+        height: auto;
+        gap: 10px;
+        padding: 14px;
+      }
+
+      .signature {
+        height: auto;
+        min-height: 60px;
+        margin: 0;
+      }
+
+      .signature svg {
+        width: 44px;
+        height: 44px;
+      }
+
+      .nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin: 0;
+      }
+
+      .nav button {
+        min-width: 0;
+        height: auto;
+        min-height: 44px;
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 8px 5px;
+        text-align: center;
+      }
+
+      .nav button::before,
+      .rail-line {
+        display: none;
+      }
+
+      .lens-group {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 0 !important;
+        padding: 0;
+      }
+
+      .lens-title,
+      .reset-btn {
+        grid-column: 1 / -1;
+      }
+
+      .filter-control,
+      .reset-btn {
+        margin: 0;
+      }
+
+      .reset-btn {
+        min-height: 44px;
+      }
+
+      .as-of {
+        position: static;
+        width: auto;
+      }
+
+      .content {
+        position: static;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .page-title,
+      .pack-id,
+      .chip-row {
+        position: static;
+        width: auto;
+        height: auto;
+      }
+
+      .page-title {
+        padding: 8px 4px 0;
+        font-size: 1.35rem;
+        line-height: 1.15;
+        white-space: normal;
+      }
+
+      .pack-id {
+        justify-content: space-between;
+        padding-inline: 4px;
+      }
+
+      .chip-row {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        padding-top: 8px;
+      }
+
+      .chip {
+        min-width: 0;
+        min-height: 44px;
+        flex: 1 1 128px;
+      }
+
+      .kpi-card,
+      .panel {
+        position: relative !important;
+        inset: auto !important;
+        width: auto !important;
+        height: auto !important;
+        min-height: 0;
+      }
+
+      .kpi-card {
+        padding: 12px 14px;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+
+      .chart-svg {
+        height: auto;
+        min-height: 180px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1042,15 +1197,21 @@
       const style = window.getComputedStyle(frame);
       const horizontalPadding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const availableWidth = Math.max(320, frame.clientWidth - horizontalPadding);
+      if (window.innerWidth <= 620) {
+        document.documentElement.style.setProperty("--dashboard-scale", "1");
+        shell.style.removeProperty("width");
+        shell.style.removeProperty("height");
+        updateQaState();
+        return;
+      }
       const naturalScale = availableWidth / 1280;
-      const mobileReadableFloor = availableWidth < 720 ? 0.58 : 0;
       const viewportAspect = window.innerWidth / Math.max(1, window.innerHeight);
       const highDensityCap = viewportAspect <= 2 && window.innerWidth >= 3200 && window.innerHeight >= 1800
         ? 2
         : viewportAspect <= 2 && window.innerWidth >= 2200 && window.innerHeight >= 1200
           ? 4 / 3
           : 1;
-      const scale = Math.min(highDensityCap, Math.max(naturalScale, mobileReadableFloor));
+      const scale = Math.min(highDensityCap, naturalScale);
       document.documentElement.style.setProperty("--dashboard-scale", scale.toFixed(4));
       shell.style.width = `${Math.round(1280 * scale)}px`;
       shell.style.height = `${Math.round(720 * scale)}px`;

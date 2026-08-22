@@ -282,3 +282,9 @@ body[data-stage-template="case"] .text-link {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 900px) {
+  body[data-stage-template="case"] .mini-metrics {
+    grid-template-columns: 1fr;
+  }
+}

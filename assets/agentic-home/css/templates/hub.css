@@ -197,7 +197,7 @@ body[data-stage-template="hub"] :is(.project-card.featured, .decision-card.featu
   body[data-stage-template="hub"][data-stage-family="automation"],
   body[data-stage-template="hub"][data-stage-family="models"]
 ) main[data-stage-content] {
-  width: min(1180px, calc(100% - 48px));
+  width: var(--stage-shell);
   margin-inline: auto;
   padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(4rem, 7vw, 7rem);
 }
@@ -706,6 +706,14 @@ body[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content
   color: var(--stage-white);
 }
 
+body[data-stage-template="hub"][data-stage-family="automation"] main[data-stage-content] > .decision-hub-hero:first-child {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.24), transparent 28%),
+    radial-gradient(circle at 62% 110%, rgba(124, 58, 237, 0.34), transparent 42%),
+    linear-gradient(135deg, #1d1428 0%, #2b1839 58%, #3b1950 100%);
+  color: var(--stage-white);
+}
+
 body[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] .decision-card.featured {
   background: var(--stage-ink);
   color: var(--stage-white);
@@ -971,7 +979,7 @@ body[data-stage-family="models"] .model-hero-trust span {
     body[data-stage-template="hub"][data-stage-family="automation"],
     body[data-stage-template="hub"][data-stage-family="models"]
   ) main[data-stage-content] {
-    width: calc(100% - 28px);
+    width: var(--stage-shell);
     padding-top: 14px;
   }
 

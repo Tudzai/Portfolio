@@ -16,7 +16,7 @@ body.simple-three-page .stage-route-intro {
 
 body.simple-three-page main[data-stage-content] {
   display: grid;
-  width: min(1180px, calc(100% - 48px));
+  width: var(--stage-shell);
   gap: 24px;
   margin-inline: auto;
   padding: 32px 0 72px;
@@ -800,7 +800,7 @@ body.budget-model-page .budget-preview-grid figcaption strong {
   }
 
   body.simple-three-page main[data-stage-content] {
-    width: min(100% - 28px, 520px);
+    width: var(--stage-shell);
     gap: 16px;
     padding: 20px 0 48px;
   }

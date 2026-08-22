@@ -56,7 +56,7 @@ body[data-stage-template="utility"] main[data-stage-content] p a {
 
 @media (max-width: 760px) {
   body[data-stage-template="utility"] > main[data-stage-content] {
-    width: min(100% - 32px, 1240px);
+    width: var(--stage-shell);
     padding-block: var(--stage-template-section-gap);
   }
 }

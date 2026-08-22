@@ -371,7 +371,7 @@ body.board-pack-page .board-note a:hover {
 
 @media (max-width: 620px) {
   body.board-pack-page[data-stage-template="case"] > main.board-case[data-stage-content] {
-    width: min(100% - 24px, 1240px);
+    width: var(--stage-shell);
   }
 
   body.board-pack-page .board-intro {

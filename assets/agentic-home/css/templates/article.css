@@ -363,7 +363,7 @@ body[data-stage-template="article"].aabw-recap-page {
 }
 
 body[data-stage-template="article"].aabw-recap-page main.blog-page {
-  width: min(1180px, calc(100% - 48px));
+  width: var(--stage-shell);
   margin-inline: auto;
   padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(4rem, 7vw, 7rem);
 }
@@ -614,7 +614,7 @@ body[data-stage-template="article"].aabw-recap-page main[data-stage-content] .ar
 
 @media (max-width: 700px) {
   body[data-stage-template="article"].aabw-recap-page main.blog-page {
-    width: calc(100% - 28px);
+    width: var(--stage-shell);
     padding-top: 14px;
   }
 

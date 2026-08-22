@@ -6,7 +6,7 @@ body[data-stage-template="cv"] {
 }
 
 body[data-stage-template="cv"] > main.cv-shell[data-stage-content] {
-  width: min(1120px, calc(100% - 48px));
+  width: var(--stage-shell);
   margin-inline: auto;
   padding: clamp(1.5rem, 3vw, 2.75rem) 0 var(--stage-template-section-gap);
 }
@@ -197,7 +197,7 @@ body[data-stage-template="cv"] :is(.cv-viewer-section iframe, .cv-viewer) {
 
 @media (max-width: 560px) {
   body[data-stage-template="cv"] > main.cv-shell[data-stage-content] {
-    width: calc(100% - 28px);
+    width: var(--stage-shell);
     padding-top: 14px;
   }
 

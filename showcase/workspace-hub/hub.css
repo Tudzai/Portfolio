@@ -20,7 +20,7 @@
 }
 
 .workspace-hub-page main[data-stage-content] {
-  width: min(1320px, calc(100% - 48px));
+  width: var(--stage-shell);
 }
 
 body.workspace-hub-page[data-stage-template="case"] main[data-stage-content] > .hub-hero:first-child {
@@ -3611,7 +3611,7 @@ body:is(.hub-demo-active, .hub-app-mode) .hub-exit-demo,
   }
 
   .workspace-hub-page main[data-stage-content] {
-    width: min(100% - 24px, 1320px);
+    width: var(--stage-shell);
   }
 
   body.workspace-hub-page[data-stage-template="case"] main[data-stage-content] > .hub-hero:first-child {
