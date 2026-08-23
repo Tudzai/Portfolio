@@ -257,7 +257,7 @@ const expectedOpenAccessVisuals = [
   ["architecture-design-living:3:1", "architecture-farnsworth.webp", "36c067b7fba554de34295450fbbf6076f3608231a65a2126d3a3c49b69182f39"],
   ["architecture-design-living:4:1", "architecture-thonet.webp", "4d09968fd03105f8aa361e6a596769fe454414bf65aaecad6352d5caf1c3a122"],
 ];
-const openVisualLiteral = js.match(/const\s+OPEN_ACCESS_VISUALS\s*=\s*Object\.freeze\(\{([\s\S]*?)\n\s*\}\);\n\s*const\s+COLLECTION_GROUPS/u);
+const openVisualLiteral = js.match(/const\s+OPEN_ACCESS_VISUALS\s*=\s*Object\.freeze\(\{([\s\S]*?)\r?\n\s*\}\);\r?\n\s*const\s+COLLECTION_GROUPS/u);
 if (!openVisualLiteral) {
   failures.push("open-access lesson visual manifest");
 } else {
