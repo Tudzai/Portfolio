@@ -16,18 +16,17 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg?v=at-orbit-harmony-20260620" />
-    <link rel="stylesheet" href="../../../styles.css" />
-      <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260818-responsive-all1">
+    <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/tokens.css?v=routes-20260818-responsive-all1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/base.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/shell.css?v=routes-20260813-atmark3">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/components.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates.css?v=routes-20260813-inset1">
     <link rel="stylesheet" data-agentic-theme href="../../../assets/agentic-home/css/templates/case.css?v=routes-20260810-hybrid1">
     <link rel="stylesheet" href="../../../assets/agentic-home/css/templates/simple-three.css?v=three-core-20260812-4">
-    <link rel="stylesheet" href="../../../assets/agentic-home/css/featured-route-polish.css?v=featured-routes-20260822-9">
+    <link rel="stylesheet" href="../../../assets/agentic-home/css/monthly-reporting.css?v=monthly-reporting-20260823-12">
       <script defer src="../../../analytics.js?v=posthog-replay-fix-20260816"></script>
   </head>
-  <body class="detail-page simple-three-page polished-route" data-stage-family="automation" data-stage-template="case">
+  <body class="detail-page simple-three-page polished-route monthly-reporting-page bi-inspired-route" data-stage-family="automation" data-stage-template="case">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header stage-shell-header" data-stage-shell data-header>
       <div class="page-shell header-inner stage-shell-inner">
@@ -65,184 +64,222 @@
       </div>
     </header>
     <main id="main-content" class="page-shell" data-stage-content tabindex="-1">
-<section class="detail-hero python-detail-hero simple-automation-hero" data-core-section="hero">
+      <nav class="automation-breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Python Automation</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Monthly Reporting Pipeline</span>
+      </nav>
+      <section class="detail-hero python-detail-hero simple-automation-hero" data-core-section="hero" aria-labelledby="pipeline-title">
+        <div class="automation-hero-overview">
         <div class="simple-automation-copy">
-          <p class="breadcrumb"><a href="../index.html">Python Automation</a> / Monthly Reporting Pipeline</p>
-          <p class="eyebrow">Public-safe automation case</p>
-          <h1>A Python pipeline for the monthly FP&amp;A close.</h1>
+          <p class="eyebrow">Project 02 &middot; Python automation &middot; Synthetic data</p>
+          <h1 id="pipeline-title">Monthly <span>Reporting Pipeline</span></h1>
           <p class="automation-lede">
-            A synthetic-data workflow that merges monthly inputs, validates mappings, reconciles actuals to plan,
-            and drafts a management brief—while keeping finance review gates visible.
+            Three Python scripts validate and map monthly files, build KPI and gross-profit-versus-plan packs, and
+            draft the next review question. Finance confirms the driver and action.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#workflow">
-              Review the workflow
+            <a class="button primary" href="#reporting-demo">
+              Watch 1:32 demo
               <span aria-hidden="true">&darr;</span>
             </a>
-            <a class="button quiet" href="src/merge_monthly_reports.py">
-              Inspect Python source
-              <span aria-hidden="true">&nearr;</span>
-            </a>
-          </div>
-          <div class="detail-hero-grid" aria-label="Pipeline proof points">
-            <div class="metric-tile"><span>3</span><p>Finance outputs</p></div>
-            <div class="metric-tile"><span>4</span><p>Validation checks</p></div>
-            <div class="metric-tile"><span>1</span><p>Reconciled output</p></div>
-            <div class="metric-tile"><span>0</span><p>Sensitive data</p></div>
           </div>
         </div>
-        <figure class="simple-demo-hook">
-          <video
-            id="reporting-pipeline-video"
-            class="case-video"
-            controls
-            playsinline
-            preload="metadata"
-            data-autoplay="false"
-            poster="../fpa-monthly-reporting-demo/assets/fpa-monthly-reporting-remotion-poster.jpg"
-            aria-label="Automation demo moving from raw finance data through Python to reports and insights"
-            aria-describedby="reporting-demo-caption"
-          >
-            <source src="../fpa-monthly-reporting-demo/assets/fpa-automation-demo.mp4" type="video/mp4" />
-            Your browser does not support embedded video.
-          </video>
-          <figcaption class="automation-demo-caption" id="reporting-demo-caption">
-            <span>01:32 guided demo</span>
-            <span>Synthetic inputs &rarr; finance review pack</span>
-          </figcaption>
-        </figure>
-      </section>
-
-      <section class="detail-section">
-        <div class="python-story-layout">
-          <article class="memo-card">
-            <p class="case-label">Business problem</p>
-            <h3>Monthly reporting creates repetitive merge, mapping, and variance checks before analysis can start.</h3>
-            <p>
-              The manual version of this workflow is easy to break: different source files, inconsistent service
-              labels, repeated pivot tables, and last-minute actual-vs-plan checks. This sample shows how I move those
-              recurring steps into Python while keeping finance review points visible.
-            </p>
-          </article>
-          <article class="memo-card accent-memo">
-            <p class="case-label">What the code demonstrates</p>
-            <ul class="action-list">
-              <li><strong>Ingestion:</strong> reads multiple period files from one configured source folder.</li>
-              <li><strong>Validation:</strong> blocks missing columns, duplicates, and unmapped service labels.</li>
-              <li><strong>Transformation:</strong> creates clean dimensions for office, service group, and area.</li>
-              <li><strong>Output:</strong> writes summary tables, ratio packs, and a brief draft for review.</li>
-            </ul>
-          </article>
+        <div class="detail-hero-grid" aria-label="Pipeline proof points">
+          <div class="metric-tile"><p>KPI rows</p><span>8</span><small>Compact public reference</small></div>
+          <div class="metric-tile"><p>Flagged for review</p><span>4</span><small>Below the 95% threshold</small></div>
+          <div class="metric-tile"><p>Stop controls</p><span>3</span><small>Before downstream output</small></div>
+          <div class="metric-tile"><p>Decision gate</p><span>Human</span><small>Driver, owner, and action</small></div>
         </div>
-      </section>
-
-      <section class="detail-section" id="workflow" data-core-section="evidence">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Workflow</p>
-            <h2>From monthly files to a finance-ready brief.</h2>
-          </div>
-          <a class="text-link" href="README.md">Open the documented process <span aria-hidden="true">&nearr;</span></a>
         </div>
-        <div class="workflow-and-command">
-          <ol class="process-flow code-flow" aria-label="Monthly reporting pipeline flow">
-            <li class="flow-step"><span>01</span><div><strong>Ingest</strong><p>Read synthetic monthly files.</p></div></li>
-            <li class="flow-step"><span>02</span><div><strong>Map</strong><p>Apply service, office, and area dimensions.</p></div></li>
-            <li class="flow-step"><span>03</span><div><strong>Summarize</strong><p>Aggregate revenue, gross profit, volume, and jobs.</p></div></li>
-            <li class="flow-step"><span>04</span><div><strong>Compare</strong><p>Build actual vs plan and prior-period views.</p></div></li>
-            <li class="flow-step"><span>05</span><div><strong>Brief</strong><p>Generate an FP&amp;A insight draft for human review.</p></div></li>
-          </ol>
-          <aside class="python-command-card" aria-label="Command line run path">
-            <div class="code-window-bar">
-              <span></span>
-              <span></span>
-              <span></span>
-              <strong>run order</strong>
+        <div class="automation-demo-showcase" id="reporting-demo">
+          <div class="section-heading automation-demo-intro">
+            <div>
+              <p class="section-kicker">1:32 walkthrough</p>
+              <h2>Source files in. Review agenda out.</h2>
+              <p class="section-deck">360-row illustrative demo &middot; same control pattern as the compact public reference.</p>
             </div>
-            <pre><code>python src/merge_monthly_reports.py
-python src/build_ratio_pack.py
-python src/generate_insight_brief.py</code></pre>
-            <p>Scripts are separated by review checkpoint so each output can be inspected before the next step.</p>
-          </aside>
-        </div>
-      </section>
-
-      <section class="detail-section">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Python files</p>
-            <h2>Code shown as a recruiter-safe work sample.</h2>
+            <a class="text-link" href="src/merge_monthly_reports.py">View Python source <span aria-hidden="true">&nearr;</span></a>
           </div>
-          <span class="process-pill">Synthetic data only</span>
-        </div>
-        <div class="code-link-grid">
-          <a class="code-link" href="src/config.py"><i data-lucide="settings-2"></i><span>config.py</span><small>Paths, mapping, and output names</small></a>
-          <a class="code-link" href="src/merge_monthly_reports.py"><i data-lucide="merge"></i><span>merge_monthly_reports.py</span><small>Read, clean, map, and aggregate</small></a>
-          <a class="code-link" href="src/build_ratio_pack.py"><i data-lucide="target"></i><span>build_ratio_pack.py</span><small>Actual vs plan comparisons</small></a>
-          <a class="code-link" href="src/generate_insight_brief.py"><i data-lucide="file-text"></i><span>generate_insight_brief.py</span><small>Markdown management brief</small></a>
+          <figure class="simple-demo-hook">
+            <div class="automation-demo-bar" aria-hidden="true">
+              <span class="automation-window-dots"><i></i><i></i><i></i></span>
+              <span>monthly-reporting-demo.mp4</span>
+              <span>01:32</span>
+            </div>
+            <div class="automation-video-stage">
+              <button
+                class="automation-video-cover"
+                type="button"
+                aria-controls="reporting-pipeline-video"
+                aria-label="Play the 1 minute 32 second illustrative monthly reporting walkthrough"
+              >
+                <img
+                  src="../fpa-monthly-reporting-demo/assets/fpa-automation-highlight-poster.jpg"
+                  alt=""
+                  width="1280"
+                  height="720"
+                />
+                <span class="automation-video-cover-copy">
+                  <i aria-hidden="true">&#9654;</i>
+                  <span><small>Illustrative walkthrough</small><strong>Play 1:32 demo</strong></span>
+                </span>
+              </button>
+              <video
+                id="reporting-pipeline-video"
+                class="case-video"
+                controls
+                playsinline
+                preload="none"
+                data-autoplay="false"
+                poster="../fpa-monthly-reporting-demo/assets/fpa-automation-highlight-poster.jpg"
+                aria-label="Monthly reporting demo moving from synthetic source files through Python checks to review outputs"
+                aria-describedby="reporting-demo-caption"
+              >
+                <source src="../fpa-monthly-reporting-demo/assets/fpa-automation-demo.mp4" type="video/mp4" />
+                Your browser does not support embedded video.
+              </video>
+            </div>
+            <figcaption class="automation-demo-caption" id="reporting-demo-caption">
+              <span>Illustrative 360-row build</span>
+              <span>Public-safe demo</span>
+            </figcaption>
+            <div class="automation-sample-signal">
+              <div>
+                <span>Supplied sample run</span>
+                <strong>4 of 8 KPI rows flagged Watch</strong>
+              </div>
+              <div>
+                <span>Largest gross-profit gap</span>
+                <strong>South &middot; Ocean Freight &middot; &minus;4,000 synthetic GP units</strong>
+              </div>
+            </div>
+          </figure>
         </div>
       </section>
 
-      <section class="detail-section" data-core-section="action">
+      <section class="detail-section" id="outputs" data-core-section="evidence">
+        <div class="automation-output-panel">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">Generated outputs</p>
-            <h2>What the pipeline produces for finance review.</h2>
+            <p class="section-kicker">Generated artifacts</p>
+            <h2>What finance receives.</h2>
+            <p class="section-deck">A KPI summary, gross-profit variance pack, and draft review brief carry the run into finance review.</p>
           </div>
         </div>
         <div class="artifact-grid">
-          <div class="artifact-item">
+          <article class="artifact-item artifact-item-featured">
+            <div class="artifact-heading">
+              <span class="artifact-index" aria-hidden="true">BRIEF</span>
+              <div><p class="artifact-file">monthly_insight_brief.md</p><h3>Finance review brief</h3></div>
+            </div>
+            <div class="brief-preview" aria-label="Synthetic sample brief excerpt">
+              <p>Monthly FP&amp;A insight brief</p>
+              <dl>
+                <div><dt>KPI rows reviewed</dt><dd>8</dd></div>
+                <div><dt>Watch items</dt><dd>4</dd></div>
+                <div><dt>Largest GP gap</dt><dd>South / Ocean Freight</dd></div>
+              </dl>
+              <blockquote>Which owner will validate the driver and confirm the action before the next forecast lock?</blockquote>
+            </div>
+            <p>Drafts the review agenda; it does not diagnose the driver or approve an action.</p>
+          </article>
+          <article class="artifact-item artifact-item-compact">
             <span class="artifact-index" aria-hidden="true">01</span>
-            <h3>monthly_summary.csv</h3>
-            <p>Clean summary by month, office, service group, and area with revenue, gross profit, jobs, and volume.</p>
-          </div>
-          <div class="artifact-item">
+            <div><p class="artifact-file">monthly_summary.csv</p><h3>Analysis-ready KPI summary</h3></div>
+            <p>Period, region, and service family with revenue, gross profit, volume, jobs, and margin.</p>
+            <ul class="artifact-tags" aria-label="Summary fields"><li>period</li><li>region</li><li>margin</li></ul>
+          </article>
+          <article class="artifact-item artifact-item-compact">
             <span class="artifact-index" aria-hidden="true">02</span>
-            <h3>ratio_pack.csv</h3>
-            <p>Actual-vs-plan comparisons with achievement rate and gap fields for quick review.</p>
+            <div><p class="artifact-file">ratio_pack.csv</p><h3>Gross-profit variance pack</h3></div>
+            <p>Actual, target, variance, achievement, and Watch/On track review status.</p>
+            <ul class="artifact-tags" aria-label="Ratio fields"><li>variance</li><li>achievement</li><li>status</li></ul>
+          </article>
+        </div>
+        <aside class="automation-review-boundary">
+          <span class="review-boundary-mark" aria-hidden="true">HUMAN</span>
+          <div>
+            <p class="section-kicker">Human decision gate</p>
+            <h3>The script surfaces the issue. Finance assigns the driver, owner, and action.</h3>
+            <p>The sample flags four Watch items and South / Ocean Freight as the largest gross-profit gap; it does not approve an explanation or action.</p>
           </div>
-          <div class="artifact-item">
-            <span class="artifact-index" aria-hidden="true">03</span>
-            <h3>monthly_insight_brief.md</h3>
-            <p>Draft narrative calling out top growth areas, weak spots, and items to review.</p>
-          </div>
-          <div class="artifact-item">
-            <span class="artifact-index" aria-hidden="true">QA</span>
-            <h3>QA checkpoints</h3>
-            <p>Required columns, duplicate rows, unmapped values, and reconciliation totals are checked before the brief.</p>
-          </div>
+          <a class="text-link" href="src/generate_insight_brief.py">Read the brief generator <span aria-hidden="true">&nearr;</span></a>
+        </aside>
         </div>
       </section>
 
-      <section class="detail-section split-detail">
-        <div>
-          <p class="section-kicker">Validation</p>
-          <h2>Controls built into the sample.</h2>
-          <p>
-            The public code validates required columns, rejects unmapped service lines, checks for duplicate source
-            rows, and writes reconciliation totals before creating the final brief.
-          </p>
+      <section class="detail-section" id="proof" data-core-section="action">
+        <div class="automation-proof-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Case proof</p>
+            <h2>What this demonstrates.</h2>
+            <p class="section-deck">A controlled reporting sequence that prepares review evidence without automating the finance conclusion.</p>
+          </div>
+          <a class="text-link" href="README.md">Read the implementation notes <span aria-hidden="true">&nearr;</span></a>
         </div>
-        <div class="memo-card">
-          <p class="case-label">Sample inputs</p>
-          <ul class="action-list">
-            <li><a href="sample_data/monthly_raw_jan.csv">monthly_raw_jan.csv</a></li>
-            <li><a href="sample_data/monthly_raw_feb.csv">monthly_raw_feb.csv</a></li>
-            <li><a href="sample_data/target_plan.csv">target_plan.csv</a></li>
-          </ul>
+        <div class="automation-proof-grid">
+          <article class="automation-proof-card">
+            <span class="proof-index" aria-hidden="true">01</span>
+            <p class="case-label">Control logic</p>
+            <h3>Five gates across three scripts.</h3>
+            <ul>
+              <li>Required-field check</li>
+              <li>Duplicate period/job check</li>
+              <li>Unmapped-service check</li>
+            </ul>
+          </article>
+          <article class="automation-proof-card">
+            <span class="proof-index" aria-hidden="true">02</span>
+            <p class="case-label">Human review design</p>
+            <h3>Evidence is prepared. Judgment stays human.</h3>
+            <p>The pipeline flags the gap; finance confirms the driver, owner, and next action.</p>
+          </article>
+          <article class="automation-proof-card">
+            <span class="proof-index" aria-hidden="true">03</span>
+            <p class="case-label">Reproducibility</p>
+            <h3>Public-safe and inspectable.</h3>
+            <p>Four Python files and three synthetic CSV inputs make the compact reference rerunnable.</p>
+          </article>
+        </div>
+        <ol class="process-flow proof-flow" aria-label="Monthly reporting pipeline flow">
+          <li class="flow-step"><span>01</span><div><strong>Validate</strong><p>Schema and unique keys</p></div></li>
+          <li class="flow-step"><span>02</span><div><strong>Map</strong><p>Reporting dimensions</p></div></li>
+          <li class="flow-step"><span>03</span><div><strong>Aggregate</strong><p>Revenue, GP, and margin</p></div></li>
+          <li class="flow-step"><span>04</span><div><strong>Compare</strong><p>GP actual versus plan</p></div></li>
+          <li class="flow-step"><span>05</span><div><strong>Draft</strong><p>Review questions</p></div></li>
+        </ol>
+        <div class="automation-source-rail">
+          <div class="source-rail-group">
+            <span>Implementation</span>
+            <a href="src/config.py">config.py</a>
+            <a href="src/merge_monthly_reports.py">merge</a>
+            <a href="src/build_ratio_pack.py">ratio pack</a>
+            <a href="src/generate_insight_brief.py">brief</a>
+          </div>
+          <div class="source-rail-group">
+            <span>Synthetic inputs</span>
+            <a href="sample_data/monthly_raw_jan.csv">January actuals</a>
+            <a href="sample_data/monthly_raw_feb.csv">February actuals</a>
+            <a href="sample_data/target_plan.csv">Target plan</a>
+          </div>
+        </div>
         </div>
       </section>
+
     </main>
 
     <footer class="stage-site-footer stage-shell-footer" data-stage-shell>
       <div class="page-shell stage-shell-footer-inner">
         <span>&copy; <span data-current-year>2026</span> Truong Dinh Anh Tu</span>
-        <a class="back-to-top stage-back-to-top" href="#main-content" aria-label="Back to top" tabindex="-1">
+        <a class="back-to-top stage-back-to-top" href="#main-content" aria-label="Back to top">
           <span aria-hidden="true">&uarr;</span>
         </a>
       </div>
     </footer>
       <script data-agentic-theme src="../../../assets/agentic-home/js/navigation.js?v=featured-routes-20260822-1"></script>
     <script data-agentic-theme src="../../../assets/agentic-home/js/site.js?v=featured-routes-20260822-1"></script>
+    <script src="../../../assets/agentic-home/js/monthly-reporting.js?v=monthly-reporting-20260822-1"></script>
   </body>
 </html>
