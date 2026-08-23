@@ -1,0 +1,767 @@
+/*
+ * Power BI-inspired editorial system for the four recruiter-facing routes.
+ * It borrows the BI pages' hierarchy, proof rails, borders, and density while
+ * preserving the subject-specific art direction of each page.
+ */
+
+body.bi-inspired-route {
+  --bi-route-ink: #21162c;
+  --bi-route-muted: #6b6375;
+  --bi-route-line: #ddd6e6;
+  --bi-route-paper: #ffffff;
+  --bi-route-warm: #faf8f5;
+  --bi-route-violet: #7c3aed;
+  --bi-route-violet-dark: #5b21b6;
+  --bi-route-pink: #f72585;
+  background:
+    radial-gradient(circle at 92% 5%, rgba(124, 58, 237, 0.055), transparent 28rem),
+    var(--bi-route-warm);
+}
+
+body.bi-inspired-route main[data-stage-content] {
+  isolation: isolate;
+}
+
+body.bi-inspired-route :is(.detail-hero, .article-summary, .detail-section) {
+  scroll-margin-top: calc(var(--stage-header-height, 78px) + 24px);
+}
+
+body.bi-inspired-route :is(a, button, summary):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--bi-route-violet) 72%, white);
+  outline-offset: 3px;
+}
+
+/* Connected evidence rail used in the same way as the BI case KPI strip. */
+body.bi-inspired-route .bi-proof-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--bi-route-line);
+  background: rgba(124, 58, 237, 0.025);
+}
+
+body.bi-inspired-route .bi-proof-strip > div {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+  align-content: center;
+  min-height: 82px;
+  padding: 16px clamp(16px, 2vw, 24px);
+  border-right: 1px solid var(--bi-route-line);
+  background: transparent;
+}
+
+body.bi-inspired-route .bi-proof-strip > div:last-child {
+  border-right: 0;
+}
+
+body.bi-inspired-route .bi-proof-strip :is(dt, dd) {
+  min-width: 0;
+  margin: 0;
+}
+
+body.bi-inspired-route .bi-proof-strip dt {
+  color: var(--bi-route-muted);
+  font: 700 0.62rem/1.35 var(--stage-mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+body.bi-inspired-route .bi-proof-strip dd {
+  color: var(--bi-route-ink);
+  font-family: var(--stage-display);
+  font-size: clamp(0.94rem, 1.35vw, 1.08rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Executive FP&A decision library — follows the Power BI library route.      */
+/* -------------------------------------------------------------------------- */
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero {
+  position: relative;
+  display: grid;
+  grid-template:
+    "copy panel" auto
+    "proof proof" auto /
+    minmax(0, 1.08fr) minmax(310px, 0.72fr);
+  gap: 26px clamp(34px, 4.4vw, 60px);
+  align-items: center;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(38px, 4vw, 50px) clamp(40px, 4.5vw, 58px) 0;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(247, 37, 133, 0.22), transparent 26rem),
+    radial-gradient(circle at 62% 110%, rgba(124, 58, 237, 0.24), transparent 24rem),
+    linear-gradient(145deg, #1a1128, #281838 72%, #32183c);
+  box-shadow: 0 26px 70px rgba(33, 22, 44, 0.16);
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] > .fpa-library-hero.detail-hero:first-child {
+  gap: 20px clamp(34px, 4.4vw, 60px);
+  padding: clamp(34px, 3.3vw, 42px) clamp(40px, 4.5vw, 58px) 0;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] > .fpa-library-hero.detail-hero:first-child h1 {
+  max-width: 13ch;
+  font-size: clamp(2.7rem, 3.5vw, 3.35rem);
+  line-height: 0.96;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero::after {
+  top: 0;
+  right: 0;
+  bottom: auto;
+  width: 34%;
+  height: 4px;
+  border-radius: 0;
+  background: linear-gradient(90deg, var(--bi-route-violet), var(--bi-route-pink));
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-hub-copy {
+  grid-area: copy;
+  align-self: center;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .breadcrumb {
+  margin-bottom: 18px;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .eyebrow {
+  margin-bottom: 14px;
+  color: #d8c4ff;
+  font-size: 0.66rem;
+  letter-spacing: 0.095em;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero h1 {
+  max-width: 13ch;
+  margin: 0;
+  font-size: clamp(2.7rem, 3.5vw, 3.35rem);
+  letter-spacing: -0.062em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hub-copy > p:not(.breadcrumb, .eyebrow) {
+  max-width: 58ch;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.94rem;
+  line-height: 1.62;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .hero-actions {
+  gap: 10px;
+  margin-top: 21px;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .button {
+  min-height: 44px;
+  padding-inline: 17px;
+  font-size: 0.78rem;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-hub-panel {
+  grid-area: panel;
+  align-self: center;
+  padding: clamp(22px, 2.4vw, 30px);
+  border-radius: 19px;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-hub-steps {
+  margin-top: 15px;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-hub-steps li {
+  gap: 12px;
+  padding-block: 12px;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-hub-assurance {
+  margin-top: 13px;
+  padding-top: 13px;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof {
+  grid-area: proof;
+  width: auto;
+  margin: 0 clamp(-58px, -4.5vw, -40px);
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof > div {
+  min-height: 78px;
+  padding: 15px clamp(18px, 2.2vw, 28px);
+  border-right: 1px solid rgba(255, 255, 255, 0.13);
+  background: transparent;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof > div:last-child {
+  border-right: 0;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof dt {
+  color: rgba(255, 255, 255, 0.53);
+  font-size: 0.61rem;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof dd {
+  color: #ffffff;
+  font-size: clamp(0.9rem, 1.35vw, 1.04rem);
+  word-spacing: 0.08em;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] #decision-cases {
+  margin-top: clamp(46px, 6vw, 76px);
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-cases-heading h2 {
+  max-width: 18ch;
+  font-size: clamp(2.3rem, 4vw, 3.4rem);
+  letter-spacing: -0.058em;
+  line-height: 0.98;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-card {
+  border-color: var(--bi-route-line);
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] .decision-card {
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-card:not(.featured) {
+  background: var(--bi-route-paper);
+}
+
+body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-card:not(.featured)::before {
+  background: linear-gradient(90deg, var(--bi-route-violet), var(--bi-route-pink));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Predictive collections — BI detail hero with a featured control panel.     */
+/* -------------------------------------------------------------------------- */
+
+body.collections-agent-page.bi-inspired-route [data-core-section="hero"] {
+  position: relative;
+  display: grid;
+  gap: 24px;
+  overflow: hidden;
+  padding: clamp(34px, 3.8vw, 46px) clamp(38px, 4.2vw, 54px) 0;
+  border: 1px solid var(--bi-route-line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(124, 58, 237, 0.1), transparent 23rem),
+    linear-gradient(145deg, #ffffff, rgba(251, 248, 255, 0.94));
+  box-shadow: 0 20px 52px rgba(33, 22, 44, 0.08);
+}
+
+body.collections-agent-page.bi-inspired-route [data-core-section="hero"]::before {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bi-route-violet), var(--bi-route-pink));
+  content: "";
+}
+
+body.collections-agent-page.bi-inspired-route .collections-hero-grid {
+  grid-template-columns: minmax(0, 1.12fr) minmax(310px, 0.72fr);
+  gap: clamp(34px, 4.5vw, 62px);
+  align-items: center;
+}
+
+body.collections-agent-page.bi-inspired-route .article-hero-copy .eyebrow {
+  margin-bottom: 14px;
+  color: var(--bi-route-violet-dark);
+  font-size: 0.66rem;
+}
+
+body.collections-agent-page.bi-inspired-route .article-hero-copy h1 {
+  max-width: 13.5ch;
+  margin: 0;
+  color: var(--bi-route-ink);
+  font-size: clamp(2.8rem, 3.9vw, 3.7rem);
+  letter-spacing: -0.064em;
+  line-height: 0.96;
+}
+
+body.collections-agent-page.bi-inspired-route .article-hero-copy h1 span {
+  background: linear-gradient(105deg, var(--bi-route-violet-dark), var(--bi-route-violet) 55%, var(--bi-route-pink));
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+}
+
+body.collections-agent-page.bi-inspired-route .article-hero-copy .article-lede {
+  max-width: 59ch;
+  margin-top: 17px;
+  color: var(--bi-route-muted);
+  font-size: 0.93rem;
+  line-height: 1.62;
+}
+
+body.collections-agent-page.bi-inspired-route .article-hero-copy .article-meta {
+  gap: 7px 11px;
+  margin-top: 17px;
+  font-size: 0.7rem;
+}
+
+body.collections-agent-page.bi-inspired-route .article-hero-copy .product-tags {
+  display: none !important;
+}
+
+body.collections-agent-page.bi-inspired-route .collections-hero-actions {
+  margin-top: 18px;
+}
+
+body.collections-agent-page.bi-inspired-route .collections-hero-actions .button {
+  min-height: 44px;
+  padding-inline: 17px;
+  font-size: 0.78rem;
+}
+
+body.collections-agent-page.bi-inspired-route .collections-loop-card {
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 22px 46px rgba(38, 20, 55, 0.16);
+}
+
+body.collections-agent-page.bi-inspired-route .collections-loop-head strong {
+  font-size: clamp(2.1rem, 3vw, 2.75rem);
+}
+
+body.collections-agent-page.bi-inspired-route .collections-loop-flow {
+  gap: 6px;
+  margin-top: 17px;
+}
+
+body.collections-agent-page.bi-inspired-route .collections-loop-flow li {
+  min-height: 36px;
+  padding: 6px 10px;
+}
+
+body.collections-agent-page.bi-inspired-route .collections-loop-card > p {
+  margin-top: 14px;
+  padding-top: 13px;
+  font-size: 0.7rem !important;
+}
+
+body.collections-agent-page.bi-inspired-route .collections-proof-strip {
+  width: auto;
+  margin: 0 clamp(-54px, -4.2vw, -38px);
+}
+
+body.collections-agent-page.bi-inspired-route .article-summary {
+  gap: 22px;
+  padding: clamp(34px, 4vw, 50px);
+  border: 1px solid var(--bi-route-line);
+  border-radius: 24px;
+  background: var(--bi-route-paper);
+  box-shadow: none;
+}
+
+body.collections-agent-page.bi-inspired-route .article-summary-heading h2 {
+  max-width: 23ch;
+  font-size: clamp(2.15rem, 3.45vw, 3rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+body.collections-agent-page.bi-inspired-route .article-summary-heading,
+body.collections-agent-page.bi-inspired-route .article-summary-actions {
+  padding: 0;
+}
+
+body.collections-agent-page.bi-inspired-route .article-summary-grid {
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--bi-route-line);
+  border-radius: 16px;
+  background: var(--bi-route-line);
+}
+
+body.collections-agent-page.bi-inspired-route .article-summary-grid > article {
+  min-height: 0;
+  padding: 20px;
+  border: 0;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+body.collections-agent-page.bi-inspired-route .article-summary-grid > article > span {
+  color: var(--bi-route-violet-dark);
+}
+
+body.collections-agent-page.bi-inspired-route .deck-core-section .deck-panel {
+  border-color: var(--bi-route-line);
+  box-shadow: 0 18px 45px rgba(33, 22, 44, 0.08);
+}
+
+body[data-stage-template="article"].collections-agent-page.bi-inspired-route main[data-stage-content] .deck-core-section {
+  padding: clamp(44px, 5vw, 64px) clamp(38px, 4.2vw, 54px);
+}
+
+/* -------------------------------------------------------------------------- */
+/* AABW recap — BI library hero, then a quieter editorial reading surface.    */
+/* -------------------------------------------------------------------------- */
+
+body[data-stage-template="article"].aabw-recap-page.bi-inspired-route article > header.recap-hero {
+  position: relative;
+  display: grid;
+  gap: 23px;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(34px, 3.8vw, 46px) clamp(38px, 4.2vw, 54px) 0;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 86% 10%, rgba(255, 95, 101, 0.22), transparent 25rem),
+    radial-gradient(circle at 58% 110%, rgba(124, 58, 237, 0.22), transparent 24rem),
+    linear-gradient(145deg, #1a1128, #2b1837 72%, #391d3a);
+  box-shadow: 0 26px 70px rgba(33, 22, 44, 0.16);
+}
+
+body[data-stage-template="article"].aabw-recap-page.bi-inspired-route article > header.recap-hero::before {
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: auto;
+  width: 34%;
+  height: 4px;
+  border-radius: 0;
+  background: linear-gradient(90deg, var(--bi-route-violet), var(--bi-route-pink));
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-grid {
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.68fr);
+  gap: clamp(34px, 4.5vw, 62px);
+  align-items: center;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-copy h1 {
+  max-width: 12.5ch;
+  margin-top: 13px;
+  font-size: clamp(2.8rem, 3.9vw, 3.7rem);
+  letter-spacing: -0.063em;
+  line-height: 0.96;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-copy .breadcrumb {
+  margin: 0 0 20px;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-copy .article-lede {
+  max-width: 58ch;
+  margin-top: 17px;
+  font-size: 0.92rem;
+  line-height: 1.62;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-copy .article-meta {
+  gap: 7px 12px;
+  margin-top: 17px;
+  font-size: 0.7rem;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-copy .product-tags {
+  display: none;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-actions {
+  gap: 9px;
+  margin-top: 19px;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-hero-actions .button {
+  min-height: 44px;
+  padding-inline: 17px;
+  font-size: 0.76rem;
+}
+
+body.aabw-recap-page.bi-inspired-route .official-event-card {
+  width: min(100%, 340px);
+  justify-self: end;
+  border-radius: 17px;
+  box-shadow: 0 22px 48px rgba(11, 6, 17, 0.28);
+  transform: none;
+}
+
+body.aabw-recap-page.bi-inspired-route .official-event-card figcaption {
+  min-height: 38px;
+  padding: 8px 11px;
+  font-size: 0.64rem;
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-proof-strip {
+  width: auto;
+  margin: 0 clamp(-54px, -4.2vw, -38px);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-proof-strip > div {
+  border-color: rgba(255, 255, 255, 0.13);
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-proof-strip dt {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+body.aabw-recap-page.bi-inspired-route .recap-proof-strip dd {
+  color: #ffffff;
+}
+
+body[data-stage-template="article"].aabw-recap-page.bi-inspired-route .article-summary {
+  gap: 22px;
+  padding: clamp(34px, 4vw, 50px);
+  border: 1px solid var(--bi-route-line);
+  border-radius: 24px;
+  background: var(--bi-route-paper);
+  box-shadow: none;
+}
+
+body.aabw-recap-page.bi-inspired-route .article-summary-heading h2 {
+  max-width: 23ch;
+  font-size: clamp(2.15rem, 3.45vw, 3rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+body.aabw-recap-page.bi-inspired-route .article-summary-heading {
+  padding: 0;
+}
+
+body.aabw-recap-page.bi-inspired-route .article-summary-grid {
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--bi-route-line);
+  border-radius: 16px;
+  background: var(--bi-route-line);
+}
+
+body.aabw-recap-page.bi-inspired-route .article-summary-grid article {
+  min-height: 0;
+  padding: 20px;
+  border: 0;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+body.aabw-recap-page.bi-inspired-route .article-section {
+  border-color: var(--bi-route-line);
+  box-shadow: none;
+}
+
+body.aabw-recap-page.bi-inspired-route .article-toc-card,
+body.aabw-recap-page.bi-inspired-route .article-mobile-toc {
+  border-color: var(--bi-route-line);
+  box-shadow: none;
+}
+
+@media (min-width: 981px) {
+  body[data-stage-template="article"].aabw-recap-page.bi-inspired-route .article-reading-layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive rhythm.                                                         */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero {
+    grid-template:
+      "copy" auto
+      "proof" auto /
+      minmax(0, 1fr);
+    padding-inline: clamp(28px, 5vw, 44px);
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .decision-hub-panel {
+    display: none;
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof {
+    margin-inline: clamp(-44px, -5vw, -28px);
+  }
+
+  body.collections-agent-page.bi-inspired-route .collections-hero-grid,
+  body.aabw-recap-page.bi-inspired-route .recap-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.collections-agent-page.bi-inspired-route .collections-loop-card {
+    width: min(100%, 640px);
+  }
+
+  body.aabw-recap-page.bi-inspired-route .official-event-card {
+    width: min(100%, 390px);
+    justify-self: start;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+  body.collections-agent-page.bi-inspired-route .collections-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.78fr);
+    gap: 28px;
+  }
+
+  body.collections-agent-page.bi-inspired-route .article-hero-copy h1 {
+    max-width: 13ch;
+    font-size: clamp(2.55rem, 5.5vw, 3rem);
+  }
+
+  body.collections-agent-page.bi-inspired-route .collections-loop-card {
+    width: 100%;
+    padding: 18px;
+  }
+
+  body.aabw-recap-page.bi-inspired-route .recap-hero-grid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(255px, 0.72fr);
+    gap: 28px;
+  }
+
+  body.aabw-recap-page.bi-inspired-route .recap-hero-copy h1 {
+    max-width: 12ch;
+    font-size: clamp(2.55rem, 5.5vw, 3rem);
+  }
+
+  body.aabw-recap-page.bi-inspired-route .official-event-card {
+    width: min(100%, 280px);
+    justify-self: end;
+  }
+}
+
+@media (max-width: 620px) {
+  body.bi-inspired-route .bi-proof-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.bi-inspired-route .bi-proof-strip > div {
+    min-height: 72px;
+    padding: 13px 14px;
+    border-top: 1px solid var(--bi-route-line);
+  }
+
+  body.bi-inspired-route .bi-proof-strip > div:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  body.bi-inspired-route .bi-proof-strip > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero {
+    gap: 21px;
+    padding: 28px 20px 0;
+    border-radius: 22px;
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] > .fpa-library-hero.detail-hero:first-child {
+    gap: 21px;
+    padding: 28px 20px 0;
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero h1 {
+    font-size: clamp(2.35rem, 10.4vw, 2.9rem);
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] main[data-stage-content] > .fpa-library-hero.detail-hero:first-child h1 {
+    max-width: none;
+    font-size: clamp(2.35rem, 10.4vw, 2.9rem);
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof {
+    margin-inline: -20px;
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof > div {
+    min-height: 72px;
+    border-color: rgba(255, 255, 255, 0.13);
+  }
+
+  body.collections-agent-page.bi-inspired-route [data-core-section="hero"],
+  body[data-stage-template="article"].aabw-recap-page.bi-inspired-route article > header.recap-hero {
+    gap: 21px;
+    padding: 28px 20px 0;
+    border-radius: 22px;
+  }
+
+  body.collections-agent-page.bi-inspired-route .article-hero-copy h1,
+  body.aabw-recap-page.bi-inspired-route .recap-hero-copy h1 {
+    max-width: none;
+    font-size: clamp(2.35rem, 10.2vw, 2.9rem);
+  }
+
+  body.collections-agent-page.bi-inspired-route .collections-proof-strip,
+  body.aabw-recap-page.bi-inspired-route .recap-proof-strip {
+    margin-inline: -20px;
+  }
+
+  body.aabw-recap-page.bi-inspired-route .recap-proof-strip > div {
+    border-color: rgba(255, 255, 255, 0.13);
+  }
+
+  body.collections-agent-page.bi-inspired-route .article-summary,
+  body[data-stage-template="article"].aabw-recap-page.bi-inspired-route .article-summary {
+    gap: 20px;
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+
+  body.collections-agent-page.bi-inspired-route .article-summary-grid,
+  body.aabw-recap-page.bi-inspired-route .article-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.collections-agent-page.bi-inspired-route .article-summary-grid > article,
+  body.aabw-recap-page.bi-inspired-route .article-summary-grid article {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 300px) {
+  body.bi-inspired-route .bi-proof-strip {
+    grid-template-columns: 1fr;
+  }
+
+  body.bi-inspired-route .bi-proof-strip > div,
+  body.bi-inspired-route .bi-proof-strip > div:nth-child(n) {
+    min-height: 62px;
+    border-top: 1px solid var(--bi-route-line);
+    border-right: 0;
+  }
+
+  body.bi-inspired-route .bi-proof-strip > div:first-child {
+    border-top: 0;
+  }
+
+  body.bi-inspired-route[data-stage-template="hub"][data-stage-family="fpa"] .fpa-library-hero .decision-hero-proof > div,
+  body.aabw-recap-page.bi-inspired-route .recap-proof-strip > div {
+    border-color: rgba(255, 255, 255, 0.13);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.bi-inspired-route :is(.decision-card, .collections-loop-card, .official-event-card) {
+    transition: none;
+  }
+}
