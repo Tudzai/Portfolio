@@ -2171,6 +2171,196 @@ body.is-resizing-sidebar .hub-shell {
   padding-top: 16px;
 }
 
+.lesson-concept-map {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 1120px);
+  margin: clamp(26px, 4vw, 48px) auto 12px;
+  padding: clamp(20px, 3vw, 30px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: var(--radius-panel);
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent-soft) 86%, transparent), transparent 36%),
+    color-mix(in srgb, var(--surface) 94%, var(--bg));
+  box-shadow: var(--shadow);
+}
+
+.lesson-concept-map::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--line) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 70%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(135deg, #000, transparent 78%);
+}
+
+.lesson-concept-map figcaption {
+  margin-bottom: 16px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 820;
+  letter-spacing: 0.045em;
+}
+
+.lesson-concept-map__track {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-concept-map__node {
+  --concept-color: var(--accent);
+  position: relative;
+  min-width: 0;
+  min-height: 176px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--concept-color) 26%, var(--line));
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--surface-solid) 94%, var(--concept-color) 6%);
+  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--concept-color) 72%, transparent);
+  list-style: none;
+}
+
+.lesson-concept-map__node[data-concept-role="mechanism"] {
+  --concept-color: var(--blue);
+}
+
+.lesson-concept-map__node[data-concept-role="boundary"] {
+  --concept-color: var(--amber);
+}
+
+.lesson-concept-map__node:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  top: 50%;
+  right: -19px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 850;
+  transform: translateY(-50%);
+}
+
+.lesson-concept-map__heading {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.lesson-concept-map__heading span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid color-mix(in srgb, var(--concept-color) 38%, var(--line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--concept-color) 12%, var(--surface));
+  color: var(--concept-color);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.lesson-concept-map__heading strong {
+  color: var(--concept-color);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 840;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.lesson-concept-map__node p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: calc(0.89rem * var(--reader-scale));
+  line-height: 1.65;
+}
+
+.lesson-evidence-visual {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(190px, 0.6fr);
+  gap: 0;
+  margin: clamp(24px, 4vw, 38px) 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line));
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--surface-solid) 96%, var(--accent) 4%);
+  box-shadow: var(--shadow);
+}
+
+.lesson-evidence-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  max-height: 520px;
+  object-fit: contain;
+  background: #f4f1eb;
+}
+
+.lesson-evidence-visual figcaption {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  min-width: 0;
+  padding: clamp(18px, 3vw, 28px);
+  border-left: 1px solid var(--line);
+  font-family: var(--font-sans);
+}
+
+.lesson-evidence-visual__label {
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lesson-evidence-visual figcaption strong {
+  color: var(--ink);
+  font-size: calc(0.92rem * var(--reader-scale));
+  line-height: 1.55;
+}
+
+.lesson-evidence-visual__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.lesson-evidence-visual__meta small {
+  color: var(--soft);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.lesson-evidence-visual__meta a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 760;
+  text-underline-offset: 0.22em;
+}
+
 .lesson-section {
   padding-top: 56px;
   scroll-margin-top: 92px;
@@ -2284,6 +2474,8 @@ body.is-resizing-sidebar .hub-shell {
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 95%, var(--accent) 5%);
+  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--accent) 42%, transparent);
 }
 
 .content-table {
@@ -2324,6 +2516,7 @@ body.is-resizing-sidebar .hub-shell {
   border: 1px solid var(--line);
   border-radius: 13px;
   background: var(--surface);
+  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--blue) 48%, transparent);
   font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   list-style: none;
 }
@@ -3835,6 +4028,8 @@ body.essentials-mode .learning-layer-detail {
 
 .first-use-hint {
   border-bottom: 1px dotted color-mix(in srgb, var(--accent) 68%, transparent);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--accent-soft) 42%, transparent);
   color: inherit;
   font-style: inherit;
   font-weight: 650;
@@ -3856,7 +4051,11 @@ body.essentials-mode .learning-layer-detail {
   font-size: 0.82rem;
   font-weight: 520;
   line-height: 1.5;
-  pointer-events: none;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+  scrollbar-width: thin;
   animation: term-hint-in 140ms ease both;
 }
 
@@ -5210,6 +5409,160 @@ body.focus-mode .reader-wrap {
 
   .reader-meta span + span::before {
     margin-inline: 6px;
+  }
+}
+
+/* Topic artwork: local, generated editorial plates shared by cards and lessons. */
+
+.topic-artwork {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--domain-accent, var(--accent)) 26%, var(--line));
+  background:
+    radial-gradient(circle at 78% 18%, color-mix(in srgb, var(--domain-accent, var(--accent)) 18%, transparent), transparent 50%),
+    color-mix(in srgb, var(--surface) 88%, var(--bg));
+  box-shadow: 0 22px 60px color-mix(in srgb, var(--bg) 72%, transparent);
+}
+
+.topic-artwork::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(150deg, color-mix(in srgb, var(--bg) 4%, transparent), transparent 42%),
+    linear-gradient(0deg, color-mix(in srgb, var(--bg) 18%, transparent), transparent 34%);
+}
+
+.topic-artwork img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: saturate(0.9) contrast(1.02);
+  transform: none;
+}
+
+.topic-artwork--card {
+  aspect-ratio: 16 / 8.4;
+  margin-top: 16px;
+  border-radius: calc(var(--radius-card) - 5px);
+}
+
+.collection-card--illustrated {
+  min-height: 390px;
+}
+
+.collection-card--illustrated h3 {
+  margin-top: 18px;
+}
+
+.reader-hero--illustrated {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
+  gap: clamp(28px, 4.4vw, 64px);
+  align-items: center;
+  padding-bottom: 36px;
+}
+
+.reader-hero__copy {
+  min-width: 0;
+}
+
+.topic-artwork--reader {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-panel);
+}
+
+html[data-theme="dark"] .topic-artwork img {
+  filter: brightness(0.84) saturate(0.84) contrast(1.08);
+}
+
+html[data-theme-preset="noir"] .topic-artwork img {
+  filter: grayscale(0.78) sepia(0.08) brightness(0.78) contrast(1.18);
+}
+
+html[data-theme-preset="washi"] .topic-artwork img {
+  filter: sepia(0.18) saturate(0.76) contrast(1.02);
+}
+
+html[data-theme-preset="grove"] .topic-artwork img {
+  filter: saturate(0.78) hue-rotate(-5deg) contrast(1.02);
+}
+
+html[data-theme-preset="atelier"] .topic-artwork img {
+  filter: saturate(0.88) contrast(1.08);
+}
+
+@media (max-width: 960px) {
+  .lesson-concept-map__track {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-concept-map__node {
+    min-height: 0;
+  }
+
+  .lesson-concept-map__node:not(:last-child)::after {
+    top: auto;
+    right: 50%;
+    bottom: -20px;
+    transform: translateX(50%) rotate(90deg);
+  }
+
+  .reader-hero--illustrated {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .topic-artwork--reader {
+    aspect-ratio: 16 / 9;
+    max-height: 360px;
+  }
+
+  .lesson-evidence-visual {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-evidence-visual img {
+    height: auto;
+    min-height: 0;
+    max-height: 480px;
+  }
+
+  .lesson-evidence-visual figcaption {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .lesson-concept-map {
+    margin-top: 22px;
+    padding: 16px;
+  }
+
+  .lesson-concept-map__node {
+    padding: 16px;
+  }
+
+  .collection-card--illustrated {
+    min-height: 350px;
+  }
+
+  .topic-artwork--card,
+  .topic-artwork--reader {
+    aspect-ratio: 16 / 9.5;
+    border-radius: calc(var(--radius-card) - 4px);
+  }
+
+  .reader-hero--illustrated {
+    gap: 20px;
+    padding-bottom: 28px;
   }
 }
 
