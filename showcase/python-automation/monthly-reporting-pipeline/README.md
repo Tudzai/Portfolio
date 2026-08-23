@@ -16,11 +16,11 @@ or real financial values. The sample data is fictional and small enough to revie
 ## Pipeline
 
 1. Read monthly source files from `sample_data/monthly_raw_*.csv`.
-2. Validate required columns and duplicate source rows.
+2. Validate required columns and duplicate period/job keys.
 3. Apply generic service and office mapping from `src/config.py`.
-4. Create an analysis-ready monthly summary.
-5. Build actual-vs-plan comparisons from `target_plan.csv`.
-6. Generate a Markdown brief for FP&A review.
+4. Create an analysis-ready monthly summary by period, region, and service family.
+5. Compare actual gross profit with plan from `target_plan.csv`.
+6. Generate a Markdown brief with Watch items, the largest gap, and questions for FP&A review.
 
 ## Python Files
 
@@ -43,6 +43,5 @@ Outputs are written to `output/`, which is intentionally ignored for public port
 ## Validation Checks
 
 - Required source columns are present.
-- Duplicate source rows are flagged.
-- Unmapped services are rejected.
-- Summary totals are reconciled before ratio and brief generation.
+- Duplicate period/job keys are rejected.
+- Unmapped service labels are rejected before downstream outputs are written.
