@@ -12,7 +12,7 @@
   const STORAGE_BOOKMARKS = "knowledge-library:bookmarks:v1";
   const STORAGE_RECENT = "knowledge-library:recent:v1";
   const STORAGE_LAST_READ = "knowledge-library:last-read:v1";
-  const STORAGE_READING_MODE = "knowledge-library:reading-mode:v1";
+  const STORAGE_READING_MODE = "knowledge-library:reading-mode:v2";
   const STORAGE_TEXT_SIZE = "knowledge-library:text-size:v1";
   const COLLECTION_TONES = Object.freeze({
     "personal-notes": "violet",
@@ -32,6 +32,170 @@
     "self-psychology": "indigo",
     "communication-conflict": "cyan",
     "relationships-boundaries": "rose",
+  });
+  const COLLECTION_ARTWORK = Object.freeze({
+    "fintech-domain": "assets/topics/fintech-domain-v1.webp",
+    "fin-domain": "assets/topics/fin-domain-v1.webp",
+    "rtcfo-domain": "assets/topics/rtcfo-domain-v1.webp",
+    "brk-domain-breaking": "assets/topics/brk-domain-breaking-v1.webp",
+    "mrel-domain": "assets/topics/mrel-domain-v1.webp",
+    "personal-style": "assets/topics/personal-style-v1.webp",
+    "photography": "assets/topics/photography-v1.webp",
+    "cooking": "assets/topics/cooking-v1.webp",
+    "bar-drinks": "assets/topics/bar-drinks-v1.webp",
+    "coffee": "assets/topics/coffee-v1.webp",
+    "japanese-culture": "assets/topics/japanese-culture-v1.webp",
+    "art-visual-culture": "assets/topics/art-visual-culture-v1.webp",
+    "architecture-design-living": "assets/topics/architecture-design-living-v1.webp",
+    "self-psychology": "assets/topics/self-psychology-v1.webp",
+    "communication-conflict": "assets/topics/communication-conflict-v1.webp",
+    "relationships-boundaries": "assets/topics/relationships-boundaries-v1.webp",
+  });
+  const OPEN_ACCESS_VISUALS = Object.freeze({
+    "fintech-domain:3:1": Object.freeze({
+      sectionId: "cach-hoat-dong",
+      src: "assets/explainers/fintech-payment-system.webp",
+      alt: "Sơ đồ giản lược gồm công cụ thanh toán, thông điệp, đơn vị giá trị và các thành phần của hệ thống thanh toán.",
+      credit: "Board of Governors of the Federal Reserve System, Figure 1",
+      rights: "Public domain",
+      source: "https://www.federalreserve.gov/econres/notes/feds-notes/fit-for-purpose-payment-system-interoperability-a-framework-20220714.html",
+    }),
+    "fintech-domain:7:1": Object.freeze({
+      sectionId: "cach-hoat-dong",
+      src: "assets/explainers/fintech-identity.webp",
+      alt: "Sơ đồ mô hình danh tính số không liên kết, với người đăng ký, nhà cung cấp dịch vụ định danh, bộ xác minh và bên dựa vào kết quả.",
+      credit: "NIST SP 800-63-4, Figure 3 · Republished courtesy of NIST",
+      rights: "U.S. government technical-series work",
+      source: "https://pages.nist.gov/800-63-4/sp800-63/model/",
+    }),
+    "fin-domain:1:1": Object.freeze({
+      sectionId: "khai-niem",
+      src: "assets/explainers/finance-household-balance.webp",
+      alt: "Minh hoạ bảng cân đối hộ gia đình, đặt các nhóm tài sản cạnh các khoản nợ và phương trình giá trị tài sản ròng.",
+      credit: "Board of Governors of the Federal Reserve System, Figure 1",
+      rights: "Public domain",
+      source: "https://www.federalreserve.gov/newsevents/speech/jefferson20250219a.htm",
+    }),
+    "mrel-domain:1:1": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/muscle-training.webp",
+      alt: "Một người đang thực hiện bài kéo cáp trong phòng tập, minh hoạ bối cảnh vận động tạo ra nhu cầu hồi phục.",
+      credit: "Amanda Mills / CDC PHIL, ID 14122",
+      rights: "Public domain",
+      source: "https://wwwn.cdc.gov/phil/Details.aspx?pid=14122",
+    }),
+    "mrel-domain:2:1": Object.freeze({
+      sectionId: "khac-biet",
+      src: "assets/explainers/muscle-equipment.webp",
+      alt: "Bóng tập, tạ nhẹ và dây nhảy được đặt cạnh nhau trên nền trung tính.",
+      credit: "Debora Cartagena / CDC PHIL, ID 14407",
+      rights: "Public domain",
+      source: "https://wwwn.cdc.gov/phil/Details.aspx?pid=14407",
+    }),
+    "personal-style:2:1": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/style-suit.webp",
+      alt: "Bộ suit Anh khoảng năm 1760 trên mannequin, cho thấy đường vai, thân áo dài, tay áo và nhịp lặp của trang trí.",
+      credit: "Suit, British, ca. 1760 · The Metropolitan Museum of Art",
+      rights: "CC0 / Public Domain",
+      source: "https://www.metmuseum.org/art/collection/search/159562",
+    }),
+    "photography:1:1": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/photo-light-shadow.webp",
+      alt: "Ảnh đen trắng một hẻm núi với ba mảng sáng tối lớn, đường sông dẫn mắt và các vách đá gần như thành bóng.",
+      credit: "Timothy H. O’Sullivan, Light and Shadow in Black Cañon, 1871 · The Metropolitan Museum of Art",
+      rights: "CC0 / Public Domain",
+      source: "https://www.metmuseum.org/art/collection/search/264715",
+    }),
+    "photography:1:2": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/photo-great-wave.webp",
+      alt: "Ảnh biển đen trắng với con sóng sáng ở tiền cảnh, đường chân trời thấp và bầu trời nhiều mây có dải tương phản rộng.",
+      credit: "Gustave Le Gray, The Great Wave, Sète, 1857 · The Metropolitan Museum of Art",
+      rights: "CC0 / Public Domain",
+      source: "https://www.metmuseum.org/art/collection/search/261941",
+    }),
+    "cooking:1:1": Object.freeze({
+      sectionId: "cach-hoat-dong",
+      src: "assets/explainers/cooking-board.webp",
+      alt: "Một người đang làm sạch thớt đã qua sử dụng tại bồn rửa, minh hoạ bước đặt lại khu vực làm việc giữa các nguyên liệu.",
+      credit: "Lauren Bishop / CDC PHIL, ID 27979",
+      rights: "Public domain",
+      source: "https://wwwn.cdc.gov/phil/Details.aspx?pid=27979",
+    }),
+    "cooking:1:3": Object.freeze({
+      sectionId: "cach-hoat-dong",
+      src: "assets/explainers/cooking-probe.webp",
+      alt: "Một đầu dò nhiệt độ đang được đưa vào thực phẩm trong khay tại khu vực bếp.",
+      credit: "Amanda Mills / CDC PHIL, ID 13841",
+      rights: "Public domain",
+      source: "https://wwwn.cdc.gov/phil/Details.aspx?pid=13841",
+    }),
+    "bar-drinks:4:2": Object.freeze({
+      sectionId: "cach-hoat-dong",
+      src: "assets/explainers/bar-shaker.webp",
+      alt: "Bình lắc cocktail bằng kim loại trên nền trắng, gồm nắp, phần lọc và thân bình.",
+      credit: "Ks aka 98",
+      rights: "Public domain",
+      source: "https://commons.wikimedia.org/wiki/File:Shaker.JPG",
+    }),
+    "coffee:1:1": Object.freeze({
+      sectionId: "khai-niem",
+      src: "assets/explainers/coffee-cherry.webp",
+      alt: "Quả cà phê đỏ được mở ra, để lộ hai hạt màu nhạt nằm cạnh nhau bên trong.",
+      credit: "Roger Burger",
+      rights: "CC0 1.0",
+      source: "https://commons.wikimedia.org/wiki/File:Open_coffee_cherry.jpg",
+    }),
+    "coffee:4:1": Object.freeze({
+      sectionId: "cach-hoat-dong",
+      src: "assets/explainers/coffee-drip.webp",
+      alt: "Bộ pha lọc trước khi rót nước, gồm bột cà phê khô, giấy lọc, phễu lọc và bình hứng.",
+      credit: "Suginami",
+      rights: "CC0 1.0",
+      source: "https://commons.wikimedia.org/wiki/File:Drip_filter_coffee_Before_pouring_water.jpg",
+    }),
+    "japanese-culture:3:3": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/japan-teabowl.webp",
+      alt: "Chén trà Raku màu đen có thân tròn thấp và mép men sáng không đều trên nền trung tính.",
+      credit: "Raku Dōnyū, Teabowl, ca. 1650 · The Metropolitan Museum of Art",
+      rights: "CC0 / Public Domain",
+      source: "https://www.metmuseum.org/art/collection/search/62900",
+    }),
+    "japanese-culture:4:1": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/japan-great-wave.webp",
+      alt: "Bản in khắc gỗ có con sóng lớn xanh chồm trên ba chiếc thuyền, với núi Phú Sĩ nhỏ ở xa.",
+      credit: "Katsushika Hokusai, Under the Wave off Kanagawa, ca. 1830–32 · The Metropolitan Museum of Art",
+      rights: "CC0 / Public Domain",
+      source: "https://www.metmuseum.org/art/collection/search/45434",
+    }),
+    "art-visual-culture:3:2": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/art-champa.webp",
+      alt: "Tượng đá toàn thân của một nhân vật đứng từ Champa, với trang phục và thuộc tính chạm khắc còn một phần dấu vết thời gian.",
+      credit: "Standing Shiva or Temple Guardian, Champa, ca. first half 10th century · The Metropolitan Museum of Art",
+      rights: "CC0 / Public Domain",
+      source: "https://www.metmuseum.org/art/collection/search/38314",
+    }),
+    "architecture-design-living:3:1": Object.freeze({
+      sectionId: "cach-hoat-dong",
+      src: "assets/explainers/architecture-farnsworth.webp",
+      alt: "Bản vẽ đo đạc Farnsworth House gồm mặt bằng, ba mặt đứng của lõi và một mặt cắt, với đường kích thước chi tiết.",
+      credit: "Historic American Buildings Survey, Edith Farnsworth House, sheet 6 · Library of Congress",
+      rights: "No known restrictions on this U.S. government image",
+      source: "https://www.loc.gov/pictures/item/il0323.sheet.00006a/",
+    }),
+    "architecture-design-living:4:1": Object.freeze({
+      sectionId: "vi-du",
+      src: "assets/explainers/architecture-thonet.webp",
+      alt: "Ghế băng No. 8 bằng gỗ uốn với khung cong, mặt ngồi đan mây và các chi tiết lặp lại theo cấu trúc.",
+      credit: "No. 8 Bench, Gebrüder Thonet · Cooper Hewitt, Smithsonian Design Museum",
+      rights: "Public domain",
+      source: "https://collection.cooperhewitt.org/objects/18467801/",
+    }),
   });
   const COLLECTION_GROUPS = Object.freeze([
     {
@@ -205,6 +369,8 @@
   let themeOptions = [];
   let termHintTooltip = null;
   let activeTermHint = null;
+  let termHintPositionFrame = 0;
+  let termHintPointerWillClose = false;
   const sidebarOpenButton = document.querySelector("[data-sidebar-open]");
   const sidebarCloseButton = document.querySelector("[data-sidebar-close]");
   const sidebarCollapseButton = document.querySelector("[data-sidebar-collapse]");
@@ -1184,6 +1350,14 @@
     };
   }
 
+  function progressionStage(moduleIndex, moduleCount) {
+    const firstBoundary = Math.ceil(moduleCount / 3);
+    const secondBoundary = Math.ceil((moduleCount * 2) / 3);
+    if (moduleIndex < firstBoundary) return "Beginner";
+    if (moduleIndex < secondBoundary) return "Intermediate";
+    return "Advanced";
+  }
+
   function nextLesson(collectionId = null) {
     const available = publishedLessons().filter(({ collection }) => !collectionId || collection.id === collectionId);
     return available.find(({ lesson }) => !state.completed.has(lesson.id)) || null;
@@ -1273,6 +1447,23 @@
     return COLLECTION_TONES[collectionId] ?? COLLECTION_TONES["personal-notes"];
   }
 
+  function createCollectionArtwork(collection, variant = "card") {
+    const source = COLLECTION_ARTWORK[collection?.id];
+    if (!source) return null;
+    const figure = document.createElement("figure");
+    figure.className = `topic-artwork topic-artwork--${variant}`;
+    figure.setAttribute("aria-hidden", "true");
+    const image = document.createElement("img");
+    image.setAttribute("src", source);
+    image.alt = "";
+    image.decoding = "async";
+    image.loading = variant === "reader" ? "eager" : "lazy";
+    if (variant === "reader") image.fetchPriority = "high";
+    image.addEventListener("error", () => figure.remove(), { once: true });
+    figure.append(image);
+    return figure;
+  }
+
   function collectionsForGroup(group) {
     if (!state.data) return [];
     return group.collectionIds
@@ -1342,20 +1533,30 @@
       && lessonReader?.contains(document.activeElement)
       ? document.activeElement
       : null;
+    const previousMode = state.readingMode;
     state.readingMode = mode === "essentials" ? "essentials" : "full";
     document.body.classList.toggle("essentials-mode", state.readingMode === "essentials");
-    if (readingModeLabel) readingModeLabel.textContent = "Reading view";
-    readingModeButton?.setAttribute("aria-label", "Essential reading view");
-    readingModeButton?.setAttribute("aria-pressed", String(state.readingMode === "essentials"));
+    const entry = currentEntry();
+    if (
+      previousMode !== state.readingMode
+      && entry?.lesson.status === "published"
+      && lessonReader?.querySelector(".reader-layout")
+    ) {
+      hideTermHintTooltip();
+      lessonReader.replaceChildren(renderPublishedLesson(entry));
+    }
+    if (readingModeLabel) readingModeLabel.textContent = "Reading depth";
+    readingModeButton?.setAttribute("aria-label", "Deep reading view");
+    readingModeButton?.setAttribute("aria-pressed", String(state.readingMode === "full"));
     if (readingModeMeta) {
       readingModeMeta.textContent = state.readingMode === "essentials"
-        ? "Essentials on · Show full lesson"
-        : "Full lesson · Show essentials";
+        ? "Essentials on · Show deep lesson"
+        : "Deep view on · Show essentials";
     }
     lessonReader?.querySelectorAll("[data-reader-mode]").forEach((button) => {
-      button.setAttribute("aria-label", "Essential reading view");
-      button.setAttribute("aria-pressed", String(state.readingMode === "essentials"));
-      button.textContent = "Essential view";
+      button.setAttribute("aria-label", "Deep reading view");
+      button.setAttribute("aria-pressed", String(state.readingMode === "full"));
+      button.textContent = "Deep view";
     });
     syncReadingTimes();
     if (persist) writeStorage(STORAGE_READING_MODE, state.readingMode);
@@ -1896,7 +2097,7 @@
     collectionBody.hidden = !collectionExpanded;
     collectionButton.setAttribute("aria-controls", collectionBody.id);
 
-    collection.modules.forEach((module) => {
+    collection.modules.forEach((module, moduleIndex) => {
       const group = document.createElement("section");
       group.className = "module-group";
 
@@ -1927,7 +2128,10 @@
                 ? " · source-mapped roadmap"
                 : " · lesson planning"
           }`;
-      toggle.setAttribute("aria-label", `${module.title}. ${moduleMeta}`);
+      toggle.setAttribute(
+        "aria-label",
+        `${module.title}. ${progressionStage(moduleIndex, collection.modules.length)} stage. ${moduleMeta}`,
+      );
       copy.append(title);
       const chevron = document.createElement("span");
       chevron.className = "module-chevron";
@@ -2186,21 +2390,88 @@
     return null;
   }
 
+  function glossaryVisibleText(value) {
+    return normalizeString(value)
+      .replace(/\[\[[a-z0-9-]+\]\]/gi, " ")
+      .replace(/\s{2,}/gu, " ")
+      .trim();
+  }
+
+  function normalizeGlossaryPair(termValue, explanationValue, { derived = true } = {}) {
+    const term = glossaryVisibleText(termValue).replace(/^[•·\-–—]\s*/u, "").trim();
+    const explanation = glossaryVisibleText(explanationValue);
+    if (!term || !explanation || term.length > 80 || explanation.length > 600) return null;
+    if (!/[\p{L}\p{N}]/u.test(term) || foldHintText(term) === foldHintText(explanation)) return null;
+    if (!derived) return { term, explanation };
+    const genericLabels = new Set([
+      "canh bao", "ghi nho", "important", "luu y", "note", "quan trong", "tip", "vi du",
+    ]);
+    const wordCount = term.split(/\s+/u).filter(Boolean).length;
+    if (
+      term.length < 2
+      || explanation.length < 8
+      || wordCount > 12
+      || /[.!?。！？]$/u.test(term)
+      || /[:：;；]/u.test(term)
+      || genericLabels.has(foldHintText(term))
+    ) return null;
+    return { term, explanation };
+  }
+
+  function parseGlossaryLine(value) {
+    const text = glossaryVisibleText(value);
+    const match = text.match(/^(.{2,80}?)(?:\s*[:：]\s*|\s+[–—-]\s+)(.{8,600})$/u);
+    return match ? normalizeGlossaryPair(match[1], match[2]) : null;
+  }
+
+  function glossaryPairsFromBlock(block) {
+    if (!block || typeof block !== "object") return [];
+    if (block.type === "paragraph") return [parseGlossaryLine(block.text)].filter(Boolean);
+    if (block.type === "list") return block.items.map(parseGlossaryLine).filter(Boolean);
+    if (block.type === "callout") {
+      return [
+        normalizeGlossaryPair(block.label, block.text),
+        parseGlossaryLine(block.text),
+      ].filter(Boolean);
+    }
+    if (block.type === "table") {
+      return block.rows.map((row) => (
+        Array.isArray(row) && row.length >= 2
+          ? normalizeGlossaryPair(row[0], row.slice(1).join(" — "))
+          : null
+      )).filter(Boolean);
+    }
+    if (block.type === "flow") {
+      return block.steps.map((step) => normalizeGlossaryPair(step.title, step.detail)).filter(Boolean);
+    }
+    return [];
+  }
+
+  function glossaryPairsFromLesson(lesson) {
+    const glossary = lesson?.sections?.find((section) => section.id === "thuat-ngu");
+    if (!glossary || !Array.isArray(glossary.blocks)) return [];
+    return glossary.blocks.flatMap(glossaryPairsFromBlock).slice(0, 48);
+  }
+
   function createFirstUseHintState(lesson) {
-    const hints = Array.isArray(lesson?.firstUseHints) ? lesson.firstUseHints : [];
+    const merged = new Map();
+    glossaryPairsFromLesson(lesson).forEach((hint) => {
+      const key = foldHintText(hint.term);
+      if (key && !merged.has(key)) merged.set(key, { ...hint, key, source: "glossary" });
+    });
+    const explicitHints = Array.isArray(lesson?.firstUseHints) ? lesson.firstUseHints : [];
+    explicitHints.forEach((hint) => {
+      const normalized = normalizeGlossaryPair(hint?.term, hint?.explanation, { derived: false });
+      const key = normalized ? foldHintText(normalized.term) : "";
+      if (key) merged.set(key, { ...normalized, key, source: "authored" });
+    });
+    const hints = [...merged.values()];
     if (!hints.length) return null;
-    const coreText = lesson.sections.slice(0, 9).flatMap((section) =>
-      section.blocks
-        .filter((block) => block.learningLayer !== "detail")
-        .map(blockSearchText),
-    ).join(" ").replace(/\[\[[a-z0-9-]+\]\]/gi, " ");
     return {
-      hints: hints.map((hint, index) => ({
-        ...hint,
-        key: `${index}:${hint.term.toLocaleLowerCase("vi")}`,
-        preferCore: Boolean(findTermMatch(coreText, hint.term)),
-      })),
+      hints,
       used: new Set(),
+      descriptionIndex: 0,
+      descriptionPrefix: `term-hint-description-${lesson.id}`,
     };
   }
 
@@ -2210,6 +2481,8 @@
     termHintTooltip.id = "first-use-tooltip";
     termHintTooltip.className = "first-use-tooltip";
     termHintTooltip.setAttribute("role", "tooltip");
+    termHintTooltip.setAttribute("aria-hidden", "true");
+    termHintTooltip.lang = "vi";
     termHintTooltip.hidden = true;
     document.body.append(termHintTooltip);
     return termHintTooltip;
@@ -2220,6 +2493,16 @@
     const margin = 12;
     const gap = 10;
     const targetRect = activeTermHint.getBoundingClientRect();
+    if (
+      activeTermHint.getClientRects().length === 0
+      || targetRect.bottom < 0
+      || targetRect.top > window.innerHeight
+      || targetRect.right < 0
+      || targetRect.left > window.innerWidth
+    ) {
+      hideTermHintTooltip();
+      return;
+    }
     const tooltipRect = termHintTooltip.getBoundingClientRect();
     const left = Math.min(
       Math.max(margin, targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2)),
@@ -2234,19 +2517,34 @@
     termHintTooltip.style.top = `${Math.round(top)}px`;
   }
 
+  function scheduleTermHintTooltipPosition() {
+    if (!activeTermHint || !termHintTooltip || termHintTooltip.hidden || termHintPositionFrame) return;
+    termHintPositionFrame = window.requestAnimationFrame(() => {
+      termHintPositionFrame = 0;
+      positionTermHintTooltip();
+    });
+  }
+
   function showTermHintTooltip(target) {
     if (!target?.matches?.(".first-use-hint") || !target.dataset.explanation) return;
     const tooltip = ensureTermHintTooltip();
-    if (activeTermHint && activeTermHint !== target) activeTermHint.removeAttribute("aria-describedby");
+    const unchanged = activeTermHint === target
+      && !tooltip.hidden
+      && tooltip.textContent === target.dataset.explanation;
+    if (unchanged) {
+      scheduleTermHintTooltipPosition();
+      return;
+    }
     activeTermHint = target;
     tooltip.textContent = target.dataset.explanation;
     tooltip.hidden = false;
-    target.setAttribute("aria-describedby", tooltip.id);
-    window.requestAnimationFrame(positionTermHintTooltip);
+    scheduleTermHintTooltipPosition();
   }
 
   function hideTermHintTooltip({ clear = true } = {}) {
-    activeTermHint?.removeAttribute("aria-describedby");
+    if (termHintPositionFrame) window.cancelAnimationFrame(termHintPositionFrame);
+    termHintPositionFrame = 0;
+    termHintPointerWillClose = false;
     activeTermHint = null;
     if (!termHintTooltip) return;
     termHintTooltip.hidden = true;
@@ -2256,7 +2554,11 @@
   }
 
   function appendHintedText(element, text, hintState, block) {
-    if (!hintState || !text) {
+    if (
+      !hintState
+      || !text
+      || (state.readingMode === "essentials" && block?.learningLayer === "detail")
+    ) {
       element.append(document.createTextNode(text));
       return;
     }
@@ -2283,7 +2585,14 @@
       definition.tabIndex = 0;
       definition.textContent = visibleTerm;
       definition.dataset.explanation = selected.hint.explanation;
-      element.append(definition);
+      definition.dataset.hintSource = selected.hint.source;
+      const accessibleDescription = document.createElement("span");
+      hintState.descriptionIndex += 1;
+      accessibleDescription.id = `${hintState.descriptionPrefix}-${hintState.descriptionIndex}`;
+      accessibleDescription.hidden = true;
+      accessibleDescription.textContent = selected.hint.explanation;
+      definition.setAttribute("aria-describedby", accessibleDescription.id);
+      element.append(definition, accessibleDescription);
       hintState.used.add(selected.hint.key);
       cursor = selected.index + selected.length;
     }
@@ -2350,6 +2659,119 @@
     return chunks;
   }
 
+  function visualTextCandidates(block) {
+    if (!block || typeof block !== "object") return [];
+    if (block.type === "paragraph") return readableChunks(block.text, 420);
+    if (block.type === "list") return block.items.flatMap((item) => readableChunks(item, 420));
+    if (block.type === "callout") return readableChunks(block.text, 420);
+    if (block.type === "table") {
+      return block.rows.flatMap((row) => readableChunks(row.filter(Boolean).join(" — "), 420));
+    }
+    if (block.type === "flow") {
+      return block.steps.flatMap((step) => readableChunks(
+        [step.title, step.detail].filter(Boolean).join(": "),
+        420,
+      ));
+    }
+    return [];
+  }
+
+  function visualTextFromSection(section) {
+    const blocks = section?.blocks?.filter(
+      (block) => state.readingMode !== "essentials" || block.learningLayer !== "detail",
+    ) || [];
+    for (const block of blocks) {
+      const text = visualTextCandidates(block)
+        .map((value) => normalizeString(value))
+        .find((value) => value.length >= 24);
+      if (text) return { text, block };
+    }
+    return null;
+  }
+
+  function createLessonConceptMap(entry) {
+    const concepts = [
+      { index: 0, marker: "01", label: "Mục tiêu", role: "intent" },
+      { index: 3, marker: "02", label: "Cơ chế", role: "mechanism" },
+      { index: 7, marker: "03", label: "Ranh giới", role: "boundary" },
+    ].map((concept) => ({
+      ...concept,
+      visual: visualTextFromSection(entry.lesson.sections[concept.index]),
+    })).filter((concept) => concept.visual);
+    if (concepts.length < 2) return null;
+
+    const figure = document.createElement("figure");
+    figure.className = "lesson-concept-map";
+    figure.setAttribute("aria-labelledby", `concept-map-${entry.lesson.id}`);
+    const caption = document.createElement("figcaption");
+    caption.id = `concept-map-${entry.lesson.id}`;
+    caption.textContent = "Bản đồ ý tưởng";
+    caption.lang = "vi";
+    const track = document.createElement("ol");
+    track.className = "lesson-concept-map__track";
+    track.setAttribute("aria-label", "Mục tiêu, cơ chế và ranh giới của bài học");
+    const mapHintState = createFirstUseHintState(entry.lesson);
+    concepts.forEach((concept) => {
+      const card = document.createElement("li");
+      card.className = "lesson-concept-map__node";
+      card.dataset.conceptRole = concept.role;
+      const heading = document.createElement("div");
+      heading.className = "lesson-concept-map__heading";
+      const marker = document.createElement("span");
+      marker.textContent = concept.marker;
+      marker.setAttribute("aria-hidden", "true");
+      const label = document.createElement("strong");
+      label.textContent = concept.label;
+      label.lang = "vi";
+      heading.append(marker, label);
+      const copy = document.createElement("p");
+      appendRichText(copy, concept.visual.text, entry.lesson, mapHintState, concept.visual.block);
+      card.append(heading, copy);
+      track.append(card);
+    });
+    figure.append(caption, track);
+    return figure;
+  }
+
+  function openAccessVisualForEntry(entry) {
+    const moduleIndex = entry.collection.modules.findIndex(({ id }) => id === entry.module.id);
+    const lessonIndex = entry.module.lessons.findIndex(({ id }) => id === entry.lesson.id);
+    if (moduleIndex < 0 || lessonIndex < 0) return null;
+    return OPEN_ACCESS_VISUALS[`${entry.collection.id}:${moduleIndex + 1}:${lessonIndex + 1}`] || null;
+  }
+
+  function createOpenAccessVisual(visual) {
+    const figure = document.createElement("figure");
+    figure.className = "lesson-evidence-visual";
+    const image = document.createElement("img");
+    image.setAttribute("src", visual.src);
+    image.alt = visual.alt;
+    image.loading = "lazy";
+    image.decoding = "async";
+    const caption = document.createElement("figcaption");
+    const label = document.createElement("span");
+    label.className = "lesson-evidence-visual__label";
+    label.textContent = "Hình minh hoạ nguồn mở";
+    label.lang = "vi";
+    const credit = document.createElement("strong");
+    credit.textContent = visual.credit;
+    const meta = document.createElement("div");
+    meta.className = "lesson-evidence-visual__meta";
+    const rights = document.createElement("small");
+    rights.textContent = visual.rights;
+    const source = document.createElement("a");
+    source.href = visual.source;
+    source.target = "_blank";
+    source.rel = "noreferrer noopener";
+    source.referrerPolicy = "no-referrer";
+    source.textContent = "Nguồn & quyền sử dụng ↗";
+    source.lang = "vi";
+    meta.append(rights, source);
+    caption.append(label, credit, meta);
+    figure.append(image, caption);
+    return figure;
+  }
+
   function renderBlock(block, lesson, hintState = null) {
     const finish = (node) => {
       const elements = node.nodeType === Node.DOCUMENT_FRAGMENT_NODE ? Array.from(node.children) : [node];
@@ -2393,10 +2815,15 @@
     if (block.type === "table") {
       const wrap = document.createElement("div");
       wrap.className = "content-block table-wrap";
+      wrap.dataset.visualKind = "table";
       wrap.setAttribute("tabindex", "0");
-      wrap.setAttribute("aria-label", "Scrollable comparison table");
+      wrap.setAttribute("aria-label", "Scrollable lesson table");
       const table = document.createElement("table");
       table.className = "content-table";
+      const caption = document.createElement("caption");
+      caption.className = "visually-hidden";
+      caption.textContent = "Bảng dữ liệu và so sánh trong bài học";
+      caption.lang = "vi";
       const head = document.createElement("thead");
       const headRow = document.createElement("tr");
       block.headers.forEach((header) => {
@@ -2409,20 +2836,22 @@
       const body = document.createElement("tbody");
       block.rows.forEach((row) => {
         const tableRow = document.createElement("tr");
-        row.forEach((value) => {
-          const cell = document.createElement("td");
+        row.forEach((value, index) => {
+          const cell = document.createElement(index === 0 ? "th" : "td");
+          if (index === 0) cell.scope = "row";
           appendRichText(cell, value, lesson, hintState, block);
           tableRow.append(cell);
         });
         body.append(tableRow);
       });
-      table.append(head, body);
+      table.append(caption, head, body);
       wrap.append(table);
       return finish(wrap);
     }
     if (block.type === "flow") {
       const flow = document.createElement("ol");
       flow.className = "content-block flow-diagram";
+      flow.dataset.visualKind = "process";
       flow.setAttribute("aria-label", `Process with ${block.steps.length} steps`);
       block.steps.forEach((step) => {
         const card = document.createElement("li");
@@ -2505,12 +2934,21 @@
     readingMode.type = "button";
     readingMode.className = "reader-action";
     readingMode.dataset.readerMode = "true";
-    readingMode.setAttribute("aria-label", "Essential reading view");
-    readingMode.setAttribute("aria-pressed", String(state.readingMode === "essentials"));
-    readingMode.textContent = "Essential view";
+    readingMode.setAttribute("aria-label", "Deep reading view");
+    readingMode.setAttribute("aria-pressed", String(state.readingMode === "full"));
+    readingMode.textContent = "Deep view";
     toolGroup.append(bookmark, readingMode);
     tools.append(toolGroup);
-    hero.append(breadcrumb, title, deck, meta, tools);
+    const artwork = createCollectionArtwork(collection, "reader");
+    if (artwork) {
+      hero.classList.add("reader-hero--illustrated");
+      const copy = document.createElement("div");
+      copy.className = "reader-hero__copy";
+      copy.append(breadcrumb, title, deck, meta, tools);
+      hero.append(copy, artwork);
+    } else {
+      hero.append(breadcrumb, title, deck, meta, tools);
+    }
     return hero;
   }
 
@@ -2643,12 +3081,17 @@
   function renderPublishedLesson(entry) {
     const fragment = document.createDocumentFragment();
     fragment.append(createReaderHero(entry));
+    const conceptMap = createLessonConceptMap(entry);
+    if (conceptMap) fragment.append(conceptMap);
     const layout = document.createElement("div");
     layout.className = "reader-layout";
     const body = document.createElement("div");
     body.className = "lesson-body";
     const hasLearningLayer = lessonHasLearningLayer(entry.lesson);
     const firstUseHintState = createFirstUseHintState(entry.lesson);
+    const lessonVisual = openAccessVisualForEntry(entry);
+    const foundGlossaryIndex = entry.lesson.sections.findIndex((section) => section.id === "thuat-ngu");
+    const glossaryIndex = foundGlossaryIndex >= 0 ? foundGlossaryIndex : 9;
     entry.lesson.sections.forEach((sectionData, index) => {
       const section = document.createElement("section");
       section.className = "lesson-section";
@@ -2666,8 +3109,16 @@
       headingCopy.append(title);
       heading.append(number, headingCopy);
       section.append(heading);
-      const sectionHintState = index < 9 ? firstUseHintState : null;
-      sectionData.blocks.forEach((block) => section.append(renderBlock(block, entry.lesson, sectionHintState)));
+      const sectionVisibleInMode = state.readingMode !== "essentials"
+        || hasLearningLayer
+        || ESSENTIAL_SECTION_INDEXES.has(index);
+      const sectionHintState = index < glossaryIndex && sectionVisibleInMode ? firstUseHintState : null;
+      sectionData.blocks.forEach((block, blockIndex) => {
+        section.append(renderBlock(block, entry.lesson, sectionHintState));
+        if (lessonVisual && lessonVisual.sectionId === sectionData.id && blockIndex === 0) {
+          section.append(createOpenAccessVisual(lessonVisual));
+        }
+      });
       body.append(section);
     });
     const references = renderReferences(entry.lesson, entry.collection.kind);
@@ -2832,6 +3283,8 @@
     const mark = document.createElement("span");
     mark.textContent = collection.mark;
     top.append(mark);
+    const artwork = createCollectionArtwork(collection, "card");
+    if (artwork) card.classList.add("collection-card--illustrated");
     const title = document.createElement("h3");
     title.textContent = collection.title;
     const description = document.createElement("p");
@@ -2847,7 +3300,9 @@
     open.type = "button";
     open.dataset.openCollection = collection.id;
     open.textContent = progress.completed ? "Continue →" : "Explore →";
-    card.append(top, title, description, progressWrap, open);
+    card.append(top);
+    if (artwork) card.append(artwork);
+    card.append(title, description, progressWrap, open);
     return card;
   }
 
@@ -2992,13 +3447,13 @@
       curriculum.append(createHomeSectionHead("Modules"));
       const moduleGrid = document.createElement("div");
       moduleGrid.className = "module-overview";
-      collection.modules.forEach((module) => {
+      collection.modules.forEach((module, moduleIndex) => {
         const card = document.createElement("article");
         card.className = "module-card";
         const top = document.createElement("div");
         top.className = "module-card__top";
         const number = document.createElement("span");
-        number.textContent = `MODULE ${module.number}`;
+        number.textContent = `${progressionStage(moduleIndex, collection.modules.length).toUpperCase()} · MODULE ${module.number}`;
         const count = document.createElement("span");
         const availableLessons = module.lessons.filter((lesson) => lesson.status === "published");
         const completedLessons = availableLessons.filter((lesson) => state.completed.has(lesson.id));
@@ -3282,7 +3737,7 @@
       { id: "daily", marker: "☼", title: "Daily spark", context: "One locally chosen idea for today" },
       { id: "surprise", marker: "✦", title: "Surprise me", context: "Open an unread lesson" },
       { id: "theme", marker: "◐", title: "Theme studio", context: THEME_PRESETS[document.documentElement.dataset.themePreset]?.label || "Choose a mood" },
-      { id: "reading-mode", marker: "≋", title: state.readingMode === "essentials" ? "Show full lesson" : "Show essentials", context: "Change the visible lesson depth" },
+      { id: "reading-mode", marker: "≋", title: state.readingMode === "essentials" ? "Show deep lesson" : "Show essentials", context: "Change the visible lesson depth" },
       { id: "text-size", marker: "Aa", title: "Reading size", context: state.textSize === "xlarge" ? "Extra large" : state.textSize === "large" ? "Large" : "Comfortable" },
       { id: "focus", marker: "◌", title: state.focusMode ? "Exit focus mode" : "Enter focus mode", context: "Quiet the navigation" },
       { id: "timer", marker: "◷", title: state.focusTimerEnd ? "Stop focus timer" : "Start 15-minute focus", context: "Session-only timer" },
@@ -3380,7 +3835,7 @@
     else if (result.id === "theme") openThemeDialog(searchInput);
     else if (result.id === "reading-mode") {
       toggleReadingMode();
-      showToast(state.readingMode === "essentials" ? "Essential view on." : "Full lesson visible.");
+      showToast(state.readingMode === "essentials" ? "Essential view on." : "Deep view on.");
       returnFocusToJump();
     } else if (result.id === "text-size") {
       cycleTextSize();
@@ -3647,7 +4102,7 @@
       state.openCollections = new Set();
       state.openModules = new Set();
       state.openNavGroups = loadNavigationGroups();
-      setReadingMode(readStorage(STORAGE_READING_MODE, "essentials"), false);
+      setReadingMode(readStorage(STORAGE_READING_MODE, "full"), false);
       setTextSize(readStorage(STORAGE_TEXT_SIZE, "comfortable"), false);
       passwordInput.removeAttribute("aria-invalid");
       document.body.classList.remove("is-locked");
@@ -3919,20 +4374,40 @@
     if (hint && event.pointerType !== "touch") showTermHintTooltip(hint);
   });
   document.addEventListener("pointerout", (event) => {
-    if (event.pointerType === "touch" || event.target !== activeTermHint) return;
-    if (event.relatedTarget && activeTermHint.contains(event.relatedTarget)) return;
+    if (event.pointerType === "touch") return;
+    const leftHint = event.target === activeTermHint;
+    const leftTooltip = event.target.closest?.(".first-use-tooltip");
+    if (!leftHint && !leftTooltip) return;
+    if (
+      event.relatedTarget
+      && (activeTermHint?.contains(event.relatedTarget) || termHintTooltip?.contains(event.relatedTarget))
+    ) return;
     if (document.activeElement !== activeTermHint) hideTermHintTooltip();
   });
   document.addEventListener("pointerdown", (event) => {
-    if (!event.target.closest?.(".first-use-hint")) hideTermHintTooltip();
+    const hint = event.target.closest?.(".first-use-hint");
+    termHintPointerWillClose = Boolean(
+      hint
+      && (event.pointerType === "touch" || event.pointerType === "pen")
+      && hint === activeTermHint
+      && termHintTooltip
+      && !termHintTooltip.hidden,
+    );
+    if (!hint && !event.target.closest?.(".first-use-tooltip")) hideTermHintTooltip();
+  });
+  document.addEventListener("pointercancel", () => {
+    termHintPointerWillClose = false;
   });
   document.addEventListener("click", (event) => {
     const hint = event.target.closest?.(".first-use-hint");
     if (!hint) return;
+    const shouldClose = termHintPointerWillClose;
+    termHintPointerWillClose = false;
     hint.focus({ preventScroll: true });
-    showTermHintTooltip(hint);
+    if (shouldClose) hideTermHintTooltip();
+    else showTermHintTooltip(hint);
   });
-  document.addEventListener("scroll", hideTermHintTooltip, { capture: true, passive: true });
+  document.addEventListener("scroll", scheduleTermHintTooltipPosition, { capture: true, passive: true });
   renderThemeOptions();
   themeToggle?.addEventListener("click", () => openThemeDialog(themeToggle));
   themeToolButton?.addEventListener("click", () => openThemeDialog(themeToolButton));
@@ -3983,7 +4458,7 @@
   window.addEventListener("pointerup", finishSidebarResize);
   window.addEventListener("pointercancel", finishSidebarResize);
   window.addEventListener("resize", () => {
-    hideTermHintTooltip();
+    scheduleTermHintTooltipPosition();
     const compact = isCompactSidebar();
     if (state.compactSidebar !== compact) {
       document.body.classList.remove("sidebar-open");
@@ -3996,7 +4471,6 @@
     syncCurriculumInteractivity();
   });
   workspace?.addEventListener("scroll", updateReadingProgress, { passive: true });
-  workspace?.addEventListener("scroll", () => hideTermHintTooltip(), { passive: true });
   document.addEventListener("keydown", (event) => {
     if (event.isComposing) return;
     if (activeTermHint && event.key === "Escape") {
@@ -4082,7 +4556,7 @@
   initializeSidebarLayout();
   initializeTheme();
   setFocusMode(false);
-  setReadingMode(readStorage(STORAGE_READING_MODE, "essentials"), false);
+  setReadingMode(readStorage(STORAGE_READING_MODE, "full"), false);
   setTextSize(readStorage(STORAGE_TEXT_SIZE, "comfortable"), false);
   applyCollectionTone();
 })();

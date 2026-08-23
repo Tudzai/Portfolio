@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -108,7 +109,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260822-detail-polish2|vault.js?v=20260822-detail-polish2") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260823-depth-visual1|vault.js?v=20260823-depth-visual1") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -116,7 +117,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260822-detail-polish2") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260823-depth-visual1") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -194,6 +195,112 @@ function extractLiteralManifest(artifact, constantName) {
     failures.push(`exact uniform sixteen-domain manifest: ${label}`);
   }
 });
+
+function extractArtworkManifest(artifact) {
+  const literal = artifact.match(/const\s+COLLECTION_ARTWORK\s*=\s*Object\.freeze\(\{([\s\S]*?)\}\);/u);
+  if (!literal) return null;
+  const entryPattern = /"([a-z0-9-]+)"\s*:\s*"assets\/topics\/([a-z0-9-]+)-v1\.webp"/gu;
+  const entries = [...literal[1].matchAll(entryPattern)].map((match) => ({
+    id: match[1],
+    assetId: match[2],
+  }));
+  const residue = literal[1].replace(entryPattern, "").replace(/[\s,]/gu, "");
+  return residue ? null : entries;
+}
+
+const expectedArtworkIds = uniformReleaseManifest.map(({ id }) => id);
+const artworkManifest = extractArtworkManifest(js);
+if (
+  !artworkManifest
+  || artworkManifest.some(({ id, assetId }) => id !== assetId)
+  || artworkManifest.map(({ id }) => id).join("|") !== expectedArtworkIds.join("|")
+) {
+  failures.push("exact sixteen-domain artwork manifest");
+} else {
+  const artworkChecks = await Promise.all(expectedArtworkIds.map(async (id) => {
+    try {
+      const asset = await readFile(join(vaultDirectory, "assets", "topics", `${id}-v1.webp`));
+      const approvedJapaneseArtwork = id !== "japanese-culture"
+        || createHash("sha256").update(asset).digest("hex") === "b542410895b2efbbf335ec9a401564d9931f2f5881cc4179735ce05d5c02855b";
+      return approvedJapaneseArtwork
+        && asset.length >= 100_000
+        && asset.subarray(0, 4).toString("ascii") === "RIFF"
+        && asset.subarray(8, 12).toString("ascii") === "WEBP";
+    } catch {
+      return false;
+    }
+  }));
+  if (artworkChecks.some((valid) => !valid)) failures.push("local topic artwork assets");
+}
+requireMatch(js, /function\s+createCollectionArtwork\s*\(/u, "topic artwork renderer");
+requireMatch(js, /image\.setAttribute\("src", source\)/u, "local topic artwork source assignment");
+requireMatch(css, /\.reader-hero--illustrated\s*\{/u, "illustrated lesson hero layout");
+requireMatch(css, /\.collection-card--illustrated\s*\{/u, "illustrated collection card layout");
+
+const expectedOpenAccessVisuals = [
+  ["fintech-domain:3:1", "fintech-payment-system.webp", "e43bb1f1979b114f1859499de98ab946f50399b2b54d12cd7ae40ad75a559eaa"],
+  ["fintech-domain:7:1", "fintech-identity.webp", "e9fbd3d5ccd79fe1aa8761e503efa986874e75d9effc45a88879bb1460b84ec5"],
+  ["fin-domain:1:1", "finance-household-balance.webp", "bad900df3984c41a9da83154d56a3ce9566d7395428e6511db8ca97332730e56"],
+  ["mrel-domain:1:1", "muscle-training.webp", "17fe981859482293fb7ecdfbc955e3dc98d422c9d401e57277a19803619d89fd"],
+  ["mrel-domain:2:1", "muscle-equipment.webp", "c243a41c527c6f8b576d01c06e54108e48b8a1b9455514296b5377ec0ddf2ce0"],
+  ["personal-style:2:1", "style-suit.webp", "3b960912505b11eb8f3077890a4296c5489ab0159610a93f53a258c548cda692"],
+  ["photography:1:1", "photo-light-shadow.webp", "5dbf170fbd9537ca6b59a09a6851dcb391dd8f4294c00ec04ef77dcff5f8db6b"],
+  ["photography:1:2", "photo-great-wave.webp", "91dde294d1b9fa5c46d9f959c6ecc4012a1822d01320df9820de2eaa8c085ea6"],
+  ["cooking:1:1", "cooking-board.webp", "0761830e2aa16e1e2f198a8dde3b83577a06c5adb376bfacb3f96641f84fdfc2"],
+  ["cooking:1:3", "cooking-probe.webp", "01bb6639345d5aee5933de03764427534f059fd250274f4d5ecc3adebf48841c"],
+  ["bar-drinks:4:2", "bar-shaker.webp", "9ba8e00bf7eef87acb5b35b8740300d3e50bd5ca947b50f16a98be8618887d74"],
+  ["coffee:1:1", "coffee-cherry.webp", "c9863ce67c191d23e2a7a5489ff91e889198de59166b05f5ae9c9a09fac4404e"],
+  ["coffee:4:1", "coffee-drip.webp", "752e0604e7619b25eaeb8319cddd462a896eae7ee15f38e5bb31ecd28f1d49a1"],
+  ["japanese-culture:3:3", "japan-teabowl.webp", "62a9b62f6aefd4a0188865b86c8149621b9dbeb6e4d53cfa67e686c13c802903"],
+  ["japanese-culture:4:1", "japan-great-wave.webp", "4884d2483763fbb2b850e1169a4d5eda09dd47aae89b0094bf2ae4f39434d6e1"],
+  ["art-visual-culture:3:2", "art-champa.webp", "a15e8eda3dfcfe23bffe991878e20477dd83bb839b91676b8fd6db2b63cae8e3"],
+  ["architecture-design-living:3:1", "architecture-farnsworth.webp", "36c067b7fba554de34295450fbbf6076f3608231a65a2126d3a3c49b69182f39"],
+  ["architecture-design-living:4:1", "architecture-thonet.webp", "4d09968fd03105f8aa361e6a596769fe454414bf65aaecad6352d5caf1c3a122"],
+];
+const openVisualLiteral = js.match(/const\s+OPEN_ACCESS_VISUALS\s*=\s*Object\.freeze\(\{([\s\S]*?)\n\s*\}\);\n\s*const\s+COLLECTION_GROUPS/u);
+if (!openVisualLiteral) {
+  failures.push("open-access lesson visual manifest");
+} else {
+  const openVisualKeys = [...openVisualLiteral[1].matchAll(/^\s*"([a-z0-9-]+:\d+:\d+)"\s*:\s*Object\.freeze\(\{/gmu)].map((match) => match[1]);
+  const openVisualFiles = [...openVisualLiteral[1].matchAll(/src:\s*"assets\/explainers\/([a-z0-9-]+\.webp)"/gu)].map((match) => match[1]);
+  const expectedKeys = expectedOpenAccessVisuals.map(([key]) => key);
+  const expectedFiles = expectedOpenAccessVisuals.map(([, file]) => file);
+  if (
+    openVisualKeys.join("|") !== expectedKeys.join("|")
+    || openVisualFiles.join("|") !== expectedFiles.join("|")
+    || [...openVisualLiteral[1].matchAll(/rights:\s*"[^"]+"/gu)].length !== expectedOpenAccessVisuals.length
+    || [...openVisualLiteral[1].matchAll(/source:\s*"https:\/\/[^"]+"/gu)].length !== expectedOpenAccessVisuals.length
+  ) failures.push("exact licensed lesson visual manifest");
+
+  const openVisualChecks = await Promise.all(expectedOpenAccessVisuals.map(async ([, file, hash]) => {
+    try {
+      const asset = await readFile(join(vaultDirectory, "assets", "explainers", file));
+      return asset.length >= 20_000
+        && asset.subarray(0, 4).toString("ascii") === "RIFF"
+        && asset.subarray(8, 12).toString("ascii") === "WEBP"
+        && createHash("sha256").update(asset).digest("hex") === hash;
+    } catch {
+      return false;
+    }
+  }));
+  if (openVisualChecks.some((valid) => !valid)) failures.push("hash-pinned local open-access lesson assets");
+}
+requireMatch(js, /function\s+openAccessVisualForEntry\s*\(/u, "lesson-specific open visual lookup");
+requireMatch(js, /function\s+createOpenAccessVisual\s*\(/u, "open-access lesson visual renderer");
+requireMatch(js, /image\.setAttribute\("src",\s*visual\.src\)[\s\S]*?source\.href\s*=\s*visual\.source/u, "local image with user-initiated source link");
+requireMatch(js, /lessonVisual\.sectionId\s*===\s*sectionData\.id[\s\S]*?createOpenAccessVisual\(lessonVisual\)/u, "small-idea visual placement inside its lesson section");
+requireMatch(css, /\.lesson-evidence-visual\s*\{/u, "open-access visual card layout");
+requireMatch(css, /\.lesson-evidence-visual img[\s\S]*?object-fit:\s*contain/u, "uncropped instructional image layout");
+requireMatch(js, /function\s+createLessonConceptMap\s*\(/u, "per-lesson concept-map renderer");
+requireMatch(js, /\{ index: 0, marker: "01", label: "Mục tiêu"[\s\S]*?\{ index: 3, marker: "02", label: "Cơ chế"[\s\S]*?\{ index: 7, marker: "03", label: "Ranh giới"/u, "goal mechanism boundary visual model");
+requireMatch(js, /function\s+visualTextFromSection[\s\S]*?state\.readingMode\s*!==\s*"essentials"\s*\|\|\s*block\.learningLayer\s*!==\s*"detail"/u, "concept maps respect the active reading depth");
+requireMatch(js, /track\s*=\s*document\.createElement\("ol"\)[\s\S]*?card\s*=\s*document\.createElement\("li"\)/u, "concept map exposes an ordered semantic relationship");
+requireMatch(js, /appendRichText\(copy,\s*concept\.visual\.text,\s*entry\.lesson,\s*mapHintState,\s*concept\.visual\.block\)/u, "concept-map terms retain glossary hints");
+requireMatch(js, /wrap\.dataset\.visualKind\s*=\s*"table"/u, "tables identify as visual explainers");
+requireMatch(js, /caption\.className\s*=\s*"visually-hidden"[\s\S]*?table\.append\(caption,\s*head,\s*body\)/u, "lesson tables include an accessible caption");
+requireMatch(js, /document\.createElement\(index\s*===\s*0\s*\?\s*"th"\s*:\s*"td"\)[\s\S]*?cell\.scope\s*=\s*"row"/u, "lesson tables expose row headers");
+requireMatch(js, /flow\.dataset\.visualKind\s*=\s*"process"/u, "process blocks identify as visual explainers");
+requireMatch(css, /\.lesson-concept-map\s*\{/u, "lesson concept-map layout");
 [
   "function isIsoDate",
   "canonical lesson section order",
@@ -430,6 +537,12 @@ const allowedVaultFiles = new Set([
   "knowledge-vault/vault.css",
   "knowledge-vault/vault.js",
 ]);
+expectedArtworkIds.forEach((id) => {
+  allowedVaultFiles.add(`knowledge-vault/assets/topics/${id}-v1.webp`);
+});
+expectedOpenAccessVisuals.forEach(([, file]) => {
+  allowedVaultFiles.add(`knowledge-vault/assets/explainers/${file}`);
+});
 const visibleVaultFiles = spawnSync(
   "git",
   ["ls-files", "--cached", "--others", "--exclude-standard", "--", "knowledge-vault"],
@@ -572,13 +685,29 @@ requireMatch(js, /behavior:\s*preferredScrollBehavior\(\)/, "reduced-motion-awar
 forbidMatch(js, /behavior:\s*"smooth"/, "unconditional smooth scrolling");
 requireMatch(js, /stopFocusTimer\(\);/, "lock clears focus timer");
 requireMatch(js, /stopFocusTimer\(\);\s*\n\s*hideTermHintTooltip\(\);/, "lock clears private term tooltip");
+requireMatch(js, /function\s+progressionStage[\s\S]*?return\s+"Beginner"[\s\S]*?return\s+"Intermediate"[\s\S]*?return\s+"Advanced"/, "consistent beginner intermediate advanced module stages");
+requireMatch(js, /progressionStage\(moduleIndex,\s*collection\.modules\.length\)\.toUpperCase\(\)[\s\S]*?MODULE/, "module cards expose the learning stage without extra subtitles");
 requireMatch(js, /function\s+setReadingMode[\s\S]*?syncReadingTimes\(\);[\s\S]*?updateReadingProgress\(\);[\s\S]*?\n\s*}/, "reading mode updates duration, focus, and progress");
 requireMatch(js, /function\s+essentialEstimatedMinutes[\s\S]*?ESSENTIAL_SECTION_INDEXES\.has\(index\)/, "essential view computes a visible-section duration fallback");
-requireMatch(js, /index\s*<\s*9\s*\?\s*firstUseHintState\s*:\s*null/, "term hints stay before the glossary");
-requireMatch(js, /document\.addEventListener\("scroll", hideTermHintTooltip, \{ capture: true, passive: true \}\)/, "term tooltip closes on nested scrolling");
+requireMatch(js, /function\s+glossaryPairsFromLesson[\s\S]*?section\.id\s*===\s*"thuat-ngu"[\s\S]*?flatMap\(glossaryPairsFromBlock\)/, "term hints derive from the authored glossary section");
+requireMatch(js, /glossaryPairsFromLesson\(lesson\)\.forEach[\s\S]*?explicitHints\.forEach[\s\S]*?merged\.set\(key,\s*\{\s*\.\.\.normalized,\s*key,\s*source:\s*"authored"\s*\}\)/, "authored term hints override glossary-derived definitions");
+requireMatch(js, /function\s+glossaryVisibleText[\s\S]*?replace\(\/\\\[\\\[\[a-z0-9-\]\+\\\]\\\]\/gi,\s*" "\)/, "glossary tooltip copy omits citation tokens");
+requireMatch(js, /index\s*<\s*glossaryIndex\s*&&\s*sectionVisibleInMode\s*\?\s*firstUseHintState\s*:\s*null/, "term hints stay before the discovered glossary section");
+requireMatch(js, /state\.readingMode\s*===\s*"essentials"\s*&&\s*block\?\.learningLayer\s*===\s*"detail"/, "essential view excludes hidden detail occurrences");
+requireMatch(js, /function\s+setReadingMode[\s\S]*?lessonReader\.replaceChildren\(renderPublishedLesson\(entry\)\)/, "reading-mode changes recompute the first visible term occurrence");
+requireMatch(js, /document\.body\.append\(termHintTooltip\)/, "term tooltip uses a body portal outside scrolling tables");
+requireMatch(js, /document\.addEventListener\("scroll", scheduleTermHintTooltipPosition, \{ capture: true, passive: true \}\)/, "term tooltip repositions on nested and table scrolling");
+requireMatch(js, /termHintPointerWillClose[\s\S]*?event\.pointerType\s*===\s*"touch"[\s\S]*?if\s*\(shouldClose\)\s*hideTermHintTooltip\(\)/, "touch activation toggles the term tooltip");
+requireMatch(js, /const\s+unchanged\s*=\s*activeTermHint\s*===\s*target[\s\S]*?if\s*\(unchanged\)/, "repeated focus and click do not re-announce the same definition");
+requireMatch(js, /accessibleDescription\.hidden\s*=\s*true[\s\S]*?definition\.setAttribute\("aria-describedby",\s*accessibleDescription\.id\)/, "each focusable term has one stable hidden accessible description");
+requireMatch(js, /termHintTooltip\.setAttribute\("aria-hidden",\s*"true"\)/, "visual tooltip portal stays out of the accessibility tree");
+forbidMatch(js, /target\.setAttribute\("aria-describedby",\s*tooltip\.id\)/, "dynamic duplicate tooltip description");
 requireMatch(js, /renderBlock\(block, entry\.lesson, sectionHintState\)/, "lesson renderer uses beginner term hints");
 requireMatch(js, /block\.learningLayer\s*===\s*"detail"/, "lesson renderer honors detail layer");
-requireMatch(js, /readingModeLabel\.textContent\s*=\s*"Reading view"/, "stable reading-view toggle label");
+requireMatch(js, /readingModeLabel\.textContent\s*=\s*"Reading depth"/, "stable reading-depth toggle label");
+requireMatch(js, /readingMode\.setAttribute\("aria-label",\s*"Deep reading view"\)/, "explicit deep-reading control name");
+requireMatch(js, /const\s+STORAGE_READING_MODE\s*=\s*"knowledge-library:reading-mode:v2"/, "deep-reading preference migration");
+requireMatch(js, /setReadingMode\(readStorage\(STORAGE_READING_MODE,\s*"full"\),\s*false\)/, "deep-reading default");
 requireMatch(js, /focusLabel\.textContent\s*=\s*"Focus mode"/, "stable focus-mode toggle label");
 requireMatch(js, /focusTimerLabel\.textContent\s*=\s*"Focus timer"/, "stable focus-timer toggle label");
 requireMatch(js, /"ben-lien-quan":\s*"Ai hoặc yếu tố nào liên quan"/, "lifestyle stakeholder section alias");
@@ -646,6 +775,10 @@ requireMatch(js, /layeredBlocks\.length\s*===\s*blocks\.length\s*&&\s*Array\.isA
   requireMatch(artifact, /layeredBlocks\.length\s*!==\s*blocks\.length/, `${label} restricts hints to layered lessons`);
 });
 forbidMatch(css, /\.first-use-hint::after/, "clipped pseudo-element term tooltip");
+requireMatch(css, /\.first-use-tooltip\s*\{[\s\S]*?position:\s*fixed[\s\S]*?max-height:\s*calc\(100vh\s*-\s*24px\)[\s\S]*?pointer-events:\s*auto/, "viewport-safe portal tooltip styling");
+requireMatch(js, /activeTermHint\s*&&\s*event\.key\s*===\s*"Escape"[\s\S]*?hideTermHintTooltip\(\)/, "Escape dismisses an open term tooltip");
+forbidMatch(js, /termHintTooltip\.setAttribute\("aria-live"/, "duplicate live-region term announcement");
+forbidMatch(js, /definition\.(?:title\s*=|setAttribute\("aria-label")/, "duplicate accessible term label");
 
 forbidMatch(html, /unlock-pillars/, "verbose unlock-page pillars");
 

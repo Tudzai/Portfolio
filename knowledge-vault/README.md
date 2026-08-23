@@ -44,9 +44,15 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
   one group open at a time, while the header Jump palette finds actions, collections, modules, and lesson titles.
 - Every domain uses the same beginner path: a simple map, a recommended starting point, ordered modules, practical
   outcomes, and source details that stay collapsed until requested.
-- Every lesson opens directly into the authored content. Essential view is the default for a new reader. Evidence-heavy
-  lessons keep all eleven sections but show a curated core path first; full view reveals every supporting detail.
-  Shorter lessons keep the safest beginner sections visible. References remain available in both.
+- Every lesson opens in Deep view so the researched mechanisms, counterexamples, boundary conditions, and practice
+  details are not hidden by default. Essentials remains a deliberate shorter path; references and safety sections stay
+  available in both depths.
+- Sixteen local editorial plates give each structured topic a distinct visual identity. Eighteen selected lessons also
+  place a rights-checked open-access image beside the exact smaller idea it supports, with descriptive alternative text,
+  credit, rights status, and a user-initiated link to the official source record. Every published lesson builds its own
+  goal → mechanism → boundary concept map from authored text, while process flows and comparison tables act as smaller
+  code-native explainers. All image files are downloaded and hash-pinned locally, so reading makes no third-party
+  request; the editorial plates are decorative, while instructional visuals retain a text equivalent in the DOM.
 - Jump also provides continue reading, surprise discovery, a deterministic daily spark, saved lessons, reading size,
   essential/full view, focus mode, a session-only 15-minute timer, theme access, and the Ctrl/Cmd+K and Escape shortcuts without adding
   a separate control panel.
@@ -55,7 +61,11 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
   preset is saved only in local browser storage and can be changed from the header or the mobile Jump palette.
 - Lessons use one flat section outline and one smart `Complete & continue` action while preserving the full
   eleven-section authoring contract and source section.
-- Glossary-derived first-use hints explain eligible technical terms in place without changing or inventing definitions.
+- Module cards expose a consistent Beginner → Intermediate → Advanced learning path. These labels describe the
+  curriculum's depth and expected practice, not certification or professional authorization.
+- Glossary-derived first-use hints explain eligible technical terms at their first visible pre-glossary occurrence
+  without changing or inventing definitions. They follow the active Essential/Full view and never replace citation
+  markers. Hover, keyboard focus, or tap opens the explanation; Escape, a second tap, or an outside press dismisses it.
 - Jump is accent-insensitive and keyboard navigable. Lesson pages include a flat section outline, estimated reading
   time, saved state, one smart continuation action, and a reading-progress indicator.
 - Each domain receives a restrained accent tone while sharing the same quiet, high-contrast visual system.
@@ -77,7 +87,8 @@ The decrypted source contains:
 7. lesson content — every released lesson uses the same 11 canonical authored sections, and the renderer adds section
    12 from the lesson's source IDs;
 8. optional beginner-reading metadata — `learningLayer` marks complete core/detail blocks, `coreEstimatedMinutes`
-   describes the core path, and `firstUseHints` reuses definitions already present in that lesson's glossary.
+   describes the core path, and `firstUseHints` can override an automatically derived definition with wording already
+   present in that lesson's glossary.
 
 The library currently contains the preserved personal-note collection plus fully published, beginner-first curricula
 for all sixteen domains below. The six newest collections cover Japanese culture without reducing it to stereotypes;
@@ -152,7 +163,10 @@ this audit note is never exposed as a public plaintext file.
    - include an ISO `lastReviewed` date and an integer `estimatedMinutes` value from 5 to 20;
    - when using a learning layer, mark every block `core` or `detail`, keep at least one core block per section, keep
      every risk block and caution callout in core, and provide `coreEstimatedMinutes`;
-   - add `firstUseHints` only by copying a citation-free definition from the same lesson's glossary; never invent one;
+   - write glossary entries as a two-column table row, a flow title/detail pair, a callout label/body pair, or one
+     `Term: definition` / `Term — definition` line so the reader can derive first-use explanations conservatively;
+   - add `firstUseHints` only when a glossary shape is intentionally ambiguous or needs an explicit term boundary;
+     copy a citation-free definition from the same lesson's glossary because the explicit entry takes precedence;
    - use `[[source-id]]` inside text for every mapped source and keep citations within the lesson's reference list;
    - keep `publishedAt` for the original publication date; use `adoptedAt`, `updatedAt`, `reviewedAt`, or `accessedAt`
      for those distinct dates instead of relabeling a later page update as publication.
@@ -224,6 +238,19 @@ HTML.
 Supported callout tones are `note` and `caution`. Lesson prose, lists, tables, flows, source titles, and URLs are all
 normalized before rendering. Only `https` source links are accepted.
 
+## Visual sourcing contract
+
+- Prefer an official museum, archive, government, research, or creator source with explicit Public Domain, CC0, or
+  similarly reusable rights. Do not infer image rights from a page's text license.
+- Download the approved image into `assets/explainers/`; never hotlink it. Keep the official record URL, credit,
+  rights label, descriptive alternative text, and a pinned SHA-256 digest in the public manifest/test contract.
+- Place an instructional image only in the lesson section whose idea it supports. Avoid mood-only stock imagery,
+  status signalling, body stereotypes, staged emotion or deception-reading, and images that could imply unsafe
+  technique or personalized medical advice.
+- Use code-native flows, state diagrams, decision trees, matrices, and text-equivalent tables when a photo would be
+  imprecise, time-sensitive, diagnostic-looking, or difficult to make accessible. Generate new raster art only when
+  no suitable reusable source or precise code-native explainer exists.
+
 ## Public files
 
 ```text
@@ -233,6 +260,9 @@ knowledge-vault/
 |-- vault.js
 |-- vault-data.js          # encrypted payload only
 |-- knowledge.example.json # public-safe schema example
+|-- assets/
+|   |-- explainers/        # local rights-checked instructional images; hash-pinned with source metadata
+|   `-- topics/            # local generated editorial plates; no external image requests
 |-- tools/
 |   |-- encrypt-vault.mjs
 |   |-- encrypt-vault.ps1
