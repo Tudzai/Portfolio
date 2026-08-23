@@ -46,15 +46,19 @@ const releaseManifest = [
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
-  { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
-  { id: "coffee", modules: 6, lessons: 18, sources: 12 },
-  { id: "japanese-culture", modules: 6, lessons: 18, sources: 12 },
-  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 12 },
-  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 12 },
-  { id: "self-psychology", modules: 6, lessons: 18, sources: 12 },
-  { id: "communication-conflict", modules: 6, lessons: 18, sources: 12 },
-  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 12 },
+  { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
+  { id: "coffee", modules: 6, lessons: 18, sources: 24 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 25 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 33 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 35 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 16 },
 ];
+const previousSixteenDomainReleaseManifest = releaseManifest.map((entry, index) => ({
+  ...entry,
+  sources: index < 8 ? entry.sources : 12,
+}));
 const legacyReleaseManifest = releaseManifest.slice(0, 5);
 const previousEightDomainReleaseManifest = releaseManifest.slice(0, 8);
 const previousTenDomainReleaseManifest = releaseManifest.slice(0, 10);
@@ -246,6 +250,13 @@ function matchesLegacyRelease(value) {
   return matchesHistoricalRelease(value, legacyReleaseManifest);
 }
 
+// Migration-only compatibility for the exact sixteen-domain release that
+// preceded the completed Topic 16-to-9 source expansion. Strict verification
+// still requires the current manifest before new ciphertext can be published.
+function matchesPreviousSixteenDomainRelease(value) {
+  return matchesHistoricalRelease(value, previousSixteenDomainReleaseManifest);
+}
+
 // Migration-only compatibility for the exact eight-domain release that preceded
 // the historical ten-domain manifest. New plaintext and new ciphertext still pass the strict gate.
 function matchesPreviousEightDomainRelease(value) {
@@ -411,6 +422,7 @@ function verifyReleaseShape(value) {
   ) return false;
   if (requireCurrentRelease) return matchesCurrentRelease(value);
   return matchesCurrentRelease(value)
+    || matchesPreviousSixteenDomainRelease(value)
     || matchesPreviousTenDomainRelease(value)
     || matchesPreviousEightDomainRelease(value)
     || matchesLegacyRelease(value);

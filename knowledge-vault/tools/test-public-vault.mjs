@@ -1,17 +1,25 @@
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rmdir, unlink, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const vaultDirectory = resolve(scriptDirectory, "..");
-const [html, css, js, encryptedData, schemaValidator, encryptTool, passwordVerifier] = await Promise.all([
+const [html, css, js, encryptedData, schemaValidator, practitionerAudit, lessonPlanAudit, lessonUpgrade, detailRepair, moduleEvidenceRepair, releaseCountSync, recoveryTool, encryptTool, passwordVerifier] = await Promise.all([
   readFile(join(vaultDirectory, "index.html"), "utf8"),
   readFile(join(vaultDirectory, "vault.css"), "utf8"),
   readFile(join(vaultDirectory, "vault.js"), "utf8"),
   readFile(join(vaultDirectory, "vault-data.js"), "utf8"),
   readFile(join(scriptDirectory, "validate-vault.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "audit-practitioner-depth.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "audit-domain-lesson-plan.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "apply-domain-lesson-upgrade.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "apply-domain-detail-repair.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "apply-domain-module-evidence-repair.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "sync-vault-release-counts.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "restore-domain-from-earliest-recovery.mjs"), "utf8"),
   readFile(join(scriptDirectory, "encrypt-vault.mjs"), "utf8"),
   readFile(join(scriptDirectory, "verify-vault-password.mjs"), "utf8"),
 ]);
@@ -23,6 +31,361 @@ const requireMatch = (value, pattern, label) => {
 const forbidMatch = (value, pattern, label) => {
   if (pattern.test(value)) failures.push(label);
 };
+
+const practitionerAuditSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "audit-practitioner-depth.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (practitionerAuditSyntax.status !== 0) failures.push("practitioner-depth audit syntax");
+const lessonPlanAuditSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "audit-domain-lesson-plan.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (lessonPlanAuditSyntax.status !== 0) failures.push("lesson-plan audit syntax");
+requireMatch(lessonPlanAudit, /within\(repositoryRealPath, planRealPath\)/u, "lesson-plan external boundary");
+requireMatch(lessonPlanAudit, /totalWords\s*<\s*2_400\s*\|\|\s*totalWords\s*>\s*3_000/u, "lesson-plan custom word band");
+requireMatch(lessonPlanAudit, /detailWords\s*<\s*1_150/u, "lesson-plan detail band");
+requireMatch(lessonPlanAudit, /Lesson-plan audit failed at module \$\{plan\.moduleIndex\}, lesson \$\{plan\.lessonIndex\}/u, "lesson-plan privacy-safe failure");
+const lessonUpgradeSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "apply-domain-lesson-upgrade.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (lessonUpgradeSyntax.status !== 0) failures.push("private lesson-upgrade syntax");
+requireMatch(lessonUpgrade, /allowedModulePatchFields\s*=\s*new Set\(\["title", "level", "description", "evidenceOutcome"\]\)/u, "lesson-upgrade module patch allowlist");
+requireMatch(lessonUpgrade, /allowedDomainPatchFields\s*=\s*new Set\(\["updatedAt", "reviewedAt"\]\)/u, "lesson-upgrade domain patch allowlist");
+requireMatch(lessonUpgrade, /realpath\(repositoryRoot\)[\s\S]*?realpath\(privateDirectory\)[\s\S]*?realpath\(planPath\)[\s\S]*?realpath\(inputPath\)/u, "lesson-upgrade real-path boundary");
+requireMatch(lessonUpgrade, /spawnSync\([\s\S]*?validate-vault\.mjs[\s\S]*?temporaryPath[\s\S]*?schemaGate\.status\s*!==\s*0/u, "lesson-upgrade candidate schema gate");
+requireMatch(lessonUpgrade, /previewCount\s*&&\s*\(dryRun\s*\|\|\s*consumePlan\)[\s\S]*?Prospective lesson upgrade/u, "lesson-upgrade manifest-count preview");
+requireMatch(lessonUpgrade, /retainedSourceIds\s*=\s*new Set\([\s\S]*?domainLesson\.references[\s\S]*?domain\.primarySources\s*=\s*domain\.primarySources\.filter/u, "lesson-upgrade orphan-source pruning");
+requireMatch(lessonUpgrade, /if\s*\(dryRun\)[\s\S]*?unlink\(temporaryPath\)[\s\S]*?else\s*\{[\s\S]*?copyFile\(inputPath, backupPath[\s\S]*?rename\(temporaryPath, inputPath\)/u, "lesson-upgrade validated atomic replacement");
+requireMatch(lessonUpgrade, /if\s*\(!dryRun\)[\s\S]*?if\s*\(consumePlan\)[\s\S]*?unlink\(planPath\)\.catch/u, "lesson-upgrade post-commit plan consumption");
+const detailRepairSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "apply-domain-detail-repair.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (detailRepairSyntax.status !== 0) failures.push("private detail-repair syntax");
+requireMatch(detailRepair, /allowedPlanFields\s*=\s*new Set\(\[[\s\S]*?"sectionId"[\s\S]*?"blocks"[\s\S]*?"reviewedAt"/u, "detail-repair plan allowlist");
+requireMatch(detailRepair, /repairLayer\s*=\s*plan\?\.repairLayer\s*\|\|\s*"detail"[\s\S]*?block\.learningLayer\s*!==\s*repairLayer[\s\S]*?isCoreRepair\s*&&\s*block\.type\s*!==\s*"paragraph"[\s\S]*?!isCoreRepair[\s\S]*?block\.tone\s*===\s*"caution"/u, "detail-repair layer safety");
+requireMatch(detailRepair, /minimumAddedWords\s*=\s*isCoreRepair\s*\?\s*3\s*:\s*40[\s\S]*?maximumAddedWords\s*=\s*isCoreRepair\s*\?\s*100\s*:\s*300/u, "detail-repair word band");
+requireMatch(detailRepair, /realpath\(repositoryRoot\)[\s\S]*?realpath\(privateDirectory\)[\s\S]*?realpath\(planPath\)[\s\S]*?realpath\(inputPath\)/u, "detail-repair real-path boundary");
+requireMatch(detailRepair, /spawnSync\([\s\S]*?validate-vault\.mjs[\s\S]*?temporaryPath[\s\S]*?schemaGate\.status\s*!==\s*0/u, "detail-repair candidate schema gate");
+requireMatch(detailRepair, /if\s*\(dryRun\)[\s\S]*?unlink\(temporaryPath\)[\s\S]*?else\s*\{[\s\S]*?copyFile\(inputPath, backupPath[\s\S]*?rename\(temporaryPath, inputPath\)/u, "detail-repair validated atomic replacement");
+requireMatch(detailRepair, /!dryRun\s*&&\s*consumePlan[\s\S]*?unlink\(planPath\)\.catch/u, "detail-repair post-commit plan consumption");
+const moduleEvidenceRepairSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "apply-domain-module-evidence-repair.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (moduleEvidenceRepairSyntax.status !== 0) failures.push("private module-evidence repair syntax");
+requireMatch(moduleEvidenceRepair, /allowedPlanFields\s*=\s*new Set\(\["domainId", "moduleIndex", "evidenceOutcome", "modulePatch"\]\)/u, "module-evidence plan allowlist");
+requireMatch(moduleEvidenceRepair, /wordCount\(plannedEvidenceOutcome\)\s*<\s*28[\s\S]*?wordCount\(plannedEvidenceOutcome\)\s*>\s*120/u, "module-evidence word band");
+requireMatch(moduleEvidenceRepair, /realpath\(repositoryRoot\)[\s\S]*?realpath\(privateDirectory\)[\s\S]*?realpath\(planPath\)[\s\S]*?realpath\(inputPath\)/u, "module-evidence real-path boundary");
+requireMatch(moduleEvidenceRepair, /spawnSync\([\s\S]*?validate-vault\.mjs[\s\S]*?temporaryPath[\s\S]*?schemaGate\.status\s*!==\s*0/u, "module-evidence candidate schema gate");
+requireMatch(moduleEvidenceRepair, /if\s*\(dryRun\)[\s\S]*?unlink\(temporaryPath\)[\s\S]*?else\s*\{[\s\S]*?copyFile\(inputPath, backupPath[\s\S]*?rename\(temporaryPath, inputPath\)/u, "module-evidence validated atomic replacement");
+requireMatch(moduleEvidenceRepair, /!dryRun\s*&&\s*consumePlan[\s\S]*?unlink\(planPath\)\.catch/u, "module-evidence post-commit plan consumption");
+const releaseCountSyncSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "sync-vault-release-counts.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (releaseCountSyncSyntax.status !== 0) failures.push("release-count sync syntax");
+requireMatch(releaseCountSync, /const manifestPaths\s*=\s*\[[\s\S]*?vault\.js[\s\S]*?encrypt-vault\.mjs[\s\S]*?validate-vault\.mjs[\s\S]*?verify-vault-password\.mjs[\s\S]*?test-public-vault\.mjs/u, "release-count manifest targets");
+requireMatch(releaseCountSync, /replaceExactlyOnce[\s\S]*?README collection row[\s\S]*?README total/u, "release-count exact replacement gates");
+const recoveryToolSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "restore-domain-from-earliest-recovery.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (recoveryToolSyntax.status !== 0) failures.push("domain recovery syntax");
+requireMatch(recoveryTool, /startsWith\(prefix\)[\s\S]*?sort\(\(left, right\) => left\.modifiedAt - right\.modifiedAt\)\[0\]/u, "domain recovery earliest snapshot");
+requireMatch(recoveryTool, /structuredClone\(snapshotDomain\)[\s\S]*?validate-vault\.mjs[\s\S]*?copyFile\(inputPath, backupPath[\s\S]*?rename\(temporaryPath, inputPath\)/u, "domain recovery validated replacement");
+requireMatch(practitionerAudit, /Practitioner-depth audit failed: \$\{summary\}\./u, "privacy-safe depth failure summary");
+requireMatch(practitionerAudit, /Practitioner-depth audit passed: lessons \(\$\{lessons\.length\}\)\./u, "privacy-safe depth pass summary");
+forbidMatch(practitionerAudit, /console\.(?:log|error|warn|dir)\([^\n]*selectedDomainId/u, "practitioner-depth domain ID logging sink");
+forbidMatch(
+  practitionerAudit,
+  /console\.(?:log|error)\([^\n]*(?:lesson\.title|lesson\.summary|source\.url|source\.title)/u,
+  "practitioner-depth audit plaintext logging sink",
+);
+
+const syntheticDomainId = "synthetic-practitioner-domain";
+const syntheticSectionWordTargets = [60, 150, 150, 180, 100, 260, 120, 180, 180, 120, 120];
+const syntheticWords = (count) => Array.from({ length: count }, (_, index) => `word${index % 11}`).join(" ");
+const fixtureNow = new Date();
+const currentUtcYear = fixtureNow.getUTCFullYear();
+const currentUtcTime = Date.UTC(currentUtcYear, fixtureNow.getUTCMonth(), fixtureNow.getUTCDate());
+const currentUtcIsoDate = new Date(currentUtcTime).toISOString().slice(0, 10);
+const dayBeforeRollingCutoff = new Date(
+  Date.UTC(currentUtcYear - 2, fixtureNow.getUTCMonth(), fixtureNow.getUTCDate()) - 86_400_000,
+).toISOString().slice(0, 10);
+
+function syntheticPractitionerFixture() {
+  const sections = syntheticSectionWordTargets.map((target, index) => ({
+    id: `section-${index + 1}`,
+    blocks: [{
+      type: "paragraph",
+      learningLayer: index < 4 ? "core" : "detail",
+      text: syntheticWords(target + 20),
+    }],
+  }));
+  sections[3].blocks.push({
+    type: "flow",
+    learningLayer: "core",
+    steps: [{ label: "1", title: "Mechanism", detail: "Observable sequence" }],
+  });
+  sections[5].blocks.push({
+    type: "flow",
+    learningLayer: "detail",
+    steps: Array.from({ length: 4 }, (_, index) => ({
+      label: String(index + 1),
+      title: "Applied step",
+      detail: "Observable practice",
+    })),
+  });
+  sections[7].blocks.push({
+    type: "callout",
+    learningLayer: "core",
+    tone: "caution",
+    label: "Safety boundary",
+    text: "Escalate when risk is present",
+  });
+  sections[8].blocks.push({
+    type: "table",
+    learningLayer: "detail",
+    headers: ["Context", "Response"],
+    rows: [["Context A", "Response A"]],
+  });
+
+  const sources = [
+    ["source-1", " Organization One ", "Systematic   review"],
+    ["source-2", "Organization Two", "Guidance"],
+    ["source-3", "Organization Three", "systematic review"],
+    ["source-4", "organization three", " guidance "],
+  ].map(([id, organization, sourceType]) => ({
+    id,
+    organization,
+    sourceType,
+    publishedAt: currentUtcIsoDate,
+  }));
+
+  return {
+    domains: [{
+      id: syntheticDomainId,
+      primarySources: sources,
+      modules: [{
+        evidenceOutcome: syntheticWords(32),
+        lessons: [{
+          estimatedMinutes: 12,
+          sections,
+          references: sources.map(({ id }) => id),
+        }],
+      }],
+    }],
+  };
+}
+
+function normalizedProcessOutput(value) {
+  return String(value || "").replace(/\r\n/gu, "\n");
+}
+
+let practitionerFixtureDirectory = "";
+let practitionerFixturePath = "";
+try {
+  practitionerFixtureDirectory = await mkdtemp(join(tmpdir(), "knowledge-vault-depth-audit-"));
+  practitionerFixturePath = join(practitionerFixtureDirectory, "fixture.json");
+
+  const runFixture = async (label, fixture, expectedStatus, expectedStdout, expectedStderr) => {
+    await writeFile(practitionerFixturePath, `${JSON.stringify(fixture)}\n`, "utf8");
+    const result = spawnSync(
+      process.execPath,
+      [
+        join(scriptDirectory, "audit-practitioner-depth.mjs"),
+        "--input",
+        practitionerFixturePath,
+        "--domain",
+        syntheticDomainId,
+      ],
+      { cwd: vaultDirectory, encoding: "utf8" },
+    );
+    if (
+      result.status !== expectedStatus
+      || normalizedProcessOutput(result.stdout) !== expectedStdout
+      || normalizedProcessOutput(result.stderr) !== expectedStderr
+    ) failures.push(`practitioner-depth behavior: ${label}`);
+  };
+
+  await runFixture(
+    "valid practitioner lesson",
+    syntheticPractitionerFixture(),
+    0,
+    "Practitioner-depth audit passed: lessons (1).\n",
+    "",
+  );
+
+  const emptyDomain = syntheticPractitionerFixture();
+  emptyDomain.domains[0].modules = [];
+  await runFixture(
+    "empty domain",
+    emptyDomain,
+    1,
+    "",
+    "Practitioner-depth audit failed: domain module coverage (1).\n",
+  );
+
+  const missingModules = syntheticPractitionerFixture();
+  delete missingModules.domains[0].modules;
+  await runFixture(
+    "missing modules",
+    missingModules,
+    1,
+    "",
+    "Practitioner-depth audit failed: domain module coverage (1).\n",
+  );
+
+  const emptyLessons = syntheticPractitionerFixture();
+  emptyLessons.domains[0].modules[0].lessons = [];
+  await runFixture(
+    "empty lessons",
+    emptyLessons,
+    1,
+    "",
+    "Practitioner-depth audit failed: module lesson coverage (1).\n",
+  );
+
+  const missingLessons = syntheticPractitionerFixture();
+  delete missingLessons.domains[0].modules[0].lessons;
+  await runFixture(
+    "missing lessons",
+    missingLessons,
+    1,
+    "",
+    "Practitioner-depth audit failed: module lesson coverage (1).\n",
+  );
+
+  const badMinutes = syntheticPractitionerFixture();
+  badMinutes.domains[0].modules[0].lessons[0].estimatedMinutes = "12";
+  await runFixture(
+    "nonnumeric minutes",
+    badMinutes,
+    1,
+    "",
+    "Practitioner-depth audit failed: lesson depth (1).\n",
+  );
+
+  const lowMinutes = syntheticPractitionerFixture();
+  lowMinutes.domains[0].modules[0].lessons[0].estimatedMinutes = 9;
+  await runFixture(
+    "minutes below threshold",
+    lowMinutes,
+    1,
+    "",
+    "Practitioner-depth audit failed: lesson depth (1).\n",
+  );
+
+  const accessOnlyRecency = syntheticPractitionerFixture();
+  accessOnlyRecency.domains[0].primarySources.forEach((sourceEntry) => {
+    sourceEntry.publishedAt = `${currentUtcYear - 8}-01-15`;
+    sourceEntry.accessedAt = `${currentUtcYear}-01-15`;
+  });
+  await runFixture(
+    "access-only recency",
+    accessOnlyRecency,
+    1,
+    "",
+    "Practitioner-depth audit failed: recent evidence check (1).\n",
+  );
+
+  const futureEvidence = syntheticPractitionerFixture();
+  futureEvidence.domains[0].primarySources[0].updatedAt = `${currentUtcYear + 1}-01-15`;
+  await runFixture(
+    "future evidence date",
+    futureEvidence,
+    1,
+    "",
+    "Practitioner-depth audit failed: future evidence date (1).\n",
+  );
+
+  const sameYearFutureTime = Date.UTC(currentUtcYear, 11, 31);
+  if (sameYearFutureTime > currentUtcTime) {
+    const sameYearFutureEvidence = syntheticPractitionerFixture();
+    sameYearFutureEvidence.domains[0].primarySources[0].updatedAt = new Date(sameYearFutureTime)
+      .toISOString()
+      .slice(0, 10);
+    await runFixture(
+      "same-year future evidence date",
+      sameYearFutureEvidence,
+      1,
+      "",
+      "Practitioner-depth audit failed: future evidence date (1).\n",
+    );
+  }
+
+  const outsideRollingWindow = syntheticPractitionerFixture();
+  outsideRollingWindow.domains[0].primarySources.forEach((sourceEntry) => {
+    sourceEntry.publishedAt = dayBeforeRollingCutoff;
+  });
+  await runFixture(
+    "rolling evidence cutoff",
+    outsideRollingWindow,
+    1,
+    "",
+    "Practitioner-depth audit failed: recent evidence check (1).\n",
+  );
+
+  const unmappedBreadth = syntheticPractitionerFixture();
+  unmappedBreadth.domains[0].modules[0].lessons[0].references[3] = "missing-source";
+  await runFixture(
+    "unmapped source breadth",
+    unmappedBreadth,
+    1,
+    "",
+    "Practitioner-depth audit failed: source breadth (1).\n",
+  );
+
+  const cosmeticOrganizationVariants = syntheticPractitionerFixture();
+  cosmeticOrganizationVariants.domains[0].primarySources.forEach((sourceEntry, index) => {
+    sourceEntry.organization = index === 3 ? "Organization Two" : [
+      "Organization One",
+      " organization   one ",
+      "ORGANIZATION ONE",
+    ][index];
+  });
+  await runFixture(
+    "normalized organization diversity",
+    cosmeticOrganizationVariants,
+    1,
+    "",
+    "Practitioner-depth audit failed: source organization diversity (1).\n",
+  );
+
+  const cosmeticSourceTypeVariants = syntheticPractitionerFixture();
+  cosmeticSourceTypeVariants.domains[0].primarySources.forEach((sourceEntry, index) => {
+    sourceEntry.sourceType = [
+      "Systematic Review",
+      " systematic   review ",
+      "SYSTEMATIC REVIEW",
+      "systematic review",
+    ][index];
+  });
+  await runFixture(
+    "normalized source-type diversity",
+    cosmeticSourceTypeVariants,
+    1,
+    "",
+    "Practitioner-depth audit failed: source-method diversity (1).\n",
+  );
+} catch {
+  failures.push("practitioner-depth behavioral fixtures");
+} finally {
+  if (practitionerFixturePath) await unlink(practitionerFixturePath).catch(() => {});
+  if (practitionerFixtureDirectory) {
+    await rmdir(practitionerFixtureDirectory).catch(() => failures.push("practitioner-depth fixture cleanup"));
+  }
+}
 
 function hasBalancedCssBlocks(source) {
   let depth = 0;
@@ -109,7 +472,7 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260823-depth-visual1|vault.js?v=20260823-depth-visual1") {
+if (scriptSources.join("|") !== "vault-data.js?v=20260823-topics16-9-depth|vault.js?v=20260823-topics16-9-depth") {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -117,7 +480,7 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260823-depth-visual1") failures.push("stylesheet resource allowlist");
+if (stylesheetSources.join("|") !== "vault.css?v=20260823-topics16-9-depth") failures.push("stylesheet resource allowlist");
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -162,14 +525,14 @@ const uniformReleaseManifest = [
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
-  { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
-  { id: "coffee", modules: 6, lessons: 18, sources: 12 },
-  { id: "japanese-culture", modules: 6, lessons: 18, sources: 12 },
-  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 12 },
-  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 12 },
-  { id: "self-psychology", modules: 6, lessons: 18, sources: 12 },
-  { id: "communication-conflict", modules: 6, lessons: 18, sources: 12 },
-  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 12 },
+  { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
+  { id: "coffee", modules: 6, lessons: 18, sources: 24 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 25 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 33 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 35 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 16 },
 ];
 function extractLiteralManifest(artifact, constantName) {
   const literal = artifact.match(new RegExp(`const\\s+${constantName}\\s*=\\s*\\[([\\s\\S]*?)\\];`));
@@ -254,22 +617,81 @@ const expectedOpenAccessVisuals = [
   ["japanese-culture:3:3", "japan-teabowl.webp", "62a9b62f6aefd4a0188865b86c8149621b9dbeb6e4d53cfa67e686c13c802903"],
   ["japanese-culture:4:1", "japan-great-wave.webp", "4884d2483763fbb2b850e1169a4d5eda09dd47aae89b0094bf2ae4f39434d6e1"],
   ["art-visual-culture:3:2", "art-champa.webp", "a15e8eda3dfcfe23bffe991878e20477dd83bb839b91676b8fd6db2b63cae8e3"],
+  ["architecture-design-living:2:2", "architecture-dymaxion-cutaway-habs.webp", "8ce1cccc5f27a8afa5706feaa421bab270ea82e82b13e8d8d4c838e3d68d4b3e"],
   ["architecture-design-living:3:1", "architecture-farnsworth.webp", "36c067b7fba554de34295450fbbf6076f3608231a65a2126d3a3c49b69182f39"],
   ["architecture-design-living:4:1", "architecture-thonet.webp", "4d09968fd03105f8aa361e6a596769fe454414bf65aaecad6352d5caf1c3a122"],
+  ["self-psychology:4:3", "self-psychology-wellness-wheel-samhsa.webp", "6069045e4d50c7736cb2608eeef341e3684e0ba53eb4f6cc0ce8ba312325e603"],
+  ["communication-conflict:2:1", "communication-active-listening-cdc-p1.webp", "10e9638dc48258b2b3cd79135b575cc52f3f11a65124cad5310e925393ba3372"],
+  ["relationships-boundaries:1:1", "relationships-social-connection-components.webp", "2ebe5cfcf13375b55cdcaea74bce9bd5900d2f609f27e3f4a07227efa75c191e"],
+  ["relationships-boundaries:3:3", "relationships-digital-control-cdc.webp", "d0d84f971f06276d8390293c862a84023c57b4e55bd73fac608b833707ba40dd"],
+  ["relationships-boundaries:5:2", "relationships-lgbtq-traffic-light-cdc.webp", "0ec1a5e693f563db2e3c499919eba0971e18db598c75d6ca26c570ea68e0bed2"],
 ];
 const openVisualLiteral = js.match(/const\s+OPEN_ACCESS_VISUALS\s*=\s*Object\.freeze\(\{([\s\S]*?)\r?\n\s*\}\);\r?\n\s*const\s+COLLECTION_GROUPS/u);
 if (!openVisualLiteral) {
   failures.push("open-access lesson visual manifest");
 } else {
-  const openVisualKeys = [...openVisualLiteral[1].matchAll(/^\s*"([a-z0-9-]+:\d+:\d+)"\s*:\s*Object\.freeze\(\{/gmu)].map((match) => match[1]);
-  const openVisualFiles = [...openVisualLiteral[1].matchAll(/src:\s*"assets\/explainers\/([a-z0-9-]+\.webp)"/gu)].map((match) => match[1]);
+  const openVisualEntries = [...openVisualLiteral[1].matchAll(/^\s*"([a-z0-9-]+:\d+:\d+)"\s*:\s*Object\.freeze\(\{([\s\S]*?)^\s*\}\),/gmu)]
+    .map((match) => ({ key: match[1], body: match[2] }));
+  const openVisualKeys = openVisualEntries.map(({ key }) => key);
+  const openVisualFiles = openVisualEntries.map(({ body }) => body.match(/src:\s*"assets\/explainers\/([a-z0-9-]+\.webp)"/u)?.[1] || "");
   const expectedKeys = expectedOpenAccessVisuals.map(([key]) => key);
   const expectedFiles = expectedOpenAccessVisuals.map(([, file]) => file);
+  const canonicalVisualSectionIds = new Set([
+    "muc-tieu",
+    "khai-niem",
+    "vi-sao-quan-trong",
+    "cach-hoat-dong",
+    "ben-lien-quan",
+    "vi-du",
+    "tac-dong",
+    "rui-ro",
+    "khac-biet",
+    "thuat-ngu",
+    "tom-tat",
+  ]);
+  const knownUniformLessonsPerModule = new Map([
+    ["mrel-domain", 4],
+    ["personal-style", 3],
+    ["photography", 3],
+    ["cooking", 3],
+    ["bar-drinks", 3],
+    ["coffee", 3],
+    ["japanese-culture", 3],
+    ["art-visual-culture", 3],
+    ["architecture-design-living", 3],
+    ["self-psychology", 3],
+    ["communication-conflict", 3],
+    ["relationships-boundaries", 3],
+  ]);
+  const hasInvalidVisualMetadata = openVisualEntries.some(({ key, body }) => {
+    const sectionId = body.match(/sectionId:\s*"([a-z0-9-]+)"/u)?.[1] || "";
+    const alt = body.match(/alt:\s*"([^"]+)"/u)?.[1]?.trim() || "";
+    const credit = body.match(/credit:\s*"([^"]+)"/u)?.[1]?.trim() || "";
+    const rights = body.match(/rights:\s*"([^"]+)"/u)?.[1]?.trim() || "";
+    const source = body.match(/source:\s*"(https:\/\/[^"]+)"/u)?.[1] || "";
+    const [collectionId, moduleText, lessonText] = key.split(":");
+    const releaseEntry = uniformReleaseManifest.find(({ id }) => id === collectionId);
+    const moduleIndex = Number(moduleText);
+    const lessonIndex = Number(lessonText);
+    const knownLessonLimit = knownUniformLessonsPerModule.get(collectionId) || 1;
+    return !canonicalVisualSectionIds.has(sectionId)
+      || !alt
+      || !credit
+      || !rights
+      || !source
+      || !releaseEntry
+      || !Number.isInteger(moduleIndex)
+      || moduleIndex < 1
+      || moduleIndex > releaseEntry.modules
+      || !Number.isInteger(lessonIndex)
+      || lessonIndex < 1
+      || lessonIndex > knownLessonLimit;
+  });
   if (
     openVisualKeys.join("|") !== expectedKeys.join("|")
     || openVisualFiles.join("|") !== expectedFiles.join("|")
-    || [...openVisualLiteral[1].matchAll(/rights:\s*"[^"]+"/gu)].length !== expectedOpenAccessVisuals.length
-    || [...openVisualLiteral[1].matchAll(/source:\s*"https:\/\/[^"]+"/gu)].length !== expectedOpenAccessVisuals.length
+    || new Set(openVisualFiles).size !== openVisualFiles.length
+    || hasInvalidVisualMetadata
   ) failures.push("exact licensed lesson visual manifest");
 
   const openVisualChecks = await Promise.all(expectedOpenAccessVisuals.map(async ([, file, hash]) => {
@@ -324,6 +746,11 @@ forbidMatch(encryptTool, /\bcanonicalSections\b/, "domain-conditional encryption
 forbidMatch(passwordVerifier, /\bcanonicalSections\b/, "domain-conditional password-verification gate");
 requireMatch(
   passwordVerifier,
+  /function\s+matchesPreviousSixteenDomainRelease\s*\(/,
+  "migration-only previous sixteen-domain password compatibility",
+);
+requireMatch(
+  passwordVerifier,
   /function\s+matchesPreviousTenDomainRelease\s*\(/,
   "migration-only previous ten-domain password compatibility",
 );
@@ -336,6 +763,11 @@ requireMatch(
   passwordVerifier,
   /function\s+matchesLegacyRelease\s*\(/,
   "migration-only legacy five-domain password compatibility",
+);
+requireMatch(
+  passwordVerifier,
+  /const\s+previousSixteenDomainReleaseManifest\s*=\s*releaseManifest\.map\([\s\S]*?index\s*<\s*8\s*\?\s*entry\.sources\s*:\s*12[\s\S]*?\)\s*;/,
+  "exact previous sixteen-domain password manifest",
 );
 requireMatch(
   passwordVerifier,
@@ -367,9 +799,9 @@ requireMatch(
   /temporaryOutputPath,\s*"--require-current"/,
   "serialized ciphertext current-release verification",
 );
-forbidMatch(schemaValidator, /matchesPrevious(?:Eight|Ten)DomainRelease|previous(?:Eight|Ten)DomainReleaseManifest|legacyReleaseManifest/, "historical compatibility leaking into plaintext validation");
-forbidMatch(js, /matchesPrevious(?:Eight|Ten)DomainRelease/, "historical compatibility leaking into runtime");
-forbidMatch(encryptTool, /matchesPrevious(?:Eight|Ten)DomainRelease/, "historical compatibility leaking into source validation");
+forbidMatch(schemaValidator, /matchesPrevious(?:Eight|Ten|Sixteen)DomainRelease|previous(?:Eight|Ten|Sixteen)DomainReleaseManifest|legacyReleaseManifest/, "historical compatibility leaking into plaintext validation");
+forbidMatch(js, /matchesPrevious(?:Eight|Ten|Sixteen)DomainRelease/, "historical compatibility leaking into runtime");
+forbidMatch(encryptTool, /matchesPrevious(?:Eight|Ten|Sixteen)DomainRelease/, "historical compatibility leaking into source validation");
 
 const collectionToneManifest = [
   ["personal-notes", "violet"],
@@ -528,9 +960,16 @@ const allowedVaultFiles = new Set([
   "knowledge-vault/index.html",
   "knowledge-vault/knowledge.example.json",
   "knowledge-vault/private/.gitignore",
+  "knowledge-vault/tools/apply-domain-detail-repair.mjs",
+  "knowledge-vault/tools/apply-domain-lesson-upgrade.mjs",
+  "knowledge-vault/tools/apply-domain-module-evidence-repair.mjs",
+  "knowledge-vault/tools/audit-domain-lesson-plan.mjs",
+  "knowledge-vault/tools/audit-practitioner-depth.mjs",
   "knowledge-vault/tools/encrypt-vault.mjs",
   "knowledge-vault/tools/encrypt-vault.ps1",
   "knowledge-vault/tools/test-public-vault.mjs",
+  "knowledge-vault/tools/sync-vault-release-counts.mjs",
+  "knowledge-vault/tools/restore-domain-from-earliest-recovery.mjs",
   "knowledge-vault/tools/validate-vault.mjs",
   "knowledge-vault/tools/verify-vault-password.mjs",
   "knowledge-vault/vault-data.js",

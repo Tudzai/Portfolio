@@ -107,16 +107,16 @@ rechecked periodically against the linked authoritative sources.
 | Personal style | 6 | 18 | 12 | Published |
 | Photography | 6 | 18 | 12 | Published |
 | Home cooking | 6 | 18 | 12 | Published |
-| Bar drinks | 6 | 18 | 12 | Published |
-| Coffee | 6 | 18 | 12 | Published |
-| Japanese culture | 6 | 18 | 12 | Published |
-| Art, taste & visual culture | 6 | 18 | 12 | Published |
-| Architecture, design & beautiful living | 6 | 18 | 12 | Published |
-| Self-understanding & human psychology | 6 | 18 | 12 | Published |
-| Communication & conflict | 6 | 18 | 12 | Published |
-| Relationships & boundaries | 6 | 18 | 12 | Published |
+| Bar drinks | 6 | 18 | 25 | Published |
+| Coffee | 6 | 18 | 24 | Published |
+| Japanese culture | 6 | 18 | 20 | Published |
+| Art, taste & visual culture | 6 | 18 | 20 | Published |
+| Architecture, design & beautiful living | 6 | 18 | 25 | Published |
+| Self-understanding & human psychology | 6 | 18 | 33 | Published |
+| Communication & conflict | 6 | 18 | 35 | Published |
+| Relationships & boundaries | 6 | 18 | 16 | Published |
 
-Across the sixteen structured collections, the library now contains 140 modules, 556 published lessons, and 573 saved
+Across the sixteen structured collections, the library now contains 140 modules, 556 published lessons, and 675 saved
 sources. Every lesson contains 11 authored sections, renders its references as section 12, and maps to at least three
 distinct sources from at least two organizations.
 
@@ -170,6 +170,33 @@ this audit note is never exposed as a public plaintext file.
    - use `[[source-id]]` inside text for every mapped source and keep citations within the lesson's reference list;
    - keep `publishedAt` for the original publication date; use `adoptedAt`, `updatedAt`, `reviewedAt`, or `accessedAt`
      for those distinct dates instead of relabeling a later page update as publication.
+   - when applying a research-authored lesson plan programmatically, keep the temporary plaintext plan outside the
+     repository. `tools/apply-domain-lesson-upgrade.mjs` preserves the existing lesson ID, deduplicates sources by URL,
+     creates an ignored recovery copy, rejects symlinked private targets and out-of-contract patches, runs the full
+     schema gate before replacement, and can consume the external plan after success. Use `--preview-count` first when
+     new sources require release-manifest updates, then `--dry-run` for the full candidate gate. It prints positions and
+     counts only—never lesson prose or source detail. After replacement it removes a domain source only when no lesson
+     reference retains that source, preventing stale source records without padding a lesson with irrelevant citations.
+   - for a narrowly scoped depth shortfall, `tools/apply-domain-detail-repair.mjs` accepts an external append-only plan.
+     The default contract permits 40–300 words of `detail` content and rejects citations and caution callouts. A tightly
+     bounded `repairLayer: "core"` plan may append one 3–100 word paragraph when a core-only section misses its minimum.
+     The tool validates the complete candidate before atomic replacement and supports `--dry-run` plus post-commit
+     `--consume` without exposing private lesson text.
+   - `tools/apply-domain-module-evidence-repair.mjs` replaces only a selected module's 28–120 word evidence outcome from
+     an external plan, with the same real-path boundary, schema gate, atomic replacement, recovery, and consumption rules.
+   - when a prospective lesson changes a domain's source count, use `tools/sync-vault-release-counts.mjs --domain ID
+     --sources COUNT` to update every public manifest copy, the README collection row, and the aggregate source total in
+     one deterministic pass before the lesson candidate is validated.
+   - `tools/audit-domain-lesson-plan.mjs --plan PATH` checks an external lesson plan against the custom 2,400–3,000
+     word band, core/detail depth, section minima, applied-model, safety, comparison, source-diversity, and recent-evidence
+     gates while reporting only its public position and numeric aggregates.
+   - `tools/restore-domain-from-earliest-recovery.mjs --domain ID` can stop an incomplete domain batch by restoring only
+     that domain from its earliest ignored recovery snapshot, retaining every other domain and validating the complete
+     candidate before an atomic private replacement.
+   - during a multi-lesson authoring pass, a raised public manifest and the previous ciphertext are not a coherent
+     release. Keep the local viewer on a clean detached worktree containing the last matching manifest/ciphertext pair;
+     do not weaken runtime count checks. Cut over the manifest, regenerated ciphertext, verification results, and cache
+     key together once the password owner can run the encryption wrapper.
 4. Run the read-only release-schema gate. It reports only pass/fail categories and never prints private content or IDs.
    It applies the uniform sixteen-domain contract above, including exact identity and counts, canonical sections, review
    and reading-time metadata, safe block shapes, source mapping and use, HTTPS URLs, dates, inline citations, and
@@ -177,6 +204,15 @@ this audit note is never exposed as a public plaintext file.
 
    ```powershell
    node .\knowledge-vault\tools\validate-vault.mjs
+   ```
+
+   For a domain being promoted from beginner coverage to practitioner depth, also run the privacy-safe depth gate.
+   It reports only category counts—never lesson titles, IDs, prose, source details, or URLs. The gate checks balanced
+   core/detail depth, applied scenarios, mechanism models, safety and escalation boundaries, context comparisons,
+   evidence breadth, organization diversity, source-method diversity, and a recent-evidence check:
+
+   ```powershell
+   node .\knowledge-vault\tools\audit-practitioner-depth.mjs --domain relationships-boundaries
    ```
 
 5. Run the encryption wrapper from the repository root. For a routine content update, use the existing vault password:
@@ -264,8 +300,15 @@ knowledge-vault/
 |   |-- explainers/        # local rights-checked instructional images; hash-pinned with source metadata
 |   `-- topics/            # local generated editorial plates; no external image requests
 |-- tools/
+|   |-- apply-domain-detail-repair.mjs
+|   |-- apply-domain-lesson-upgrade.mjs
+|   |-- apply-domain-module-evidence-repair.mjs
+|   |-- audit-domain-lesson-plan.mjs
+|   |-- audit-practitioner-depth.mjs
 |   |-- encrypt-vault.mjs
 |   |-- encrypt-vault.ps1
+|   |-- restore-domain-from-earliest-recovery.mjs
+|   |-- sync-vault-release-counts.mjs
 |   |-- test-public-vault.mjs
 |   |-- validate-vault.mjs
 |   `-- verify-vault-password.mjs

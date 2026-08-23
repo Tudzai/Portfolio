@@ -44,14 +44,14 @@ const releaseManifest = [
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
   { id: "cooking", modules: 6, lessons: 18, sources: 12 },
-  { id: "bar-drinks", modules: 6, lessons: 18, sources: 12 },
-  { id: "coffee", modules: 6, lessons: 18, sources: 12 },
-  { id: "japanese-culture", modules: 6, lessons: 18, sources: 12 },
-  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 12 },
-  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 12 },
-  { id: "self-psychology", modules: 6, lessons: 18, sources: 12 },
-  { id: "communication-conflict", modules: 6, lessons: 18, sources: 12 },
-  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 12 },
+  { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
+  { id: "coffee", modules: 6, lessons: 18, sources: 24 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 25 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 33 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 35 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 16 },
 ];
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
