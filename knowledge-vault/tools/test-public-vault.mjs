@@ -7,20 +7,23 @@ import { fileURLToPath } from "node:url";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const vaultDirectory = resolve(scriptDirectory, "..");
-const [html, css, js, encryptedData, schemaValidator, practitionerAudit, lessonPlanAudit, lessonUpgrade, detailRepair, moduleEvidenceRepair, releaseCountSync, recoveryTool, encryptTool, passwordVerifier] = await Promise.all([
+const [html, css, js, encryptedData, schemaValidator, practitionerAudit, termHintAudit, lessonPlanAudit, lessonUpgrade, detailRepair, moduleEvidenceRepair, releaseCountSync, cacheKeySync, recoveryTool, encryptTool, encryptionWrapper, passwordVerifier] = await Promise.all([
   readFile(join(vaultDirectory, "index.html"), "utf8"),
   readFile(join(vaultDirectory, "vault.css"), "utf8"),
   readFile(join(vaultDirectory, "vault.js"), "utf8"),
   readFile(join(vaultDirectory, "vault-data.js"), "utf8"),
   readFile(join(scriptDirectory, "validate-vault.mjs"), "utf8"),
   readFile(join(scriptDirectory, "audit-practitioner-depth.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "audit-term-hints.mjs"), "utf8"),
   readFile(join(scriptDirectory, "audit-domain-lesson-plan.mjs"), "utf8"),
   readFile(join(scriptDirectory, "apply-domain-lesson-upgrade.mjs"), "utf8"),
   readFile(join(scriptDirectory, "apply-domain-detail-repair.mjs"), "utf8"),
   readFile(join(scriptDirectory, "apply-domain-module-evidence-repair.mjs"), "utf8"),
   readFile(join(scriptDirectory, "sync-vault-release-counts.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "sync-vault-cache-key.mjs"), "utf8"),
   readFile(join(scriptDirectory, "restore-domain-from-earliest-recovery.mjs"), "utf8"),
   readFile(join(scriptDirectory, "encrypt-vault.mjs"), "utf8"),
+  readFile(join(scriptDirectory, "encrypt-vault.ps1"), "utf8"),
   readFile(join(scriptDirectory, "verify-vault-password.mjs"), "utf8"),
 ]);
 
@@ -38,6 +41,12 @@ const practitionerAuditSyntax = spawnSync(
   { cwd: vaultDirectory, encoding: "utf8" },
 );
 if (practitionerAuditSyntax.status !== 0) failures.push("practitioner-depth audit syntax");
+const termHintAuditSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "audit-term-hints.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (termHintAuditSyntax.status !== 0) failures.push("term-hint audit syntax");
 const lessonPlanAuditSyntax = spawnSync(
   process.execPath,
   ["--check", join(scriptDirectory, "audit-domain-lesson-plan.mjs")],
@@ -95,6 +104,18 @@ const releaseCountSyncSyntax = spawnSync(
 if (releaseCountSyncSyntax.status !== 0) failures.push("release-count sync syntax");
 requireMatch(releaseCountSync, /const manifestPaths\s*=\s*\[[\s\S]*?vault\.js[\s\S]*?encrypt-vault\.mjs[\s\S]*?validate-vault\.mjs[\s\S]*?verify-vault-password\.mjs[\s\S]*?test-public-vault\.mjs/u, "release-count manifest targets");
 requireMatch(releaseCountSync, /replaceExactlyOnce[\s\S]*?README collection row[\s\S]*?README total/u, "release-count exact replacement gates");
+requireMatch(releaseCountSync, /const\s+manifestConstants\s*=\s*new Map\([\s\S]*?RELEASE_MANIFEST[\s\S]*?releaseManifest[\s\S]*?uniformReleaseManifest/u, "release-count named current manifests");
+requireMatch(releaseCountSync, /function\s+replaceManifestRow[\s\S]*?manifestPattern[\s\S]*?replaceExactlyOnce\(body/u, "release-count scoped manifest replacement");
+const cacheKeySyncSyntax = spawnSync(
+  process.execPath,
+  ["--check", join(scriptDirectory, "sync-vault-cache-key.mjs")],
+  { cwd: vaultDirectory, encoding: "utf8" },
+);
+if (cacheKeySyncSyntax.status !== 0) failures.push("cache-key sync syntax");
+requireMatch(cacheKeySync, /createHash\("sha256"\)[\s\S]*?vault\.css\\0[\s\S]*?vault-data\.js\\0[\s\S]*?vault\.js\\0[\s\S]*?vault-v\$\{payload\.version\}-\$\{digest\}/u, "public-asset-derived cache key");
+requireMatch(cacheKeySync, /resourceNames\.join\("\|"\)\s*!==\s*"vault\.css\|vault-data\.js\|vault\.js"/u, "cache-key exact resource scope");
+requireMatch(cacheKeySync, /writeFile\(temporaryPath[\s\S]*?rename\(temporaryPath, indexPath\)/u, "cache-key atomic index replacement");
+requireMatch(encryptionWrapper, /Remove-Item Env:VAULT_PASSWORD[\s\S]*?sync-vault-cache-key\.mjs|cacheSyncScript[\s\S]*?Remove-Item Env:VAULT_PASSWORD[\s\S]*?& node \$cacheSyncScript/u, "one-session encryption and cache sync");
 const recoveryToolSyntax = spawnSync(
   process.execPath,
   ["--check", join(scriptDirectory, "restore-domain-from-earliest-recovery.mjs")],
@@ -110,6 +131,13 @@ forbidMatch(
   practitionerAudit,
   /console\.(?:log|error)\([^\n]*(?:lesson\.title|lesson\.summary|source\.url|source\.title)/u,
   "practitioner-depth audit plaintext logging sink",
+);
+requireMatch(termHintAudit, /if\s*\(pairs\.size\s*<\s*4\)\s*record\("glossary definition coverage"\)/u, "all-lesson tooltip definition gate");
+requireMatch(termHintAudit, /lessons using glossary-chip fallback \(\$\{lessonsBelowFourBodyTerms\}\)/u, "privacy-safe tooltip fallback summary");
+forbidMatch(
+  termHintAudit,
+  /console\.(?:log|error|warn|dir)\([^\n]*(?:lesson\.title|lesson\.summary|hint\.term|hint\.explanation)/u,
+  "term-hint audit plaintext logging sink",
 );
 
 const syntheticDomainId = "synthetic-practitioner-domain";
@@ -378,8 +406,9 @@ try {
     "",
     "Practitioner-depth audit failed: source-method diversity (1).\n",
   );
-} catch {
-  failures.push("practitioner-depth behavioral fixtures");
+} catch (error) {
+  const diagnostic = typeof error?.code === "string" ? error.code : error?.name || "unknown";
+  failures.push(`practitioner-depth behavioral fixtures (${diagnostic})`);
 } finally {
   if (practitionerFixturePath) await unlink(practitionerFixturePath).catch(() => {});
   if (practitionerFixtureDirectory) {
@@ -472,7 +501,12 @@ if (cspMetas.length !== 1 || cspMetas[0].content !== expectedCsp) failures.push(
 
 const scriptTags = collectStartTags(html, "script");
 const scriptSources = scriptTags.map((attributes) => attributes.src).filter(Boolean);
-if (scriptSources.join("|") !== "vault-data.js?v=20260823-topics16-9-depth|vault.js?v=20260823-topics16-9-depth") {
+const versionedResource = /^(vault(?:-data)?\.js|vault\.css)\?v=(vault-v[12]-[a-f0-9]{16})$/u;
+const scriptResourceMatches = scriptSources.map((source) => source.match(versionedResource));
+if (
+  scriptSources.map((source) => source.split("?", 1)[0]).join("|") !== "vault-data.js|vault.js"
+  || scriptResourceMatches.some((match) => !match)
+) {
   failures.push("script resource allowlist");
 }
 if (scriptTags.some((attributes) => !attributes.src)) failures.push("inline script");
@@ -480,7 +514,17 @@ const linkTags = collectStartTags(html, "link");
 const stylesheetSources = linkTags
   .filter((attributes) => attributes.rel?.toLocaleLowerCase("en-US").split(/\s+/u).includes("stylesheet"))
   .map((attributes) => attributes.href);
-if (stylesheetSources.join("|") !== "vault.css?v=20260823-topics16-9-depth") failures.push("stylesheet resource allowlist");
+const stylesheetResourceMatch = stylesheetSources.length === 1
+  ? stylesheetSources[0].match(versionedResource)
+  : null;
+if (!stylesheetResourceMatch || stylesheetResourceMatch[1] !== "vault.css") failures.push("stylesheet resource allowlist");
+const resourceCacheKeys = [
+  ...scriptResourceMatches.map((match) => match?.[2]),
+  stylesheetResourceMatch?.[2],
+].filter(Boolean);
+if (resourceCacheKeys.length !== 3 || new Set(resourceCacheKeys).size !== 1) {
+  failures.push("uniform public-asset-derived resource cache key");
+}
 const iconAllowed = linkTags.some((attributes) => attributes.rel === "icon" && attributes.href === "../assets/favicon.svg");
 if (linkTags.length !== 2 || !iconAllowed) failures.push("link resource allowlist");
 if (["iframe", "embed", "object"].some((tagName) => collectStartTags(html, tagName).length)) {
@@ -521,6 +565,24 @@ const uniformReleaseManifest = [
   { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
   { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
   { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
+  { id: "mrel-domain", modules: 15, lessons: 60, sources: 57 },
+  { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+  { id: "photography", modules: 6, lessons: 18, sources: 12 },
+  { id: "cooking", modules: 6, lessons: 18, sources: 36 },
+  { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
+  { id: "coffee", modules: 6, lessons: 18, sources: 24 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 25 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 33 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 35 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 16 },
+];
+const expectedV1PublishedReleaseManifest = [
+  { id: "fintech-domain", modules: 12, lessons: 67, sources: 179 },
+  { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
+  { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
+  { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
   { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
@@ -556,6 +618,15 @@ function extractLiteralManifest(artifact, constantName) {
   const manifest = extractLiteralManifest(artifact, constantName);
   if (JSON.stringify(manifest) !== JSON.stringify(uniformReleaseManifest)) {
     failures.push(`exact uniform sixteen-domain manifest: ${label}`);
+  }
+});
+[
+  [js, "V1_PUBLISHED_RELEASE_MANIFEST", "runtime"],
+  [passwordVerifier, "v1PublishedReleaseManifest", "password verification"],
+].forEach(([artifact, constantName, label]) => {
+  const manifest = extractLiteralManifest(artifact, constantName);
+  if (JSON.stringify(manifest) !== JSON.stringify(expectedV1PublishedReleaseManifest)) {
+    failures.push(`exact authenticated version-one published manifest: ${label}`);
   }
 });
 
@@ -746,6 +817,11 @@ forbidMatch(encryptTool, /\bcanonicalSections\b/, "domain-conditional encryption
 forbidMatch(passwordVerifier, /\bcanonicalSections\b/, "domain-conditional password-verification gate");
 requireMatch(
   passwordVerifier,
+  /function\s+matchesV1PublishedRelease\s*\([\s\S]*?v1PublishedReleaseManifest/u,
+  "exact published version-one password compatibility",
+);
+requireMatch(
+  passwordVerifier,
   /function\s+matchesPreviousSixteenDomainRelease\s*\(/,
   "migration-only previous sixteen-domain password compatibility",
 );
@@ -799,6 +875,11 @@ requireMatch(
   /temporaryOutputPath,\s*"--require-current"/,
   "serialized ciphertext current-release verification",
 );
+requireMatch(encryptTool, /version:\s*2,[\s\S]*?release:\s*releaseManifest/u, "version-two authenticated release envelope generation");
+requireMatch(encryptTool, /knowledge-vault:v2:\$\{compactManifest\}/u, "version-two release-bound encryption AAD");
+requireMatch(js, /payload\?\.version\s*===\s*1[\s\S]*?payload\?\.version\s*===\s*2[\s\S]*?validEmbeddedReleaseManifest\(payload\.release\)/u, "runtime dual-envelope migration gate");
+requireMatch(js, /releaseAdditionalData\(payload\)[\s\S]*?payload\.version\s*===\s*2\s*\?\s*payload\.release\s*:\s*v1ReleaseManifestFor\(raw\)/u, "runtime authenticated release selection");
+requireMatch(passwordVerifier, /releaseAdditionalData\(payload, encoder\)[\s\S]*?verifyReleaseShape\(parsed, payload\)/u, "password verifier release-bound decryption");
 forbidMatch(schemaValidator, /matchesPrevious(?:Eight|Ten|Sixteen)DomainRelease|previous(?:Eight|Ten|Sixteen)DomainReleaseManifest|legacyReleaseManifest/, "historical compatibility leaking into plaintext validation");
 forbidMatch(js, /matchesPrevious(?:Eight|Ten|Sixteen)DomainRelease/, "historical compatibility leaking into runtime");
 forbidMatch(encryptTool, /matchesPrevious(?:Eight|Ten|Sixteen)DomainRelease/, "historical compatibility leaking into source validation");
@@ -922,8 +1003,25 @@ const canonicalBase64 = (value, expectedBytes = null) => {
   const decoded = Buffer.from(value, "base64");
   return decoded.toString("base64") === value && (expectedBytes === null || decoded.length === expectedBytes);
 };
-const envelopeValid = exactKeys(envelope, ["version", "kdf", "cipher", "ciphertext"])
-  && envelope.version === 1
+const embeddedReleaseValid = Array.isArray(envelope?.release)
+  && envelope.release.length === uniformReleaseManifest.length
+  && envelope.release.every((entry, index) => exactKeys(entry, ["id", "modules", "lessons", "sources"])
+    && entry.id === uniformReleaseManifest[index].id
+    && Number.isInteger(entry.modules)
+    && entry.modules > 0
+    && Number.isInteger(entry.lessons)
+    && entry.lessons > 0
+    && Number.isInteger(entry.sources)
+    && entry.sources > 0);
+const envelopeVersionValid = (
+  envelope?.version === 1
+  && exactKeys(envelope, ["version", "kdf", "cipher", "ciphertext"])
+) || (
+  envelope?.version === 2
+  && exactKeys(envelope, ["version", "release", "kdf", "cipher", "ciphertext"])
+  && embeddedReleaseValid
+);
+const envelopeValid = envelopeVersionValid
   && exactKeys(envelope.kdf, ["name", "hash", "iterations", "salt"])
   && envelope.kdf.name === "PBKDF2"
   && envelope.kdf.hash === "SHA-256"
@@ -937,7 +1035,7 @@ const envelopeValid = exactKeys(envelope, ["version", "kdf", "cipher", "cipherte
   && canonicalBase64(envelope.ciphertext)
   && Buffer.from(envelope.ciphertext, "base64").length > 16;
 if (!envelopeValid) {
-  failures.push("ciphertext-only encrypted envelope shape");
+  failures.push("encrypted envelope shape and authenticated release metadata");
 } else {
   const ciphertextBytes = Buffer.from(envelope.ciphertext, "base64");
   const frequencies = new Uint32Array(256);
@@ -965,9 +1063,11 @@ const allowedVaultFiles = new Set([
   "knowledge-vault/tools/apply-domain-module-evidence-repair.mjs",
   "knowledge-vault/tools/audit-domain-lesson-plan.mjs",
   "knowledge-vault/tools/audit-practitioner-depth.mjs",
+  "knowledge-vault/tools/audit-term-hints.mjs",
   "knowledge-vault/tools/encrypt-vault.mjs",
   "knowledge-vault/tools/encrypt-vault.ps1",
   "knowledge-vault/tools/test-public-vault.mjs",
+  "knowledge-vault/tools/sync-vault-cache-key.mjs",
   "knowledge-vault/tools/sync-vault-release-counts.mjs",
   "knowledge-vault/tools/restore-domain-from-earliest-recovery.mjs",
   "knowledge-vault/tools/validate-vault.mjs",
@@ -1124,12 +1224,25 @@ requireMatch(js, /behavior:\s*preferredScrollBehavior\(\)/, "reduced-motion-awar
 forbidMatch(js, /behavior:\s*"smooth"/, "unconditional smooth scrolling");
 requireMatch(js, /stopFocusTimer\(\);/, "lock clears focus timer");
 requireMatch(js, /stopFocusTimer\(\);\s*\n\s*hideTermHintTooltip\(\);/, "lock clears private term tooltip");
+requireMatch(js, /authenticationError\.name\s*=\s*"VaultAuthenticationError"[\s\S]*?releaseError\.name\s*=\s*"VaultReleaseError"/u, "decrypt distinguishes authentication from release validation");
+requireMatch(js, /catch\s*\(error\)[\s\S]*?authenticationFailed[\s\S]*?releaseMismatch[\s\S]*?Password accepted, but this encrypted data belongs to a different library release/u, "unlock reports a release mismatch without blaming the password");
+requireMatch(js, /if\s*\(authenticationFailed\)[\s\S]*?setAttribute\("aria-invalid",\s*"true"\)[\s\S]*?else if\s*\(releaseMismatch\)[\s\S]*?removeAttribute\("aria-invalid"\)/u, "only authentication failures mark the password invalid");
+requireMatch(html, /class="release-notice"\s+data-release-notice\s+role="status"\s+hidden[\s\S]*?Your password was accepted/u, "persistent previous-release notice");
+requireMatch(css, /\.release-notice\s*\{[\s\S]*?\.release-notice\[hidden\]\s*\{\s*display:\s*none/u, "previous-release notice styling");
+requireMatch(js, /headerStatus\.textContent\s*=\s*releaseState\s*===\s*"previous"[\s\S]*?Open · previous encrypted release[\s\S]*?releaseNotice\.hidden\s*=\s*releaseState\s*!==\s*"previous"/u, "successful previous release is labelled without password blame");
 requireMatch(js, /function\s+progressionStage[\s\S]*?return\s+"Beginner"[\s\S]*?return\s+"Intermediate"[\s\S]*?return\s+"Advanced"/, "consistent beginner intermediate advanced module stages");
 requireMatch(js, /progressionStage\(moduleIndex,\s*collection\.modules\.length\)\.toUpperCase\(\)[\s\S]*?MODULE/, "module cards expose the learning stage without extra subtitles");
 requireMatch(js, /function\s+setReadingMode[\s\S]*?syncReadingTimes\(\);[\s\S]*?updateReadingProgress\(\);[\s\S]*?\n\s*}/, "reading mode updates duration, focus, and progress");
 requireMatch(js, /function\s+essentialEstimatedMinutes[\s\S]*?ESSENTIAL_SECTION_INDEXES\.has\(index\)/, "essential view computes a visible-section duration fallback");
 requireMatch(js, /function\s+glossaryPairsFromLesson[\s\S]*?section\.id\s*===\s*"thuat-ngu"[\s\S]*?flatMap\(glossaryPairsFromBlock\)/, "term hints derive from the authored glossary section");
 requireMatch(js, /glossaryPairsFromLesson\(lesson\)\.forEach[\s\S]*?explicitHints\.forEach[\s\S]*?merged\.set\(key,\s*\{\s*\.\.\.normalized,\s*key,\s*source:\s*"authored"\s*\}\)/, "authored term hints override glossary-derived definitions");
+requireMatch(js, /function\s+createReaderKeywordHints[\s\S]*?keywordHintForLesson\(keyword, hints\)[\s\S]*?keywordMap\.size\s*>=\s*4[\s\S]*?keywords\.forEach\(\(\{\s*term,\s*hint\s*\},\s*index\)[\s\S]*?createTermHintNodes/u, "every lesson receives at least four definition-backed keyword hints");
+requireMatch(js, /function\s+keywordHintForLesson[\s\S]*?const\s+exact[\s\S]*?hintKeyContainsPhrase[\s\S]*?return\s+null/u, "keyword chips fail closed without a glossary definition");
+forbidMatch(js, /source:\s*"lesson-(?:context|summary)"|contextualKeywordSentence/u, "generic keyword meaning fallback");
+requireMatch(js, /function\s+installLocalTermHintTestFixture[\s\S]*?new\s+Set\(\["127\.0\.0\.1",\s*"localhost"\]\)[\s\S]*?term-hint-fixture[\s\S]*?window\.location\.protocol\s*!==\s*"http:"[\s\S]*?createTermHintNodes/u, "term-hint browser fixture is local and opt-in only");
+requireMatch(js, /installLocalTermHintTestFixture\(\);[\s\S]*?initializeSidebarLayout\(\)/u, "local term-hint fixture initializes after event wiring");
+requireMatch(css, /\.term-hint-test-fixture\s*\{[\s\S]*?position:\s*fixed[\s\S]*?z-index:\s*50/u, "local term-hint fixture remains visible for browser regression testing");
+requireMatch(js, /const\s+heroContent\s*=\s*\[breadcrumb, title, deck\][\s\S]*?if\s*\(keywordHints\)\s*heroContent\.push\(keywordHints\)/u, "keyword definition chips render in every lesson hero");
 requireMatch(js, /function\s+glossaryVisibleText[\s\S]*?replace\(\/\\\[\\\[\[a-z0-9-\]\+\\\]\\\]\/gi,\s*" "\)/, "glossary tooltip copy omits citation tokens");
 requireMatch(js, /index\s*<\s*glossaryIndex\s*&&\s*sectionVisibleInMode\s*\?\s*firstUseHintState\s*:\s*null/, "term hints stay before the discovered glossary section");
 requireMatch(js, /state\.readingMode\s*===\s*"essentials"\s*&&\s*block\?\.learningLayer\s*===\s*"detail"/, "essential view excludes hidden detail occurrences");
@@ -1164,6 +1277,8 @@ requireMatch(js, /"khac-biet":\s*"Khác biệt theo bối cảnh"/, "lifestyle c
   ".focus-timer-chip",
   ".first-use-hint",
   ".first-use-tooltip",
+  ".reader-keywords",
+  ".reader-keyword",
   ".learning-layer-detail",
   "body.essentials-mode",
   "body.focus-mode",

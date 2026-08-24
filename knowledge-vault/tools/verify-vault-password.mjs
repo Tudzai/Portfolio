@@ -42,6 +42,24 @@ const releaseManifest = [
   { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
   { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
   { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
+  { id: "mrel-domain", modules: 15, lessons: 60, sources: 57 },
+  { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+  { id: "photography", modules: 6, lessons: 18, sources: 12 },
+  { id: "cooking", modules: 6, lessons: 18, sources: 36 },
+  { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
+  { id: "coffee", modules: 6, lessons: 18, sources: 24 },
+  { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "art-visual-culture", modules: 6, lessons: 18, sources: 20 },
+  { id: "architecture-design-living", modules: 6, lessons: 18, sources: 25 },
+  { id: "self-psychology", modules: 6, lessons: 18, sources: 33 },
+  { id: "communication-conflict", modules: 6, lessons: 18, sources: 35 },
+  { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 16 },
+];
+const v1PublishedReleaseManifest = [
+  { id: "fintech-domain", modules: 12, lessons: 67, sources: 179 },
+  { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
+  { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
+  { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
   { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
@@ -71,6 +89,42 @@ function exactKeys(value, keys) {
     && typeof value === "object"
     && !Array.isArray(value)
     && Object.keys(value).sort().join("|") === [...keys].sort().join("|");
+}
+
+function sameReleaseManifest(left, right) {
+  return Array.isArray(left)
+    && Array.isArray(right)
+    && left.length === right.length
+    && left.every((entry, index) => {
+      const expected = right[index];
+      return entry?.id === expected?.id
+        && entry?.modules === expected?.modules
+        && entry?.lessons === expected?.lessons
+        && entry?.sources === expected?.sources;
+    });
+}
+
+function validEnvelopeReleaseManifest(manifest) {
+  return Array.isArray(manifest)
+    && manifest.length === releaseManifest.length
+    && manifest.every((entry, index) =>
+      exactKeys(entry, ["id", "modules", "lessons", "sources"])
+      && entry.id === releaseManifest[index].id
+      && Number.isInteger(entry.modules)
+      && entry.modules > 0
+      && Number.isInteger(entry.lessons)
+      && entry.lessons > 0
+      && Number.isInteger(entry.sources)
+      && entry.sources > 0,
+    );
+}
+
+function releaseAdditionalData(payload, encoder) {
+  if (payload.version === 1) return encoder.encode("knowledge-vault:v1");
+  const compactManifest = payload.release
+    .map(({ id, modules, lessons, sources }) => `${id}:${modules}:${lessons}:${sources}`)
+    .join("|");
+  return encoder.encode(`knowledge-vault:v2:${compactManifest}`);
 }
 
 function present(value) {
@@ -257,6 +311,10 @@ function matchesPreviousSixteenDomainRelease(value) {
   return matchesHistoricalRelease(value, previousSixteenDomainReleaseManifest);
 }
 
+function matchesV1PublishedRelease(value) {
+  return matchesHistoricalRelease(value, v1PublishedReleaseManifest);
+}
+
 // Migration-only compatibility for the exact eight-domain release that preceded
 // the historical ten-domain manifest. New plaintext and new ciphertext still pass the strict gate.
 function matchesPreviousEightDomainRelease(value) {
@@ -411,7 +469,7 @@ function matchesCurrentRelease(value) {
   return Boolean(valid);
 }
 
-function verifyReleaseShape(value) {
+function verifyReleaseShape(value, payload) {
   if (
     !value
     || typeof value !== "object"
@@ -420,8 +478,15 @@ function verifyReleaseShape(value) {
     || !Array.isArray(value.archivedVault.notes)
     || !value.archivedVault.notes.length
   ) return false;
+  if (payload.version === 2) {
+    if (requireCurrentRelease && !sameReleaseManifest(payload.release, releaseManifest)) return false;
+    return sameReleaseManifest(payload.release, releaseManifest)
+      ? matchesCurrentRelease(value)
+      : matchesHistoricalRelease(value, payload.release);
+  }
   if (requireCurrentRelease) return matchesCurrentRelease(value);
   return matchesCurrentRelease(value)
+    || matchesV1PublishedRelease(value)
     || matchesPreviousSixteenDomainRelease(value)
     || matchesPreviousTenDomainRelease(value)
     || matchesPreviousEightDomainRelease(value)
@@ -433,9 +498,16 @@ try {
   const source = await readFile(inputPath, "utf8");
   const assignment = source.trim().match(/^window\.__KNOWLEDGE_VAULT_DATA__\s*=\s*(\{[\s\S]*\});$/);
   const payload = assignment ? JSON.parse(assignment[1]) : null;
+  const validVersion = (
+    payload?.version === 1
+    && exactKeys(payload, ["version", "kdf", "cipher", "ciphertext"])
+  ) || (
+    payload?.version === 2
+    && exactKeys(payload, ["version", "release", "kdf", "cipher", "ciphertext"])
+    && validEnvelopeReleaseManifest(payload.release)
+  );
   if (
-    !exactKeys(payload, ["version", "kdf", "cipher", "ciphertext"])
-    || payload.version !== 1
+    !validVersion
     || !exactKeys(payload.kdf, ["name", "hash", "iterations", "salt"])
     || payload.kdf.name !== "PBKDF2"
     || payload.kdf.hash !== "SHA-256"
@@ -472,14 +544,14 @@ try {
     {
       name: "AES-GCM",
       iv: Buffer.from(payload.cipher.iv, "base64"),
-      additionalData: encoder.encode("knowledge-vault:v1"),
+      additionalData: releaseAdditionalData(payload, encoder),
       tagLength: 128,
     },
     key,
     Buffer.from(payload.ciphertext, "base64"),
   );
   const parsed = JSON.parse(new TextDecoder().decode(plaintext));
-  if (!verifyReleaseShape(parsed)) throw new Error();
+  if (!verifyReleaseShape(parsed, payload)) throw new Error();
   console.log(requireCurrentRelease
     ? "Vault password and current sixteen-domain release shape verified."
     : "Existing vault password and release shape verified.");

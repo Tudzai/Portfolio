@@ -8,6 +8,8 @@ $ErrorActionPreference = "Stop"
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 $vaultDirectory = Split-Path -Parent $scriptDirectory
 $nodeScript = Join-Path $scriptDirectory "encrypt-vault.mjs"
+$cacheSyncScript = Join-Path $scriptDirectory "sync-vault-cache-key.mjs"
+$canonicalOutputPath = Join-Path $vaultDirectory "vault-data.js"
 
 if (-not $InputPath) {
   $InputPath = Join-Path $vaultDirectory "private\knowledge.json"
@@ -48,6 +50,15 @@ try {
   & node $nodeScript $InputPath $OutputPath
   if ($LASTEXITCODE -ne 0) {
     throw "Vault encryption failed with exit code $LASTEXITCODE."
+  }
+
+  Remove-Item Env:VAULT_PASSWORD -ErrorAction SilentlyContinue
+  Remove-Item Env:VAULT_CURRENT_PASSWORD -ErrorAction SilentlyContinue
+  if ([IO.Path]::GetFullPath($OutputPath) -eq [IO.Path]::GetFullPath($canonicalOutputPath)) {
+    & node $cacheSyncScript $OutputPath
+    if ($LASTEXITCODE -ne 0) {
+      throw "Vault encryption succeeded, but cache-key synchronization failed with exit code $LASTEXITCODE."
+    }
   }
 }
 finally {

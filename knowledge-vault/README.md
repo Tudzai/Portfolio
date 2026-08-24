@@ -20,12 +20,18 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
 ## Security boundary
 
 - `private/knowledge.json` is the local plaintext source and is ignored by Git.
-- `vault-data.js` is the only knowledge payload that may be committed. It contains ciphertext, salt, IV, and KDF
-  settings—not plaintext or a password.
-- PBKDF2-HMAC-SHA256 uses 600,000 iterations; content encryption uses AES-256-GCM with authenticated additional data.
+- `vault-data.js` is the only knowledge payload that may be committed. It contains ciphertext, salt, IV, KDF settings,
+  and non-secret release counts—not plaintext or a password.
+- PBKDF2-HMAC-SHA256 uses 600,000 iterations; content encryption uses AES-256-GCM. Version-two payloads bind the
+  release manifest into authenticated additional data, so the browser can validate the exact decrypted shape and tell
+  a stale encrypted release from a wrong password without trusting editable metadata.
 - Before replacing an existing payload, the encryption tool verifies that the supplied current password can decrypt
   the existing release shape. It then verifies a correct-key round trip and confirms that a deliberately wrong key is
   rejected before publishing the replacement atomically.
+- The PowerShell wrapper treats password entry as one interactive encryption session. After the verified payload is
+  written, it removes password environment variables and derives a new public cache key from the encrypted payload,
+  stylesheet, and runtime hashes. The browser therefore fetches the matching release without asking the owner to
+  repeat a password for build processing, and later UI-only changes receive a fresh cache key too.
 - Decrypted content is kept only in browser memory. The library stays open until the owner uses the manual lock,
   reloads or leaves the page, or closes the tab. Manual lock removes rendered plaintext and in-memory curriculum
   references as far as practical in client-side JavaScript.
@@ -64,8 +70,10 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
 - Module cards expose a consistent Beginner → Intermediate → Advanced learning path. These labels describe the
   curriculum's depth and expected practice, not certification or professional authorization.
 - Glossary-derived first-use hints explain eligible technical terms at their first visible pre-glossary occurrence
-  without changing or inventing definitions. They follow the active Essential/Full view and never replace citation
-  markers. Hover, keyboard focus, or tap opens the explanation; Escape, a second tap, or an outside press dismisses it.
+  without changing or inventing definitions. Reader keyword chips are shown only when a real glossary or authored
+  definition exists; lesson context and summaries are never presented as a term's meaning. Hints follow the active
+  Essential/Full view and never replace citation markers. Hover, keyboard focus, or tap opens the explanation; Escape,
+  a second tap, or an outside press dismisses it.
 - Jump is accent-insensitive and keyboard navigable. Lesson pages include a flat section outline, estimated reading
   time, saved state, one smart continuation action, and a reading-progress indicator.
 - Each domain receives a restrained accent tone while sharing the same quiet, high-contrast visual system.
@@ -103,10 +111,10 @@ rechecked periodically against the linked authoritative sources.
 | Finance | 15 | 74 | 97 | Published |
 | Road to CFO | 18 | 89 | 68 | Published |
 | Breaking / Breakdance | 14 | 68 | 41 | Published |
-| Muscle recovery | 15 | 60 | 56 | Published |
+| Muscle recovery | 15 | 60 | 57 | Published |
 | Personal style | 6 | 18 | 12 | Published |
 | Photography | 6 | 18 | 12 | Published |
-| Home cooking | 6 | 18 | 12 | Published |
+| Home cooking | 6 | 18 | 36 | Published |
 | Bar drinks | 6 | 18 | 25 | Published |
 | Coffee | 6 | 18 | 24 | Published |
 | Japanese culture | 6 | 18 | 20 | Published |
@@ -116,7 +124,7 @@ rechecked periodically against the linked authoritative sources.
 | Communication & conflict | 6 | 18 | 35 | Published |
 | Relationships & boundaries | 6 | 18 | 16 | Published |
 
-Across the sixteen structured collections, the library now contains 140 modules, 556 published lessons, and 675 saved
+Across the sixteen structured collections, the library now contains 140 modules, 556 published lessons, and 700 saved
 sources. Every lesson contains 11 authored sections, renders its references as section 12, and maps to at least three
 distinct sources from at least two organizations.
 
@@ -193,10 +201,11 @@ this audit note is never exposed as a public plaintext file.
    - `tools/restore-domain-from-earliest-recovery.mjs --domain ID` can stop an incomplete domain batch by restoring only
      that domain from its earliest ignored recovery snapshot, retaining every other domain and validating the complete
      candidate before an atomic private replacement.
-   - during a multi-lesson authoring pass, a raised public manifest and the previous ciphertext are not a coherent
-     release. Keep the local viewer on a clean detached worktree containing the last matching manifest/ciphertext pair;
-     do not weaken runtime count checks. Cut over the manifest, regenerated ciphertext, verification results, and cache
-     key together once the password owner can run the encryption wrapper.
+   - during a multi-lesson authoring pass, the current source manifest may move ahead of the previous ciphertext.
+     Version-two ciphertext carries its own authenticated release manifest, so the local viewer can open that prior
+     release with the valid password and labels it clearly as previous. The one supported version-one migration
+     snapshot is matched against an exact fixed manifest. Unknown release shapes still fail closed. Regenerate
+     `vault-data.js`, run verification, and update the cache key before publishing the new authored content.
 4. Run the read-only release-schema gate. It reports only pass/fail categories and never prints private content or IDs.
    It applies the uniform sixteen-domain contract above, including exact identity and counts, canonical sections, review
    and reading-time metadata, safe block shapes, source mapping and use, HTTPS URLs, dates, inline citations, and
@@ -215,6 +224,16 @@ this audit note is never exposed as a public plaintext file.
    node .\knowledge-vault\tools\audit-practitioner-depth.mjs --domain relationships-boundaries
    ```
 
+   Run the all-domain term-hint gate after any content batch. It verifies that every published lesson has at least four
+   definition-backed reader keyword chips and never relies on a contextual or summary fallback, while reporting only
+   aggregate counts. Terms that do not
+   appear early enough in the lesson body use the glossary-chip fallback and remain available by mouse, keyboard focus,
+   touch, and screen-reader description:
+
+   ```powershell
+   node .\knowledge-vault\tools\audit-term-hints.mjs
+   ```
+
 5. Run the encryption wrapper from the repository root. For a routine content update, use the existing vault password:
 
    ```powershell
@@ -228,9 +247,14 @@ this audit note is never exposed as a public plaintext file.
    .\knowledge-vault\tools\encrypt-vault.ps1 -ChangePassword
    ```
 
-6. Enter passwords only at the hidden prompts. The wrapper removes its temporary environment variables and clears the
-   unmanaged password buffers after encryption. A wrong current password or mismatched confirmation aborts without
-   replacing `vault-data.js`.
+6. Enter passwords only at the hidden prompts. The wrapper uses that single interactive session for existing-password
+   verification, encryption, correct-key and wrong-key checks, current-release verification, and ciphertext-derived
+   cache-key synchronization. It removes its temporary environment variables before cache synchronization and clears
+   unmanaged password buffers on exit. A wrong current password or mismatched confirmation aborts without replacing
+   `vault-data.js`. The password is not retained for later browser sessions; a deliberate lock or reload requires the
+   owner to unlock again by design.
+   After a UI-only change that does not regenerate ciphertext, run `node .\knowledge-vault\tools\sync-vault-cache-key.mjs`
+   so the shared version key reflects the stylesheet, runtime, and encrypted payload together.
 7. Preview through a local HTTP server—never with a `file://` URL:
 
    ```powershell
@@ -238,7 +262,12 @@ this audit note is never exposed as a public plaintext file.
    ```
 
 8. Visit `http://127.0.0.1:8765/knowledge-vault/` and test wrong-password rejection, correct-password decryption,
-   curriculum navigation, search, completion, manual lock, theme, keyboard access, and mobile layout.
+   previous-release labelling when intentionally using stale ciphertext, current-release labelling after regeneration,
+   curriculum navigation, search, completion, manual lock, reload, theme, keyboard access, and mobile layout.
+   For term-tooltip interaction regression without decrypting the library, use the local-only URL
+   `http://127.0.0.1:8765/knowledge-vault/?term-hint-fixture=1`. The fixture activates only on `localhost` or
+   `127.0.0.1`, contains no vault content, and exercises the same delegated hover, focus, click, Escape, and outside-
+   dismissal handlers as lesson terms.
 9. Run the public static checker. It reads only public files and the ciphertext envelope; it never decrypts content:
 
    ```powershell
@@ -307,6 +336,7 @@ knowledge-vault/
 |   |-- audit-practitioner-depth.mjs
 |   |-- encrypt-vault.mjs
 |   |-- encrypt-vault.ps1
+|   |-- sync-vault-cache-key.mjs
 |   |-- restore-domain-from-earliest-recovery.mjs
 |   |-- sync-vault-release-counts.mjs
 |   |-- test-public-vault.mjs

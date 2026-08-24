@@ -45,6 +45,13 @@ const manifestPaths = [
   join(scriptDirectory, "verify-vault-password.mjs"),
   join(scriptDirectory, "test-public-vault.mjs"),
 ];
+const manifestConstants = new Map([
+  [manifestPaths[0], "RELEASE_MANIFEST"],
+  [manifestPaths[1], "releaseManifest"],
+  [manifestPaths[2], "releaseManifest"],
+  [manifestPaths[3], "releaseManifest"],
+  [manifestPaths[4], "uniformReleaseManifest"],
+]);
 const readmePath = join(vaultDirectory, "README.md");
 const paths = [...manifestPaths, readmePath];
 const originals = new Map(await Promise.all(paths.map(async (path) => [path, await readFile(path, "utf8")])));
@@ -59,19 +66,30 @@ function replaceExactlyOnce(value, pattern, replacement, label) {
   return value.replace(pattern, replacement);
 }
 
-const candidates = new Map();
-try {
-  for (const path of manifestPaths) {
-    const pattern = new RegExp(
+function replaceManifestRow(value, constantName) {
+  const manifestPattern = new RegExp(`(const\\s+${constantName}\\s*=\\s*\\[)([\\s\\S]*?)(\\];)`, "u");
+  const manifestMatches = value.match(new RegExp(manifestPattern.source, "gu")) || [];
+  if (manifestMatches.length !== 1) throw new Error("manifest block");
+  return value.replace(manifestPattern, (fullMatch, prefix, body, suffix) => {
+    const rowPattern = new RegExp(
       `(\\{ id: "${escapePattern(selected.id)}", modules: ${selected.modules}, lessons: ${selected.lessons}, sources: )\\d+( \\},)`,
       "u",
     );
-    candidates.set(path, replaceExactlyOnce(
-      originals.get(path),
-      pattern,
-      `$1${sourceCount}$2`,
-      "manifest row",
-    ));
+    const updatedBody = replaceExactlyOnce(body, rowPattern, `$1${sourceCount}$2`, "manifest row");
+    return `${prefix}${updatedBody}${suffix}`;
+  });
+}
+
+function manifestBody(value, constantName) {
+  const match = value.match(new RegExp(`const\\s+${constantName}\\s*=\\s*\\[([\\s\\S]*?)\\];`, "u"));
+  if (!match) throw new Error("manifest block");
+  return match[1];
+}
+
+const candidates = new Map();
+try {
+  for (const path of manifestPaths) {
+    candidates.set(path, replaceManifestRow(originals.get(path), manifestConstants.get(path)));
   }
 
   const readmeRowPattern = new RegExp(
@@ -86,12 +104,13 @@ try {
   );
 
   const manifestCandidate = candidates.get(manifestPaths[0]);
+  const currentManifestBody = manifestBody(manifestCandidate, manifestConstants.get(manifestPaths[0]));
   const totalSources = collections.reduce((total, collection) => {
     const pattern = new RegExp(
       `\\{ id: "${escapePattern(collection.id)}", modules: ${collection.modules}, lessons: ${collection.lessons}, sources: (\\d+) \\},`,
       "u",
     );
-    const match = manifestCandidate.match(pattern);
+    const match = currentManifestBody.match(pattern);
     if (!match) throw new Error("manifest total");
     return total + Number(match[1]);
   }, 0);

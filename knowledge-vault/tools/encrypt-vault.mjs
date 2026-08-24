@@ -12,7 +12,6 @@ const inputPath = process.argv[2] ? resolve(process.cwd(), process.argv[2]) : jo
 const outputPath = process.argv[3] ? resolve(process.cwd(), process.argv[3]) : join(vaultDirectory, "vault-data.js");
 const password = process.env.VAULT_PASSWORD;
 const iterations = 600_000;
-const additionalData = encoder.encode("knowledge-vault:v1");
 const expectedSectionCount = 11;
 const canonicalSectionIds = [
   "muc-tieu",
@@ -45,10 +44,10 @@ const releaseManifest = [
   { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
   { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
   { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
-  { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
+  { id: "mrel-domain", modules: 15, lessons: 60, sources: 57 },
   { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
   { id: "photography", modules: 6, lessons: 18, sources: 12 },
-  { id: "cooking", modules: 6, lessons: 18, sources: 12 },
+  { id: "cooking", modules: 6, lessons: 18, sources: 36 },
   { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
   { id: "coffee", modules: 6, lessons: 18, sources: 24 },
   { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
@@ -58,6 +57,13 @@ const releaseManifest = [
   { id: "communication-conflict", modules: 6, lessons: 18, sources: 35 },
   { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 16 },
 ];
+function releaseAdditionalData(manifest) {
+  const compactManifest = manifest
+    .map(({ id, modules, lessons, sources }) => `${id}:${modules}:${lessons}:${sources}`)
+    .join("|");
+  return encoder.encode(`knowledge-vault:v2:${compactManifest}`);
+}
+const additionalData = releaseAdditionalData(releaseManifest);
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const sourceDateFields = ["publishedAt", "adoptedAt", "updatedAt", "reviewedAt", "accessedAt"];
@@ -519,7 +525,8 @@ try {
 if (!wrongPasswordRejected) throw new Error("AES-GCM verification failed to reject a wrong password.");
 
 const payload = {
-  version: 1,
+  version: 2,
+  release: releaseManifest,
   kdf: {
     name: "PBKDF2",
     hash: "SHA-256",

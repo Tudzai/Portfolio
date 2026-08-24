@@ -1,7 +1,8 @@
 (() => {
   "use strict";
 
-  const VAULT_AAD = "knowledge-vault:v1";
+  const VAULT_AAD_V1 = "knowledge-vault:v1";
+  const VAULT_AAD_V2_PREFIX = "knowledge-vault:v2";
   const STORAGE_COMPLETED = "knowledge-library:completed:v2";
   const STORAGE_COMPLETED_LEGACY = "fintech-domain:completed:v1";
   const STORAGE_THEME = "knowledge-library:theme-preset:v2";
@@ -316,6 +317,24 @@
     { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
     { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
     { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
+    { id: "mrel-domain", modules: 15, lessons: 60, sources: 57 },
+    { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
+    { id: "photography", modules: 6, lessons: 18, sources: 12 },
+    { id: "cooking", modules: 6, lessons: 18, sources: 36 },
+    { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
+    { id: "coffee", modules: 6, lessons: 18, sources: 24 },
+    { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
+    { id: "art-visual-culture", modules: 6, lessons: 18, sources: 20 },
+    { id: "architecture-design-living", modules: 6, lessons: 18, sources: 25 },
+    { id: "self-psychology", modules: 6, lessons: 18, sources: 33 },
+    { id: "communication-conflict", modules: 6, lessons: 18, sources: 35 },
+    { id: "relationships-boundaries", modules: 6, lessons: 18, sources: 16 },
+  ];
+  const V1_PUBLISHED_RELEASE_MANIFEST = [
+    { id: "fintech-domain", modules: 12, lessons: 67, sources: 179 },
+    { id: "fin-domain", modules: 15, lessons: 74, sources: 97 },
+    { id: "rtcfo-domain", modules: 18, lessons: 89, sources: 68 },
+    { id: "brk-domain-breaking", modules: 14, lessons: 68, sources: 41 },
     { id: "mrel-domain", modules: 15, lessons: 60, sources: 56 },
     { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
     { id: "photography", modules: 6, lessons: 18, sources: 12 },
@@ -396,6 +415,7 @@
   const unlockButtonLabel = unlockButton?.querySelector("span");
   const unlockStatus = document.querySelector("[data-unlock-status]");
   const headerStatus = document.querySelector("[data-header-status]");
+  const releaseNotice = document.querySelector("[data-release-notice]");
   const lockButton = document.querySelector("[data-lock-button]");
   const domainHomeButton = document.querySelector("[data-domain-home]");
   const curriculumMeta = document.querySelector("[data-curriculum-meta]");
@@ -460,6 +480,7 @@
 
   const state = {
     data: null,
+    releaseState: "current",
     sourceMap: new Map(),
     selectedId: null,
     selectedCollectionId: null,
@@ -523,9 +544,52 @@
     }
   }
 
+  function sameReleaseManifest(left, right) {
+    return Array.isArray(left)
+      && Array.isArray(right)
+      && left.length === right.length
+      && left.every((entry, index) => {
+        const expected = right[index];
+        return entry?.id === expected?.id
+          && entry?.modules === expected?.modules
+          && entry?.lessons === expected?.lessons
+          && entry?.sources === expected?.sources;
+      });
+  }
+
+  function validEmbeddedReleaseManifest(manifest) {
+    return Array.isArray(manifest)
+      && manifest.length === RELEASE_MANIFEST.length
+      && manifest.every((entry, index) =>
+        hasExactKeys(entry, ["id", "modules", "lessons", "sources"])
+        && entry.id === RELEASE_MANIFEST[index].id
+        && Number.isInteger(entry.modules)
+        && entry.modules > 0
+        && Number.isInteger(entry.lessons)
+        && entry.lessons > 0
+        && Number.isInteger(entry.sources)
+        && entry.sources > 0,
+      );
+  }
+
+  function releaseAdditionalData(payload) {
+    if (payload.version === 1) return encoder.encode(VAULT_AAD_V1);
+    const compactManifest = payload.release
+      .map(({ id, modules, lessons, sources }) => `${id}:${modules}:${lessons}:${sources}`)
+      .join("|");
+    return encoder.encode(`${VAULT_AAD_V2_PREFIX}:${compactManifest}`);
+  }
+
   function validateEncryptedEnvelope(payload) {
-    const valid = hasExactKeys(payload, ["version", "kdf", "cipher", "ciphertext"])
-      && payload.version === 1
+    const validVersion = (
+      payload?.version === 1
+      && hasExactKeys(payload, ["version", "kdf", "cipher", "ciphertext"])
+    ) || (
+      payload?.version === 2
+      && hasExactKeys(payload, ["version", "release", "kdf", "cipher", "ciphertext"])
+      && validEmbeddedReleaseManifest(payload.release)
+    );
+    const valid = validVersion
       && hasExactKeys(payload.kdf, ["name", "hash", "iterations", "salt"])
       && payload.kdf.name === "PBKDF2"
       && payload.kdf.hash === "SHA-256"
@@ -672,7 +736,32 @@
     return [...renderedText.matchAll(/\[\[([a-z0-9-]+)\]\]/gi)].map((match) => match[1]);
   }
 
-  function validateRawVaultData(value) {
+  function matchesReleaseShape(value, manifest) {
+    return Array.isArray(value?.domains)
+      && value.domains.length === manifest.length
+      && value.domains.every((domain, domainIndex) => {
+        const expected = manifest[domainIndex];
+        if (
+          domain?.id !== expected.id
+          || !Array.isArray(domain.primarySources)
+          || domain.primarySources.length !== expected.sources
+          || !Array.isArray(domain.modules)
+          || domain.modules.length !== expected.modules
+        ) return false;
+        return domain.modules.reduce(
+          (count, module) => count + (Array.isArray(module?.lessons) ? module.lessons.length : 0),
+          0,
+        ) === expected.lessons;
+      });
+  }
+
+  function v1ReleaseManifestFor(value) {
+    if (matchesReleaseShape(value, RELEASE_MANIFEST)) return RELEASE_MANIFEST;
+    if (matchesReleaseShape(value, V1_PUBLISHED_RELEASE_MANIFEST)) return V1_PUBLISHED_RELEASE_MANIFEST;
+    return null;
+  }
+
+  function validateRawVaultData(value, releaseManifest = RELEASE_MANIFEST) {
     const claimedIds = new Set();
     const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
     const datePattern = /^\d{4}-\d{2}-\d{2}$/;
@@ -744,7 +833,7 @@
       || !Array.isArray(value.archivedVault.notes)
       || value.archivedVault.notes.length === 0
       || !Array.isArray(value.domains)
-      || value.domains.length !== RELEASE_MANIFEST.length
+      || value.domains.length !== releaseManifest.length
     ) {
       throw new Error("The decrypted library source is incomplete.");
     }
@@ -766,7 +855,7 @@
     });
 
     value.domains.forEach((domain, domainIndex) => {
-      const expected = RELEASE_MANIFEST[domainIndex];
+      const expected = releaseManifest[domainIndex];
       if (
         !domain
         || typeof domain !== "object"
@@ -1244,18 +1333,38 @@
   async function decryptVault(password) {
     const payload = validateEncryptedEnvelope(window.__KNOWLEDGE_VAULT_DATA__);
     const key = await deriveVaultKey(password, payload);
-    const decrypted = await window.crypto.subtle.decrypt(
-      {
-        name: "AES-GCM",
-        iv: decodeBase64(payload.cipher.iv),
-        additionalData: encoder.encode(VAULT_AAD),
-        tagLength: 128,
-      },
-      key,
-      decodeBase64(payload.ciphertext),
-    );
-    const parsed = validateRawVaultData(JSON.parse(decoder.decode(decrypted)));
-    return validateLibraryCompleteness(normalizeVaultData(parsed));
+    let decrypted;
+    try {
+      decrypted = await window.crypto.subtle.decrypt(
+        {
+          name: "AES-GCM",
+          iv: decodeBase64(payload.cipher.iv),
+          additionalData: releaseAdditionalData(payload),
+          tagLength: 128,
+        },
+        key,
+        decodeBase64(payload.ciphertext),
+      );
+    } catch {
+      const authenticationError = new Error("The encrypted library could not be authenticated.");
+      authenticationError.name = "VaultAuthenticationError";
+      throw authenticationError;
+    }
+    try {
+      const raw = JSON.parse(decoder.decode(decrypted));
+      const releaseManifest = payload.version === 2 ? payload.release : v1ReleaseManifestFor(raw);
+      if (!releaseManifest) throw new Error("Unknown version-one release shape.");
+      const parsed = validateRawVaultData(raw, releaseManifest);
+      const data = validateLibraryCompleteness(normalizeVaultData(parsed));
+      return {
+        data,
+        releaseState: sameReleaseManifest(releaseManifest, RELEASE_MANIFEST) ? "current" : "previous",
+      };
+    } catch {
+      const releaseError = new Error("The decrypted library does not match this application release.");
+      releaseError.name = "VaultReleaseError";
+      throw releaseError;
+    }
   }
 
   function formatDate(value) {
@@ -2501,7 +2610,7 @@
     return glossary.blocks.flatMap(glossaryPairsFromBlock).slice(0, 48);
   }
 
-  function createFirstUseHintState(lesson) {
+  function lessonTermHints(lesson) {
     const merged = new Map();
     glossaryPairsFromLesson(lesson).forEach((hint) => {
       const key = foldHintText(hint.term);
@@ -2513,7 +2622,11 @@
       const key = normalized ? foldHintText(normalized.term) : "";
       if (key) merged.set(key, { ...normalized, key, source: "authored" });
     });
-    const hints = [...merged.values()];
+    return [...merged.values()];
+  }
+
+  function createFirstUseHintState(lesson) {
+    const hints = lessonTermHints(lesson);
     if (!hints.length) return null;
     return {
       hints,
@@ -2521,6 +2634,97 @@
       descriptionIndex: 0,
       descriptionPrefix: `term-hint-description-${lesson.id}`,
     };
+  }
+
+  function hintKeyContainsPhrase(containerKey, phraseKey) {
+    return Boolean(containerKey && phraseKey && ` ${containerKey} `.includes(` ${phraseKey} `));
+  }
+
+  function keywordHintForLesson(keyword, hints) {
+    const key = foldHintText(keyword);
+    const exact = hints.find((hint) => hint.key === key);
+    if (exact) return exact;
+    const phrase = hints
+      .filter((hint) => (
+        hintKeyContainsPhrase(hint.key, key)
+        || hintKeyContainsPhrase(key, hint.key)
+      ))
+      .sort((left, right) => Math.abs(left.key.length - key.length) - Math.abs(right.key.length - key.length))[0];
+    if (phrase) return { ...phrase, source: `${phrase.source}-phrase` };
+    return null;
+  }
+
+  function createTermHintNodes(term, hint, descriptionId, className = "") {
+    const definition = document.createElement("dfn");
+    definition.className = ["first-use-hint", className].filter(Boolean).join(" ");
+    definition.tabIndex = 0;
+    definition.textContent = term;
+    definition.dataset.explanation = hint.explanation;
+    definition.dataset.hintSource = hint.source;
+    const accessibleDescription = document.createElement("span");
+    accessibleDescription.id = descriptionId;
+    accessibleDescription.hidden = true;
+    accessibleDescription.textContent = hint.explanation;
+    definition.setAttribute("aria-describedby", accessibleDescription.id);
+    return { definition, accessibleDescription };
+  }
+
+  function createReaderKeywordHints(lesson) {
+    const hints = lessonTermHints(lesson);
+    const keywordMap = new Map();
+    (Array.isArray(lesson?.keywords) ? lesson.keywords : []).forEach((keyword) => {
+      const key = foldHintText(keyword);
+      const hint = key ? keywordHintForLesson(keyword, hints) : null;
+      if (key && hint && !keywordMap.has(key)) keywordMap.set(key, { term: keyword, hint });
+    });
+    hints.forEach((hint) => {
+      if (keywordMap.size >= 4) return;
+      if (hint.key && !keywordMap.has(hint.key)) keywordMap.set(hint.key, { term: hint.term, hint });
+    });
+    const keywords = [...keywordMap.values()];
+    if (!keywords.length) return null;
+    const container = document.createElement("div");
+    container.className = "reader-keywords";
+    container.setAttribute("aria-label", "Domain keywords and definitions");
+    const label = document.createElement("span");
+    label.className = "reader-keywords__label";
+    label.textContent = "Keywords";
+    container.append(label);
+    keywords.forEach(({ term, hint }, index) => {
+      const nodes = createTermHintNodes(
+        term,
+        hint,
+        `keyword-hint-description-${lesson.id}-${index + 1}`,
+        "reader-keyword",
+      );
+      container.append(nodes.definition, nodes.accessibleDescription);
+    });
+    return container;
+  }
+
+  function installLocalTermHintTestFixture() {
+    const localHosts = new Set(["127.0.0.1", "localhost"]);
+    const testRequested = new URLSearchParams(window.location.search).get("term-hint-fixture") === "1";
+    if (window.location.protocol !== "http:" || !localHosts.has(window.location.hostname) || !testRequested) return;
+
+    const fixture = document.createElement("div");
+    fixture.className = "term-hint-test-fixture reader-keywords";
+    fixture.dataset.termHintTestFixture = "true";
+    fixture.setAttribute("aria-label", "Local term hint interaction test");
+    const label = document.createElement("span");
+    label.className = "reader-keywords__label";
+    label.textContent = "Local tooltip test";
+    const nodes = createTermHintNodes(
+      "AES-GCM",
+      {
+        explanation: "Chuẩn mã hóa có xác thực: dữ liệu được giữ bí mật và mọi thay đổi trái phép đều bị phát hiện.",
+        source: "local-test-glossary",
+      },
+      "local-term-hint-test-description",
+      "reader-keyword",
+    );
+    fixture.append(label, nodes.definition, nodes.accessibleDescription);
+    document.body.append(fixture);
   }
 
   function ensureTermHintTooltip() {
@@ -2628,19 +2832,13 @@
       }
       if (selected.index > cursor) element.append(document.createTextNode(text.slice(cursor, selected.index)));
       const visibleTerm = text.slice(selected.index, selected.index + selected.length);
-      const definition = document.createElement("dfn");
-      definition.className = "first-use-hint";
-      definition.tabIndex = 0;
-      definition.textContent = visibleTerm;
-      definition.dataset.explanation = selected.hint.explanation;
-      definition.dataset.hintSource = selected.hint.source;
-      const accessibleDescription = document.createElement("span");
       hintState.descriptionIndex += 1;
-      accessibleDescription.id = `${hintState.descriptionPrefix}-${hintState.descriptionIndex}`;
-      accessibleDescription.hidden = true;
-      accessibleDescription.textContent = selected.hint.explanation;
-      definition.setAttribute("aria-describedby", accessibleDescription.id);
-      element.append(definition, accessibleDescription);
+      const nodes = createTermHintNodes(
+        visibleTerm,
+        selected.hint,
+        `${hintState.descriptionPrefix}-${hintState.descriptionIndex}`,
+      );
+      element.append(nodes.definition, nodes.accessibleDescription);
       hintState.used.add(selected.hint.key);
       cursor = selected.index + selected.length;
     }
@@ -2941,6 +3139,7 @@
     deck.className = "reader-deck";
     deck.textContent = lesson.summary;
     deck.lang = "vi";
+    const keywordHints = createReaderKeywordHints(lesson);
     const meta = document.createElement("div");
     meta.className = "reader-meta";
     if (collection.kind === "notes" || lesson.status !== "published") {
@@ -2988,14 +3187,17 @@
     toolGroup.append(bookmark, readingMode);
     tools.append(toolGroup);
     const artwork = createCollectionArtwork(collection, "reader");
+    const heroContent = [breadcrumb, title, deck];
+    if (keywordHints) heroContent.push(keywordHints);
+    heroContent.push(meta, tools);
     if (artwork) {
       hero.classList.add("reader-hero--illustrated");
       const copy = document.createElement("div");
       copy.className = "reader-hero__copy";
-      copy.append(breadcrumb, title, deck, meta, tools);
+      copy.append(...heroContent);
       hero.append(copy, artwork);
     } else {
-      hero.append(breadcrumb, title, deck, meta, tools);
+      hero.append(...heroContent);
     }
     return hero;
   }
@@ -4062,6 +4264,7 @@
     hideTermHintTooltip();
     state.toastTimer = null;
     state.data = null;
+    state.releaseState = "current";
     state.sourceMap = new Map();
     state.selectedId = null;
     state.selectedCollectionId = null;
@@ -4111,6 +4314,7 @@
       // The in-memory lesson state is still cleared when history cannot be rewritten.
     }
     readingProgress.value = 0;
+    if (releaseNotice) releaseNotice.hidden = true;
     vaultView.hidden = true;
     unlockView.hidden = false;
     headerStatus.textContent = "Locked";
@@ -4137,8 +4341,10 @@
     unlockStatus.textContent = "";
     unlockCard.classList.remove("is-error");
     try {
-      const data = await decryptVault(password);
+      const decryptedVault = await decryptVault(password);
+      const { data, releaseState } = decryptedVault;
       state.data = data;
+      state.releaseState = releaseState;
       state.sourceMap = new Map(data.primarySources.map((source) => [source.id, source]));
       state.completed = loadCompleted();
       state.bookmarks = loadIdSet(STORAGE_BOOKMARKS);
@@ -4157,17 +4363,33 @@
       unlockView.hidden = true;
       vaultView.hidden = false;
       skipLink?.setAttribute("href", "#vault-content");
-      headerStatus.textContent = "Open · locally decrypted";
+      headerStatus.textContent = releaseState === "previous"
+        ? "Open · previous encrypted release"
+        : "Open · locally decrypted";
+      if (releaseNotice) releaseNotice.hidden = releaseState !== "previous";
       if (curriculumMeta) curriculumMeta.textContent = `${data.collections.length} collections · ${allLessons().length} reading items`;
       renderHome({ focusHeading: true });
+      if (releaseState === "previous") {
+        showToast("Password accepted. Viewing the previous encrypted release until vault-data.js is rebuilt.");
+      }
       passwordInput.value = "";
-    } catch {
+    } catch (error) {
+      const authenticationFailed = error?.name === "VaultAuthenticationError";
+      const releaseMismatch = error?.name === "VaultReleaseError";
       lockVault();
-      passwordInput.value = password;
-      unlockStatus.textContent = "Unable to decrypt. Check the password and try again.";
-      passwordInput.setAttribute("aria-invalid", "true");
+      if (authenticationFailed) {
+        passwordInput.value = password;
+        unlockStatus.textContent = "This password could not authenticate the encrypted library. Try again.";
+        passwordInput.setAttribute("aria-invalid", "true");
+        passwordInput.select();
+      } else if (releaseMismatch) {
+        unlockStatus.textContent = "Password accepted, but this encrypted data belongs to a different library release. Regenerate vault-data.js, then reload.";
+        passwordInput.removeAttribute("aria-invalid");
+      } else {
+        unlockStatus.textContent = "The encrypted library file is unavailable or invalid. Refresh the page or rebuild vault-data.js.";
+        passwordInput.removeAttribute("aria-invalid");
+      }
       unlockCard.classList.add("is-error");
-      passwordInput.select();
     } finally {
       unlockButton.disabled = false;
       unlockButtonLabel.textContent = "Enter the vault";
@@ -4601,6 +4823,7 @@
     if (toolsPanel && !toolsPanel.hidden && event.target !== toolsToggle && !toolsPanel.contains(event.target)) closeTools();
   });
 
+  installLocalTermHintTestFixture();
   initializeSidebarLayout();
   initializeTheme();
   setFocusMode(false);
