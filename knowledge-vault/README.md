@@ -115,7 +115,7 @@ rechecked periodically against the linked authoritative sources.
 | Personal style | 6 | 18 | 12 | Published |
 | Photography | 6 | 18 | 12 | Published |
 | Home cooking | 6 | 18 | 36 | Published |
-| Bar drinks | 6 | 18 | 25 | Published |
+| Bar drinks | 6 | 18 | 45 | Published |
 | Coffee | 6 | 18 | 24 | Published |
 | Japanese culture | 6 | 18 | 20 | Published |
 | Art, taste & visual culture | 6 | 18 | 20 | Published |
@@ -124,7 +124,7 @@ rechecked periodically against the linked authoritative sources.
 | Communication & conflict | 6 | 18 | 35 | Published |
 | Relationships & boundaries | 6 | 18 | 16 | Published |
 
-Across the sixteen structured collections, the library now contains 140 modules, 556 published lessons, and 700 saved
+Across the sixteen structured collections, the library now contains 140 modules, 556 published lessons, and 720 saved
 sources. Every lesson contains 11 authored sections, renders its references as section 12, and maps to at least three
 distinct sources from at least two organizations.
 

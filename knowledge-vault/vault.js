@@ -321,7 +321,7 @@
     { id: "personal-style", modules: 6, lessons: 18, sources: 12 },
     { id: "photography", modules: 6, lessons: 18, sources: 12 },
     { id: "cooking", modules: 6, lessons: 18, sources: 36 },
-    { id: "bar-drinks", modules: 6, lessons: 18, sources: 25 },
+    { id: "bar-drinks", modules: 6, lessons: 18, sources: 45 },
     { id: "coffee", modules: 6, lessons: 18, sources: 24 },
     { id: "japanese-culture", modules: 6, lessons: 18, sources: 20 },
     { id: "art-visual-culture", modules: 6, lessons: 18, sources: 20 },
