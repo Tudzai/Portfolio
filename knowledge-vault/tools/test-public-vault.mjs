@@ -671,6 +671,9 @@ requireMatch(js, /image\.setAttribute\("src", source\)/u, "local topic artwork s
 requireMatch(css, /\.reader-hero--illustrated\s*\{/u, "illustrated lesson hero layout");
 requireMatch(css, /\.collection-card--illustrated\s*\{/u, "illustrated collection card layout");
 requireMatch(css, /\.reader-hero h1\s*\{[\s\S]*?font-family:\s*var\(--font-display\);[\s\S]*?font-weight:\s*(?:600|700);/u, "Vietnamese-safe lesson title font weight");
+requireMatch(css, /html\[data-theme-preset="grove"\]\s*\{[\s\S]*?--font-display:\s*Constantia, Cambria, "Times New Roman", serif;/u, "Vietnamese-safe Grove display font stack");
+forbidMatch(css, /--font-display:[^;]*(?:Georgia|Palatino)/iu, "Vietnamese-unsafe display font fallback");
+requireMatch(css, /h1,\s*h2,\s*h3\s*\{[^}]*font-synthesis:\s*none;/u, "synthetic heading weight guard");
 
 const expectedOpenAccessVisuals = [
   ["fintech-domain:3:1", "fintech-payment-system.webp", "e43bb1f1979b114f1859499de98ab946f50399b2b54d12cd7ae40ad75a559eaa"],

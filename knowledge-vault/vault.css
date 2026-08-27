@@ -372,7 +372,7 @@ html[data-theme-preset="grove"] {
   --radius-panel: 28px;
   --glass-blur: 14px;
   --display-tracking: -0.034em;
-  --font-display: Georgia, "Palatino Linotype", Palatino, serif;
+  --font-display: Constantia, Cambria, "Times New Roman", serif;
 }
 
 html[data-theme-preset="noir"] {
@@ -410,7 +410,7 @@ html[data-theme-preset="noir"] {
   --radius-panel: 10px;
   --glass-blur: 0px;
   --display-tracking: -0.026em;
-  --font-display: "Times New Roman", Georgia, serif;
+  --font-display: "Times New Roman", Cambria, serif;
 }
 
 html[data-theme-preset="atelier"] {
@@ -600,6 +600,12 @@ html[data-sidebar-width="460"] { --sidebar-width: 460px; }
 
 * {
   box-sizing: border-box;
+}
+
+h1,
+h2,
+h3 {
+  font-synthesis: none;
 }
 
 html {
