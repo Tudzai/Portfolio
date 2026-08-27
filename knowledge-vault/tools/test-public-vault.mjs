@@ -670,6 +670,7 @@ requireMatch(js, /function\s+createCollectionArtwork\s*\(/u, "topic artwork rend
 requireMatch(js, /image\.setAttribute\("src", source\)/u, "local topic artwork source assignment");
 requireMatch(css, /\.reader-hero--illustrated\s*\{/u, "illustrated lesson hero layout");
 requireMatch(css, /\.collection-card--illustrated\s*\{/u, "illustrated collection card layout");
+requireMatch(css, /\.reader-hero h1\s*\{[\s\S]*?font-family:\s*var\(--font-display\);[\s\S]*?font-weight:\s*(?:600|700);/u, "Vietnamese-safe lesson title font weight");
 
 const expectedOpenAccessVisuals = [
   ["fintech-domain:3:1", "fintech-payment-system.webp", "e43bb1f1979b114f1859499de98ab946f50399b2b54d12cd7ae40ad75a559eaa"],

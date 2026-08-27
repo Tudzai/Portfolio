@@ -2120,7 +2120,7 @@ body.is-resizing-sidebar .hub-shell {
   margin: 18px 0 0;
   font-family: var(--font-display);
   font-size: clamp(2.65rem, 5.2vw, 4.4rem);
-  font-weight: 520;
+  font-weight: 600;
   letter-spacing: -0.045em;
   line-height: 1.04;
 }
