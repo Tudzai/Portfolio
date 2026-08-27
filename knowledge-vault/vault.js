@@ -15,6 +15,7 @@
   const STORAGE_LAST_READ = "knowledge-library:last-read:v1";
   const STORAGE_READING_MODE = "knowledge-library:reading-mode:v2";
   const STORAGE_TEXT_SIZE = "knowledge-library:text-size:v1";
+  const STORAGE_TERM_HINT_MODE = "knowledge-library:term-hint-mode:v1";
   const COLLECTION_TONES = Object.freeze({
     "personal-notes": "violet",
     "fintech-domain": "cyan",
@@ -495,6 +496,7 @@
     lastRead: null,
     readingMode: "full",
     textSize: "comfortable",
+    termHintMode: "first",
     focusMode: false,
     focusTimerEnd: null,
     focusTimerInterval: null,
@@ -1730,6 +1732,43 @@
     setReadingMode(state.readingMode === "full" ? "essentials" : "full");
   }
 
+  function syncTermHintModeControl(button) {
+    if (!button) return;
+    const allOccurrences = state.termHintMode === "all";
+    button.setAttribute("aria-label", "Explain every defined term occurrence");
+    button.setAttribute("aria-pressed", String(allOccurrences));
+    button.textContent = allOccurrences ? "Term hints: all" : "Term hints: first";
+  }
+
+  function setTermHintMode(mode, persist = true) {
+    const focusedControl = document.activeElement?.matches?.("[data-term-hint-mode]");
+    const previousMode = state.termHintMode;
+    state.termHintMode = mode === "all" ? "all" : "first";
+    document.body.classList.toggle("all-term-hints-mode", state.termHintMode === "all");
+    const entry = currentEntry();
+    if (
+      previousMode !== state.termHintMode
+      && entry?.lesson.status === "published"
+      && lessonReader?.querySelector(".reader-layout")
+    ) {
+      hideTermHintTooltip();
+      lessonReader.replaceChildren(renderPublishedLesson(entry));
+    }
+    lessonReader?.querySelectorAll("[data-term-hint-mode]").forEach(syncTermHintModeControl);
+    if (persist) writeStorage(STORAGE_TERM_HINT_MODE, state.termHintMode);
+    window.requestAnimationFrame(() => {
+      if (focusedControl) lessonReader?.querySelector("[data-term-hint-mode]")?.focus({ preventScroll: true });
+      updateReadingProgress();
+    });
+  }
+
+  function toggleTermHintMode() {
+    setTermHintMode(state.termHintMode === "all" ? "first" : "all");
+    showToast(state.termHintMode === "all"
+      ? "Every defined term occurrence is now annotated."
+      : "Only the first defined term occurrence is annotated.");
+  }
+
   function setTextSize(size, persist = true) {
     const sizes = new Set(["comfortable", "large", "xlarge"]);
     state.textSize = sizes.has(size) ? size : "comfortable";
@@ -2631,6 +2670,7 @@
     return {
       hints,
       used: new Set(),
+      allOccurrences: state.termHintMode === "all",
       descriptionIndex: 0,
       descriptionPrefix: `term-hint-description-${lesson.id}`,
     };
@@ -2723,7 +2763,58 @@
       "local-term-hint-test-description",
       "reader-keyword",
     );
-    fixture.append(label, nodes.definition, nodes.accessibleDescription);
+    const repeatedSample = document.createElement("p");
+    repeatedSample.dataset.termHintRepeatFixture = "true";
+    const testHint = {
+      term: "AES-GCM",
+      explanation: "Chuẩn mã hóa có xác thực: dữ liệu được giữ bí mật và mọi thay đổi trái phép đều bị phát hiện.",
+      source: "local-test-glossary",
+      key: foldHintText("AES-GCM"),
+    };
+    const renderRepeatedSample = () => {
+      repeatedSample.replaceChildren();
+      appendHintedText(repeatedSample, "AES-GCM protects records; AES-GCM rejects tampering.", {
+        hints: [testHint],
+        used: new Set(),
+        allOccurrences: state.termHintMode === "all",
+        descriptionIndex: 0,
+        descriptionPrefix: "local-term-hint-repeat-description",
+      }, { learningLayer: "core" });
+    };
+    const modeToggle = document.createElement("button");
+    modeToggle.type = "button";
+    modeToggle.className = "reader-action";
+    modeToggle.dataset.termHintModeFixture = "true";
+    syncTermHintModeControl(modeToggle);
+    modeToggle.addEventListener("click", () => {
+      setTermHintMode(state.termHintMode === "all" ? "first" : "all", false);
+      syncTermHintModeControl(modeToggle);
+      renderRepeatedSample();
+    });
+    const completionToggle = document.createElement("button");
+    completionToggle.type = "button";
+    completionToggle.className = "complete-button";
+    completionToggle.dataset.completionToggleFixture = "true";
+    const completionCheck = document.createElement("span");
+    completionCheck.className = "complete-button__check";
+    completionCheck.setAttribute("aria-hidden", "true");
+    const completionLabel = document.createElement("span");
+    completionToggle.append(completionCheck, completionLabel);
+    let fixtureCompleted = false;
+    syncCompletionButton(completionToggle, fixtureCompleted);
+    completionToggle.addEventListener("click", () => {
+      fixtureCompleted = !fixtureCompleted;
+      syncCompletionButton(completionToggle, fixtureCompleted);
+    });
+    renderRepeatedSample();
+    fixture.append(
+      label,
+      nodes.definition,
+      nodes.accessibleDescription,
+      modeToggle,
+      repeatedSample,
+      completionToggle,
+    );
     document.body.append(fixture);
   }
 
@@ -2818,8 +2909,8 @@
     while (cursor < text.length) {
       let selected = null;
       hintState.hints.forEach((hint) => {
-        if (hintState.used.has(hint.key)) return;
-        if (block?.learningLayer === "detail" && hint.preferCore) return;
+        if (!hintState.allOccurrences && hintState.used.has(hint.key)) return;
+        if (!hintState.allOccurrences && block?.learningLayer === "detail" && hint.preferCore) return;
         const match = findTermMatch(text, hint.term, cursor);
         if (!match) return;
         if (!selected || match.index < selected.index || (match.index === selected.index && hint.term.length > selected.hint.term.length)) {
@@ -2837,9 +2928,10 @@
         visibleTerm,
         selected.hint,
         `${hintState.descriptionPrefix}-${hintState.descriptionIndex}`,
+        hintState.allOccurrences ? "term-hint--all" : "",
       );
       element.append(nodes.definition, nodes.accessibleDescription);
-      hintState.used.add(selected.hint.key);
+      if (!hintState.allOccurrences) hintState.used.add(selected.hint.key);
       cursor = selected.index + selected.length;
     }
   }
@@ -3169,6 +3261,19 @@
 
     const tools = document.createElement("div");
     tools.className = "reader-tools";
+    if (lesson.status === "published") {
+      const complete = document.createElement("button");
+      complete.type = "button";
+      complete.className = "complete-button";
+      complete.dataset.completeLesson = lesson.id;
+      const check = document.createElement("span");
+      check.className = "complete-button__check";
+      check.setAttribute("aria-hidden", "true");
+      const completeLabel = document.createElement("span");
+      complete.append(check, completeLabel);
+      syncCompletionButton(complete, state.completed.has(lesson.id));
+      tools.append(complete);
+    }
     const toolGroup = document.createElement("div");
     toolGroup.className = "reader-tools__group";
     const bookmark = document.createElement("button");
@@ -3184,7 +3289,12 @@
     readingMode.setAttribute("aria-label", "Deep reading view");
     readingMode.setAttribute("aria-pressed", String(state.readingMode === "full"));
     readingMode.textContent = "Deep view";
-    toolGroup.append(bookmark, readingMode);
+    const termHintMode = document.createElement("button");
+    termHintMode.type = "button";
+    termHintMode.className = "reader-action";
+    termHintMode.dataset.termHintMode = "true";
+    syncTermHintModeControl(termHintMode);
+    toolGroup.append(bookmark, readingMode, termHintMode);
     tools.append(toolGroup);
     const artwork = createCollectionArtwork(collection, "reader");
     const heroContent = [breadcrumb, title, deck];
@@ -3921,12 +4031,7 @@
   function updateCurrentLessonStateControls(lessonId) {
     if (state.selectedId !== lessonId) return;
     const complete = lessonReader.querySelector("[data-complete-lesson]");
-    if (complete) {
-      const completed = state.completed.has(lessonId);
-      complete.setAttribute("aria-pressed", String(completed));
-      complete.querySelector(".complete-button__check").textContent = completed ? "✓" : "";
-      if (complete.lastElementChild) complete.lastElementChild.textContent = completed ? "Completed" : "Mark as completed";
-    }
+    if (complete) syncCompletionButton(complete, state.completed.has(lessonId));
     const bookmark = lessonReader.querySelector("[data-bookmark-lesson]");
     if (bookmark) {
       const saved = state.bookmarks.has(lessonId);
@@ -3988,6 +4093,7 @@
       { id: "surprise", marker: "✦", title: "Surprise me", context: "Open an unread lesson" },
       { id: "theme", marker: "◐", title: "Theme studio", context: THEME_PRESETS[document.documentElement.dataset.themePreset]?.label || "Choose a mood" },
       { id: "reading-mode", marker: "≋", title: state.readingMode === "essentials" ? "Show deep lesson" : "Show essentials", context: "Change the visible lesson depth" },
+      { id: "term-hints", marker: "?", title: state.termHintMode === "all" ? "Show first-use term hints" : "Explain every defined term", context: "Toggle glossary annotations in the current lesson" },
       { id: "text-size", marker: "Aa", title: "Reading size", context: state.textSize === "xlarge" ? "Extra large" : state.textSize === "large" ? "Large" : "Comfortable" },
       { id: "focus", marker: "◌", title: state.focusMode ? "Exit focus mode" : "Enter focus mode", context: "Quiet the navigation" },
       { id: "timer", marker: "◷", title: state.focusTimerEnd ? "Stop focus timer" : "Start 15-minute focus", context: "Session-only timer" },
@@ -4090,6 +4196,9 @@
     } else if (result.id === "text-size") {
       cycleTextSize();
       showToast(`Reading size: ${state.textSize === "xlarge" ? "extra large" : state.textSize}.`);
+      returnFocusToJump();
+    } else if (result.id === "term-hints") {
+      toggleTermHintMode();
       returnFocusToJump();
     } else if (result.id === "focus") setFocusMode(!state.focusMode);
     else if (result.id === "timer") {
@@ -4219,6 +4328,15 @@
     renderNavigation();
   }
 
+  function syncCompletionButton(button, completed) {
+    if (!button) return;
+    button.setAttribute("aria-pressed", String(completed));
+    button.setAttribute("aria-label", completed ? "Mark lesson incomplete" : "Mark lesson complete");
+    const check = button.querySelector(".complete-button__check");
+    if (check) check.textContent = completed ? "✓" : "";
+    if (button.lastElementChild) button.lastElementChild.textContent = completed ? "Mark incomplete" : "Mark as completed";
+  }
+
   function completeAndContinue(lessonId) {
     const entry = validPublishedLesson(lessonId);
     if (!entry) return;
@@ -4278,6 +4396,8 @@
     state.lastRead = null;
     state.searchMatches = [];
     state.searchIndex = -1;
+    state.termHintMode = "first";
+    document.body.classList.remove("all-term-hints-mode");
     setFocusMode(false);
     lessonReader.replaceChildren();
     moduleList.replaceChildren();
@@ -4358,6 +4478,7 @@
       state.openNavGroups = loadNavigationGroups();
       setReadingMode(readStorage(STORAGE_READING_MODE, "full"), false);
       setTextSize(readStorage(STORAGE_TEXT_SIZE, "comfortable"), false);
+      setTermHintMode(readStorage(STORAGE_TERM_HINT_MODE, "first"), false);
       passwordInput.removeAttribute("aria-invalid");
       document.body.classList.remove("is-locked");
       unlockView.hidden = true;
@@ -4562,6 +4683,11 @@
     const readingModeControl = event.target.closest("[data-reader-mode]");
     if (readingModeControl) {
       toggleReadingMode();
+      return;
+    }
+    const termHintModeControl = event.target.closest("[data-term-hint-mode]");
+    if (termHintModeControl) {
+      toggleTermHintMode();
       return;
     }
     const randomLessonButton = event.target.closest("[data-random-lesson]");
