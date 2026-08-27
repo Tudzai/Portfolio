@@ -440,6 +440,11 @@
   let activeTermHint = null;
   let termHintPositionFrame = 0;
   let termHintPointerWillClose = false;
+  let collectionTermHintCache = new WeakMap();
+  let moduleTermHintCache = new WeakMap();
+  let lessonTermHintCache = new WeakMap();
+  let globalTermHintCache = null;
+  let globalTermHintTokenCache = null;
   const sidebarOpenButton = document.querySelector("[data-sidebar-open]");
   const sidebarCloseButton = document.querySelector("[data-sidebar-close]");
   const sidebarCollapseButton = document.querySelector("[data-sidebar-collapse]");
@@ -1735,7 +1740,7 @@
   function syncTermHintModeControl(button) {
     if (!button) return;
     const allOccurrences = state.termHintMode === "all";
-    button.setAttribute("aria-label", "Explain every defined term occurrence");
+    button.setAttribute("aria-label", "Explain every English and technical term occurrence");
     button.setAttribute("aria-pressed", String(allOccurrences));
     button.textContent = allOccurrences ? "Term hints: all" : "Term hints: first";
   }
@@ -1765,8 +1770,8 @@
   function toggleTermHintMode() {
     setTermHintMode(state.termHintMode === "all" ? "first" : "all");
     showToast(state.termHintMode === "all"
-      ? "Every defined term occurrence is now annotated."
-      : "Only the first defined term occurrence is annotated.");
+      ? "Every detected English and technical term occurrence is now annotated."
+      : "Only the first occurrence of each English or technical term is annotated.");
   }
 
   function setTextSize(size, persist = true) {
@@ -2649,7 +2654,7 @@
     return glossary.blocks.flatMap(glossaryPairsFromBlock).slice(0, 48);
   }
 
-  function lessonTermHints(lesson) {
+  function authoredLessonTermHints(lesson) {
     const merged = new Map();
     glossaryPairsFromLesson(lesson).forEach((hint) => {
       const key = foldHintText(hint.term);
@@ -2664,13 +2669,372 @@
     return [...merged.values()];
   }
 
-  function createFirstUseHintState(lesson) {
-    const hints = lessonTermHints(lesson);
+  function moduleTermHintLibrary(module) {
+    if (!module || typeof module !== "object") return [];
+    const cached = moduleTermHintCache.get(module);
+    if (cached) return cached;
+    const hints = (Array.isArray(module.lessons) ? module.lessons : []).flatMap(authoredLessonTermHints);
+    moduleTermHintCache.set(module, hints);
+    return hints;
+  }
+
+  function collectionTermHintLibrary(collection) {
+    if (!collection || typeof collection !== "object") return [];
+    const cached = collectionTermHintCache.get(collection);
+    if (cached) return cached;
+    const hints = (Array.isArray(collection.modules) ? collection.modules : [])
+      .flatMap(moduleTermHintLibrary);
+    collectionTermHintCache.set(collection, hints);
+    return hints;
+  }
+
+  function globalTermHintLibrary() {
+    if (globalTermHintCache) return globalTermHintCache;
+    const collections = Array.isArray(state.data?.collections)
+      ? state.data.collections.filter((collection) => collection?.kind === "curriculum")
+      : [];
+    globalTermHintCache = collections.flatMap(collectionTermHintLibrary);
+    return globalTermHintCache;
+  }
+
+  const englishHintJoinerWords = new Set([
+    "a", "an", "and", "as", "at", "by", "for", "from", "in", "into", "of", "on", "or", "per", "the",
+    "to", "via", "versus", "with", "without",
+  ]);
+  const englishHintFunctionWords = new Set([
+    ...englishHintJoinerWords,
+    "also", "are", "be", "been", "being", "but", "can", "could", "did", "do", "does", "each", "had",
+    "has", "have", "if", "is", "it", "its", "less", "may", "might", "more", "most", "must", "no", "not",
+    "only", "should", "than", "that", "these", "this", "those", "too", "very", "was", "were", "will",
+    "would", "yes",
+  ]);
+  const vietnameseAsciiHintWords = new Set([
+    "ai", "anh", "ban", "bao", "bay", "ben", "bo", "bon", "cac", "cach", "cai", "cam", "can", "cao",
+    "chay", "cho", "con", "co", "cua", "cung", "da", "dang", "danh", "day", "de", "den", "di", "do",
+    "don", "du", "dung", "em", "gan", "gia", "gian", "giay", "giua", "hai", "hay", "he", "hieu", "hoa",
+    "hon", "hop", "khi", "kho", "khong", "khung", "lam", "lan", "lo", "loai", "luc", "luon", "mang",
+    "mau", "may", "minh", "moi", "mot", "muon", "nam", "nganh", "ngay", "nghe", "ngoai", "nguoi",
+    "nhanh", "nhom", "nhu", "nhung", "noi", "phai", "phat", "phi", "qua", "quan", "sang", "sau", "se",
+    "so", "tai", "tam", "ten", "the", "them", "theo", "thi", "thoi", "thong", "thu", "thuc", "tien",
+    "tim", "tin", "to", "toi", "tot", "tra", "tranh", "trong", "truoc", "tu", "tung", "va", "van", "vao",
+    "ve", "vi", "viec", "voi", "xanh", "xem", "xay", "yeu",
+    "ba", "bang", "bia", "bi", "binh", "bom", "ca", "canh", "cha", "chai", "che", "chi", "chia", "chim",
+    "chinh", "chung", "coi", "cong", "dao", "dinh", "doanh", "duy", "ga", "giai", "giam", "giang", "giao",
+    "ghi", "hoan", "hoang", "huy", "huynh", "khai", "khang", "khao", "khen", "khi", "khinh", "khoai",
+    "khoan", "khoang", "khoa", "kim", "kinh", "lang", "lao", "lai", "lanh", "lau", "linh", "long", "lui",
+    "ly", "mai", "manh", "mua", "nai", "ngang", "nghe", "nghi", "ngon", "nhai", "nhau", "nhin", "nhi",
+    "ninh", "phan", "pha", "phim", "phong", "phu", "phun", "quang", "quanh", "quay", "quen", "quy", "rau",
+    "ranh", "roi", "rung", "sai", "sinh", "soi", "song", "sung", "suy", "ta", "tan", "tang", "tao", "tay",
+    "tham", "thanh", "thang", "thao", "tha", "thay", "thi", "thua", "tinh", "trao", "trai", "tre", "treo",
+    "trinh", "trung", "truy", "tuy", "ung", "vai", "vang", "ven", "vinh", "vui", "vua", "xa", "xin", "xinh",
+    "xong", "xoay", "xung",
+  ]);
+  const termHintUnitWords = new Set([
+    "am", "bps", "cl", "cm", "db", "dl", "dpi", "fps", "ft", "gb", "gbps", "ghz", "hr", "hrs", "hz",
+    "in", "kb", "kbps", "kg", "khz", "km", "kw", "kwh", "lb", "lbs", "m2", "m3", "mb", "mbps", "mg",
+    "mhz", "min", "mins", "ml", "mm", "mps", "mw", "oz", "pm", "ppi", "ppm", "px", "rpm", "sec", "tb",
+  ]);
+  const termHintTokenPattern = /(?<![\p{L}\p{N}])(?=[A-Za-z0-9&/+._-]*[A-Za-z])[A-Za-z0-9]+(?:[&/+._-][A-Za-z0-9]+)*(?![\p{L}\p{N}])/gu;
+
+  function maskedTermHintCandidateText(value) {
+    return String(value ?? "")
+      .replace(/\[\[[a-z0-9-]+\]\]/giu, (match) => " ".repeat(match.length))
+      .replace(/\b(?:https?:\/\/|www\.)\S+/giu, (match) => " ".repeat(match.length))
+      .replace(/\b\S+@\S+\.\S+\b/giu, (match) => " ".repeat(match.length));
+  }
+
+  function authoredTermTokenKeys(...libraries) {
+    const keys = new Set();
+    libraries.flat().forEach((hint) => {
+      if (!looksEnglishFacingHintTerm(hint?.term)) return;
+      const source = maskedTermHintCandidateText(hint.term);
+      for (const match of source.matchAll(termHintTokenPattern)) {
+        const key = foldHintText(match[0]);
+        if (key) keys.add(key);
+      }
+    });
+    return keys;
+  }
+
+  function globalTermHintTokenKeys() {
+    if (globalTermHintTokenCache) return globalTermHintTokenCache;
+    globalTermHintTokenCache = authoredTermTokenKeys(globalTermHintLibrary());
+    return globalTermHintTokenCache;
+  }
+
+  function autoTermHintTokenKind(value, authoredTokens = new Set()) {
+    const token = String(value || "");
+    const key = foldHintText(token);
+    const letters = token.replace(/[^A-Za-z]/gu, "");
+    if (!key || !letters || termHintUnitWords.has(key)) return "";
+    const uppercaseCount = [...letters].filter((character) => character === character.toUpperCase()).length;
+    const lowercaseCount = letters.length - uppercaseCount;
+    const structural = /[0-9&/+._-]/u.test(token)
+      || (uppercaseCount >= 2 && lowercaseCount === 0)
+      || (uppercaseCount > 0 && lowercaseCount > 0 && !/^[A-Z][a-z]+$/u.test(token));
+    if (structural) return "content";
+    if (vietnameseAsciiHintWords.has(key)) return "";
+    if (authoredTokens.has(key)) return "content";
+    if (englishHintFunctionWords.has(key)) return englishHintJoinerWords.has(key) ? "joiner" : "";
+    return /^[A-Za-z]{3,}$/u.test(token) ? "content" : "";
+  }
+
+  function currentLessonModule(lesson, collection) {
+    return (Array.isArray(collection?.modules) ? collection.modules : [])
+      .find((module) => (module.lessons || []).some((item) => item === lesson || item?.id === lesson?.id))
+      || null;
+  }
+
+  function lessonTermContextEntries(lesson, collection = null) {
+    const entries = [];
+    const push = (text, surface, learningLayer = "core") => {
+      if (typeof text !== "string" || !glossaryVisibleText(text)) return;
+      entries.push({
+        text,
+        surface,
+        learningLayer,
+        preferCore: learningLayer !== "detail",
+      });
+    };
+    const currentModule = currentLessonModule(lesson, collection);
+    push(collection?.title, "collection-title");
+    push(currentModule?.title, "module-title");
+    push(lesson?.title, "lesson-title");
+    push(lesson?.summary, "lesson-summary");
+    (Array.isArray(lesson?.sections) ? lesson.sections : []).forEach((section) => {
+      if (section?.id === "thuat-ngu") return;
+      push(displaySectionTitle(collection?.id, section), "section-title");
+      (Array.isArray(section?.blocks) ? section.blocks : []).forEach((block) => {
+        learningBlockStrings(block).forEach((text) => push(text, "lesson-body", block?.learningLayer || "core"));
+      });
+    });
+    return entries;
+  }
+
+  function firstRenderableTermContext(entries, term) {
+    const orderedEntries = [
+      ...entries.filter((entry) => entry.preferCore),
+      ...entries.filter((entry) => !entry.preferCore),
+    ];
+    let fallback = null;
+    for (const entry of orderedEntries) {
+      const match = findTermMatch(entry.text, term);
+      if (!match) continue;
+      const candidate = {
+        ...entry,
+        matchIndex: match.index,
+        matchLength: match.length,
+        hasSentenceContext: foldHintText(glossaryVisibleText(entry.text)) !== foldHintText(term),
+      };
+      if (candidate.hasSentenceContext) return candidate;
+      if (!fallback) fallback = candidate;
+    }
+    return fallback;
+  }
+
+  function autoTermHintCandidates(entries, authoredTokens) {
+    const candidates = new Map();
+    const add = (term, entry, matchIndex, matchLength) => {
+      const key = foldHintText(term);
+      if (!key || term.length > 80) return;
+      const candidate = {
+        term,
+        key,
+        context: {
+          ...entry,
+          matchIndex,
+          matchLength,
+          hasSentenceContext: foldHintText(glossaryVisibleText(entry.text)) !== key,
+        },
+      };
+      const existing = candidates.get(key);
+      if (
+        !existing
+        || (!existing.context.hasSentenceContext && candidate.context.hasSentenceContext)
+        || (!existing.context.preferCore && candidate.context.preferCore)
+      ) candidates.set(key, candidate);
+    };
+
+    entries.forEach((entry) => {
+      const source = String(entry.text ?? "");
+      const masked = maskedTermHintCandidateText(source);
+      const tokens = [...masked.matchAll(termHintTokenPattern)].map((match) => ({
+        term: source.slice(match.index, match.index + match[0].length),
+        index: match.index,
+        end: match.index + match[0].length,
+        kind: autoTermHintTokenKind(match[0], authoredTokens),
+      }));
+      tokens.filter((token) => token.kind === "content").forEach((token) => {
+        add(token.term, entry, token.index, token.end - token.index);
+      });
+
+      let run = [];
+      const flush = () => {
+        while (run[0]?.kind === "joiner") run.shift();
+        while (run.at(-1)?.kind === "joiner") run.pop();
+        const contentCount = run.filter((token) => token.kind === "content").length;
+        if (run.length >= 2 && run.length <= 6 && contentCount >= 2) {
+          const start = run[0].index;
+          const end = run.at(-1).end;
+          add(source.slice(start, end), entry, start, end - start);
+        }
+        run = [];
+      };
+      tokens.forEach((token) => {
+        if (!token.kind) {
+          flush();
+          return;
+        }
+        const previous = run.at(-1);
+        if (previous && !/^[\s\-–—]+$/u.test(source.slice(previous.end, token.index))) flush();
+        run.push(token);
+      });
+      flush();
+    });
+    return [...candidates.values()];
+  }
+
+  function looksEnglishFacingHintTerm(value) {
+    const text = glossaryVisibleText(value);
+    return Boolean(
+      text
+      && /^[\x20-\x7e]+$/u.test(text)
+      && /[A-Za-z]/u.test(text)
+      && (/[A-Z]{2,}/u.test(text) || /\b[a-z]{3,}\b/u.test(text)),
+    );
+  }
+
+  function firstRenderableKeywordContext(lesson, term, collection = null, entries = null) {
+    return firstRenderableTermContext(entries || lessonTermContextEntries(lesson, collection), term);
+  }
+
+  function lessonTermHints(lesson, collection = null) {
+    if (!lesson || typeof lesson !== "object") return [];
+    const cached = lessonTermHintCache.get(lesson);
+    if (cached) return cached;
+    const authoredHints = authoredLessonTermHints(lesson);
+    const merged = new Map(authoredHints.map((hint) => [hint.key, hint]));
+    const currentModule = currentLessonModule(lesson, collection);
+    const moduleHints = moduleTermHintLibrary(currentModule);
+    const collectionHints = collectionTermHintLibrary(collection);
+    const globalHints = globalTermHintLibrary();
+    const contextEntries = lessonTermContextEntries(lesson, collection);
+    const contextFor = (term) => firstRenderableKeywordContext(lesson, term, collection, contextEntries);
+    const firstByKey = (hints) => {
+      const map = new Map();
+      hints.forEach((hint) => {
+        if (hint?.key && !map.has(hint.key)) map.set(hint.key, hint);
+      });
+      return map;
+    };
+    const authoredByKey = firstByKey(authoredHints);
+    const moduleByKey = firstByKey(moduleHints);
+    const collectionByKey = firstByKey(collectionHints);
+    const globalByKey = firstByKey(globalHints);
+    const addDefinitionBackfills = (hints, scope) => {
+      hints.forEach((hint) => {
+        if (!hint?.key || merged.has(hint.key) || !looksEnglishFacingHintTerm(hint.term)) return;
+        const termContext = contextFor(hint.term);
+        if (!termContext) return;
+        merged.set(hint.key, {
+          ...hint,
+          source: `${hint.source}-${scope}-backfill`,
+          keywordContext: termContext,
+          preferCore: termContext.preferCore,
+        });
+      });
+    };
+    addDefinitionBackfills(moduleHints, "module");
+    addDefinitionBackfills(collectionHints, "domain");
+
+    (Array.isArray(lesson?.keywords) ? lesson.keywords : []).forEach((keyword) => {
+      const key = foldHintText(keyword);
+      if (!key) return;
+      const keywordContext = contextFor(keyword);
+      const localDefinition = keywordHintForLesson(keyword, authoredHints);
+      if (localDefinition) {
+        if (keywordContext) {
+          merged.set(key, {
+            ...localDefinition,
+            term: keyword,
+            key,
+            source: `${localDefinition.source}-keyword`,
+            keywordContext,
+            preferCore: keywordContext.preferCore,
+          });
+        }
+        return;
+      }
+      if (!keywordContext || !looksEnglishFacingHintTerm(keyword)) return;
+      const domainDefinition = keywordHintForLesson(keyword, moduleHints)
+        || keywordHintForLesson(keyword, collectionHints)
+        || globalByKey.get(key);
+      if (domainDefinition) {
+        merged.set(key, {
+          ...domainDefinition,
+          term: keyword,
+          key,
+          source: `${domainDefinition.source}-domain`,
+          keywordContext,
+          preferCore: keywordContext.preferCore,
+        });
+        return;
+      }
+      merged.set(key, {
+        term: keyword,
+        key,
+        explanation: "",
+        source: "authored-sentence-context",
+        contextOnly: true,
+        keywordContext,
+        preferCore: keywordContext.preferCore,
+      });
+    });
+
+    const authoredTokens = new Set([
+      ...globalTermHintTokenKeys(),
+      ...authoredTermTokenKeys(authoredHints, moduleHints, collectionHints),
+    ]);
+    autoTermHintCandidates(contextEntries, authoredTokens).forEach(({ term, key, context }) => {
+      if (merged.has(key)) return;
+      const definition = authoredByKey.get(key)
+        || moduleByKey.get(key)
+        || collectionByKey.get(key)
+        || globalByKey.get(key);
+      if (definition) {
+        merged.set(key, {
+          ...definition,
+          term,
+          key,
+          source: `${definition.source}-exact-backfill`,
+          keywordContext: context,
+          preferCore: context.preferCore,
+        });
+        return;
+      }
+      merged.set(key, {
+        term,
+        key,
+        explanation: "",
+        source: "authored-sentence-auto-context",
+        contextOnly: true,
+        keywordContext: context,
+        preferCore: context.preferCore,
+      });
+    });
+    const hints = [...merged.values()];
+    lessonTermHintCache.set(lesson, hints);
+    return hints;
+  }
+
+  function createFirstUseHintState(lesson, collection = null) {
+    const hints = lessonTermHints(lesson, collection);
     if (!hints.length) return null;
     return {
       hints,
       used: new Set(),
       allOccurrences: state.termHintMode === "all",
+      lessonTitle: glossaryVisibleText(lesson?.title),
       descriptionIndex: 0,
       descriptionPrefix: `term-hint-description-${lesson.id}`,
     };
@@ -2694,23 +3058,94 @@
     return null;
   }
 
-  function createTermHintNodes(term, hint, descriptionId, className = "") {
+  function termHintContextSnippet(text, matchIndex = 0, matchLength = 0, maximum = 190) {
+    const source = String(text ?? "");
+    if (!source) return "";
+    const safeIndex = Math.min(Math.max(0, Number(matchIndex) || 0), source.length);
+    const safeLength = Math.max(0, Number(matchLength) || 0);
+    const sentenceBoundary = /[.!?。！？\n\r]/u;
+    let start = safeIndex;
+    let end = Math.min(source.length, safeIndex + safeLength);
+    while (start > 0 && !sentenceBoundary.test(source[start - 1])) start -= 1;
+    while (end < source.length && !sentenceBoundary.test(source[end])) end += 1;
+    if (end < source.length) end += 1;
+    let raw = source.slice(start, end);
+    let snippet = glossaryVisibleText(raw);
+    if (snippet.length <= maximum) return snippet;
+
+    const before = Math.floor(maximum * 0.42);
+    const after = maximum - before;
+    const windowStart = Math.max(start, safeIndex - before);
+    const windowEnd = Math.min(end, safeIndex + safeLength + after);
+    raw = source.slice(windowStart, windowEnd);
+    snippet = glossaryVisibleText(raw);
+    if (windowStart > start) snippet = `…${snippet}`;
+    if (windowEnd < end) snippet = `${snippet}…`;
+    return snippet;
+  }
+
+  function contextualTermHintDetails(term, hint, context = {}) {
+    const meaning = glossaryVisibleText(hint?.explanation);
+    const scope = glossaryVisibleText(context.scope).slice(0, 140);
+    const occurrenceContext = context.text !== undefined ? context : (hint?.keywordContext || context);
+    const snippet = termHintContextSnippet(
+      occurrenceContext.text,
+      occurrenceContext.matchIndex,
+      occurrenceContext.matchLength || String(term ?? "").length,
+    );
+    const hasSentenceContext = Boolean(
+      snippet
+      && foldHintText(snippet)
+      && foldHintText(snippet) !== foldHintText(term),
+    );
+    if (hint?.contextOnly) {
+      const lead = hasSentenceContext
+        ? `Trong câu này, “${term}” đang được dùng với ý sau:`
+        : scope
+          ? `Trong bài “${scope}”, hãy hiểu “${term}” theo ngữ cảnh của bài.`
+          : `Trong bài này, hãy hiểu “${term}” theo ngữ cảnh đang đọc.`;
+      return {
+        meaning: hasSentenceContext ? snippet : lead,
+        context: hasSentenceContext ? snippet : "",
+        contextKind: hasSentenceContext ? "sentence" : "lesson",
+        explanation: hasSentenceContext ? `${lead}\n\n${snippet}` : lead,
+      };
+    }
+    const lead = hasSentenceContext
+      ? `Trong câu này, “${term}” được hiểu là: ${meaning}`
+      : scope
+        ? `Trong bài “${scope}”, “${term}” được hiểu là: ${meaning}`
+        : `Trong bài này, “${term}” được hiểu là: ${meaning}`;
+    return {
+      meaning,
+      context: hasSentenceContext ? snippet : "",
+      contextKind: hasSentenceContext ? "sentence" : "lesson",
+      explanation: hasSentenceContext ? `${lead}\n\nCâu đang đọc: “${snippet}”` : lead,
+    };
+  }
+
+  function createTermHintNodes(term, hint, descriptionId, className = "", context = {}) {
+    const details = contextualTermHintDetails(term, hint, context);
     const definition = document.createElement("dfn");
     definition.className = ["first-use-hint", className].filter(Boolean).join(" ");
     definition.tabIndex = 0;
     definition.textContent = term;
-    definition.dataset.explanation = hint.explanation;
+    definition.dataset.explanation = details.explanation;
+    definition.dataset.meaning = details.meaning;
+    definition.dataset.contextKind = details.contextKind;
+    definition.dataset.hintMode = hint?.contextOnly ? "context" : "definition";
+    if (details.context) definition.dataset.termContext = details.context;
     definition.dataset.hintSource = hint.source;
     const accessibleDescription = document.createElement("span");
     accessibleDescription.id = descriptionId;
     accessibleDescription.hidden = true;
-    accessibleDescription.textContent = hint.explanation;
+    accessibleDescription.textContent = details.explanation;
     definition.setAttribute("aria-describedby", accessibleDescription.id);
     return { definition, accessibleDescription };
   }
 
-  function createReaderKeywordHints(lesson) {
-    const hints = lessonTermHints(lesson);
+  function createReaderKeywordHints(lesson, collection = null) {
+    const hints = lessonTermHints(lesson, collection);
     const keywordMap = new Map();
     (Array.isArray(lesson?.keywords) ? lesson.keywords : []).forEach((keyword) => {
       const key = foldHintText(keyword);
@@ -2725,7 +3160,7 @@
     if (!keywords.length) return null;
     const container = document.createElement("div");
     container.className = "reader-keywords";
-    container.setAttribute("aria-label", "Domain keywords and definitions");
+    container.setAttribute("aria-label", "Domain keywords and contextual explanations");
     const label = document.createElement("span");
     label.className = "reader-keywords__label";
     label.textContent = "Keywords";
@@ -2736,6 +3171,7 @@
         hint,
         `keyword-hint-description-${lesson.id}-${index + 1}`,
         "reader-keyword",
+        { scope: lesson.title },
       );
       container.append(nodes.definition, nodes.accessibleDescription);
     });
@@ -2762,6 +3198,7 @@
       },
       "local-term-hint-test-description",
       "reader-keyword",
+      { scope: "Bài kiểm thử bảo mật dữ liệu" },
     );
     const repeatedSample = document.createElement("p");
     repeatedSample.dataset.termHintRepeatFixture = "true";
@@ -2773,14 +3210,105 @@
     };
     const renderRepeatedSample = () => {
       repeatedSample.replaceChildren();
-      appendHintedText(repeatedSample, "AES-GCM protects records; AES-GCM rejects tampering.", {
+      appendHintedText(repeatedSample, "AES-GCM bảo vệ bản ghi khi lưu trữ. Khi xác thực thất bại, AES-GCM giúp phát hiện dữ liệu bị sửa.", {
         hints: [testHint],
         used: new Set(),
         allOccurrences: state.termHintMode === "all",
+        lessonTitle: "Bài kiểm thử bảo mật dữ liệu",
         descriptionIndex: 0,
         descriptionPrefix: "local-term-hint-repeat-description",
       }, { learningLayer: "core" });
     };
+    const contextOnlySample = document.createElement("p");
+    contextOnlySample.dataset.termHintContextOnlyFixture = "true";
+    const contextOnlyText = "Trong quy trình này, settlement là bước hoàn tất việc chuyển tiền giữa các bên.";
+    appendHintedText(contextOnlySample, contextOnlyText, {
+      hints: [{
+        term: "settlement",
+        explanation: "",
+        source: "local-test-authored-sentence",
+        key: foldHintText("settlement"),
+        contextOnly: true,
+      }],
+      used: new Set(),
+      allOccurrences: false,
+      lessonTitle: "Bài kiểm thử thanh toán",
+      descriptionIndex: 0,
+      descriptionPrefix: "local-term-hint-context-only-description",
+    }, { learningLayer: "core" });
+    const definitionLesson = {
+      id: "local-definition-lesson",
+      title: "Định nghĩa hoàn tiền",
+      summary: "Định nghĩa dùng cho kiểm thử local.",
+      keywords: [],
+      firstUseHints: [{
+        term: "chargeback",
+        explanation: "Khoản tiền bị hoàn ngược về người trả sau khi giao dịch được xem xét hoặc tranh chấp.",
+      }],
+      sections: [],
+    };
+    const backfillLesson = {
+      id: "local-backfill-lesson",
+      title: "Chargeback trong vận hành thanh toán",
+      summary: "Cách nhóm vận hành xử lý chargeback mà không làm mất dấu quyết định.",
+      keywords: [],
+      firstUseHints: [],
+      sections: [{
+        id: "muc-tieu",
+        title: "Mục tiêu",
+        blocks: [{
+          type: "paragraph",
+          text: "Khi có tranh chấp, chargeback đưa khoản tiền về phía người trả theo quy trình của mạng lưới.",
+          learningLayer: "core",
+        }],
+      }],
+    };
+    const backfillCollection = {
+      id: "local-backfill-domain",
+      kind: "curriculum",
+      title: "Thanh toán số",
+      modules: [{
+        id: "local-backfill-module",
+        number: "01",
+        title: "Vận hành giao dịch",
+        lessons: [definitionLesson, backfillLesson],
+      }],
+    };
+    const titleBackfillSample = document.createElement("h3");
+    titleBackfillSample.dataset.termHintTitleBackfillFixture = "true";
+    appendHintedText(
+      titleBackfillSample,
+      backfillLesson.title,
+      createFirstUseHintState(backfillLesson, backfillCollection),
+      null,
+    );
+    const autoContextLesson = {
+      id: "local-auto-context-lesson",
+      title: "Kiểm thử zero-day theo ngữ cảnh",
+      summary: "Nhóm ghi nhận zero-day trước khi có bản vá chính thức.",
+      keywords: [],
+      firstUseHints: [],
+      sections: [],
+    };
+    const autoContextCollection = {
+      id: "local-auto-context-domain",
+      kind: "curriculum",
+      title: "An toàn hệ thống",
+      modules: [{
+        id: "local-auto-context-module",
+        number: "01",
+        title: "Kiểm thử",
+        lessons: [autoContextLesson],
+      }],
+    };
+    const autoContextSample = document.createElement("p");
+    autoContextSample.dataset.termHintAutoContextFixture = "true";
+    appendHintedText(
+      autoContextSample,
+      autoContextLesson.summary,
+      createFirstUseHintState(autoContextLesson, autoContextCollection),
+      null,
+    );
     const modeToggle = document.createElement("button");
     modeToggle.type = "button";
     modeToggle.className = "reader-action";
@@ -2813,6 +3341,9 @@
       nodes.accessibleDescription,
       modeToggle,
       repeatedSample,
+      contextOnlySample,
+      titleBackfillSample,
+      autoContextSample,
       completionToggle,
     );
     document.body.append(fixture);
@@ -2896,7 +3427,7 @@
     if (clear) termHintTooltip.textContent = "";
   }
 
-  function appendHintedText(element, text, hintState, block) {
+  function appendHintedText(element, text, hintState, block, context = {}) {
     if (
       !hintState
       || !text
@@ -2905,22 +3436,27 @@
       element.append(document.createTextNode(text));
       return;
     }
-    let cursor = 0;
-    while (cursor < text.length) {
-      let selected = null;
-      hintState.hints.forEach((hint) => {
-        if (!hintState.allOccurrences && hintState.used.has(hint.key)) return;
-        if (!hintState.allOccurrences && block?.learningLayer === "detail" && hint.preferCore) return;
-        const match = findTermMatch(text, hint.term, cursor);
-        if (!match) return;
-        if (!selected || match.index < selected.index || (match.index === selected.index && hint.term.length > selected.hint.term.length)) {
-          selected = { hint, ...match };
-        }
-      });
-      if (!selected) {
-        element.append(document.createTextNode(text.slice(cursor)));
-        break;
+    const matches = [];
+    hintState.hints.forEach((hint) => {
+      if (!hintState.allOccurrences && hintState.used.has(hint.key)) return;
+      if (!hintState.allOccurrences && block?.learningLayer === "detail" && hint.preferCore) return;
+      let fromIndex = 0;
+      while (fromIndex < text.length) {
+        const match = findTermMatch(text, hint.term, fromIndex);
+        if (!match) break;
+        matches.push({ hint, ...match });
+        fromIndex = match.index + Math.max(1, match.length);
       }
+    });
+    matches.sort((left, right) => (
+      left.index - right.index
+      || right.length - left.length
+      || right.hint.term.length - left.hint.term.length
+    ));
+    let cursor = 0;
+    matches.forEach((selected) => {
+      if (selected.index < cursor) return;
+      if (!hintState.allOccurrences && hintState.used.has(selected.hint.key)) return;
       if (selected.index > cursor) element.append(document.createTextNode(text.slice(cursor, selected.index)));
       const visibleTerm = text.slice(selected.index, selected.index + selected.length);
       hintState.descriptionIndex += 1;
@@ -2929,11 +3465,18 @@
         selected.hint,
         `${hintState.descriptionPrefix}-${hintState.descriptionIndex}`,
         hintState.allOccurrences ? "term-hint--all" : "",
+        {
+          scope: hintState.lessonTitle,
+          text: context.text ?? text,
+          matchIndex: (Number(context.offset) || 0) + selected.index,
+          matchLength: selected.length,
+        },
       );
       element.append(nodes.definition, nodes.accessibleDescription);
       if (!hintState.allOccurrences) hintState.used.add(selected.hint.key);
       cursor = selected.index + selected.length;
-    }
+    });
+    if (cursor < text.length) element.append(document.createTextNode(text.slice(cursor)));
   }
 
   function appendRichText(element, text, lesson, hintState = null, block = null) {
@@ -2941,7 +3484,15 @@
     let cursor = 0;
     let match;
     while ((match = pattern.exec(text)) !== null) {
-      if (match.index > cursor) appendHintedText(element, text.slice(cursor, match.index), hintState, block);
+      if (match.index > cursor) {
+        appendHintedText(
+          element,
+          text.slice(cursor, match.index),
+          hintState,
+          block,
+          { text, offset: cursor },
+        );
+      }
       const sourceId = match[1];
       const source = state.sourceMap.get(sourceId);
       const referenceIndex = lesson?.references.indexOf(sourceId) ?? -1;
@@ -2958,7 +3509,9 @@
       }
       cursor = pattern.lastIndex;
     }
-    if (cursor < text.length) appendHintedText(element, text.slice(cursor), hintState, block);
+    if (cursor < text.length) {
+      appendHintedText(element, text.slice(cursor), hintState, block, { text, offset: cursor });
+    }
   }
 
   function readableChunks(value, maximum = 380) {
@@ -3027,7 +3580,7 @@
     return null;
   }
 
-  function createLessonConceptMap(entry) {
+  function createLessonConceptMap(entry, hintState = null) {
     const concepts = [
       { index: 0, marker: "01", label: "Mục tiêu", role: "intent" },
       { index: 3, marker: "02", label: "Cơ chế", role: "mechanism" },
@@ -3048,7 +3601,7 @@
     const track = document.createElement("ol");
     track.className = "lesson-concept-map__track";
     track.setAttribute("aria-label", "Mục tiêu, cơ chế và ranh giới của bài học");
-    const mapHintState = createFirstUseHintState(entry.lesson);
+    const mapHintState = hintState || createFirstUseHintState(entry.lesson, entry.collection);
     concepts.forEach((concept) => {
       const card = document.createElement("li");
       card.className = "lesson-concept-map__node";
@@ -3208,30 +3761,31 @@
     return document.createDocumentFragment();
   }
 
-  function createReaderHero(entry) {
+  function createReaderHero(entry, hintState = null) {
     const { collection, module, lesson } = entry;
     const hero = document.createElement("header");
     hero.className = "reader-hero";
     const breadcrumb = document.createElement("p");
     breadcrumb.className = "reader-breadcrumb";
     const collectionName = document.createElement("span");
-    collectionName.textContent = collection.title;
+    appendHintedText(collectionName, collection.title, hintState, null);
     markVietnamese(collectionName);
     const separator = document.createElement("span");
     separator.textContent = "·";
     const moduleName = document.createElement("span");
-    moduleName.textContent = `${module.number}. ${module.title}`;
+    moduleName.append(document.createTextNode(`${module.number}. `));
+    appendHintedText(moduleName, module.title, hintState, null);
     moduleName.lang = "vi";
     breadcrumb.append(collectionName, separator, moduleName);
     const title = document.createElement("h1");
-    title.textContent = lesson.title;
+    appendHintedText(title, lesson.title, hintState, null);
     title.tabIndex = -1;
     title.lang = "vi";
     const deck = document.createElement("p");
     deck.className = "reader-deck";
-    deck.textContent = lesson.summary;
+    appendRichText(deck, lesson.summary, lesson, hintState, null);
     deck.lang = "vi";
-    const keywordHints = createReaderKeywordHints(lesson);
+    const keywordHints = createReaderKeywordHints(lesson, collection);
     const meta = document.createElement("div");
     meta.className = "reader-meta";
     if (collection.kind === "notes" || lesson.status !== "published") {
@@ -3440,15 +3994,15 @@
 
   function renderPublishedLesson(entry) {
     const fragment = document.createDocumentFragment();
-    fragment.append(createReaderHero(entry));
-    const conceptMap = createLessonConceptMap(entry);
+    const firstUseHintState = createFirstUseHintState(entry.lesson, entry.collection);
+    fragment.append(createReaderHero(entry, firstUseHintState));
+    const conceptMap = createLessonConceptMap(entry, firstUseHintState);
     if (conceptMap) fragment.append(conceptMap);
     const layout = document.createElement("div");
     layout.className = "reader-layout";
     const body = document.createElement("div");
     body.className = "lesson-body";
     const hasLearningLayer = lessonHasLearningLayer(entry.lesson);
-    const firstUseHintState = createFirstUseHintState(entry.lesson);
     const lessonVisual = openAccessVisualForEntry(entry);
     const foundGlossaryIndex = entry.lesson.sections.findIndex((section) => section.id === "thuat-ngu");
     const glossaryIndex = foundGlossaryIndex >= 0 ? foundGlossaryIndex : 9;
@@ -3458,6 +4012,10 @@
       section.lang = "vi";
       if (hasLearningLayer || ESSENTIAL_SECTION_INDEXES.has(index)) section.classList.add("is-essential");
       section.id = `section-${sectionData.id}`;
+      const sectionVisibleInMode = state.readingMode !== "essentials"
+        || hasLearningLayer
+        || ESSENTIAL_SECTION_INDEXES.has(index);
+      const sectionHintState = index !== glossaryIndex && sectionVisibleInMode ? firstUseHintState : null;
       const heading = document.createElement("div");
       heading.className = "section-heading";
       const number = document.createElement("span");
@@ -3465,14 +4023,10 @@
       const headingCopy = document.createElement("div");
       headingCopy.className = "section-heading__copy";
       const title = document.createElement("h2");
-      title.textContent = displaySectionTitle(entry.collection.id, sectionData);
+      appendHintedText(title, displaySectionTitle(entry.collection.id, sectionData), sectionHintState, null);
       headingCopy.append(title);
       heading.append(number, headingCopy);
       section.append(heading);
-      const sectionVisibleInMode = state.readingMode !== "essentials"
-        || hasLearningLayer
-        || ESSENTIAL_SECTION_INDEXES.has(index);
-      const sectionHintState = index < glossaryIndex && sectionVisibleInMode ? firstUseHintState : null;
       sectionData.blocks.forEach((block, blockIndex) => {
         section.append(renderBlock(block, entry.lesson, sectionHintState));
         if (lessonVisual && lessonVisual.sectionId === sectionData.id && blockIndex === 0) {
@@ -3491,7 +4045,8 @@
 
   function renderPlannedLesson(entry) {
     const fragment = document.createDocumentFragment();
-    fragment.append(createReaderHero(entry));
+    const hintState = createFirstUseHintState(entry.lesson, entry.collection);
+    fragment.append(createReaderHero(entry, hintState));
     const body = document.createElement("div");
     body.className = "lesson-body";
     const template = document.createElement("section");
@@ -4093,7 +4648,7 @@
       { id: "surprise", marker: "✦", title: "Surprise me", context: "Open an unread lesson" },
       { id: "theme", marker: "◐", title: "Theme studio", context: THEME_PRESETS[document.documentElement.dataset.themePreset]?.label || "Choose a mood" },
       { id: "reading-mode", marker: "≋", title: state.readingMode === "essentials" ? "Show deep lesson" : "Show essentials", context: "Change the visible lesson depth" },
-      { id: "term-hints", marker: "?", title: state.termHintMode === "all" ? "Show first-use term hints" : "Explain every defined term", context: "Toggle glossary annotations in the current lesson" },
+      { id: "term-hints", marker: "?", title: state.termHintMode === "all" ? "Show first-use term hints" : "Explain every English term", context: "Toggle contextual term explanations in the current lesson" },
       { id: "text-size", marker: "Aa", title: "Reading size", context: state.textSize === "xlarge" ? "Extra large" : state.textSize === "large" ? "Large" : "Comfortable" },
       { id: "focus", marker: "◌", title: state.focusMode ? "Exit focus mode" : "Enter focus mode", context: "Quiet the navigation" },
       { id: "timer", marker: "◷", title: state.focusTimerEnd ? "Stop focus timer" : "Start 15-minute focus", context: "Session-only timer" },
@@ -4384,6 +4939,11 @@
     state.data = null;
     state.releaseState = "current";
     state.sourceMap = new Map();
+    collectionTermHintCache = new WeakMap();
+    moduleTermHintCache = new WeakMap();
+    lessonTermHintCache = new WeakMap();
+    globalTermHintCache = null;
+    globalTermHintTokenCache = null;
     state.selectedId = null;
     state.selectedCollectionId = null;
     state.openCollections.clear();
@@ -4464,6 +5024,11 @@
       const decryptedVault = await decryptVault(password);
       const { data, releaseState } = decryptedVault;
       state.data = data;
+      collectionTermHintCache = new WeakMap();
+      moduleTermHintCache = new WeakMap();
+      lessonTermHintCache = new WeakMap();
+      globalTermHintCache = null;
+      globalTermHintTokenCache = null;
       state.releaseState = releaseState;
       state.sourceMap = new Map(data.primarySources.map((source) => [source.id, source]));
       state.completed = loadCompleted();
