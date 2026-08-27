@@ -134,6 +134,18 @@ forbidMatch(
 );
 requireMatch(termHintAudit, /if\s*\(pairs\.size\s*<\s*4\)\s*record\("glossary definition coverage"\)/u, "all-lesson tooltip definition gate");
 requireMatch(termHintAudit, /lessons using glossary-chip fallback \(\$\{lessonsBelowFourBodyTerms\}\)/u, "privacy-safe tooltip fallback summary");
+requireMatch(termHintAudit, /context-ready lessons \(\$\{contextReadyLessonCount\}\/\$\{lessonCount\}\)/u, "all-lesson contextual tooltip audit summary");
+requireMatch(termHintAudit, /context-ready domains \(\$\{contextReadyDomainCount\}\/\$\{domains\.length\}\)/u, "all-domain contextual tooltip audit summary");
+requireMatch(termHintAudit, /English-context-ready domains \(\$\{englishContextReadyDomainCount\}\/\$\{domains\.length\}\)/u, "all-domain English contextual coverage summary");
+requireMatch(termHintAudit, /uncovered body English keywords \(\$\{uncoveredRenderableEnglishKeywordCount\}\)/u, "privacy-safe uncovered English keyword summary");
+requireMatch(termHintAudit, /record\("body English contextual hint coverage"\)/u, "body English contextual coverage gate");
+requireMatch(termHintAudit, /function\s+hasVietnameseMeaning[\s\S]*?vietnameseMeaningMarkers/u, "Vietnamese glossary-meaning audit signal");
+requireMatch(termHintAudit, /complete lesson-surface contexts \(\$\{lessonSurfaceContextReadyCount\}\/\$\{lessonCount\}\)/u, "hero and full-lesson term surface audit summary");
+requireMatch(termHintAudit, /same-domain English occurrences \(\$\{sameDomainEnglishOccurrenceCount\}\)/u, "same-domain occurrence-level definition summary");
+requireMatch(termHintAudit, /uncovered same-domain English occurrences \(\$\{uncoveredSameDomainEnglishOccurrenceCount\}\)/u, "privacy-safe same-domain gap summary");
+requireMatch(termHintAudit, /automatic contextual English terms \(\$\{autoContextCandidateTermCount\}\)/u, "automatic contextual term inventory summary");
+requireMatch(termHintAudit, /uncovered automatic contextual candidates \(\$\{uncoveredAutoContextCandidateOccurrenceCount\}\)/u, "privacy-safe automatic contextual gap summary");
+requireMatch(termHintAudit, /record\("same-domain English occurrence coverage"\)[\s\S]*?record\("automatic English contextual occurrence coverage"\)/u, "occurrence-level English coverage gates");
 forbidMatch(
   termHintAudit,
   /console\.(?:log|error|warn|dir)\([^\n]*(?:lesson\.title|lesson\.summary|hint\.term|hint\.explanation)/u,
@@ -1192,6 +1204,18 @@ requireMatch(js, /if \(state\.focusMode\) setFocusMode\(false\);[\s\S]*?searchIn
   "lessonHasLearningLayer",
   "createFirstUseHintState",
   "findTermMatch",
+  "authoredLessonTermHints",
+  "moduleTermHintLibrary",
+  "collectionTermHintLibrary",
+  "globalTermHintLibrary",
+  "globalTermHintTokenKeys",
+  "looksEnglishFacingHintTerm",
+  "lessonTermContextEntries",
+  "firstRenderableTermContext",
+  "firstRenderableKeywordContext",
+  "autoTermHintCandidates",
+  "termHintContextSnippet",
+  "contextualTermHintDetails",
   "ensureTermHintTooltip",
   "showTermHintTooltip",
   "hideTermHintTooltip",
@@ -1240,17 +1264,41 @@ requireMatch(js, /function\s+setReadingMode[\s\S]*?syncReadingTimes\(\);[\s\S]*?
 requireMatch(js, /function\s+essentialEstimatedMinutes[\s\S]*?ESSENTIAL_SECTION_INDEXES\.has\(index\)/, "essential view computes a visible-section duration fallback");
 requireMatch(js, /function\s+glossaryPairsFromLesson[\s\S]*?section\.id\s*===\s*"thuat-ngu"[\s\S]*?flatMap\(glossaryPairsFromBlock\)/, "term hints derive from the authored glossary section");
 requireMatch(js, /glossaryPairsFromLesson\(lesson\)\.forEach[\s\S]*?explicitHints\.forEach[\s\S]*?merged\.set\(key,\s*\{\s*\.\.\.normalized,\s*key,\s*source:\s*"authored"\s*\}\)/, "authored term hints override glossary-derived definitions");
-requireMatch(js, /function\s+createReaderKeywordHints[\s\S]*?keywordHintForLesson\(keyword, hints\)[\s\S]*?keywordMap\.size\s*>=\s*4[\s\S]*?keywords\.forEach\(\(\{\s*term,\s*hint\s*\},\s*index\)[\s\S]*?createTermHintNodes/u, "every lesson receives at least four definition-backed keyword hints");
-requireMatch(js, /function\s+keywordHintForLesson[\s\S]*?const\s+exact[\s\S]*?hintKeyContainsPhrase[\s\S]*?return\s+null/u, "keyword chips fail closed without a glossary definition");
-forbidMatch(js, /source:\s*"lesson-(?:context|summary)"|contextualKeywordSentence/u, "generic keyword meaning fallback");
+requireMatch(js, /function\s+collectionTermHintLibrary[\s\S]*?collectionTermHintCache[\s\S]*?flatMap\(moduleTermHintLibrary\)/u, "same-domain authored glossary library for English keyword backfill");
+requireMatch(js, /function\s+globalTermHintLibrary[\s\S]*?state\.data\?\.collections[\s\S]*?flatMap\(collectionTermHintLibrary\)/u, "all-domain decrypted glossary index for exact English definitions");
+requireMatch(js, /function\s+lessonTermContextEntries[\s\S]*?collection-title[\s\S]*?lesson-title[\s\S]*?lesson-summary[\s\S]*?section\?\.id\s*===\s*"thuat-ngu"[\s\S]*?lesson-body/u, "term-hint inventory covers hero and every non-glossary lesson surface");
+requireMatch(js, /const\s+termHintTokenPattern\s*=\s*[^\n]*\\p\{L\}\\p\{N\}[^\n]*\/gu;/u, "automatic English token detection uses Unicode word boundaries");
+requireMatch(js, /function\s+maskedTermHintCandidateText[\s\S]*?\[a-z0-9-\][\s\S]*?https[\s\S]*?@/u, "automatic term detection masks citations, URLs, and email addresses");
+requireMatch(js, /function\s+autoTermHintTokenKind[\s\S]*?termHintUnitWords[\s\S]*?structural[\s\S]*?vietnameseAsciiHintWords[\s\S]*?englishHintFunctionWords/u, "automatic English detector excludes units, Vietnamese words, and English joiners");
+requireMatch(js, /addDefinitionBackfills\(moduleHints,\s*"module"\)[\s\S]*?addDefinitionBackfills\(collectionHints,\s*"domain"\)/u, "all renderable same-module and same-domain glossary terms are backfilled");
+requireMatch(js, /autoTermHintCandidates\(contextEntries,\s*authoredTokens\)[\s\S]*?globalByKey\.get\(key\)[\s\S]*?source:\s*"authored-sentence-auto-context"/u, "auto-detected terms prefer exact authored definitions before contextual fallback");
+requireMatch(js, /function\s+lessonTermHints[\s\S]*?keywordHintForLesson\(keyword,\s*moduleHints\)[\s\S]*?keywordHintForLesson\(keyword,\s*collectionHints\)[\s\S]*?authored-sentence-context/u, "English keywords use domain definitions before contextual fallback");
+requireMatch(js, /function\s+lessonTermHints[\s\S]*?lessonTermHintCache\.get\(lesson\)[\s\S]*?lessonTermHintCache\.set\(lesson,\s*hints\)/u, "contextual lesson hints are cached per decrypted lesson");
+requireMatch(js, /contextOnly:\s*true[\s\S]*?keywordContext[\s\S]*?preferCore/u, "context-only English hints retain an authored sentence occurrence");
+requireMatch(js, /function\s+createReaderKeywordHints[\s\S]*?keywordHintForLesson\(keyword, hints\)[\s\S]*?keywordMap\.size\s*>=\s*4[\s\S]*?keywords\.forEach\(\(\{\s*term,\s*hint\s*\},\s*index\)[\s\S]*?createTermHintNodes/u, "every lesson receives at least four contextual or definition-backed keyword hints");
+requireMatch(js, /function\s+keywordHintForLesson[\s\S]*?const\s+exact[\s\S]*?hintKeyContainsPhrase[\s\S]*?return\s+null/u, "authored keyword-definition lookup fails closed before contextual fallback");
+forbidMatch(js, /source:\s*"lesson-(?:context|summary)"|contextualKeywordSentence/u, "lesson summaries are never misrepresented as authored term meanings");
 requireMatch(js, /function\s+installLocalTermHintTestFixture[\s\S]*?new\s+Set\(\["127\.0\.0\.1",\s*"localhost"\]\)[\s\S]*?term-hint-fixture[\s\S]*?window\.location\.protocol\s*!==\s*"http:"[\s\S]*?createTermHintNodes/u, "term-hint browser fixture is local and opt-in only");
-requireMatch(js, /dataset\.termHintRepeatFixture\s*=\s*"true"[\s\S]*?AES-GCM protects records; AES-GCM rejects tampering\.[\s\S]*?allOccurrences:\s*state\.termHintMode\s*===\s*"all"/u, "local fixture covers repeated term occurrences");
+requireMatch(js, /dataset\.termHintRepeatFixture\s*=\s*"true"[\s\S]*?AES-GCM bảo vệ bản ghi khi lưu trữ\.[\s\S]*?AES-GCM giúp phát hiện dữ liệu bị sửa\.[\s\S]*?allOccurrences:\s*state\.termHintMode\s*===\s*"all"/u, "local fixture covers repeated contextual term occurrences");
+requireMatch(js, /dataset\.termHintContextOnlyFixture\s*=\s*"true"[\s\S]*?settlement là bước hoàn tất việc chuyển tiền[\s\S]*?contextOnly:\s*true/u, "local fixture covers English context-only explanations");
+requireMatch(js, /Chargeback trong vận hành thanh toán[\s\S]*?dataset\.termHintTitleBackfillFixture\s*=\s*"true"[\s\S]*?createFirstUseHintState\(backfillLesson,\s*backfillCollection\)/u, "local fixture covers title hints backfilled from another lesson");
+requireMatch(js, /zero-day[\s\S]*?dataset\.termHintAutoContextFixture\s*=\s*"true"[\s\S]*?createFirstUseHintState\(autoContextLesson,\s*autoContextCollection\)/u, "local fixture covers automatic context-only terms");
 requireMatch(js, /dataset\.completionToggleFixture\s*=\s*"true"[\s\S]*?fixtureCompleted\s*=\s*!fixtureCompleted[\s\S]*?syncCompletionButton/u, "local fixture covers reversible completion state");
 requireMatch(js, /installLocalTermHintTestFixture\(\);[\s\S]*?initializeSidebarLayout\(\)/u, "local term-hint fixture initializes after event wiring");
 requireMatch(css, /\.term-hint-test-fixture\s*\{[\s\S]*?position:\s*fixed[\s\S]*?z-index:\s*50/u, "local term-hint fixture remains visible for browser regression testing");
 requireMatch(js, /const\s+heroContent\s*=\s*\[breadcrumb, title, deck\][\s\S]*?if\s*\(keywordHints\)\s*heroContent\.push\(keywordHints\)/u, "keyword definition chips render in every lesson hero");
 requireMatch(js, /function\s+glossaryVisibleText[\s\S]*?replace\(\/\\\[\\\[\[a-z0-9-\]\+\\\]\\\]\/gi,\s*" "\)/, "glossary tooltip copy omits citation tokens");
-requireMatch(js, /index\s*<\s*glossaryIndex\s*&&\s*sectionVisibleInMode\s*\?\s*firstUseHintState\s*:\s*null/, "term hints stay before the discovered glossary section");
+requireMatch(js, /function\s+termHintContextSnippet[\s\S]*?sentenceBoundary[\s\S]*?maximum\s*\*\s*0\.42[\s\S]*?return\s+snippet/u, "term hints capture a bounded surrounding sentence");
+requireMatch(js, /function\s+contextualTermHintDetails[\s\S]*?Trong câu này[\s\S]*?Trong bài[\s\S]*?Câu đang đọc/u, "term hints explain authored meaning inside the current context");
+requireMatch(js, /if\s*\(hint\?\.contextOnly\)[\s\S]*?đang được dùng với ý sau[\s\S]*?meaning:\s*hasSentenceContext\s*\?\s*snippet/u, "context-only hints present the exact sentence as contextual meaning");
+requireMatch(js, /dataset\.meaning\s*=\s*details\.meaning[\s\S]*?dataset\.contextKind\s*=\s*details\.contextKind[\s\S]*?dataset\.termContext/u, "term hint nodes retain separate meaning and context fields");
+requireMatch(js, /dataset\.hintMode\s*=\s*hint\?\.contextOnly\s*\?\s*"context"\s*:\s*"definition"/u, "term hint nodes expose definition versus contextual fallback mode");
+requireMatch(js, /createTermHintNodes\([\s\S]*?keyword-hint-description-[\s\S]*?reader-keyword[\s\S]*?scope:\s*lesson\.title/u, "keyword chips use lesson scope without inventing a definition");
+requireMatch(js, /context\.text\s*\?\?\s*text[\s\S]*?matchIndex:\s*\(Number\(context\.offset\)[\s\S]*?matchLength:\s*selected\.length/u, "body hints bind meaning to the exact term occurrence");
+requireMatch(js, /function\s+createReaderHero\(entry,\s*hintState\s*=\s*null\)[\s\S]*?appendHintedText\(collectionName[\s\S]*?appendHintedText\(moduleName[\s\S]*?appendHintedText\(title[\s\S]*?appendRichText\(deck/u, "lesson hero titles and summaries use the contextual term renderer");
+requireMatch(js, /const\s+firstUseHintState\s*=\s*createFirstUseHintState[\s\S]*?createReaderHero\(entry,\s*firstUseHintState\)[\s\S]*?createLessonConceptMap\(entry,\s*firstUseHintState\)/u, "hero, concept map, and body share one first-use term state");
+requireMatch(js, /index\s*!==\s*glossaryIndex\s*&&\s*sectionVisibleInMode\s*\?\s*firstUseHintState\s*:\s*null/, "term hints cover every visible non-glossary lesson section");
+requireMatch(js, /appendHintedText\(title,\s*displaySectionTitle\(entry\.collection\.id,\s*sectionData\),\s*sectionHintState/u, "lesson section headings use the contextual term renderer");
 requireMatch(js, /state\.readingMode\s*===\s*"essentials"\s*&&\s*block\?\.learningLayer\s*===\s*"detail"/, "essential view excludes hidden detail occurrences");
 requireMatch(js, /function\s+setReadingMode[\s\S]*?lessonReader\.replaceChildren\(renderPublishedLesson\(entry\)\)/, "reading-mode changes recompute the first visible term occurrence");
 requireMatch(js, /document\.body\.append\(termHintTooltip\)/, "term tooltip uses a body portal outside scrolling tables");
@@ -1265,8 +1313,12 @@ requireMatch(js, /allOccurrences:\s*state\.termHintMode\s*===\s*"all"/, "all-occ
 requireMatch(js, /!hintState\.allOccurrences\s*&&\s*hintState\.used\.has\(hint\.key\)[\s\S]*?hintState\.allOccurrences\s*\?\s*"term-hint--all"[\s\S]*?if\s*\(!hintState\.allOccurrences\)\s*hintState\.used\.add/u, "all-occurrence term rendering bypasses the first-use guard");
 requireMatch(js, /const\s+STORAGE_TERM_HINT_MODE\s*=\s*"knowledge-library:term-hint-mode:v1"[\s\S]*?function\s+setTermHintMode[\s\S]*?lessonReader\.replaceChildren\(renderPublishedLesson\(entry\)\)[\s\S]*?writeStorage\(STORAGE_TERM_HINT_MODE,\s*state\.termHintMode\)/u, "persistent all-term-hints mode");
 requireMatch(js, /termHintMode\.dataset\.termHintMode\s*=\s*"true"[\s\S]*?syncTermHintModeControl\(termHintMode\)/u, "lesson hero term-hint mode toggle");
+requireMatch(js, /function\s+syncTermHintModeControl[\s\S]*?Explain every English and technical term occurrence/u, "term-hint control names the expanded English-term coverage");
 requireMatch(js, /setTermHintMode\(readStorage\(STORAGE_TERM_HINT_MODE,\s*"first"\),\s*false\)/u, "first-use term-hint default");
+requireMatch(js, /function\s+lockVault[\s\S]*?collectionTermHintCache\s*=\s*new WeakMap\(\)[\s\S]*?moduleTermHintCache\s*=\s*new WeakMap\(\)[\s\S]*?lessonTermHintCache\s*=\s*new WeakMap\(\)[\s\S]*?globalTermHintCache\s*=\s*null[\s\S]*?globalTermHintTokenCache\s*=\s*null/u, "locking releases contextual definition caches");
+requireMatch(js, /state\.data\s*=\s*data[\s\S]*?globalTermHintCache\s*=\s*null[\s\S]*?globalTermHintTokenCache\s*=\s*null[\s\S]*?state\.releaseState/u, "unlock rebuilds glossary indexes after the local fixture lifecycle");
 requireMatch(css, /\.first-use-hint\.term-hint--all\s*\{[\s\S]*?background:\s*transparent[\s\S]*?font-weight:\s*inherit/u, "subtle all-occurrence term styling");
+requireMatch(css, /\.first-use-tooltip\s*\{[\s\S]*?width:\s*min\(380px,[\s\S]*?white-space:\s*pre-line/u, "contextual tooltip preserves readable meaning and context lines");
 requireMatch(js, /block\.learningLayer\s*===\s*"detail"/, "lesson renderer honors detail layer");
 requireMatch(js, /readingModeLabel\.textContent\s*=\s*"Reading depth"/, "stable reading-depth toggle label");
 requireMatch(js, /readingMode\.setAttribute\("aria-label",\s*"Deep reading view"\)/, "explicit deep-reading control name");

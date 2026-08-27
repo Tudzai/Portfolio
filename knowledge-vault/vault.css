@@ -4148,7 +4148,7 @@ body.essentials-mode .learning-layer-detail {
 .first-use-tooltip {
   position: fixed;
   z-index: 90;
-  width: min(340px, calc(100vw - 24px));
+  width: min(380px, calc(100vw - 24px));
   padding: 10px 12px;
   border: 1px solid var(--line-strong);
   border-radius: 12px;
@@ -4158,6 +4158,7 @@ body.essentials-mode .learning-layer-detail {
   font-size: 0.82rem;
   font-weight: 520;
   line-height: 1.5;
+  white-space: pre-line;
   max-height: calc(100vh - 24px);
   overflow-y: auto;
   overscroll-behavior: contain;

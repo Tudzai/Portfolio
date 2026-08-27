@@ -69,11 +69,19 @@ publicly downloadable when the Portfolio site is deployed, so a strong unique pa
   eleven-section authoring contract and source section.
 - Module cards expose a consistent Beginner → Intermediate → Advanced learning path. These labels describe the
   curriculum's depth and expected practice, not certification or professional authorization.
-- Glossary-derived first-use hints explain eligible technical terms at their first visible pre-glossary occurrence
-  without changing or inventing definitions. Reader keyword chips are shown only when a real glossary or authored
-  definition exists; lesson context and summaries are never presented as a term's meaning. Hints follow the active
+- Glossary-derived hints explain eligible technical terms with Vietnamese wording from that lesson's authored
+  definition. Each tooltip frames that meaning as either "Trong câu này" beside the exact surrounding sentence or
+  "Trong bài này" for a keyword chip, so the reader can connect an English term to the idea currently being read.
+  The runtime prefers the current lesson's definition, then an authored definition from the same module, domain, or
+  exact term elsewhere in the decrypted library. It indexes every renderable non-glossary surface, including the
+  collection/module breadcrumb, lesson title, summary, section headings, and sections after the glossary. English
+  terms that are not metadata keywords are discovered after local decryption; citations, URLs, email addresses, units,
+  English joiners, and common Vietnamese ASCII words are excluded. When no authored definition exists, the tooltip
+  labels the exact surrounding sentence as contextual usage instead of pretending it is a dictionary definition. The
+  optional all-occurrences mode applies the same treatment across every structured domain. Hints follow the active
   Essential/Full view and never replace citation markers. Hover, keyboard focus, or tap opens the explanation; Escape,
-  a second tap, or an outside press dismisses it.
+  a second tap, or an outside press dismisses it. The occurrence-level audit reports category/count coverage only and
+  never prints decrypted lesson text or private terms.
 - Jump is accent-insensitive and keyboard navigable. Lesson pages include a flat section outline, estimated reading
   time, saved state, one smart continuation action, and a reading-progress indicator.
 - Each domain receives a restrained accent tone while sharing the same quiet, high-contrast visual system.
