@@ -3771,6 +3771,7 @@ html[data-theme="light"] .workspace-bar {
 
 .path-actions button:hover,
 .reader-action:hover,
+.reader-action[aria-pressed="true"],
 .bookmark-button:hover,
 .bookmark-button[aria-pressed="true"] {
   border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
@@ -4131,6 +4132,17 @@ body.essentials-mode .learning-layer-detail {
   text-decoration: none;
   touch-action: manipulation;
   cursor: help;
+}
+
+.first-use-hint.term-hint--all {
+  border-bottom-color: color-mix(in srgb, var(--accent) 52%, transparent);
+  background: transparent;
+  font-weight: inherit;
+}
+
+.first-use-hint.term-hint--all:hover,
+.first-use-hint.term-hint--all:focus-visible {
+  background: color-mix(in srgb, var(--accent-soft) 48%, transparent);
 }
 
 .first-use-tooltip {

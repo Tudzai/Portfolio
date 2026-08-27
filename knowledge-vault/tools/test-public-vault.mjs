@@ -1244,6 +1244,8 @@ requireMatch(js, /function\s+createReaderKeywordHints[\s\S]*?keywordHintForLesso
 requireMatch(js, /function\s+keywordHintForLesson[\s\S]*?const\s+exact[\s\S]*?hintKeyContainsPhrase[\s\S]*?return\s+null/u, "keyword chips fail closed without a glossary definition");
 forbidMatch(js, /source:\s*"lesson-(?:context|summary)"|contextualKeywordSentence/u, "generic keyword meaning fallback");
 requireMatch(js, /function\s+installLocalTermHintTestFixture[\s\S]*?new\s+Set\(\["127\.0\.0\.1",\s*"localhost"\]\)[\s\S]*?term-hint-fixture[\s\S]*?window\.location\.protocol\s*!==\s*"http:"[\s\S]*?createTermHintNodes/u, "term-hint browser fixture is local and opt-in only");
+requireMatch(js, /dataset\.termHintRepeatFixture\s*=\s*"true"[\s\S]*?AES-GCM protects records; AES-GCM rejects tampering\.[\s\S]*?allOccurrences:\s*state\.termHintMode\s*===\s*"all"/u, "local fixture covers repeated term occurrences");
+requireMatch(js, /dataset\.completionToggleFixture\s*=\s*"true"[\s\S]*?fixtureCompleted\s*=\s*!fixtureCompleted[\s\S]*?syncCompletionButton/u, "local fixture covers reversible completion state");
 requireMatch(js, /installLocalTermHintTestFixture\(\);[\s\S]*?initializeSidebarLayout\(\)/u, "local term-hint fixture initializes after event wiring");
 requireMatch(css, /\.term-hint-test-fixture\s*\{[\s\S]*?position:\s*fixed[\s\S]*?z-index:\s*50/u, "local term-hint fixture remains visible for browser regression testing");
 requireMatch(js, /const\s+heroContent\s*=\s*\[breadcrumb, title, deck\][\s\S]*?if\s*\(keywordHints\)\s*heroContent\.push\(keywordHints\)/u, "keyword definition chips render in every lesson hero");
@@ -1259,11 +1261,19 @@ requireMatch(js, /accessibleDescription\.hidden\s*=\s*true[\s\S]*?definition\.se
 requireMatch(js, /termHintTooltip\.setAttribute\("aria-hidden",\s*"true"\)/, "visual tooltip portal stays out of the accessibility tree");
 forbidMatch(js, /target\.setAttribute\("aria-describedby",\s*tooltip\.id\)/, "dynamic duplicate tooltip description");
 requireMatch(js, /renderBlock\(block, entry\.lesson, sectionHintState\)/, "lesson renderer uses beginner term hints");
+requireMatch(js, /allOccurrences:\s*state\.termHintMode\s*===\s*"all"/, "all-occurrence term-hint state");
+requireMatch(js, /!hintState\.allOccurrences\s*&&\s*hintState\.used\.has\(hint\.key\)[\s\S]*?hintState\.allOccurrences\s*\?\s*"term-hint--all"[\s\S]*?if\s*\(!hintState\.allOccurrences\)\s*hintState\.used\.add/u, "all-occurrence term rendering bypasses the first-use guard");
+requireMatch(js, /const\s+STORAGE_TERM_HINT_MODE\s*=\s*"knowledge-library:term-hint-mode:v1"[\s\S]*?function\s+setTermHintMode[\s\S]*?lessonReader\.replaceChildren\(renderPublishedLesson\(entry\)\)[\s\S]*?writeStorage\(STORAGE_TERM_HINT_MODE,\s*state\.termHintMode\)/u, "persistent all-term-hints mode");
+requireMatch(js, /termHintMode\.dataset\.termHintMode\s*=\s*"true"[\s\S]*?syncTermHintModeControl\(termHintMode\)/u, "lesson hero term-hint mode toggle");
+requireMatch(js, /setTermHintMode\(readStorage\(STORAGE_TERM_HINT_MODE,\s*"first"\),\s*false\)/u, "first-use term-hint default");
+requireMatch(css, /\.first-use-hint\.term-hint--all\s*\{[\s\S]*?background:\s*transparent[\s\S]*?font-weight:\s*inherit/u, "subtle all-occurrence term styling");
 requireMatch(js, /block\.learningLayer\s*===\s*"detail"/, "lesson renderer honors detail layer");
 requireMatch(js, /readingModeLabel\.textContent\s*=\s*"Reading depth"/, "stable reading-depth toggle label");
 requireMatch(js, /readingMode\.setAttribute\("aria-label",\s*"Deep reading view"\)/, "explicit deep-reading control name");
 requireMatch(js, /const\s+STORAGE_READING_MODE\s*=\s*"knowledge-library:reading-mode:v2"/, "deep-reading preference migration");
 requireMatch(js, /setReadingMode\(readStorage\(STORAGE_READING_MODE,\s*"full"\),\s*false\)/, "deep-reading default");
+requireMatch(js, /complete\.dataset\.completeLesson\s*=\s*lesson\.id[\s\S]*?syncCompletionButton\(complete,\s*state\.completed\.has\(lesson\.id\)\)/u, "lesson hero completion toggle");
+requireMatch(js, /function\s+syncCompletionButton[\s\S]*?Mark lesson incomplete[\s\S]*?Mark incomplete[\s\S]*?Mark as completed/u, "reversible completion labels");
 requireMatch(js, /focusLabel\.textContent\s*=\s*"Focus mode"/, "stable focus-mode toggle label");
 requireMatch(js, /focusTimerLabel\.textContent\s*=\s*"Focus timer"/, "stable focus-timer toggle label");
 requireMatch(js, /"ben-lien-quan":\s*"Ai hoặc yếu tố nào liên quan"/, "lifestyle stakeholder section alias");
